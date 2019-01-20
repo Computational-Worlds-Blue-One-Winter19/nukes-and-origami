@@ -1,0 +1,24 @@
+{
+  "name": "nukes-and-origami",
+  "version": "1.0.0",
+  "description": "An origami-themed browser-based vertical-scrolling shoot 'em up.",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Computational-Worlds-Blue-One-Winter19/nukes-and-origami.git"
+  },
+  "author": "Blue One Computational Worlds Winter 2019",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Computational-Worlds-Blue-One-Winter19/nukes-and-origami/issues"
+  },
+  "homepage": "https://github.com/Computational-Worlds-Blue-One-Winter19/nukes-and-origami#readme",
+  "devDependencies": {
+    "eslint": "^5.12.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0"
+  }
+}
