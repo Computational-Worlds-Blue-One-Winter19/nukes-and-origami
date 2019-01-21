@@ -7,7 +7,7 @@ window.requestAnimFrame = (function requestAnimFrame() {
             || window.mozRequestAnimationFrame
             || window.oRequestAnimationFrame
             || window.msRequestAnimationFrame
-            || function animFrame(/* function */ callback, /* DOMElement */ element) {
+            || function animFrame(/* function */ callback) {
               window.setTimeout(callback, 1000 / 60);
             };
 }());
@@ -54,7 +54,7 @@ GameEngine.prototype.start = function start() {
   const that = this;
   (function gameLoop() {
     that.loop();
-    requestAnimFrame(gameLoop, that.ctx.canvas);
+    window.requestAnimFrame(gameLoop, that.ctx.canvas);
   }());
 };
 
