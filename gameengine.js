@@ -41,6 +41,7 @@ class GameEngine {
     this.wheel = null;
     this.surfaceWidth = null;
     this.surfaceHeight = null;
+    this.keysDown = [];
   }
 
   init(ctx) {
@@ -49,7 +50,6 @@ class GameEngine {
     this.surfaceHeight = this.ctx.canvas.height;
     this.startInput();
     this.timer = new Timer();
-    console.log('game initialized');
   }
 
   start() {
@@ -64,11 +64,28 @@ class GameEngine {
   startInput() {
     console.log('Starting input');
     const that = this;
-
+    console.log("test: " + this.arrowUpPressed);
     this.ctx.canvas.addEventListener('keydown', (e) => {
-      if (String.fromCharCode(e.which) === ' ') that.space = true;
-      //        console.log(e);
+      // if (e.code === 'Space') that.keysDown.push(//that.spacePressed = true;
+      // else if (e.code === 'ArrowDown') that.arrowDownPressed = true;
+      // else if (e.code === 'ArrowUp') that.arrowUpPressed = true;
+      // else if (e.code === 'ArrowLeft') that.arrowLeftPressed = true;
+      // else if (e.code === 'ArrowRight') that.arrowRightPressed = true;
+      // // console.log(e);
+      // e.preventDefault();
+      that.keysDown[e.code] = true;
       e.preventDefault();
+    }, false);
+
+    this.ctx.canvas.addEventListener('keyup', (e) => {
+      that.keysDown[e.code] = false;
+      // if (e.code === 'Space') that.spaceReleased = true;
+      // else if (e.code === 'ArrowLeft') that.arrowLeftReleased = true;
+      // else if (e.code === 'ArrowRight') that.arrowRightReleased = true;
+      // else if (e.code === 'ArrowUp') that.arrowUpReleased = true;
+      // else if (e.code === 'ArrowDown') that.arrowDownReleased = true;
+      //console.log(e);
+      //console.log(`UpKEY______${String.fromCharCode(e.which)}`);
     }, false);
 
     console.log('Input started');
@@ -111,6 +128,15 @@ class GameEngine {
     this.update();
     this.draw();
     this.space = null;
+    this.arrowUpPressed = null;
+    this.arrowDownPressed = null;
+    this.arrowLeftPressed = null;
+    this.arrowRightPressed = null;
+
+    this.arrowLeftReleased = null;
+    this.arrowRightReleased = null;
+    this.arrowUpReleased = null;
+    this.arrowDownReleased = null;
   }
 }
 
