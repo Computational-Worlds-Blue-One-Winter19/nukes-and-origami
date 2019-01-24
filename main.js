@@ -306,8 +306,15 @@ class Crane extends Entity {
         }
       }
     }
-  } // end Update method
-  
+  } // end Update metho
+
+  // loadWeapon
+  armWeapon(count, delay) {
+    this.weapon = [];
+
+  }
+  // fire
+
 }
 
 class Plane extends Entity {
@@ -372,7 +379,7 @@ class Plane extends Entity {
       bullet.spawned = true;
       this.game.addEntity(bullet);
 
-      this.game.keysDown['Space'] = false;
+      //this.game.keysDown['Space'] = false;
     }
     
     if(!this.game.keysDown['ArrowLeft'] && !this.game.keysDown['ArrowRight'] && !this.game.keysDown['ArrowUp'] && !this.game.keysDown['ArrowDown']) {
@@ -414,7 +421,7 @@ class Bullet extends Entity {
     this.sprite = new Sprite(spritesheet, 0, 0, 640, 320, 1, 0, 0.04, false);
     this.game = game;
     this.ctx = game.ctx;
-    this.speed = 500;
+    this.speed = 100;
     this.radius = 8;
         
     this.angle = angle || Math.PI / 2;
@@ -432,7 +439,11 @@ class Bullet extends Entity {
       this.removeFromWorld = true;
       return;
     }
-        
+    
+    this.speed *= 1.05;
+    this.speedX = this.speed * Math.cos(this.angle);
+    this.speedY = this.speed * Math.sin(this.angle);
+
     this.x += this.speedX * this.game.clockTick;
     this.y += this.speedY * this.game.clockTick;
   }
