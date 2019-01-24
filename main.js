@@ -21,7 +21,6 @@ class Sprite {
     this.currentFrame = 0;
   }
 
-
   drawFrame(tick, ctx, x, y) {
     this.elapsedTime += tick;
     if (this.time !== 0) {
@@ -32,32 +31,35 @@ class Sprite {
       this.currentFrame = (Math.floor(this.elapsedTime / this.time)) % this.len;
     // console.log(this.currentFrame);
     }
-    if (this.flip) {
-      ctx.save();
-      ctx.scale(-1, 1);
-      ctx.drawImage(this.sheet,
-        this.oriX + (this.width * this.currentFrame),
-        this.oriY, // NOTE: does not work for spritesheets where one animation goes to next line!
-        this.width,
-        this.height,
-        x * -1, // Flip
-        y,
-        this.width * this.scale,
-        this.height * this.scale);
-      ctx.restore();
-    } else {
+    // if (this.flip) {
+    //   ctx.save();
+    //   ctx.scale(-1, 1);
+    //   ctx.drawImage(this.sheet,
+    //     this.oriX + (this.width * this.currentFrame),
+    //     this.oriY, // NOTE: does not work for spritesheets where one animation goes to next line!
+    //     this.width,
+    //     this.height,
+    //     x * -1, // Flip
+    //     y,
+    //     this.width * this.scale,
+    //     this.height * this.scale);
+    //   ctx.restore();
+    // } else {
     // console.log("draw");
     // console.log("cutting out X:" + (this.oriX + (this.width * this.currentFrame)) + ", Y: " + this.oriY);
-      ctx.drawImage(this.sheet,
+    var locX = x - (this.width/2) * this.scale;
+    var locY = y - (this.height/2) * this.scale;
+    
+    ctx.drawImage(this.sheet,
         this.oriX + (this.width * this.currentFrame),
         this.oriY, // NOTE: does not work for spritesheets where one animation goes to next line!
         this.width,
         this.height,
-        x,
-        y,
+        locX,
+        locY,
         this.width * this.scale,
         this.height * this.scale);
-    }
+    //}
     if (this.time !== 0) {
       this.currentFrame += 1;
     }
@@ -134,37 +136,35 @@ class Slippy extends Entity {
 
 
 class Nuke extends Entity {
-  constructor(game, spritesheet) {
-    super(game, 850, -25);
+  constructor(game, spritesheet, x, y) {
+    super(game, x, y);
     this.sprite = new Sprite(spritesheet, 0, 0, 320, 232, 25, 0.02, 1, true);
     this.game = game;
     this.ctx = game.ctx;
     this.done = false;
-    // Entity.call(game, 850, -25);
+    this.radius = 25;
   }
-
-  // Nuke.prototype = new Entity();
-  // Nuke.prototype.constructor = Nuke;
 
   draw() {
-    if (this.game.timer.gameTime >= 12.3 && !this.done) {
-      this.sprite.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
-      if (this.sprite.currentFrame === this.sprite.len) {
-        this.done = true;
-      }
-    }
+    this.sprite.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
   }
 
-  // update() {
-
-  // }
+  update() {
+    if (this.sprite.currentFrame === this.sprite.len) {
+      this.done = true;
+      this.removeFromWorl
+  }
+  }
+ 
 }
 
 
 // (source, originX, originY, frameWidth, frameHeight, numberOfFrames, timePerFrame, scale, flip)
+// Crane will enter from above and move to snapLine defined by x,y
 class Crane extends Entity {
-  constructor(game, spritesheet) {
-    super(game, 550, -110);
+
+  constructor(game, spritesheet, x, y) {
+    super(game, x, -100);
     this.sprite = new Sprite(spritesheet, 0, 0, 440, 330, 4, 0.1, 0.7, false);
     this.originalScale = 0.7;
     // 0.7 scaled x = 550
@@ -175,9 +175,9 @@ class Crane extends Entity {
     this.idleTrans = false;
     this.idleCount = 0;
     this.alive = true; // y = 550
-    // this.Entity = new Entity();
-    // this.Entity.apply(this, game, 550, -110);
-    // Entity.call(this, game, 550, -110);
+    this.radius = 90;
+    this.snapLine = y;
+    
     // x += ((x * oldscale - newscale) / 2)
     // y += ((y * oldscale - newscale) / 2)
   }
@@ -185,17 +185,32 @@ class Crane extends Entity {
 
   draw() {
     if (this.alive) { this.sprite.drawFrame(this.game.clockTick, this.ctx, this.x, this.y); }
+    super.draw();
   }
 
   update() {
-    if (this.y <= 0) {
+    if (this.isCollided(this.game.player)) {
+      this.game.player.removeFromWorld = true;
+      this.game.spawnPlayer();
+    }
+
+    // Check bullets
+    for (let e of this.game.entities) {
+      if (e instanceof Bullet && this.isCollided(e)) {
+        this.removeFromWorld = true;
+        e.removeFromWorld = true;
+        this.game.spawnCrane();
+      }
+    }
+    
+    if (this.y < this.snapLine) {
       this.y += this.speed * this.game.clockTick;
     } else {
       this.isIdle = true;
     }
-    if (this.game.timer.gameTime > 12.4) {
-      this.alive = false;
-    }
+    //if (this.game.timer.gameTime > 12.4) {
+    //  this.alive = false;
+    //}
     // Idle hover effect
     if (this.isIdle) {
       if (this.idleTrans) {
@@ -223,24 +238,27 @@ class Crane extends Entity {
   }
 }
 
-// Crane.prototype = new Entity();
-// Crane.prototype.constructor = Crane;
-
 
 class Plane extends Entity {
   constructor(game, spritesheet) {
-    super(game, 650, 500);
+    super(game, game.ctx.canvas.width/2, game.ctx.canvas.height * .75);
+    
+    // set animation sprite sheets
     this.idle = new Sprite(spritesheet, 0, 0, 300, 330, 1, 0, 0.4, false);
     this.right = new Sprite(spritesheet, 300, 0, 300, 330, 1, 0, 0.4, false);
     this.left = new Sprite(spritesheet, 600, 0, 300, 330, 1, 0, 0.4, false);
     this.rollRight = new Sprite(spritesheet, 0, 330, 300, 330, 8, 0.15, 0.4, false);
     this.rollLeft = new Sprite(spritesheet, 0, 660, 300, 330, 8, 0.15, 0.4, false);
     this.sprite = this.idle;
-    this.moving = false;
-    this.speed = 600;
-    this.turn = false;
+    
+    // initial parameters
     this.game = game;
     this.ctx = game.ctx;
+    this.radius = 55;
+    this.speed = 600;
+
+    this.moving = false;
+    this.turn = false;
     this.isIdle = false;
     this.idleTrans = false;
     this.idleCount = 0;
@@ -248,17 +266,21 @@ class Plane extends Entity {
     this.moveRight = 0;
     this.moveUp = 0;
     this.moveDown = 0;
-
-    // Entity.call(this, game, 650, 1500);
+    this.activeBullets = new Array();    
   }
-
-  // Plane.prototype = new Entity();
-  // Plane.prototype.constructor = Plane;
 
   update() {
     // It might be better to use a changeX and changeY variable
     // This way we apply a sprite depending on how the position has changed
     //console.log("called");
+    if (this.isOutsideScreen()) {
+      // correct all bounds
+      this.x = Math.max(this.x, this.radius);
+      this.x = Math.min(this.x, this.game.surfaceWidth - this.radius);
+      this.y = Math.max(this.y, this.radius);
+      this.y = Math.min(this.y, this.game.surfaceHeight - this.radius);
+    }
+    
     if(this.game.keysDown['ArrowLeft'])  {
       this.x -= this.speed * this.game.clockTick;
       this.sprite = this.left;
@@ -273,6 +295,11 @@ class Plane extends Entity {
     if(this.game.keysDown['ArrowDown'])  {
       this.y += this.speed * this.game.clockTick;
     } 
+    if(this.game.keysDown['Space']) {
+      this.game.addEntity(new Bullet(this.game, AM.getAsset('./img/bullet.png'), this.x, this.y - this.radius));
+      this.game.keysDown['Space'] = false;
+    }
+    
     if(!this.game.keysDown['ArrowLeft'] && !this.game.keysDown['ArrowRight'] && !this.game.keysDown['ArrowUp'] && !this.game.keysDown['ArrowDown']) {
       this.sprite = this.idle;
       if (this.idleTrans) {
@@ -297,157 +324,46 @@ class Plane extends Entity {
         }
       }
     }
-    console.log("UP: " + this.game.keysDown['ArrowUp'] + ", RIGHT: " + this.game.keysDown['ArrowRight'] 
-        + ", DOWN: " + this.game.keysDown['ArrowDown'] + ", LEFT: " + this.game.keysDown['ArrowLeft'] );
-    // if (this.game.arrowLeftPressed && this.game.arrowUpPressed) {
-    //   // if (this.isIdle === true) {
-    //   //onsole.log('Applying the left sprite');
-    //   //console.log('isIdle true');
-    //   this.sprite = this.left; // Use the moving left sprite
-    //   this.isIdle = false;
-    //   console.log("left diagonal");
-    //   // }
-    //   this.moving = true;
-    //   this.x -= this.speed * this.game.clockTick;
-    //   this.y -= this.speed * this.game.clockTick;
-    // } else if (this.game.arrowRightPressed && this.game.arrowUpPressed) {
-    //   // if (this.isIdle === true) {
-    //   //console.log('Applying the right sprite and isIdle');
-    //   this.sprite = this.right;
-    //   this.isIdle = false;
-    //   // }
-    //   console.log("right diagonal");
-    //   this.moving = true;
-    //   this.x += this.speed * this.game.clockTick;
-    //   this.y -= this.speed * this.game.clockTick;
-
-    // } else if (this.game.arrowLeftPressed)  {
-    //   this.sprite = this.left;
-    //   this.isIdle = false;
-    //   this.moving = true;
-    //   this.x -= this.speed * this.game.clockTick;
-    // } else if (this.game.arrowRightPressed) {
-    //   this.sprite = this.left;
-    //   this.isIdle = false;
-    //   this.moving = true;
-    //   this.x += this.speed * this.game.clockTick;
-    // }
-    // if (this.game.arrowDownPressed) {
-    //   this.isIdle = false;
-    //   this.moving = true;
-    //   this.y += this.speed * this.game.clockTick;
-    // } else if (this.game.arrowUpPressed) {
-    //   this.isIdle = false;
-    //   this.moving = true;
-    //   this.y -= this.speed * this.game.clockTick;
-    // } else if (this.sprite.isDone() && (this.moving === false) && (this.isIdle === false)) {
-    //   //console.log('Sprite is done and not moving');
-    //   this.sprite = this.idle;
-    //   this.isIdle = true;
-    //   // this.moving = false;
-    // }
-    // else if (this.game.arrowRight) {
-    //   console.log('Detected the right key');
-    // } else if (this.game.arrowUp) {
-    //   console.log('Detected the up key');
-    // } else if (this.game.arrowDown) {
-    //   console.log('Detected the down key');
-    // } else if (this.game.space) {
-    //   console.log('Detected the space bar');
-    // }
   }
-
-  // update() {
-  //   if (this.y >= 600) {
-  //     this.y -= this.speed * this.game.clockTick;
-  //     this.isIdle = true;
-  //   }
-  //   if (this.game.timer.gameTime > 7 && this.game.timer.gameTime < 8) {
-  //     this.isIdle = false;
-  //     this.sprite = this.rollLeft;
-  //     if (this.sprite.currentFrame > 0) {
-  //       this.x -= 350 * this.game.clockTick;
-  //     }
-  //   }
-  //   if (this.game.timer.gameTime > 8 && this.sprite.isDone) {
-  //     this.isIdle = true;
-  //     this.sprite = this.idle;
-  //   }
-  //   if (this.game.timer.gameTime > 9 && this.x <= 650) {
-  //     this.isIdle = false;
-  //     this.sprite = this.right;
-  //     this.x += this.speed * this.game.clockTick;
-  //   }
-  //   if (this.game.timer.gameTime > 18 && this.game.timer.gameTime < 20) {
-  //     this.sprite = this.right;
-  //     this.isIdle = false;
-  //     this.x += this.speed * this.game.clockTick;
-  //     // console.log(this.x);
-  //     this.y -= this.speed * this.game.clockTick;
-  //   }
-  //   if (this.game.timer.gameTime > 20) {
-  //     this.x = 650;
-  //     this.y = 1500;
-  //     this.game.timer.gameTime = 0;
-  //   }
-  //   // Idle hover effect
-  //   if (this.isIdle) {
-  //     if (this.idleTrans) {
-  //       this.idleCount += 1;
-  //       // every 10 frames
-  //       if (this.idleCount % 10 === 0) {
-  //         this.y += 1;
-  //       }
-  //       // go other way every 50 frames
-  //       if (this.idleCount === 50) {
-  //         this.idleTrans = !this.idleTrans;
-  //         this.idleCount = 0;
-  //       }
-  //     } else {
-  //       this.idleCount += 1;
-  //       if (this.idleCount % 10 === 0) {
-  //         this.y -= 1;
-  //       }
-  //       if (this.idleCount === 50) {
-  //         this.idleTrans = !this.idleTrans;
-  //         this.idleCount = 0;
-  //       }
-  //     }
-  //   }
-  // }
 
   draw() {
     this.sprite.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    super.draw();
   }
 }
 
 // (source, originX, originY, frameWidth, frameHeight, numberOfFrames, timePerFrame, scale, flip)
 class Bullet extends Entity {
-  constructor(game, spritesheet) {
-    super(game, -50, -50);
+  constructor(game, spritesheet, x, y) {
+    super(game, x, y);
     this.sprite = new Sprite(spritesheet, 0, 0, 640, 320, 1, 0, 0.04, false);
     this.game = game;
-    this.speed = 500;
-    this.angleLeftX1 = 690;
-    this.angleLeftX2 = 690;
-    this.angleRightX1 = 690;
-    this.angleRightX2 = 690;
     this.ctx = game.ctx;
-    this.spawned = false;
-    this.repeated = false;
+    this.speed = 500;
+    this.radius = 20;
+    // this.angleLeftX1 = 690;
+    // this.angleLeftX2 = 690;
+    // this.angleRightX1 = 690;
+    // this.angleRightX2 = 690;
+    // this.ctx = game.ctx;
+    this.elapsedTime = 0; // the total time this Bullet has existed
+    this.spawned = true;
+    this.repeated = true;
     this.craneshot = false;
-    this.planeshot = false;
+    this.planeshot = true;
     // Entity.call(this, game, -50, -50); // start off screen
     // 685, 580 = right in front of plane.
   }
 
   update() {
-    if (this.game.timer.gameTime > 7 && this.game.timer.gameTime < 7.1) {
-      this.x = 690;
-      this.y = 200;
-      this.spawned = true;
-      this.craneshot = true;
-    }
+    this.elapsedTime += this.game.clockTick; 
+    
+    // if (this.game.timer.gameTime > 7 && this.game.timer.gameTime < 7.1) {
+    //   this.x = 690;
+    //   this.y = 200;
+    //   this.spawned = true;
+    //   this.craneshot = true;
+    // }
     if ((this.spawned && this.craneshot) || (this.repeated && this.craneshot)) {
       // this.y -= this.speed * this.game.clockTick; Bullet from plane
       this.y += this.speed * this.game.clockTick;
@@ -475,20 +391,24 @@ class Bullet extends Entity {
       this.repeated = false;
       this.craneshot = false;
     }
-    if (this.game.timer.gameTime > 11.5 && this.game.timer.gameTime < 11.6) {
-      this.planeshot = true;
-      this.x = 690;
-      this.y = 585;
-    }
+    // if (this.game.timer.gameTime > 11.5 && this.game.timer.gameTime < 11.6) {
+    //   this.planeshot = true;
+    //   this.x = 690;
+    //   this.y = 585;
+    // }
     if (this.planeshot) {
-      this.y -= this.speed * this.game.clockTick;
+      if (this.isOutsideScreen()) {
+        this.removeFromWorld = true;
+      } else {
+        this.y -= this.speed * this.game.clockTick;
+      }
     }
-    if (this.planeshot && this.y <= 200) {
-      this.planeshot = false;
-      console.log(this.game.timer.gameTime);
-      this.x = -500;
-      this.y = -500;
-    }
+    // if (this.planeshot && this.y <= 200) {
+    //   this.planeshot = false;
+    //   console.log(this.game.timer.gameTime);
+    //   this.x = -500;
+    //   this.y = -500;
+    // }
   }
 
 
@@ -503,8 +423,30 @@ class Bullet extends Entity {
   }
 }
 
-// Bullet.prototype = new Entity();
-// Bullet.prototype.constructor = Bullet;
+
+/** NukesAndOrigami extends GameEngine and adds additional functions
+ *  to manage state, add assets, etc.
+ */
+class NukesAndOrigami extends GameEngine {
+  constructor() {
+    super();
+    this.lives = 5;
+    this.hits = 0;
+  }
+
+  spawnCrane() {
+    let range = this.surfaceWidth - 2 * 90;
+    let x = Math.floor(Math.random() * range) + 90;
+    this.addEntity(new Crane(this, AM.getAsset('./img/crane-sheet.png'), x, 180));
+  }
+
+  spawnPlayer() {
+    let x = this.surfaceWidth / 2;
+    let y = this.surfaceHeight - 50 * 2;
+    this.player = new Plane(this, AM.getAsset('./img/plane.png', x, y));
+    this.addEntity(this.player);
+  }
+}
 
 AM.queueDownload('./img/crane-sheet.png');
 AM.queueDownload('./img/plane.png');
@@ -523,24 +465,22 @@ AM.downloadAll(() => {
   const canvas = document.getElementById('gameWorld');
   const ctx = canvas.getContext('2d');
 
-  const gameEngine = new GameEngine();
-  gameEngine.init(ctx);
-  gameEngine.start();
+  const game = new NukesAndOrigami();
+  game.init(ctx);
+  game.showOutlines = true;
 
-  const slippyArr = [AM.getAsset('./img/slippy_inbound.png'),
-    AM.getAsset('./img/slippy_roll.png'),
-    AM.getAsset('./img/slippy_greatjob.png'),
-    AM.getAsset('./img/slippy_mission_done.png'),
-    AM.getAsset('./img/slippy_end.png')];
+  // add player
+  game.spawnPlayer();
+  game.start();
+  game.spawnCrane();
 
-  gameEngine.addEntity(new Background(gameEngine, AM.getAsset('./img/spacebg.png'), 0, 0));
-  gameEngine.addEntity(new Background(gameEngine, AM.getAsset('./img/spacebg.png'), 0, -screenWidth));
-
-
-  // gameEngine.addEntity(new Background(gameEngine, AM.getAsset('./img/paper-wallpaper.png'), 0, 0));
-  // gameEngine.addEntity(new Background(gameEngine, AM.getAsset('./img/paper-wallpaper.png'), 0, -screenWidth));
-  gameEngine.addEntity(new Crane(gameEngine, AM.getAsset('./img/crane-sheet.png')));
-  gameEngine.addEntity(new Plane(gameEngine, AM.getAsset('./img/plane.png')));
+  // const slippyArr = [AM.getAsset('./img/slippy_inbound.png'),
+  //   AM.getAsset('./img/slippy_roll.png'),
+  //   AM.getAsset('./img/slippy_greatjob.png'),
+  //   AM.getAsset('./img/slippy_mission_done.png'),
+  //   AM.getAsset('./img/slippy_end.png')];
+  //gameEngine.addEntity(new Background(gameEngine, AM.getAsset('./img/spacebg.png'), 0, 0));
+  //gameEngine.addEntity(new Background(gameEngine, AM.getAsset('./img/spacebg.png'), 0, -screenWidth));
   // gameEngine.addEntity(new Slippy(gameEngine, slippyArr));
   // gameEngine.addEntity(new Nuke(gameEngine, AM.getAsset('./img/nuke_single.png')));
   // gameEngine.addEntity(new Bullet(gameEngine, AM.getAsset('./img/bullet.png')));
