@@ -1,4 +1,4 @@
-// This game shell was happily copied from Googler Seth Ladd's "Bad Aliens" game and his Google
+// This game shell was happily copied from Googler Seth Ladd's "Bad others" game and his Google
 // IO talk in 2011
 
 window.requestAnimFrame = (function requestAnimFrame() {
@@ -35,13 +35,14 @@ class GameEngine {
   constructor() {
     this.entities = [];
     this.showOutlines = false;
+    this.isPaused = false;
     this.ctx = null;
     this.click = null;
     this.mouse = null;
     this.wheel = null;
     this.surfaceWidth = null;
     this.surfaceHeight = null;
-    this.keysDown = [];
+    this.keysDown = [];    
   }
 
   init(ctx) {
@@ -66,26 +67,16 @@ class GameEngine {
     const that = this;
     console.log("test: " + this.arrowUpPressed);
     this.ctx.canvas.addEventListener('keydown', (e) => {
-      // if (e.code === 'Space') that.keysDown.push(//that.spacePressed = true;
-      // else if (e.code === 'ArrowDown') that.arrowDownPressed = true;
-      // else if (e.code === 'ArrowUp') that.arrowUpPressed = true;
-      // else if (e.code === 'ArrowLeft') that.arrowLeftPressed = true;
-      // else if (e.code === 'ArrowRight') that.arrowRightPressed = true;
-      // // console.log(e);
-      // e.preventDefault();
-      that.keysDown[e.code] = true;
-      e.preventDefault();
+      if (e.code === 'KeyP') {
+        that.pause();
+      } else {      
+        that.keysDown[e.code] = true;
+        e.preventDefault();
+      }
     }, false);
 
     this.ctx.canvas.addEventListener('keyup', (e) => {
       that.keysDown[e.code] = false;
-      // if (e.code === 'Space') that.spaceReleased = true;
-      // else if (e.code === 'ArrowLeft') that.arrowLeftReleased = true;
-      // else if (e.code === 'ArrowRight') that.arrowRightReleased = true;
-      // else if (e.code === 'ArrowUp') that.arrowUpReleased = true;
-      // else if (e.code === 'ArrowDown') that.arrowDownReleased = true;
-      //console.log(e);
-      //console.log(`UpKEY______${String.fromCharCode(e.which)}`);
     }, false);
 
     console.log('Input started');
@@ -124,22 +115,35 @@ class GameEngine {
   }
 
   loop() {
-    this.clockTick = this.timer.tick();
-    this.update();
-    this.draw();
-    this.space = null;
-    this.arrowUpPressed = null;
-    this.arrowDownPressed = null;
-    this.arrowLeftPressed = null;
-    this.arrowRightPressed = null;
+    if (!this.isPaused) {
+      this.clockTick = this.timer.tick();
+      this.update();
+      this.draw();
+      this.space = null;
+      this.arrowUpPressed = null;
+      this.arrowDownPressed = null;
+      this.arrowLeftPressed = null;
+      this.arrowRightPressed = null;
 
-    this.arrowLeftReleased = null;
-    this.arrowRightReleased = null;
-    this.arrowUpReleased = null;
-    this.arrowDownReleased = null;
+      this.arrowLeftReleased = null;
+      this.arrowRightReleased = null;
+      this.arrowUpReleased = null;
+      this.arrowDownReleased = null;
+    }
+  }
+
+  pause() {
+    if (this.isPaused) {
+      // remove any stored mouse events and unpause the game.
+      this.click = null;
+      this.mouse = null;
+      this.isPaused = false;
+    } else {
+      // set pause flag
+      this.isPaused = true;
+    }
   }
 }
-
 
 class Entity {
   constructor(game, x, y) {
@@ -147,6 +151,7 @@ class Entity {
     this.x = x;
     this.y = y;
     this.removeFromWorld = false;
+
   }
 
   update() {
@@ -155,10 +160,25 @@ class Entity {
   draw() {
     if (this.game.showOutlines && this.radius) {
       this.game.ctx.beginPath();
-      this.game.ctx.strokeStyle = 'green';
+      this.game.ctx.strokeStyle = 'red';
       this.game.ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
       this.game.ctx.stroke();
       this.game.ctx.closePath();
+    }
+  }
+
+  isCollided(other) {
+    if (this.radius && other instanceof Entity && other.radius) {
+      var distance_squared = (((this.x - other.x) * (this.x - other.x)) + ((this.y - other.y) * (this.y - other.y)));
+      var radii_squared = (this.radius + other.radius) * (this.radius + other.radius);
+      return distance_squared < radii_squared;
+    }
+  }
+
+  isOutsideScreen() {
+    if (this.radius) {
+      return (this.x < this.radius || this.x > this.game.surfaceWidth - this.radius ||
+        this.y > this.game.surfaceHeight - this.radius || this.y < this.radius);
     }
   }
 
