@@ -165,7 +165,7 @@ class Crane extends Entity {
 
   constructor(game, spritesheet, x, y) {
     super(game, x, -100);
-    this.sprite = new Sprite(spritesheet, 0, 0, 440, 330, 4, 0.1, 0.7, false);
+    this.sprite = new Sprite(spritesheet, 0, 0, 440, 330, 4, 0.1, 0.3, false);
     this.originalScale = 0.7;
     // 0.7 scaled x = 550
     this.speed = 50;
@@ -175,31 +175,41 @@ class Crane extends Entity {
     this.idleTrans = false;
     this.idleCount = 0;
     this.alive = true; // y = 550
-    this.radius = 90;
+    this.radius = 40;
     this.snapLine = y;
     this.lastFired = 0;
 
     // course
-    let path = new Array();
-    path.push([0,90,20]);
-    path.push([5,180,20]);
-    path.push([4,270,20]);
-    path.push([4,0,10]);
-    path.push([4,0,0]);
-    path.push([8,90,25]);
-    path.push([60,90,0]);
+    let path = [];
+    path.push([90,40,5]);
+    path.push([180,40,4]);
+    path.push([0,0,6]);
+    path.push([90,60,60]);
     path.elapsedTime = 0;
-    path.currentStep = 0;
+    path.targetTime = 0;
+    path.currentStep = -1;
 
     this.path = path;
   }
 
   draw() {
     if (this.alive) { this.sprite.drawFrame(this.game.clockTick, this.ctx, this.x, this.y); }
+    // this.ctx.save();
+    // this.ctx.translate(this.x, this.y);
+    // this.ctx.rotate(this.angle - Math.PI/2);
+    // this.ctx.translate(-this.x, -this.y);
+    // this.sprite.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    // this.ctx.restore();
     super.draw();
   }
 
   update() {
+    // Check upper y bounds if Crane has left the bottom of the screen
+    if (this.y > this.game.surfaceHeight + this.radius) {
+      this.removeFromWorld = true;
+      return;
+    }
+    
     // Check for collision with player    
     if (this.isCollided(this.game.player)) {
       this.game.player.removeFromWorld = true;
@@ -215,31 +225,41 @@ class Crane extends Entity {
       }
     }
     
-    // Proceed downward if not at the snapLine
+    // Update position
     if (this.snapLine) {      
+      // Proceed downward if not at the snapLine
       this.y += this.speed * this.game.clockTick;
 
-      //check for arrival
-      if (this.snapLine <= this.y) {
+      // check for arrival at snapLine
+      if (this.y >= this.snapLine) {
         this.snapLine = null;
       }
-    } else if (this.path.currentStep < this.path.length) {
+    } else if (this.path) {
       this.path.elapsedTime += this.game.clockTick;
-      let step = this.path.currentStep;
+    
+      if (this.path.elapsedTime > this.path.targetTime) {
+        this.path.currentStep++;
+      
+        if (this.path.currentStep === this.path.length) {
+          // the path is completed then remove it from this instance
+          this.path = null;
+        } else {
+          // update heading and speed
+          let newCourse = this.path[this.path.currentStep];
 
-      if (this.path.elapsedTime > this.path[step][0]) {
-        this.angle = this.path[step][1] * Math.PI / 180;
-        this.speed = this.path[step][2];
-
-        this.path.currentStep += 1;
-        this.path.elapsedTime = 0;
+          this.angle = newCourse[0] * Math.PI / 180;
+          this.speed = newCourse[1];
+          this.path.targetTime = newCourse[2];
+          this.path.elapsedTime = 0;
+        }
+      } else {
+        // advance along path
+        let radialDistance = this.speed * this.game.clockTick;
+        this.x += radialDistance * Math.cos(this.angle);
+        this.y += radialDistance * Math.sin(this.angle);
       }
-
-      // advance along path
-      let radialDistance = this.speed * this.game.clockTick;
-      this.x += radialDistance * Math.cos(this.angle);
-      this.y += radialDistance * Math.sin(this.angle);
     } else {
+      // lastly if no path stay put
       this.isIdle = true;
     }
 
@@ -295,17 +315,17 @@ class Plane extends Entity {
     super(game, game.ctx.canvas.width/2, game.ctx.canvas.height * .75);
     
     // set animation sprite sheets
-    this.idle = new Sprite(spritesheet, 0, 0, 300, 330, 1, 0, 0.4, false);
-    this.right = new Sprite(spritesheet, 300, 0, 300, 330, 1, 0, 0.4, false);
-    this.left = new Sprite(spritesheet, 600, 0, 300, 330, 1, 0, 0.4, false);
-    this.rollRight = new Sprite(spritesheet, 0, 330, 300, 330, 8, 0.15, 0.4, false);
-    this.rollLeft = new Sprite(spritesheet, 0, 660, 300, 330, 8, 0.15, 0.4, false);
+    this.idle = new Sprite(spritesheet, 0, 0, 300, 330, 1, 0, 0.2, false);
+    this.right = new Sprite(spritesheet, 300, 0, 300, 330, 1, 0, 0.2, false);
+    this.left = new Sprite(spritesheet, 600, 0, 300, 330, 1, 0, 0.2, false);
+    this.rollRight = new Sprite(spritesheet, 0, 330, 300, 330, 8, 0.15, 0.2, false);
+    this.rollLeft = new Sprite(spritesheet, 0, 660, 300, 330, 8, 0.15, 0.2, false);
     this.sprite = this.idle;
     
     // initial parameters
     this.game = game;
     this.ctx = game.ctx;
-    this.radius = 40;
+    this.radius = 30;
     this.speed = 600;
 
     this.moving = false;
@@ -395,7 +415,7 @@ class Bullet extends Entity {
     this.game = game;
     this.ctx = game.ctx;
     this.speed = 500;
-    this.radius = 20;
+    this.radius = 8;
         
     this.angle = angle || Math.PI / 2;
     this.speedX = this.speed * Math.cos(this.angle);
@@ -418,7 +438,14 @@ class Bullet extends Entity {
   }
 
   draw() {
+    this.ctx.save();
+    this.ctx.translate(this.x, this.y);
+    this.ctx.rotate(this.angle);
+    this.ctx.translate(-this.x, -this.y);
     this.sprite.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    this.ctx.restore();
+    super.draw();
+            
     // if (this.craneshot) {
     //   this.sprite.drawFrame(this.game.clockTick, this.ctx, this.angleLeftX1, this.y);
     //   this.sprite.drawFrame(this.game.clockTick, this.ctx, this.angleLeftX2, this.y);
@@ -441,12 +468,12 @@ class NukesAndOrigami extends GameEngine {
   spawnCrane() {
     let range = this.surfaceWidth - 2 * 90;
     let x = Math.floor(Math.random() * range) + 90;
-    this.addEntity(new Crane(this, AM.getAsset('./img/crane-sheet.png'), x, 180));
+    this.addEntity(new Crane(this, AM.getAsset('./img/crane-sheet.png'), x, 80));
   }
 
   spawnPlayer() {
     let x = this.surfaceWidth / 2;
-    let y = this.surfaceHeight - 50 * 2;
+    let y = this.surfaceHeight - 30 * 2;
     this.player = new Plane(this, AM.getAsset('./img/plane.png', x, y));
     this.addEntity(this.player);
   }
