@@ -177,10 +177,22 @@ class Crane extends Entity {
     this.alive = true; // y = 550
     this.radius = 90;
     this.snapLine = y;
-
     this.lastFired = 0;
-  }
 
+    // course
+    let path = new Array();
+    path.push([0,90,20]);
+    path.push([5,180,20]);
+    path.push([4,270,20]);
+    path.push([4,0,10]);
+    path.push([4,0,0]);
+    path.push([8,90,25]);
+    path.push([60,90,0]);
+    path.elapsedTime = 0;
+    path.currentStep = 0;
+
+    this.path = path;
+  }
 
   draw() {
     if (this.alive) { this.sprite.drawFrame(this.game.clockTick, this.ctx, this.x, this.y); }
@@ -188,12 +200,13 @@ class Crane extends Entity {
   }
 
   update() {
+    // Check for collision with player    
     if (this.isCollided(this.game.player)) {
       this.game.player.removeFromWorld = true;
       this.game.spawnPlayer();
     }
 
-    // Check bullets
+    // Check for hit from player bullets
     for (let e of this.game.entities) {
       if (e instanceof Bullet && e.planeshot && this.isCollided(e)) {
         this.removeFromWorld = true;
@@ -202,12 +215,35 @@ class Crane extends Entity {
       }
     }
     
-    if (this.y < this.snapLine) {
+    // Proceed downward if not at the snapLine
+    if (this.snapLine) {      
       this.y += this.speed * this.game.clockTick;
+
+      //check for arrival
+      if (this.snapLine <= this.y) {
+        this.snapLine = null;
+      }
+    } else if (this.path.currentStep < this.path.length) {
+      this.path.elapsedTime += this.game.clockTick;
+      let step = this.path.currentStep;
+
+      if (this.path.elapsedTime > this.path[step][0]) {
+        this.angle = this.path[step][1] * Math.PI / 180;
+        this.speed = this.path[step][2];
+
+        this.path.currentStep += 1;
+        this.path.elapsedTime = 0;
+      }
+
+      // advance along path
+      let radialDistance = this.speed * this.game.clockTick;
+      this.x += radialDistance * Math.cos(this.angle);
+      this.y += radialDistance * Math.sin(this.angle);
     } else {
       this.isIdle = true;
     }
 
+    // Fire bullet on fixed interval
     this.lastFired += this.game.clockTick;
     if (this.lastFired > 2) {
       // determine position of player
@@ -215,11 +251,10 @@ class Crane extends Entity {
       let deltaY = this.game.player.y - this.y;
       let angle = Math.atan2(deltaY, deltaX);
           
-      //position bullet
+      // determine position of bullet along radius
       let bulletX = this.radius * Math.cos(angle) + this.x;
       let bulletY = this.radius * Math.sin(angle) + this.y;
 
-      //console.log('angle:' + angle + ' x,y:' + bulletX + ',' + bulletY);
       let bullet = new Bullet(this.game, AM.getAsset('./img/bullet.png'), bulletX, bulletY, angle);
       bullet.craneshot = true;
       bullet.spawned = true;
@@ -228,10 +263,6 @@ class Crane extends Entity {
       this.lastFired = 0;
     }
 
-
-    //if (this.game.timer.gameTime > 12.4) {
-    //  this.alive = false;
-    //}
     // Idle hover effect
     if (this.isIdle) {
       if (this.idleTrans) {
@@ -255,8 +286,8 @@ class Crane extends Entity {
         }
       }
     }
-    // console.log(`update crane: ${this.x}`);
-  }
+  } // end Update method
+  
 }
 
 class Plane extends Entity {
@@ -396,7 +427,6 @@ class Bullet extends Entity {
     // }
   }
 }
-
 
 /** NukesAndOrigami extends GameEngine and adds additional functions
  *  to manage state, add assets, etc.
