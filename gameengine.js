@@ -35,13 +35,14 @@ class GameEngine {
   constructor() {
     this.entities = [];
     this.showOutlines = false;
+    this.isPaused = false;
     this.ctx = null;
     this.click = null;
     this.mouse = null;
     this.wheel = null;
     this.surfaceWidth = null;
     this.surfaceHeight = null;
-    this.keysDown = [];
+    this.keysDown = [];    
   }
 
   init(ctx) {
@@ -66,8 +67,12 @@ class GameEngine {
     const that = this;
     console.log("test: " + this.arrowUpPressed);
     this.ctx.canvas.addEventListener('keydown', (e) => {
-      that.keysDown[e.code] = true;
-      e.preventDefault();
+      if (e.code === 'KeyP') {
+        that.pause();
+      } else {      
+        that.keysDown[e.code] = true;
+        e.preventDefault();
+      }
     }, false);
 
     this.ctx.canvas.addEventListener('keyup', (e) => {
@@ -110,19 +115,33 @@ class GameEngine {
   }
 
   loop() {
-    this.clockTick = this.timer.tick();
-    this.update();
-    this.draw();
-    this.space = null;
-    this.arrowUpPressed = null;
-    this.arrowDownPressed = null;
-    this.arrowLeftPressed = null;
-    this.arrowRightPressed = null;
+    if (!this.isPaused) {
+      this.clockTick = this.timer.tick();
+      this.update();
+      this.draw();
+      this.space = null;
+      this.arrowUpPressed = null;
+      this.arrowDownPressed = null;
+      this.arrowLeftPressed = null;
+      this.arrowRightPressed = null;
 
-    this.arrowLeftReleased = null;
-    this.arrowRightReleased = null;
-    this.arrowUpReleased = null;
-    this.arrowDownReleased = null;
+      this.arrowLeftReleased = null;
+      this.arrowRightReleased = null;
+      this.arrowUpReleased = null;
+      this.arrowDownReleased = null;
+    }
+  }
+
+  pause() {
+    if (this.isPaused) {
+      // remove any stored mouse events and unpause the game.
+      this.click = null;
+      this.mouse = null;
+      this.isPaused = false;
+    } else {
+      // set pause flag
+      this.isPaused = true;
+    }
   }
 }
 
@@ -157,8 +176,10 @@ class Entity {
   }
 
   isOutsideScreen() {
-    return (this.x < this.radius || this.x > this.game.surfaceWidth - this.radius ||
+    if (this.radius) {
+      return (this.x < this.radius || this.x > this.game.surfaceWidth - this.radius ||
         this.y > this.game.surfaceHeight - this.radius || this.y < this.radius);
+    }
   }
 
   static rotateAndCache(image, angle) {

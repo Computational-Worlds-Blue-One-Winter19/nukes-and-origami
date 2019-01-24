@@ -177,9 +177,8 @@ class Crane extends Entity {
     this.alive = true; // y = 550
     this.radius = 90;
     this.snapLine = y;
-    
-    // x += ((x * oldscale - newscale) / 2)
-    // y += ((y * oldscale - newscale) / 2)
+
+    this.lastFired = 0;
   }
 
 
@@ -196,7 +195,7 @@ class Crane extends Entity {
 
     // Check bullets
     for (let e of this.game.entities) {
-      if (e instanceof Bullet && this.isCollided(e)) {
+      if (e instanceof Bullet && e.planeshot && this.isCollided(e)) {
         this.removeFromWorld = true;
         e.removeFromWorld = true;
         this.game.spawnCrane();
@@ -208,6 +207,28 @@ class Crane extends Entity {
     } else {
       this.isIdle = true;
     }
+
+    this.lastFired += this.game.clockTick;
+    if (this.lastFired > 2) {
+      // determine position of player
+      let deltaX = this.game.player.x - this.x;
+      let deltaY = this.game.player.y - this.y;
+      let angle = Math.atan2(deltaY, deltaX);
+          
+      //position bullet
+      let bulletX = this.radius * Math.cos(angle) + this.x;
+      let bulletY = this.radius * Math.sin(angle) + this.y;
+
+      //console.log('angle:' + angle + ' x,y:' + bulletX + ',' + bulletY);
+      let bullet = new Bullet(this.game, AM.getAsset('./img/bullet.png'), bulletX, bulletY, angle);
+      bullet.craneshot = true;
+      bullet.spawned = true;
+      this.game.addEntity(bullet);
+      
+      this.lastFired = 0;
+    }
+
+
     //if (this.game.timer.gameTime > 12.4) {
     //  this.alive = false;
     //}
@@ -238,7 +259,6 @@ class Crane extends Entity {
   }
 }
 
-
 class Plane extends Entity {
   constructor(game, spritesheet) {
     super(game, game.ctx.canvas.width/2, game.ctx.canvas.height * .75);
@@ -254,7 +274,7 @@ class Plane extends Entity {
     // initial parameters
     this.game = game;
     this.ctx = game.ctx;
-    this.radius = 55;
+    this.radius = 40;
     this.speed = 600;
 
     this.moving = false;
@@ -265,8 +285,7 @@ class Plane extends Entity {
     this.moveLeft = 0;
     this.moveRight = 0;
     this.moveUp = 0;
-    this.moveDown = 0;
-    this.activeBullets = new Array();    
+    this.moveDown = 0;   
   }
 
   update() {
@@ -296,7 +315,12 @@ class Plane extends Entity {
       this.y += this.speed * this.game.clockTick;
     } 
     if(this.game.keysDown['Space']) {
-      this.game.addEntity(new Bullet(this.game, AM.getAsset('./img/bullet.png'), this.x, this.y - this.radius));
+      let angle = -Math.PI / 2;
+      let bullet = new Bullet(this.game, AM.getAsset('./img/bullet.png'), this.x, this.y - this.radius, angle);
+      bullet.planeshot = true;
+      bullet.spawned = true;
+      this.game.addEntity(bullet);
+
       this.game.keysDown['Space'] = false;
     }
     
@@ -334,92 +358,42 @@ class Plane extends Entity {
 
 // (source, originX, originY, frameWidth, frameHeight, numberOfFrames, timePerFrame, scale, flip)
 class Bullet extends Entity {
-  constructor(game, spritesheet, x, y) {
+  constructor(game, spritesheet, x, y, angle) {
     super(game, x, y);
     this.sprite = new Sprite(spritesheet, 0, 0, 640, 320, 1, 0, 0.04, false);
     this.game = game;
     this.ctx = game.ctx;
     this.speed = 500;
     this.radius = 20;
-    // this.angleLeftX1 = 690;
-    // this.angleLeftX2 = 690;
-    // this.angleRightX1 = 690;
-    // this.angleRightX2 = 690;
-    // this.ctx = game.ctx;
-    this.elapsedTime = 0; // the total time this Bullet has existed
-    this.spawned = true;
-    this.repeated = true;
+        
+    this.angle = angle || Math.PI / 2;
+    this.speedX = this.speed * Math.cos(this.angle);
+    this.speedY = this.speed * Math.sin(this.angle);
+
+    this.spawned = false;
+    this.repeated = false;
     this.craneshot = false;
-    this.planeshot = true;
-    // Entity.call(this, game, -50, -50); // start off screen
-    // 685, 580 = right in front of plane.
+    this.planeshot = false;
   }
 
   update() {
-    this.elapsedTime += this.game.clockTick; 
-    
-    // if (this.game.timer.gameTime > 7 && this.game.timer.gameTime < 7.1) {
-    //   this.x = 690;
-    //   this.y = 200;
-    //   this.spawned = true;
-    //   this.craneshot = true;
-    // }
-    if ((this.spawned && this.craneshot) || (this.repeated && this.craneshot)) {
-      // this.y -= this.speed * this.game.clockTick; Bullet from plane
-      this.y += this.speed * this.game.clockTick;
-      this.angleLeftX1 -= this.speed * this.game.clockTick;
-      this.angleLeftX2 -= this.speed / 2 * this.game.clockTick;
-      this.angleRightX1 += this.speed * this.game.clockTick;
-      this.angleRightX2 += this.speed / 2 * this.game.clockTick;
+    if (this.isOutsideScreen()) {
+      this.removeFromWorld = true;
+      return;
     }
-    if (this.y > 700 && !this.repeated && this.craneshot) {
-      this.repeated = true;
-      this.x = 690;
-      this.y = 200;
-      this.angleLeftX1 = 690;
-      this.angleLeftX2 = 690;
-      this.angleRightX1 = 690;
-      this.angleRightX2 = 690;
-    }
-    // if(this.repeated  && this.craneshot)   {
-    // this.y += this.speed * this.game.clockTick;
-    // }
-    if (this.repeated && this.y > 700 && this.craneshot) {
-      // hide bullet
-      this.x = -500;
-      this.y = -500;
-      this.repeated = false;
-      this.craneshot = false;
-    }
-    // if (this.game.timer.gameTime > 11.5 && this.game.timer.gameTime < 11.6) {
-    //   this.planeshot = true;
-    //   this.x = 690;
-    //   this.y = 585;
-    // }
-    if (this.planeshot) {
-      if (this.isOutsideScreen()) {
-        this.removeFromWorld = true;
-      } else {
-        this.y -= this.speed * this.game.clockTick;
-      }
-    }
-    // if (this.planeshot && this.y <= 200) {
-    //   this.planeshot = false;
-    //   console.log(this.game.timer.gameTime);
-    //   this.x = -500;
-    //   this.y = -500;
-    // }
+        
+    this.x += this.speedX * this.game.clockTick;
+    this.y += this.speedY * this.game.clockTick;
   }
-
 
   draw() {
     this.sprite.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
-    if (this.craneshot) {
-      this.sprite.drawFrame(this.game.clockTick, this.ctx, this.angleLeftX1, this.y);
-      this.sprite.drawFrame(this.game.clockTick, this.ctx, this.angleLeftX2, this.y);
-      this.sprite.drawFrame(this.game.clockTick, this.ctx, this.angleRightX1, this.y);
-      this.sprite.drawFrame(this.game.clockTick, this.ctx, this.angleRightX2, this.y);
-    }
+    // if (this.craneshot) {
+    //   this.sprite.drawFrame(this.game.clockTick, this.ctx, this.angleLeftX1, this.y);
+    //   this.sprite.drawFrame(this.game.clockTick, this.ctx, this.angleLeftX2, this.y);
+    //   this.sprite.drawFrame(this.game.clockTick, this.ctx, this.angleRightX1, this.y);
+    //   this.sprite.drawFrame(this.game.clockTick, this.ctx, this.angleRightX2, this.y);
+    // }
   }
 }
 
@@ -466,12 +440,11 @@ AM.downloadAll(() => {
   const ctx = canvas.getContext('2d');
 
   const game = new NukesAndOrigami();
-  game.init(ctx);
   game.showOutlines = true;
-
-  // add player
+  game.init(ctx);
   game.spawnPlayer();
   game.start();
+
   game.spawnCrane();
 
   // const slippyArr = [AM.getAsset('./img/slippy_inbound.png'),
