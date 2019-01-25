@@ -17,10 +17,10 @@ class Crane extends Ship {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
       weapon: {
-        payload: Bullet,
+        payload: CircleBullet,
         turretLoadTime: .1,
-        turretCooldownTime: .4,
-        turretCount: 10,
+        turretCooldownTime: .2,
+        turretCount: 25,
         rapidReload: true
         }
     });
@@ -74,6 +74,45 @@ class Bullet extends Projectile {
     }
   }
 }
+
+
+/** Circle bullet from Nathan. */
+class CircleBullet extends Projectile   {
+  constructor(game, manifest) {
+    super(game, {
+      owner: manifest.owner,
+      origin: manifest.origin,
+      angle: manifest.angle,
+      distance: manifest.distance,
+      speed: 500,
+      accel: 1,
+      radius: 10
+    });  
+  }
+
+  update() {
+    if (this.isOutsideScreen()) {
+      this.removeFromWorld = true;
+    } else if (this.isSpawned) {
+      this.speed *= this.accel;
+      this.speedX = this.speed * Math.cos(this.angle);
+      this.speedY = this.speed * Math.sin(this.angle);
+  
+      this.x += this.speedX * this.game.clockTick;
+      this.y += this.speedY * this.game.clockTick;
+    } else {
+      super.update();
+    }
+  }
+  
+  draw()  {
+    this.game.ctx.beginPath();
+    this.game.ctx.arc(this.x, this.y, this.radius, 0*Math.PI, 2*Math.PI);
+    this.game.ctx.stroke();
+    this.game.ctx.fill();  
+  }
+}
+
 
 /**
  * Custom Animation Class.
@@ -185,7 +224,7 @@ AM.downloadAll(() => {
   const ctx = canvas.getContext('2d');
   const game = new NukesAndOrigami();
 
-  game.showOutlines = true;
+  //game.showOutlines = true;
   game.init(ctx);
   game.spawnPlayer();
   game.start();

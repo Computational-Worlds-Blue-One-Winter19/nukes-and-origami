@@ -176,9 +176,19 @@ class Entity {
   }
 
   isOutsideScreen() {
+    // if (this.radius) {
+    //   return (this.x < this.radius || this.x > this.game.surfaceWidth - this.radius ||
+    //     this.y > this.game.surfaceHeight - this.radius || this.y < this.radius);
+    // }
     if (this.radius) {
-      return (this.x < this.radius || this.x > this.game.surfaceWidth - this.radius ||
-        this.y > this.game.surfaceHeight - this.radius || this.y < this.radius);
+      return (this.x < 0 - this.radius || this.x > this.game.surfaceWidth + this.radius ||
+         this.y < 0 - this.radius || this.y > this.game.surfaceHeight + this.radius);
+    }
+  }
+
+  isOffscreen() {
+    if (this.radius) {
+
     }
   }
 
