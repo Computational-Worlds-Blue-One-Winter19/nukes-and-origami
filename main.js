@@ -8,7 +8,7 @@
 class Crane extends Ship {
   constructor(game) {
     super(game, {
-      path: [ [0,0,0] ],
+      path: [ [0,0,4], [180,20,5], [0,0,6], [90,35,10], [90,85,60] ],  // heading,speed,duration
       radius: 50,
       sprite: new Sprite(AM.getAsset('./img/crane-sheet.png'), 0, 0, 440, 330, 4, 0.1, 0.3, false),
       snapLine: 100,
@@ -71,7 +71,7 @@ class CircleBullet extends Projectile   {
       distance: manifest.distance,
       targeting: true,
       speed: 500,
-      accel: 1,
+      accel: 1.01,
       radius: 10      
     });  
   }
@@ -84,7 +84,9 @@ class CircleBullet extends Projectile   {
   }
 }
 
-/** Circle bullet from Nathan. */
+/** Circle bullet from Nathan. Jared can't get this to work. I was hoping to
+ * see one using De Castelijau's algorithm. 
+*/
 class SmartCircle extends Projectile   {
   constructor(game, manifest) {
     super(game, {
@@ -113,9 +115,9 @@ class SmartCircle extends Projectile   {
     if(this.t >= 1) {
         this.t = 0;
     }
-    this.x = this.radius * Math.cos(this.toRadians(this.angle));
-    this.y = this.radius * Math.sin(this.toRadians(this.angle));
-    //this.angle += 10;
+    this.x = this.radius * Math.cos(this.toRadians(this.angle)) + 10;
+    this.y = this.radius * Math.sin(this.toRadians(this.angle)) - 10;
+    this.angle += 10;
   }
   
   toRadians(angle) {

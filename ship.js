@@ -115,8 +115,9 @@ class Ship extends Entity {
   updateCollisionDetection() {
     // Check upper y bounds if Crane has left the bottom of the screen
     if (this.y > this.game.surfaceHeight + this.radius) {
-        this.removeFromWorld = true;
-        return;
+      this.disarm();  
+      this.removeFromWorld = true;
+      return;
     }
       
     // Check for collision with player    
