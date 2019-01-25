@@ -146,12 +146,12 @@ class GameEngine {
 }
 
 class Entity {
-  constructor(game, x, y) {
+  constructor(game, point) {
     this.game = game;
-    this.x = x;
-    this.y = y;
+    this.ctx = game.ctx;
+    this.x = point.x;
+    this.y = point.y;
     this.removeFromWorld = false;
-
   }
 
   update() {
