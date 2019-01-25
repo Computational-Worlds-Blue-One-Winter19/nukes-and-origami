@@ -22,7 +22,7 @@ class Crane extends Ship {
         turretCooldownTime: .4,
         turretCount: 10,
         rapidReload: true
-      }
+        }
     });
   }
 }
@@ -51,7 +51,8 @@ class Bullet extends Projectile {
       speed: manifest.speed || 50,
       accel: manifest.accel || 1.2,
       radius: 8,
-      rotate: true
+      rotate: true,
+      targeting: true // will set target angle at launch
     });
     
     //this.isSpawned = true;

@@ -127,8 +127,9 @@ class Ship extends Entity {
     // Check for hit from player bullets
     for (let e of this.game.entities) {
       if (e instanceof Projectile && e.playerShot && this.isCollided(e)) {
-        this.removeFromWorld = true;
         e.removeFromWorld = true;
+        this.disarm();
+        this.removeFromWorld = true;
         this.game.onEnemyDestruction(this);
       }
     }
@@ -138,31 +139,7 @@ class Ship extends Entity {
    * Weapons: manage turret initialization, rotation, firing and cooldown.
    */
   updateWeapons() {
-    // // Fire bullet on fixed interval
-    // this.lastFired += this.game.clockTick;
-    // if (this.lastFired > 2) {
-    //   // determine position of player
-    //   let deltaX = this.game.player.x - this.x;
-    //   let deltaY = this.game.player.y - this.y;
-    //   let angle = Math.atan2(deltaY, deltaX);
-          
-    //   // determine position of bullet along radius
-    //   let bulletX = this.radius * Math.cos(angle) + this.x;
-    //   let bulletY = this.radius * Math.sin(angle) + this.y;
-
-    //   this.game.addEntity(new Bullet(this.game, {
-    //     owner: this,
-    //     origin: {
-    //       x: bulletX,
-    //       y: bulletY
-    //     },
-    //     angle: angle,
-    //     distance: (deltaX * deltaX + deltaY * deltaY)
-    //   }));
-            
-    //   this.lastFired = 0;
-      this.weapon.update();
-    
+    this.weapon.update();
   }
 
   /** Helm: manage path sequence. */
@@ -252,8 +229,15 @@ class Ship extends Entity {
     }
   }
 
+  disarm() {
+    for (let projectile of this.weapon.bay) {
+      projectile.removeFromWorld = true;
+    }
+    this.bay = [];
+  }
+
   static getInitPoint(game, manifest) {
-    let width = manifest.sprite.width;
+    let width = manifest.radius || 50;
     let range = game.surfaceWidth - 2 * width;
     let x = manifest.originX || Math.floor(Math.random() * range) + width;
     let y = manifest.originY || -manifest.sprite.height;
@@ -287,15 +271,7 @@ class Plane extends Entity {
     this.radius = 30;
     this.speed = 600;
 
-    this.moving = false;
-    this.turn = false;
-    this.isIdle = false;
-    this.idleTrans = false;
     this.idleCount = 0;
-    this.moveLeft = 0;
-    this.moveRight = 0;
-    this.moveUp = 0;
-    this.moveDown = 0;   
   }
 
   update() {
@@ -326,14 +302,18 @@ class Plane extends Entity {
     } 
     if(this.game.keysDown['Space']) {
       let angle = -Math.PI / 2;
-      this.game.addEntity(new Bullet(this.game, {
+
+      // for now, a projectile for the player must have instantFire = true
+      let newBullet = new Bullet(this.game, {
         owner: this,
         origin: {
           x: this.x,
           y: this.y - this.radius
         },
         angle: angle
-      }));
+      });
+      newBullet.isSpawned = true;
+      this.game.addEntity(newBullet);
       //this.game.keysDown['Space'] = false;
     }
     
@@ -389,20 +369,19 @@ class Projectile extends Entity {
     this.sprite = manifest.sprite;
     this.playerShot = (this.owner === game.player);
     this.radius = manifest.radius || 8;
-    this.rapidReload = manifest.rapidReload || false;
+    this.rapidReload = manifest.rapidReload;
+    this.targeting = manifest.targeting;
   }
 
   update() {
-    if (this.isSpawned) {
+    if (!this.isSpawned) {
       // expected use is before bullet is spawned then
       // we can manage turret behavior
-      return;
-    }
-
-    // update position relative to ship
-    let point = this.owner.weapon.getTurretPosition(this.angle);
-    this.x = point.x;
-    this.y = point.y;
+      // update position relative to ship
+      let point = this.owner.weapon.getTurretPosition(this.angle);
+      this.x = point.x;
+      this.y = point.y;  
+    }    
   }
 
   draw() {
@@ -471,8 +450,15 @@ class Weapon {
   }
 
   fireAll() {
-    for (let i = 0; i < this.bay.length; i++) {
-      this.bay[i].isSpawned = true;
+    for (let projectile of this.bay) {
+      if (projectile.targeting) {
+        //update heading before launch
+        let target = this.getPlayerHeading(projectile.originX, projectile.originY);
+        projectile.angle = target.angle;
+        projectile.distance = target.distance;
+      }
+
+      projectile.isSpawned = true;
     }
   }
 
@@ -506,37 +492,24 @@ class Weapon {
     this.owner.game.addEntity(newProjectile);
   }
 
-  
-
   getTurretPosition(angle) {
-    // // Fire bullet on fixed interval
-    // this.lastFired += this.game.clockTick;
-    // if (this.lastFired > 2) {
-    //   // determine position of player
-    //   let deltaX = this.game.player.x - this.x;
-    //   let deltaY = this.game.player.y - this.y;
-    //   let angle = Math.atan2(deltaY, deltaX);
-          
-    //   // determine position of bullet along radius
-    //   let bulletX = this.radius * Math.cos(angle) + this.x;
-    //   let bulletY = this.radius * Math.sin(angle) + this.y;
-
-    //   this.game.addEntity(new Bullet(this.game, {
-    //     owner: this,
-    //     origin: {
-    //       x: bulletX,
-    //       y: bulletY
-    //     },
-    //     angle: angle,
-    //     distance: (deltaX * deltaX + deltaY * deltaY)
-    //   }));
-            
-    //   this.lastFired = 0;
-
-    
     let x = this.owner.radius * Math.cos(angle) + this.owner.x;
     let y = this.owner.radius * Math.sin(angle) + this.owner.y;
     return {x: x, y: y};
+  }
+
+  // returns the coordinates of the player with respect to the given point
+  getPlayerHeading(originX, originY) {
+    let player = this.owner.game.player;
+    
+    let deltaX = player.x - originX;
+    let deltaY = player.y - originY;
+    let angle = Math.atan2(deltaY, deltaX);
+          
+    return {
+      angle: angle,
+      distance: (deltaX * deltaX + deltaY * deltaY)
+    };
   }
 
 }
