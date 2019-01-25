@@ -13,15 +13,17 @@ class Crane extends Ship {
       sprite: new Sprite(AM.getAsset('./img/crane-sheet.png'), 0, 0, 440, 330, 4, 0.1, 0.3, false),
       snapLine: 100,
       snapLineSpeed: 100,
+      originY: -50,
       snapLineWait: 2,
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
       weapon: {
         payload: CircleBullet,
-        turretLoadTime: .1,
-        turretCooldownTime: .2,
+        turretLoadTime: .05,
+        turretCooldownTime: .5,
         turretCount: 25,
-        rapidReload: true
+        rapidReload: true,
+        targeting: true
         }
     });
   }
@@ -35,10 +37,10 @@ class Crane extends Ship {
  * A Bullet is provided with an origin point and an initial angle and
  * distance to a target. It may then update its coordinates in any manner.
  * 
- * Consider puting shared functionality in the Projectile class. No
- * need to override draw(), but you can set the rotate flag to
- * true if the sprite has a clear orientation that should be rotated in
- * the direction of the heading. 
+ * You can set the rotate flag to true if the sprite has a clear orientation.
+ * You can also override draw() to make unique patterns. If targeting = true
+ * then the bullet will get an updated angle to the player before firing,
+ * otherwise the angle is from the turret position.
  */
 class Bullet extends Projectile {
   constructor(game, manifest) {
@@ -54,24 +56,7 @@ class Bullet extends Projectile {
       rotate: true,
       targeting: true // will set target angle at launch
     });
-    
     //this.isSpawned = true;
-  }
-
-  // a Projectile should override update() to give it unique behavior.
-  update() {
-    if (this.isOutsideScreen()) {
-      this.removeFromWorld = true;
-    } else if (this.isSpawned) {
-      this.speed *= this.accel;
-      this.speedX = this.speed * Math.cos(this.angle);
-      this.speedY = this.speed * Math.sin(this.angle);
-  
-      this.x += this.speedX * this.game.clockTick;
-      this.y += this.speedY * this.game.clockTick;
-    } else {
-      super.update();
-    }
   }
 }
 
@@ -84,25 +69,11 @@ class CircleBullet extends Projectile   {
       origin: manifest.origin,
       angle: manifest.angle,
       distance: manifest.distance,
+      targeting: true,
       speed: 500,
       accel: 1,
-      radius: 10
+      radius: 10      
     });  
-  }
-
-  update() {
-    if (this.isOutsideScreen()) {
-      this.removeFromWorld = true;
-    } else if (this.isSpawned) {
-      this.speed *= this.accel;
-      this.speedX = this.speed * Math.cos(this.angle);
-      this.speedY = this.speed * Math.sin(this.angle);
-  
-      this.x += this.speedX * this.game.clockTick;
-      this.y += this.speedY * this.game.clockTick;
-    } else {
-      super.update();
-    }
   }
   
   draw()  {
@@ -113,6 +84,44 @@ class CircleBullet extends Projectile   {
   }
 }
 
+/** Circle bullet from Nathan. */
+class SmartCircle extends Projectile   {
+  constructor(game, manifest) {
+    super(game, {
+      owner: manifest.owner,
+      origin: manifest.origin,
+      angle: manifest.angle,
+      distance: manifest.distance,
+      speed: 50,
+      accel: 1,
+      radius: 300
+    });  
+  }
+  
+  draw() {
+    this.game.ctx.strokeRect(390, 390, 20, 20);
+    this.game.ctx.beginPath();
+    this.game.ctx.arc(this.x, this.y, 10, 0*Math.PI, 2*Math.PI);
+    this.game.ctx.stroke();
+    this.game.ctx.fill();
+  };
+
+  update() {
+    this.x = Math.pow((1 - this.t), 2) * 390 + 2 * (1 - this.t) * this.t * this.x + Math.pow(this.t, 2) * this.game.player.x;
+    this.bulletY = Math.pow((1 - this.t), 2) * 390 + 2 * (1 - this.t) * this.t * this.y + Math.pow(this.t, 2) * this.game.player.y;
+    this.t += 0.01;
+    if(this.t >= 1) {
+        this.t = 0;
+    }
+    this.x = this.radius * Math.cos(this.toRadians(this.angle));
+    this.y = this.radius * Math.sin(this.toRadians(this.angle));
+    //this.angle += 10;
+  }
+  
+  toRadians(angle) {
+    return angle * (Math.PI / 180);
+  }
+}
 
 /**
  * Custom Animation Class.

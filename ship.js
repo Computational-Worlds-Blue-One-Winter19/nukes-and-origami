@@ -374,14 +374,21 @@ class Projectile extends Entity {
   }
 
   update() {
-    if (!this.isSpawned) {
-      // expected use is before bullet is spawned then
-      // we can manage turret behavior
-      // update position relative to ship
+    if (this.isOutsideScreen()) {
+      this.removeFromWorld = true;
+    } else if (this.isSpawned) {
+      this.speed *= this.accel;
+      this.speedX = this.speed * Math.cos(this.angle);
+      this.speedY = this.speed * Math.sin(this.angle);
+      
+      this.x += this.speedX * this.game.clockTick;
+      this.y += this.speedY * this.game.clockTick;
+    } else {
+      // adjust position relative to turret
       let point = this.owner.weapon.getTurretPosition(this.angle);
       this.x = point.x;
       this.y = point.y;  
-    }    
+    }
   }
 
   draw() {
