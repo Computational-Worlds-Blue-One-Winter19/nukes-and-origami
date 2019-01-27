@@ -1,12 +1,13 @@
-function updateScoreBy(hitValue) {
+const lifeColor = ["red", "blue", "aqua", "oragne", "green"];
+
+function updateScoreBoard(currentScore) {
     // Get the element that is displaying the player's current score
     const score = document.getElementById("user-score");
-    // Get the text inside the element (the score)
-    const currentScore = score.textContent;
     
     // Update the user's score by the entities score value
-    score.textContent = parseInt(currentScore) + hitValue;
-    addLife();
+    score.textContent = currentScore
+
+    // addLife();
 };
 
 /**
@@ -22,7 +23,7 @@ function addLife(color) {
 /**
  * Removes a heart icons from the lives-icon-container if their are heart icons present
  */
-function removeLife() {
+function removeLifeFromBoard() {
     // Find the container holding all the heart icons
     const container = document.getElementById("lives-icon-container");
     if (container.hasChildNodes()) {
@@ -30,10 +31,10 @@ function removeLife() {
     }
 };
 
-function initializeLives() {
-    addLife("red");
-    addLife("aqua");
-    addLife("orange");
+function initializeScoreBoardLives(lives) {
+    for (var i = 0; i < lives; i += 1) {
+        addLife(lifeColor[i])
+    }
 }
 
 function createHeart(color) { 
@@ -52,12 +53,14 @@ function createHeart(color) {
     return svg;
 };
 
-function showPausedMessage() {
-    const pausedMessage = document.getElementById("pause-message");
+
+
+function showMessage(type) {
+    const pausedMessage = document.getElementById(`${type}`);
     pausedMessage.style.display = 'block';
 };
 
-function hidePausedMessage() {
-    const pausedMessage = document.getElementById("pause-message");
+function hideMessage(type) {
+    const pausedMessage = document.getElementById(`${type}`);
     pausedMessage.style.display = 'none';
 };

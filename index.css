@@ -68,7 +68,7 @@ h2 {
     margin: 0px;
 }
 
-#pause-message {
+#pause-message, #game-over-message {
     font-family: 'VT323', monospace;
     font-size: 2em;
     position: absolute;
@@ -79,7 +79,8 @@ h2 {
     display: none;
 }
 
-#pause-message p {
+#pause-message p, #game-over-message p {
     width: 100%;
     text-align: center;
+    color: white
 }

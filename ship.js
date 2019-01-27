@@ -43,6 +43,7 @@
  *     powerStepTime: the amount of time to elapse before each step
  * 
  * Parameters:
+ *     hitValue: value that the user's score will increase by when the ship is destoryed. 
  *     radius: size of this Ship for collisions (default 40)
  *     originX: specify the initial x coordinate. (default random)
  *     originY: specify the initial y coordinate. (default 3 * radius)
@@ -69,12 +70,13 @@ class Ship extends Entity {
     this.sprite = manifest.sprite;
     
     // set optional parameters
+    this.hitValue = manifest.hitValue || 0;
     this.radius = manifest.radius || 50;
     this.snapLine = manifest.snapLine || 200;
     this.speed = manifest.snapLineSpeed || 50;
     this.snapLineWait = manifest.snapLineWait || 2;
     this.weaponsOnEntrance = manifest.weaponsOnEntrance || false;
-    this.weaponsAdvantage = manifest.weaponsAdvantage || this.snapLineWait/2;
+    this.weaponsAdvantage = manifest.weaponsAdvantage || this.snapLineWait/2;    
         
     if (manifest.path) {
       this.initializePath(manifest.path);
@@ -122,7 +124,8 @@ class Ship extends Entity {
       
     // Check for collision with player    
     if (this.isCollided(this.game.player)) {
-      this.game.onPlayerHit(this);
+      this.game.onPlayerHit(this.game.player);
+
     }
   
     // Check for hit from player bullets
@@ -132,6 +135,7 @@ class Ship extends Entity {
         this.disarm();
         this.removeFromWorld = true;
         this.game.onEnemyDestruction(this);
+        this.game.increaseScoreBy(this.hitValue);
       }
     }
   }
@@ -347,6 +351,13 @@ class Plane extends Entity {
   draw() {
     this.sprite.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
     super.draw();
+  }
+
+  returnToInitPoint(coordinate) {
+    const { x, y } = coordinate;
+    console.log("Inside return to init point");
+    this.x = x;
+    this.y = y;
   }
 
   static getInitPoint(game) {
