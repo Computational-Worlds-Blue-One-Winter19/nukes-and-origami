@@ -1,278 +1,253 @@
+/**
+ * Main configuration for various game assets.
+ * An enemy vessel extends Ship and declares a manifest with its attributes.
+ * Attributes include path, weapon assembly, dimension and spritesheet details. 
+ */
 
-const ASSET_MANAGER = new AssetManager();
-
-function Animation(spriteSheet, startX, startY, frameWidth, frameHeight, frameDuration, frames,
-  loop, reverse) {
-  this.spriteSheet = spriteSheet;
-  this.startX = startX;
-  this.startY = startY;
-  this.frameWidth = frameWidth;
-  this.frameDuration = frameDuration;
-  this.frameHeight = frameHeight;
-  this.frames = frames;
-  this.totalTime = frameDuration * frames;
-  this.elapsedTime = 0;
-  this.loop = loop;
-  this.reverse = reverse;
+/** MANIFESTS FOR ENEMY SHIPS **/
+class Crane extends Ship {
+  constructor(game) {
+    super(game, {
+      path: [ [0,0,4], [180,20,5], [0,0,6], [90,35,10], [90,85,60] ],  // heading,speed,duration
+      radius: 50,
+      sprite: new Sprite(AM.getAsset('./img/crane-sheet.png'), 0, 0, 440, 330, 4, 0.1, 0.3, false),
+      snapLine: 100,
+      snapLineSpeed: 100,
+      originY: -50,
+      snapLineWait: 2,
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0,
+      weapon: {
+        payload: CircleBullet,
+        turretLoadTime: .05,
+        turretCooldownTime: .5,
+        turretCount: 25,
+        rapidReload: true,
+        targeting: true
+        }
+    });
+  }
 }
 
-Animation.prototype.drawFrame = function drawFrame(tick, ctx, x, y, scaleBy) {
-  const localScaleBy = scaleBy || 1;
-  this.elapsedTime += tick;
-  if (this.loop) {
-    if (this.isDone()) {
-      this.elapsedTime = 0;
-    }
-  } else if (this.isDone()) {
-    return;
+/**
+ * A Bullet is only concerned about its own trajectory. Other Entity objects
+ * will check for their own collision. If a Bullet leaves the screen, then
+ * it will report back to its owner and then set removeFromWorld to true.
+ * 
+ * A Bullet is provided with an origin point and an initial angle and
+ * distance to a target. It may then update its coordinates in any manner.
+ * 
+ * You can set the rotate flag to true if the sprite has a clear orientation.
+ * You can also override draw() to make unique patterns. If targeting = true
+ * then the bullet will get an updated angle to the player before firing,
+ * otherwise the angle is from the turret position.
+ */
+class Bullet extends Projectile {
+  constructor(game, manifest) {
+    super(game, {
+      owner: manifest.owner,
+      origin: manifest.origin,
+      angle: manifest.angle,
+      distance: manifest.distance,
+      sprite: new Sprite(AM.getAsset('./img/bullet.png'), 0, 0, 640, 320, 1, 0, 0.04, false),
+      speed: manifest.speed || 50,
+      accel: manifest.accel || 1.2,
+      radius: 8,
+      rotate: true,
+      targeting: true // will set target angle at launch
+    });
+    //this.isSpawned = true;
   }
-  let index = this.reverse ? this.frames - this.currentFrame() - 1 : this.currentFrame();
-  let vindex = 0;
-  if ((index + 1) * this.frameWidth + this.startX > this.spriteSheet.width) {
-    index -= Math.floor((this.spriteSheet.width - this.startX) / this.frameWidth);
-    vindex += 1;
-  }
-  while ((index + 1) * this.frameWidth > this.spriteSheet.width) {
-    index -= Math.floor(this.spriteSheet.width / this.frameWidth);
-    vindex += 1;
-  }
-
-  const locX = x;
-  const locY = y;
-  const offset = vindex === 0 ? this.startX : 0;
-  ctx.drawImage(this.spriteSheet,
-    index * this.frameWidth + offset, vindex * this.frameHeight + this.startY, // source from sheet
-    this.frameWidth, this.frameHeight,
-    locX, locY,
-    this.frameWidth * localScaleBy,
-    this.frameHeight * localScaleBy);
-};
-
-Animation.prototype.currentFrame = function currentFrame() {
-  return Math.floor(this.elapsedTime / this.frameDuration);
-};
-
-Animation.prototype.isDone = function isDone() {
-  return (this.elapsedTime >= this.totalTime);
-};
-
-function Background(game) {
-  Entity.call(this, game, 0, 400);
-  this.radius = 200;
 }
 
-Background.prototype = new Entity();
-Background.prototype.constructor = Background;
 
-Background.prototype.update = function update() {
-};
-
-Background.prototype.draw = function draw(ctx) {
-  ctx.fillStyle = 'SaddleBrown';
-  ctx.fillRect(0, 500, 800, 300);
-  Entity.prototype.draw.call(this);
-};
-
-function Unicorn(game) {
-  this.animation = new Animation(ASSET_MANAGER.getAsset('./img/RobotUnicorn.png'), 0, 0, 206, 110, 0.02, 30, true, true);
-  this.jumpAnimation = new Animation(ASSET_MANAGER.getAsset('./img/RobotUnicorn.png'), 618, 334, 174, 138, 0.02, 40, false, true);
-  this.jumping = false;
-  this.radius = 100;
-  this.ground = 400;
-  Entity.call(this, game, 0, 400);
+/** Circle bullet from Nathan. */
+class CircleBullet extends Projectile   {
+  constructor(game, manifest) {
+    super(game, {
+      owner: manifest.owner,
+      origin: manifest.origin,
+      angle: manifest.angle,
+      distance: manifest.distance,
+      targeting: true,
+      speed: 500,
+      accel: 1.01,
+      radius: 10      
+    });  
+  }
+  
+  draw()  {
+    this.game.ctx.beginPath();
+    this.game.ctx.arc(this.x, this.y, this.radius, 0*Math.PI, 2*Math.PI);
+    this.game.ctx.stroke();
+    this.game.ctx.fill();  
+  }
 }
 
-Unicorn.prototype = new Entity();
-Unicorn.prototype.constructor = Unicorn;
-
-// (source, originX, originY, frameWidth, frameHeight, numberOfFrames, timePerFrame, scale, flip)
-// Crane will enter from above and move to snapLine defined by x,y
-class Crane extends Entity {
-
-  constructor(game, spritesheet, x, y) {
-    super(game, x, -100);
-    this.sprite = new Sprite(spritesheet, 0, 0, 440, 330, 4, 0.1, 0.3, false);
-    this.originalScale = 0.7;
-    // 0.7 scaled x = 550
-    this.speed = 50;
-    this.game = game;
-    this.ctx = game.ctx;
-    this.isIdle = false;
-    this.idleTrans = false;
-    this.idleCount = 0;
-    this.alive = true; // y = 550
-    this.radius = 40;
-    this.snapLine = y;
-    this.lastFired = 0;
-
-    // course
-    let path = [];
-    path.push([90,40,5]);
-    path.push([180,40,4]);
-    path.push([0,0,6]);
-    path.push([90,60,60]);
-    path.elapsedTime = 0;
-    path.targetTime = 0;
-    path.currentStep = -1;
-
-    this.path = path;
+/** Circle bullet from Nathan. Jared can't get this to work. I was hoping to
+ * see one using De Castelijau's algorithm. 
+*/
+class SmartCircle extends Projectile   {
+  constructor(game, manifest) {
+    super(game, {
+      owner: manifest.owner,
+      origin: manifest.origin,
+      angle: manifest.angle,
+      distance: manifest.distance,
+      speed: 50,
+      accel: 1,
+      radius: 300
+    });  
   }
-
+  
   draw() {
-    if (this.alive) { this.sprite.drawFrame(this.game.clockTick, this.ctx, this.x, this.y); }
-    // this.ctx.save();
-    // this.ctx.translate(this.x, this.y);
-    // this.ctx.rotate(this.angle - Math.PI/2);
-    // this.ctx.translate(-this.x, -this.y);
-    // this.sprite.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
-    // this.ctx.restore();
-    super.draw();
-  }
+    this.game.ctx.strokeRect(390, 390, 20, 20);
+    this.game.ctx.beginPath();
+    this.game.ctx.arc(this.x, this.y, 10, 0*Math.PI, 2*Math.PI);
+    this.game.ctx.stroke();
+    this.game.ctx.fill();
+  };
 
   update() {
-    // Check upper y bounds if Crane has left the bottom of the screen
-    if (this.y > this.game.surfaceHeight + this.radius) {
-      this.removeFromWorld = true;
-      return;
+    this.x = Math.pow((1 - this.t), 2) * 390 + 2 * (1 - this.t) * this.t * this.x + Math.pow(this.t, 2) * this.game.player.x;
+    this.bulletY = Math.pow((1 - this.t), 2) * 390 + 2 * (1 - this.t) * this.t * this.y + Math.pow(this.t, 2) * this.game.player.y;
+    this.t += 0.01;
+    if(this.t >= 1) {
+        this.t = 0;
     }
-    
-    // Check for collision with player    
-    if (this.isCollided(this.game.player)) {
-      this.game.player.removeFromWorld = true;
-      removeLife();
-      this.game.spawnPlayer();
-    }
-    let jumpDistance = this.jumpAnimation.elapsedTime / this.jumpAnimation.totalTime;
-    const totalHeight = 200;
-
-    // Check for hit from player bullets
-    for (let e of this.game.entities) {
-      if (e instanceof Bullet && e.planeshot && this.isCollided(e)) {
-        this.removeFromWorld = true;
-        e.removeFromWorld = true;
-        this.game.spawnCrane();
-        updateScoreBy(5);        
-      }
-    }
-    
-    // Update position
-    if (this.snapLine) {      
-      // Proceed downward if not at the snapLine
-      this.y += this.speed * this.game.clockTick;
-
-      // check for arrival at snapLine
-      if (this.y >= this.snapLine) {
-        this.snapLine = null;
-      }
-    } else if (this.path) {
-      this.path.elapsedTime += this.game.clockTick;
-    
-      if (this.path.elapsedTime > this.path.targetTime) {
-        this.path.currentStep++;
-      
-        if (this.path.currentStep === this.path.length) {
-          // the path is completed then remove it from this instance
-          this.path = null;
-        } else {
-          // update heading and speed
-          let newCourse = this.path[this.path.currentStep];
-
-          this.angle = newCourse[0] * Math.PI / 180;
-          this.speed = newCourse[1];
-          this.path.targetTime = newCourse[2];
-          this.path.elapsedTime = 0;
-        }
-      } else {
-        // advance along path
-        let radialDistance = this.speed * this.game.clockTick;
-        this.x += radialDistance * Math.cos(this.angle);
-        this.y += radialDistance * Math.sin(this.angle);
-      }
-    } else {
-      // lastly if no path stay put
-      this.isIdle = true;
-    }
-
-    // Fire bullet on fixed interval
-    this.lastFired += this.game.clockTick;
-    if (this.lastFired > 2) {
-      // determine position of player
-      let deltaX = this.game.player.x - this.x;
-      let deltaY = this.game.player.y - this.y;
-      let angle = Math.atan2(deltaY, deltaX);
-          
-      // determine position of bullet along radius
-      let bulletX = this.radius * Math.cos(angle) + this.x;
-      let bulletY = this.radius * Math.sin(angle) + this.y;
-
-      let bullet = new Bullet(this.game, AM.getAsset('./img/bullet.png'), bulletX, bulletY, angle);
-      bullet.craneshot = true;
-      bullet.spawned = true;
-      this.game.addEntity(bullet);
-      
-      this.lastFired = 0;
-    }
-
-    // Idle hover effect
-    if (this.isIdle) {
-      if (this.idleTrans) {
-        this.idleCount += 1;
-        // TODO: you can make this simpler
-        if (this.idleCount % 30 === 0) {
-          this.y += 1;
-        }
-        if (this.idleCount === 300) {
-          this.idleTrans = !this.idleTrans;
-          this.idleCount = 0;
-        }
-      } else {
-        this.idleCount += 1;
-        if (this.idleCount % 30 === 0) {
-          this.y -= 1;
-        }
-        if (this.idleCount === 300) {
-          this.idleTrans = !this.idleTrans;
-          this.idleCount = 0;
-        }
-      }
-    }
-  } // end Update method
+    this.x = this.radius * Math.cos(this.toRadians(this.angle)) + 10;
+    this.y = this.radius * Math.sin(this.toRadians(this.angle)) - 10;
+    this.angle += 10;
+  }
   
+  toRadians(angle) {
+    return angle * (Math.PI / 180);
+  }
 }
 
-    // var height = jumpDistance * 2 * totalHeight;
-    const height = totalHeight * (-4 * (jumpDistance * jumpDistance - jumpDistance));
-    this.y = this.ground - height;
+/**
+ * Custom Animation Class.
+ */
+class Sprite {
+  constructor(source, originX, originY, frameWidth, frameHeight, numberOfFrames,
+    timePerFrame, scale, flip) {
+    this.sheet = source; // Source spritesheet
+    this.oriX = originX; // Top left X point of where to start on the spritesheet
+    this.oriY = originY; // Top left Y point of where to start on the spritesheet
+    this.width = frameWidth; // Pixel width of each frame
+    this.height = frameHeight; // Pixel height of each frame
+    this.len = numberOfFrames; // # of frames in this sprite (to let user pick
+    // certain frames from a sheet containing multiple animations)
+    this.time = timePerFrame; // time each frame should be displayed. If time = 0, don't loop
+    this.scale = scale; // Size scale
+    this.flip = flip; // BOOLEAN. Flip image over Y axis?
+    this.totalTime = timePerFrame * numberOfFrames; // Not set by user
+    this.elapsedTime = 0; // Not set by user
+    this.currentFrame = 0;
   }
-  Entity.prototype.update.call(this);
-};
 
-Unicorn.prototype.draw = function draw(ctx) {
-  if (this.jumping) {
-    this.jumpAnimation.drawFrame(this.game.clockTick, ctx, this.x + 17, this.y - 34);
-  } else {
-    this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+  drawFrame(tick, ctx, x, y) {
+    this.elapsedTime += tick;
+    if (this.time !== 0) {
+      if (this.elapsedTime >= this.totalTime) { // The isDone() function does exactly this. Use either.
+      // All frames used. Start over to loop.
+        this.elapsedTime = 0;
+      }
+      this.currentFrame = (Math.floor(this.elapsedTime / this.time)) % this.len;
+    // console.log(this.currentFrame);
+    }
+    
+    var locX = x - (this.width/2) * this.scale;
+    var locY = y - (this.height/2) * this.scale;
+    
+    ctx.drawImage(this.sheet,
+        this.oriX + (this.width * this.currentFrame),
+        this.oriY, // NOTE: does not work for spritesheets where one animation goes to next line!
+        this.width,
+        this.height,
+        locX,
+        locY,
+        this.width * this.scale,
+        this.height * this.scale);
+    //}
+    if (this.time !== 0) {
+      this.currentFrame += 1;
+    }
   }
-  Entity.prototype.draw.call(this);
-};
 
-// the "main" code begins here
+  isDone() {
+    return this.elapsedTime >= this.totalTime;
+  }
+}
 
-ASSET_MANAGER.queueDownload('./img/RobotUnicorn.png');
+/** 
+ * NukesAndOrigami extends GameEngine and adds additional functions
+ * to manage state, add assets, etc.
+ */
+class NukesAndOrigami extends GameEngine {
+  constructor() {
+    super();
+    this.lives = 5;
+    this.hits = 0;
+  }
 
-ASSET_MANAGER.downloadAll(() => {
-  console.log('starting up da sheild');
+  // notification of ship destruction.
+  onEnemyDestruction() {
+    this.spawnEnemy();
+    this.spawnEnemy();
+  }
+
+  // notification of player destruction.
+  onPlayerHit() {
+    
+  }
+
+  // eventually this should be scripted.
+  spawnEnemy() {
+    this.addEntity(new Crane(this));
+  }
+
+  // establishes a new player Plane
+  spawnPlayer() {
+    this.player = new Plane(this, AM.getAsset('./img/plane.png'));
+    this.addEntity(this.player);
+  }
+}
+
+/** Load assets and initialize the game. */
+const AM = new AssetManager();
+
+AM.queueDownload('./img/crane-sheet.png');
+AM.queueDownload('./img/plane.png');
+AM.queueDownload('./img/spacebg.png');
+AM.queueDownload('./img/paper-wallpaper.png');
+AM.queueDownload('./img/lined-paper.png');
+AM.queueDownload('./img/bullet.png');
+AM.queueDownload('./img/slippy_roll.png');
+AM.queueDownload('./img/slippy_end.png');
+AM.queueDownload('./img/slippy_greatjob.png');
+AM.queueDownload('./img/slippy_inbound.png');
+AM.queueDownload('./img/slippy_mission_done.png');
+AM.queueDownload('./img/nuke_single.png');
+
+AM.downloadAll(() => {
   const canvas = document.getElementById('gameWorld');
   const ctx = canvas.getContext('2d');
-
   const game = new NukesAndOrigami();
-  game.showOutlines = true;
+
+  //game.showOutlines = true;
   game.init(ctx);
   game.spawnPlayer();
   game.start();
+  game.spawnEnemy();
+  console.log('All Done!');
+});
 
-  game.spawnCrane();
-  initializeLives();
+
+
+
+// we should get back to the following code for narration and background...
+
   // const slippyArr = [AM.getAsset('./img/slippy_inbound.png'),
   //   AM.getAsset('./img/slippy_roll.png'),
   //   AM.getAsset('./img/slippy_greatjob.png'),
@@ -284,6 +259,91 @@ ASSET_MANAGER.downloadAll(() => {
   // gameEngine.addEntity(new Nuke(gameEngine, AM.getAsset('./img/nuke_single.png')));
   // gameEngine.addEntity(new Bullet(gameEngine, AM.getAsset('./img/bullet.png')));
 
-  gameEngine.init(ctx);
-  gameEngine.start();
-});
+  // We should get back to this stuff for narration and background
+
+  // class Background extends Entity {
+  //   constructor(game, spritesheet, xCoordinate, yCoordinate) {
+  //     super(game, xCoordinate, yCoordinate);
+  //     this.x = xCoordinate;
+  //     this.y = yCoordinate;
+  //     this.spritesheet = spritesheet;
+  //     this.game = game;
+  //     this.ctx = game.ctx;
+  //   }
+  
+  //   draw() {
+  //     this.ctx.drawImage(this.spritesheet,
+  //       this.x, this.y);
+  //   }
+  
+  //   update() {
+  //     this.y += 5;
+  //     if (this.y === screenWidth) {
+  //       this.y = -screenWidth;
+  //     }
+  //   }
+  // }
+  
+  // class Slippy extends Entity {
+  //   constructor(game, spritesheet) {
+  //     super(game, 200, 700);
+  //     this.x = 200;
+  //     this.y = 700;
+  
+  //     this.start = spritesheet[0];
+  //     this.roll = spritesheet[1];
+  //     this.greatJob = spritesheet[2];
+  //     this.missionDone = spritesheet[3];
+  //     this.end = spritesheet[4];
+  //     // this.spritesheet = this.start;
+  //     this.game = game;
+  //     this.ctx = game.ctx;
+  //     this.byeslippy = this.ctx;
+  //   }
+  
+  //   draw() {
+  //     if (this.game.timer.gameTime >= 1 && this.game.timer.gameTime <= 3) {
+  //       this.ctx.drawImage(this.start, this.x, this.y, 1000, 350);
+  //     } else if (this.game.timer.gameTime >= 6.5 && this.game.timer.gameTime <= 8) {
+  //       this.ctx.drawImage(this.roll, this.x, this.y, 1000, 350);
+  //     } else if (this.game.timer.gameTime > 10 && this.game.timer.gameTime <= 12) {
+  //       this.ctx.drawImage(this.greatJob, this.x, this.y, 1000, 350);
+  //     } else if (this.game.timer.gameTime > 14 && this.game.timer.gameTime < 16) {
+  //       this.ctx.drawImage(this.missionDone, this.x, this.y, 1000, 350);
+  //     } else if (this.game.timer.gameTime > 16.2 && this.game.timer.gameTime <= 18.5) {
+  //       this.ctx.drawImage(this.end, this.x, this.y, 1000, 350);
+  //     }
+  //   }
+  
+  //   // update() {
+  //   // console.log(this.game.timer.gameTime);
+  //   // if(this.game.timer.gameTime >= 10) {
+  //   // console.log("call");
+  //   // this.draw();
+  //   // }
+  //   // }
+  // }
+  
+  
+  // class Nuke extends Entity {
+  //   constructor(game, spritesheet, x, y) {
+  //     super(game, x, y);
+  //     this.sprite = new Sprite(spritesheet, 0, 0, 320, 232, 25, 0.02, 1, true);
+  //     this.game = game;
+  //     this.ctx = game.ctx;
+  //     this.done = false;
+  //     this.radius = 25;
+  //   }
+  
+  //   draw() {
+  //     this.sprite.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+  //   }
+  
+  //   update() {
+  //     if (this.sprite.currentFrame === this.sprite.len) {
+  //       this.done = true;
+  //       this.removeFromWorl
+  //   }
+  //   }
+   
+  // }
