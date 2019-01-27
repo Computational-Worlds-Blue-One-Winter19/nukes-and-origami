@@ -225,7 +225,10 @@ class NukesAndOrigami extends GameEngine {
     this.addEntity(this.player);
   }
 
-  // Increases the current player's score by the given value
+  /**
+   * Increases the current player's score by the given value
+   * @param {Int} value 
+   */
   increaseScoreBy(value) {
     this.score += value;
     updateScoreBoard(this.score);

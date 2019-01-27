@@ -1,5 +1,9 @@
 const lifeColor = ["red", "blue", "aqua", "oragne", "green"];
 
+/**
+ * Updates the score board to reflect the user's current score
+ * @param {Int} currentScore 
+ */
 function updateScoreBoard(currentScore) {
     // Get the element that is displaying the player's current score
     const score = document.getElementById("user-score");
@@ -10,11 +14,10 @@ function updateScoreBoard(currentScore) {
     // addLife();
 };
 
-/**
- * Adds a heart icon to the lives-icon-container
- * 
- * 
- */
+ /**
+  * Adds a heart icon to the lives-icon-container found in index.html
+  * @param {String} color The name of the color that the heart icon will used
+  */
 function addLife(color) {
     var container = document.getElementById("lives-icon-container");
     container.appendChild(createHeart(color));
@@ -31,12 +34,22 @@ function removeLifeFromBoard() {
     }
 };
 
+/**
+ * Initializes the score board lives by drawing a out all the heart icons that represent a players's
+ * life
+ * @param {Int} lives A heart icon will be drawn for each number of lives that is given
+ */
 function initializeScoreBoardLives(lives) {
     for (var i = 0; i < lives; i += 1) {
         addLife(lifeColor[i])
     }
 }
 
+/**
+ * Creates a svg element with a width and height of 24px that can be added to the dom
+ * The given color represent the filled color that the heart icon will use
+ * @param {String} color 
+ */
 function createHeart(color) { 
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("width", 24);
@@ -54,12 +67,23 @@ function createHeart(color) {
 };
 
 
-
+/**
+ * Message Types: pause-message, game-over-message
+ * 
+ * Using the above message types, the respective message will be shown in the dom
+ * @param {String} type 
+ */
 function showMessage(type) {
     const pausedMessage = document.getElementById(`${type}`);
     pausedMessage.style.display = 'block';
 };
 
+/**
+ * Message Types: pause-message, game-over-message
+ * 
+ * Using the above message type, the respective message will be hidden from the dom
+ * @param {*} type 
+ */
 function hideMessage(type) {
     const pausedMessage = document.getElementById(`${type}`);
     pausedMessage.style.display = 'none';

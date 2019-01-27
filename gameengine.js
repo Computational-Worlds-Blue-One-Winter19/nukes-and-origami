@@ -147,6 +147,9 @@ class GameEngine {
     }
   }
 
+  /**
+   * Stops the game by using the pause flag and shows the game-over-message
+   */
   gameOver() {
     // The Pause Flag handles the same function in stopping the game so we'll repurpose it here
     this.isPaused = true;
