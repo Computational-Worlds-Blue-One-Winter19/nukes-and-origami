@@ -1,30 +1,34 @@
 /**
  * Main configuration for various game assets.
  * An enemy vessel extends Ship and declares a manifest with its attributes.
- * Attributes include path, weapon assembly, dimension and spritesheet details. 
+ * Attributes include path, weapon assembly, dimension and spritesheet details.
  */
 
 /** MANIFESTS FOR ENEMY SHIPS **/
 class Crane extends Ship {
   constructor(game) {
     super(game, {
-      path: [ [0,0,4], [180,20,5], [0,0,6], [90,35,10], [90,85,60] ],  // heading,speed,duration
+      path: [ [145,100,5], [90,100,10], [90,100,60] ],  // heading,speed,duration
       radius: 50,
       sprite: new Sprite(AM.getAsset('./img/crane-sheet.png'), 0, 0, 440, 330, 4, 0.1, 0.3, false),
       snapLine: 100,
-      snapLineSpeed: 100,
+      snapLineSpeed: 150,
+      originX: 700,
       originY: -50,
-      snapLineWait: 2,
+      snapLineWait: 0,
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
       weapon: {
+        type: CircleWeapon,
         payload: CircleBullet,
-        turretLoadTime: .05,
-        turretCooldownTime: .5,
-        turretCount: 25,
+        turretLoadTime: 0.01,
+        turretCooldownTime: 2,
+        turretCount: 9,
+        bulletSpeed: 150,
+        bulletAcceleration: 1.0,
         rapidReload: true,
-        targeting: true
-        }
+        targeting: false,
+      },
     });
   }
 }
@@ -33,10 +37,10 @@ class Crane extends Ship {
  * A Bullet is only concerned about its own trajectory. Other Entity objects
  * will check for their own collision. If a Bullet leaves the screen, then
  * it will report back to its owner and then set removeFromWorld to true.
- * 
+ *
  * A Bullet is provided with an origin point and an initial angle and
  * distance to a target. It may then update its coordinates in any manner.
- * 
+ *
  * You can set the rotate flag to true if the sprite has a clear orientation.
  * You can also override draw() to make unique patterns. If targeting = true
  * then the bullet will get an updated angle to the player before firing,
@@ -54,7 +58,7 @@ class Bullet extends Projectile {
       accel: manifest.accel || 1.2,
       radius: 8,
       rotate: true,
-      targeting: true // will set target angle at launch
+      targeting: manifest.targeting // will set target angle at launch
     });
     //this.isSpawned = true;
   }
@@ -69,23 +73,23 @@ class CircleBullet extends Projectile   {
       origin: manifest.origin,
       angle: manifest.angle,
       distance: manifest.distance,
-      targeting: true,
-      speed: 500,
-      accel: 1.01,
-      radius: 10      
-    });  
+      targeting: manifest.targeting,
+      speed: manifest.speed || 50,
+      accel: manifest.accel || 1.2,
+      radius: 10
+    });
   }
-  
+
   draw()  {
     this.game.ctx.beginPath();
     this.game.ctx.arc(this.x, this.y, this.radius, 0*Math.PI, 2*Math.PI);
     this.game.ctx.stroke();
-    this.game.ctx.fill();  
+    this.game.ctx.fill();
   }
 }
 
 /** Circle bullet from Nathan. Jared can't get this to work. I was hoping to
- * see one using De Castelijau's algorithm. 
+ * see one using De Castelijau's algorithm.
 */
 class SmartCircle extends Projectile   {
   constructor(game, manifest) {
@@ -97,9 +101,9 @@ class SmartCircle extends Projectile   {
       speed: 50,
       accel: 1,
       radius: 300
-    });  
+    });
   }
-  
+
   draw() {
     this.game.ctx.strokeRect(390, 390, 20, 20);
     this.game.ctx.beginPath();
@@ -119,7 +123,7 @@ class SmartCircle extends Projectile   {
     this.y = this.radius * Math.sin(this.toRadians(this.angle)) - 10;
     this.angle += 10;
   }
-  
+
   toRadians(angle) {
     return angle * (Math.PI / 180);
   }
@@ -156,10 +160,10 @@ class Sprite {
       this.currentFrame = (Math.floor(this.elapsedTime / this.time)) % this.len;
     // console.log(this.currentFrame);
     }
-    
+
     var locX = x - (this.width/2) * this.scale;
     var locY = y - (this.height/2) * this.scale;
-    
+
     ctx.drawImage(this.sheet,
         this.oriX + (this.width * this.currentFrame),
         this.oriY, // NOTE: does not work for spritesheets where one animation goes to next line!
@@ -180,7 +184,7 @@ class Sprite {
   }
 }
 
-/** 
+/**
  * NukesAndOrigami extends GameEngine and adds additional functions
  * to manage state, add assets, etc.
  */
@@ -199,7 +203,7 @@ class NukesAndOrigami extends GameEngine {
 
   // notification of player destruction.
   onPlayerHit() {
-    
+
   }
 
   // eventually this should be scripted.
@@ -270,12 +274,12 @@ AM.downloadAll(() => {
   //     this.game = game;
   //     this.ctx = game.ctx;
   //   }
-  
+
   //   draw() {
   //     this.ctx.drawImage(this.spritesheet,
   //       this.x, this.y);
   //   }
-  
+
   //   update() {
   //     this.y += 5;
   //     if (this.y === screenWidth) {
@@ -283,13 +287,13 @@ AM.downloadAll(() => {
   //     }
   //   }
   // }
-  
+
   // class Slippy extends Entity {
   //   constructor(game, spritesheet) {
   //     super(game, 200, 700);
   //     this.x = 200;
   //     this.y = 700;
-  
+
   //     this.start = spritesheet[0];
   //     this.roll = spritesheet[1];
   //     this.greatJob = spritesheet[2];
@@ -300,7 +304,7 @@ AM.downloadAll(() => {
   //     this.ctx = game.ctx;
   //     this.byeslippy = this.ctx;
   //   }
-  
+
   //   draw() {
   //     if (this.game.timer.gameTime >= 1 && this.game.timer.gameTime <= 3) {
   //       this.ctx.drawImage(this.start, this.x, this.y, 1000, 350);
@@ -314,7 +318,7 @@ AM.downloadAll(() => {
   //       this.ctx.drawImage(this.end, this.x, this.y, 1000, 350);
   //     }
   //   }
-  
+
   //   // update() {
   //   // console.log(this.game.timer.gameTime);
   //   // if(this.game.timer.gameTime >= 10) {
@@ -323,8 +327,8 @@ AM.downloadAll(() => {
   //   // }
   //   // }
   // }
-  
-  
+
+
   // class Nuke extends Entity {
   //   constructor(game, spritesheet, x, y) {
   //     super(game, x, y);
@@ -334,16 +338,16 @@ AM.downloadAll(() => {
   //     this.done = false;
   //     this.radius = 25;
   //   }
-  
+
   //   draw() {
   //     this.sprite.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
   //   }
-  
+
   //   update() {
   //     if (this.sprite.currentFrame === this.sprite.len) {
   //       this.done = true;
   //       this.removeFromWorl
   //   }
   //   }
-   
+
   // }
