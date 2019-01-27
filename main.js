@@ -85,17 +85,160 @@ function Unicorn(game) {
 Unicorn.prototype = new Entity();
 Unicorn.prototype.constructor = Unicorn;
 
-Unicorn.prototype.update = function update() {
-  if (this.game.space) this.jumping = true;
-  if (this.jumping) {
-    if (this.jumpAnimation.isDone()) {
-      this.jumpAnimation.elapsedTime = 0;
-      this.jumping = false;
+// (source, originX, originY, frameWidth, frameHeight, numberOfFrames, timePerFrame, scale, flip)
+// Crane will enter from above and move to snapLine defined by x,y
+class Crane extends Entity {
+
+  constructor(game, spritesheet, x, y) {
+    super(game, x, -100);
+    this.sprite = new Sprite(spritesheet, 0, 0, 440, 330, 4, 0.1, 0.3, false);
+    this.originalScale = 0.7;
+    // 0.7 scaled x = 550
+    this.speed = 50;
+    this.game = game;
+    this.ctx = game.ctx;
+    this.isIdle = false;
+    this.idleTrans = false;
+    this.idleCount = 0;
+    this.alive = true; // y = 550
+    this.radius = 40;
+    this.snapLine = y;
+    this.lastFired = 0;
+
+    // course
+    let path = [];
+    path.push([90,40,5]);
+    path.push([180,40,4]);
+    path.push([0,0,6]);
+    path.push([90,60,60]);
+    path.elapsedTime = 0;
+    path.targetTime = 0;
+    path.currentStep = -1;
+
+    this.path = path;
+  }
+
+  draw() {
+    if (this.alive) { this.sprite.drawFrame(this.game.clockTick, this.ctx, this.x, this.y); }
+    // this.ctx.save();
+    // this.ctx.translate(this.x, this.y);
+    // this.ctx.rotate(this.angle - Math.PI/2);
+    // this.ctx.translate(-this.x, -this.y);
+    // this.sprite.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    // this.ctx.restore();
+    super.draw();
+  }
+
+  update() {
+    // Check upper y bounds if Crane has left the bottom of the screen
+    if (this.y > this.game.surfaceHeight + this.radius) {
+      this.removeFromWorld = true;
+      return;
+    }
+    
+    // Check for collision with player    
+    if (this.isCollided(this.game.player)) {
+      this.game.player.removeFromWorld = true;
+      removeLife();
+      this.game.spawnPlayer();
     }
     let jumpDistance = this.jumpAnimation.elapsedTime / this.jumpAnimation.totalTime;
     const totalHeight = 200;
 
-    if (jumpDistance > 0.5) { jumpDistance = 1 - jumpDistance; }
+    // Check for hit from player bullets
+    for (let e of this.game.entities) {
+      if (e instanceof Bullet && e.planeshot && this.isCollided(e)) {
+        this.removeFromWorld = true;
+        e.removeFromWorld = true;
+        this.game.spawnCrane();
+        updateScoreBy(5);        
+      }
+    }
+    
+    // Update position
+    if (this.snapLine) {      
+      // Proceed downward if not at the snapLine
+      this.y += this.speed * this.game.clockTick;
+
+      // check for arrival at snapLine
+      if (this.y >= this.snapLine) {
+        this.snapLine = null;
+      }
+    } else if (this.path) {
+      this.path.elapsedTime += this.game.clockTick;
+    
+      if (this.path.elapsedTime > this.path.targetTime) {
+        this.path.currentStep++;
+      
+        if (this.path.currentStep === this.path.length) {
+          // the path is completed then remove it from this instance
+          this.path = null;
+        } else {
+          // update heading and speed
+          let newCourse = this.path[this.path.currentStep];
+
+          this.angle = newCourse[0] * Math.PI / 180;
+          this.speed = newCourse[1];
+          this.path.targetTime = newCourse[2];
+          this.path.elapsedTime = 0;
+        }
+      } else {
+        // advance along path
+        let radialDistance = this.speed * this.game.clockTick;
+        this.x += radialDistance * Math.cos(this.angle);
+        this.y += radialDistance * Math.sin(this.angle);
+      }
+    } else {
+      // lastly if no path stay put
+      this.isIdle = true;
+    }
+
+    // Fire bullet on fixed interval
+    this.lastFired += this.game.clockTick;
+    if (this.lastFired > 2) {
+      // determine position of player
+      let deltaX = this.game.player.x - this.x;
+      let deltaY = this.game.player.y - this.y;
+      let angle = Math.atan2(deltaY, deltaX);
+          
+      // determine position of bullet along radius
+      let bulletX = this.radius * Math.cos(angle) + this.x;
+      let bulletY = this.radius * Math.sin(angle) + this.y;
+
+      let bullet = new Bullet(this.game, AM.getAsset('./img/bullet.png'), bulletX, bulletY, angle);
+      bullet.craneshot = true;
+      bullet.spawned = true;
+      this.game.addEntity(bullet);
+      
+      this.lastFired = 0;
+    }
+
+    // Idle hover effect
+    if (this.isIdle) {
+      if (this.idleTrans) {
+        this.idleCount += 1;
+        // TODO: you can make this simpler
+        if (this.idleCount % 30 === 0) {
+          this.y += 1;
+        }
+        if (this.idleCount === 300) {
+          this.idleTrans = !this.idleTrans;
+          this.idleCount = 0;
+        }
+      } else {
+        this.idleCount += 1;
+        if (this.idleCount % 30 === 0) {
+          this.y -= 1;
+        }
+        if (this.idleCount === 300) {
+          this.idleTrans = !this.idleTrans;
+          this.idleCount = 0;
+        }
+      }
+    }
+  } // end Update method
+  
+}
 
     // var height = jumpDistance * 2 * totalHeight;
     const height = totalHeight * (-4 * (jumpDistance * jumpDistance - jumpDistance));
@@ -122,12 +265,24 @@ ASSET_MANAGER.downloadAll(() => {
   const canvas = document.getElementById('gameWorld');
   const ctx = canvas.getContext('2d');
 
-  const gameEngine = new GameEngine();
-  const bg = new Background(gameEngine);
-  const unicorn = new Unicorn(gameEngine);
+  const game = new NukesAndOrigami();
+  game.showOutlines = true;
+  game.init(ctx);
+  game.spawnPlayer();
+  game.start();
 
-  gameEngine.addEntity(bg);
-  gameEngine.addEntity(unicorn);
+  game.spawnCrane();
+  initializeLives();
+  // const slippyArr = [AM.getAsset('./img/slippy_inbound.png'),
+  //   AM.getAsset('./img/slippy_roll.png'),
+  //   AM.getAsset('./img/slippy_greatjob.png'),
+  //   AM.getAsset('./img/slippy_mission_done.png'),
+  //   AM.getAsset('./img/slippy_end.png')];
+  //gameEngine.addEntity(new Background(gameEngine, AM.getAsset('./img/spacebg.png'), 0, 0));
+  //gameEngine.addEntity(new Background(gameEngine, AM.getAsset('./img/spacebg.png'), 0, -screenWidth));
+  // gameEngine.addEntity(new Slippy(gameEngine, slippyArr));
+  // gameEngine.addEntity(new Nuke(gameEngine, AM.getAsset('./img/nuke_single.png')));
+  // gameEngine.addEntity(new Bullet(gameEngine, AM.getAsset('./img/bullet.png')));
 
   gameEngine.init(ctx);
   gameEngine.start();

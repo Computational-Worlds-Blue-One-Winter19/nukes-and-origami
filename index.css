@@ -1,0 +1,85 @@
+body {
+    margin: 0px;
+}
+
+.overlay {
+    background-color: transparent;
+    position: absolute;
+    z-index: 10;
+    pointer-events: none;
+}
+
+#gameWorld {
+    border: 0px;
+}
+
+h1 {
+    font-size: 4em;
+    font-family: 'VT323', monospace;
+    margin: 0px 0px 15px;
+}
+
+h2 {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.scoreBoard {
+    /* width: 1024; */
+    /* height: 768; */
+    margin-left: 24px; 
+    font-family: 'VT323', monospace;
+    font-size: 1.2em;
+}
+
+.lives, .score {
+    display: flex;
+    flex-direction: row;
+    font-family: 'VT323', monospace;
+    font-size: 1.2em;
+}
+
+#lives-icons-container {
+    display: flex;
+    justify-content:center;
+    align-content:center;
+    flex-direction:row; /* column | row */
+}
+
+.empty-heart {
+    fill: green;
+}
+
+.filled-heart {
+    fill: aqua;
+}
+
+.lives {
+    left: 10px;
+    top: 740px;
+}
+
+.score {
+    left: 900px;
+    top: 740px;
+}
+ 
+.lives h2 {
+    margin: 0px;
+}
+
+#pause-message {
+    font-family: 'VT323', monospace;
+    font-size: 2em;
+    position: absolute;
+    /* (width(canvas) / 2) - (width(element) / 2) */
+    left: 344px;
+    /* (height(canvas) / 2) - (height(element) / 2) */
+    top: 307px;
+    display: none;
+}
+
+#pause-message p {
+    width: 100%;
+    text-align: center;
+}

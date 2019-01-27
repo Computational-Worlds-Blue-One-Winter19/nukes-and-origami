@@ -110,11 +110,19 @@ GameEngine.prototype.loop = function loop() {
   this.space = null;
 };
 
-function Entity(game, x, y) {
-  this.game = game;
-  this.x = x;
-  this.y = y;
-  this.removeFromWorld = false;
+  pause() {
+    if (this.isPaused) {
+      hidePausedMessage();
+      // remove any stored mouse events and unpause the game.
+      this.click = null;
+      this.mouse = null;
+      this.isPaused = false;
+    } else {
+      // set pause flag
+      this.isPaused = true;
+      showPausedMessage();
+    }
+  }
 }
 
 Entity.prototype.update = function update() {

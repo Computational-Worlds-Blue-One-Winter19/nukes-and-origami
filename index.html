@@ -4,13 +4,34 @@
 <head>
     <meta charset="utf-8">
     <title>Game Project Shell</title>
+    <link rel="stylesheet" href="./index.css">
+    <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
     <script type="text/javascript" src="./gameengine.js"></script>
     <script type="text/javascript" src="./assetmanager.js"></script>
+    <script type="text/javascript" src="./gameboard.js"></script>
     <script type="text/javascript" src="./main.js"></script>
 </head>
 
 <body>
-    <canvas id="gameWorld" tabindex="1" width="800" height="800" style="border: 1px solid brown; background: lightskyblue"></canvas>
+    <canvas id="gameWorld" tabindex="1" width="1024" height="768" style="background: lightskyblue"></canvas>
+    <div class="scoreBoard">
+        <h1>Nukes and Origami</h1>
+        <div class="lives">
+            <h2>Lives: </h2>
+            <div id="lives-icon-container">
+            </div>
+        </div>
+        <div class="score">
+            <h2>Score: </h2>
+            <h2 id="user-score">0</h2>
+        </div>
+        <div class="overlay" id="pause-message">
+            <p>Paused</p>
+            <p>
+                Press P to Resume Game
+            </p>
+        </div>
+    </div>
 </body>
-
 </html>
