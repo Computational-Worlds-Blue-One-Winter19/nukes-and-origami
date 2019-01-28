@@ -242,10 +242,10 @@ class Ship extends Entity {
   }
 
   static getInitPoint(game, manifest) {
-    let width = manifest.radius || 50;
-    let range = game.surfaceWidth - 2 * width;
-    let x = manifest.originX || Math.floor(Math.random() * range) + width;
-    let y = manifest.originY || -manifest.sprite.height;
+    const width = manifest.radius || 50;
+    const range = game.surfaceWidth - 2 * width;
+    const x = manifest.originX || Math.floor(Math.random() * range) + width;
+    const y = manifest.originY || -manifest.sprite.height;
 
     return {x: x, y: y};
   }
