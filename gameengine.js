@@ -42,7 +42,7 @@ class GameEngine {
     this.wheel = null;
     this.surfaceWidth = null;
     this.surfaceHeight = null;
-    this.keysDown = [];    
+    this.keysDown = [];
   }
 
   init(ctx) {
@@ -66,11 +66,11 @@ class GameEngine {
   startInput() {
     console.log('Starting input');
     const that = this;
-    console.log("test: " + this.arrowUpPressed);
+    console.log(`test: ${this.arrowUpPressed}`);
     this.ctx.canvas.addEventListener('keydown', (e) => {
       if (e.code === 'KeyP') {
         that.pause();
-      } else {      
+      } else {
         that.keysDown[e.code] = true;
         e.preventDefault();
       }
@@ -181,8 +181,8 @@ class Entity {
 
   isCollided(other) {
     if (this.radius && other instanceof Entity && other.radius) {
-      var distance_squared = (((this.x - other.x) * (this.x - other.x)) + ((this.y - other.y) * (this.y - other.y)));
-      var radii_squared = (this.radius + other.radius) * (this.radius + other.radius);
+      const distance_squared = (((this.x - other.x) * (this.x - other.x)) + ((this.y - other.y) * (this.y - other.y)));
+      const radii_squared = (this.radius + other.radius) * (this.radius + other.radius);
       return distance_squared < radii_squared;
     }
   }
@@ -193,8 +193,8 @@ class Entity {
     //     this.y > this.game.surfaceHeight - this.radius || this.y < this.radius);
     // }
     if (this.radius) {
-      return (this.x < 0 - this.radius || this.x > this.game.surfaceWidth + this.radius ||
-         this.y < 0 - this.radius || this.y > this.game.surfaceHeight + this.radius);
+      return (this.x < 0 - this.radius || this.x > this.game.surfaceWidth + this.radius
+         || this.y < 0 - this.radius || this.y > this.game.surfaceHeight + this.radius);
     }
   }
 
