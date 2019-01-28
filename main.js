@@ -1,13 +1,14 @@
 /**
  * Main configuration for various game assets.
  * An enemy vessel extends Ship and declares a manifest with its attributes.
- * Attributes include path, weapon assembly, dimension and spritesheet details. 
+ * Attributes include path, weapon assembly, dimension, spritesheet details and hit value. 
  */
 
 /** MANIFESTS FOR ENEMY SHIPS **/
 class Crane extends Ship {
   constructor(game) {
     super(game, {
+      hitValue: 5,
       path: [ [0,0,4], [180,20,5], [0,0,6], [90,35,10], [90,85,60] ],  // heading,speed,duration
       radius: 50,
       sprite: new Sprite(AM.getAsset('./img/crane-sheet.png'), 0, 0, 440, 330, 4, 0.1, 0.3, false),
@@ -189,6 +190,10 @@ class NukesAndOrigami extends GameEngine {
     super();
     this.lives = 5;
     this.hits = 0;
+    this.score = 0;
+
+    // Initilize the game board
+    initializeScoreBoardLives(this.lives)
   }
 
   // notification of ship destruction.
@@ -198,8 +203,15 @@ class NukesAndOrigami extends GameEngine {
   }
 
   // notification of player destruction.
-  onPlayerHit() {
-    
+  onPlayerHit(player) {
+    this.lives -= 1;
+    removeLifeFromBoard()
+    console.log("Player hit called");
+    if (this.lives === 0) { // game over 
+      this.gameOver()
+    } else {
+      player.returnToInitPoint(Plane.getInitPoint(this))
+    }
   }
 
   // eventually this should be scripted.
@@ -212,6 +224,17 @@ class NukesAndOrigami extends GameEngine {
     this.player = new Plane(this, AM.getAsset('./img/plane.png'));
     this.addEntity(this.player);
   }
+
+  /**
+   * Increases the current player's score by the given value
+   * @param {Int} value 
+   */
+  increaseScoreBy(value) {
+    this.score += value;
+    updateScoreBoard(this.score);
+  }
+
+
 }
 
 /** Load assets and initialize the game. */
