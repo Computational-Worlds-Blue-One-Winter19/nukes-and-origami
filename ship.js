@@ -302,6 +302,9 @@ class Plane extends Entity {
       this.y = Math.min(this.y, this.game.surfaceHeight - this.radius);
     }
 
+    // Check if the plane has been hit by an enemy projectile
+    this.updateCollisionDetection();
+
     // This makes me worry about an overflow, or slowing our game down.
     // But it works great for what we need.
     this.timeSinceLastSpacePress += this.game.clockTick;
@@ -309,21 +312,20 @@ class Plane extends Entity {
     this.timeSinceLastRPress += this.game.clockTick;
 
     if (!this.performingManeuver) {
-      if (this.game.keysDown.ArrowLeft) {
-        if (this.timeSinceLastLPress < this.doubleTapTime && this.sprite !== this.left) {
+      if (this.game.keysDown.ArrowLeft && !this.game.keysDown.ArrowRight) {
+        if (this.timeSinceLastLPress < this.doubleTapTime
+          && this.sprite !== this.left) {
           this.performingManeuver = true;
           this.rollDirection = 'left';
           this.sprite = this.rollLeft;
         }
         this.timeSinceLastLPress = 0;
-        if (this.sprite !== this.left) {
-          this.timeSinceLastLRPress += this.game.clockTick;
-        }
         this.x -= this.speed * this.game.clockTick;
         this.sprite = this.left;
       }
-      if (this.game.keysDown.ArrowRight) {
-        if (this.timeSinceLastRPress < this.doubleTapTime && this.sprite !== this.right) {
+      if (this.game.keysDown.ArrowRight && !this.game.keysDown.ArrowLeft) {
+        if (this.timeSinceLastRPress < this.doubleTapTime
+          && this.sprite !== this.right) {
           this.performingManeuver = true;
           this.rollDirection = 'right';
           this.sprite = this.rollRight;
@@ -331,6 +333,9 @@ class Plane extends Entity {
         this.timeSinceLastRPress = 0;
         this.x += this.speed * this.game.clockTick;
         this.sprite = this.right;
+      }
+      if (this.game.keysDown.ArrowLeft && this.game.keysDown.ArrowRight) {
+        this.sprite = this.idle;
       }
       if (this.game.keysDown.ArrowUp) {
         this.y -= this.speed * this.game.clockTick;
@@ -418,6 +423,21 @@ class Plane extends Entity {
   draw() {
     this.sprite.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
     super.draw();
+  }
+
+  /**
+   * Collisions: Detects collision with
+   * player and collision with enemy bullets.
+   * */
+  updateCollisionDetection() {
+    // Check for hit from crane bullets
+    for (let i = 0; i < this.game.entities.length; i += 1) {
+      const entity = this.game.entities[i];
+      if (entity instanceof Projectile && !entity.playerShot && this.isCollided(entity)) {
+        this.game.onPlayerHit(this);
+        entity.removeFromWorld = true;
+      }
+    }
   }
 
   returnToInitPoint(coordinate) {
