@@ -8,7 +8,7 @@
 class Crane extends Ship {
   constructor(game) {
     super(game, {
-      path: [[145, 100, 5], [90, 100, 10], [90, 100, 60]], // heading,speed,duration
+      path: [[180, 100, 5], [0, 100, 5], [180, 100, 5], [0, 100, 5], [90, 100, 60]], // heading,speed,duration
       radius: 50,
       sprite: new Sprite(AM.getAsset('./img/crane-sheet.png'), 0, 0, 440, 330, 4, 0.1, 0.3, false),
       snapLine: 100,
@@ -22,7 +22,7 @@ class Crane extends Ship {
         type: CircleWeapon,
         payload: CircleBullet,
         turretLoadTime: 0.01,
-        turretCooldownTime: 2,
+        turretCooldownTime: 1,
         turretCount: 9,
         bulletSpeed: 150,
         bulletAcceleration: 1.0,
@@ -201,7 +201,6 @@ class NukesAndOrigami extends GameEngine {
 
   // notification of ship destruction.
   onEnemyDestruction() {
-    this.spawnEnemy();
     this.spawnEnemy();
   }
 
