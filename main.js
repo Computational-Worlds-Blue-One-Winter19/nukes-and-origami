@@ -8,6 +8,7 @@
 class Crane extends Ship {
   constructor(game) {
     super(game, {
+      hitValue: 5,
       path: [[180, 100, 5], [0, 100, 5], [180, 100, 5], [0, 100, 5], [90, 100, 60]], // heading,speed,duration
       radius: 50,
       sprite: new Sprite(AM.getAsset('./img/crane-sheet.png'), 0, 0, 440, 330, 4, 0.1, 0.3, false),

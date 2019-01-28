@@ -43,7 +43,7 @@
  *     powerStepTime: the amount of time to elapse before each step
  *
  * Parameters:
- *     hitValue: value that the user's score will increase by when the ship is destoryed. 
+ *     hitValue: value that the user's score will increase by when the ship is destoryed.
  *     radius: size of this Ship for collisions (default 40)
  *     originX: specify the initial x coordinate. (default random)
  *     originY: specify the initial y coordinate. (default 3 * radius)
@@ -126,7 +126,6 @@ class Ship extends Entity {
     // Check for collision with player
     if (this.isCollided(this.game.player)) {
       this.game.onPlayerHit(this.game.player);
-
     }
 
     // Check for hit from player bullets
@@ -423,7 +422,6 @@ class Plane extends Entity {
 
   returnToInitPoint(coordinate) {
     const { x, y } = coordinate;
-    console.log("Inside return to init point");
     this.x = x;
     this.y = y;
   }
