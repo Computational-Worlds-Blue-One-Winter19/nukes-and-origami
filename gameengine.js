@@ -42,7 +42,7 @@ class GameEngine {
     this.wheel = null;
     this.surfaceWidth = null;
     this.surfaceHeight = null;
-    this.keysDown = [];    
+    this.keysDown = [];
   }
 
   init(ctx) {
@@ -69,7 +69,7 @@ class GameEngine {
     this.ctx.canvas.addEventListener('keydown', (e) => {
       if (e.code === 'KeyP') {
         that.pause();
-      } else {      
+      } else {
         that.keysDown[e.code] = true;
         e.preventDefault();
       }

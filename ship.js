@@ -57,7 +57,7 @@
  * Overriding: consider adding functionality to the Enemy class.
  */
 
- /** The Ship Class */
+/** The Ship Class */
 class Ship extends Entity {
   constructor(game, manifest) {
     super(game, Ship.getInitPoint(game, manifest)); // super must be called first
@@ -74,7 +74,7 @@ class Ship extends Entity {
     this.snapLineSpeed = manifest.snapLineSpeed || 50;
     this.snapLineWait = manifest.snapLineWait || 2;
     this.weaponsOnEntrance = manifest.weaponsOnEntrance || false;
-    this.weaponsAdvantage = manifest.weaponsAdvantage || this.snapLineWait/2;
+    this.weaponsAdvantage = manifest.weaponsAdvantage || this.snapLineWait / 2;
     this.weaponType = manifest.weapon.type || Weapon;
 
     if (manifest.path) {
@@ -127,7 +127,7 @@ class Ship extends Entity {
     }
 
     // Check for hit from player bullets
-    for (let e of this.game.entities) {
+    for (const e of this.game.entities) {
       if (e instanceof Projectile && e.playerShot && this.isCollided(e)) {
         e.removeFromWorld = true;
         this.disarm();
@@ -159,7 +159,7 @@ class Ship extends Entity {
           this.path = null;
         } else {
           // update heading and speed
-          let newCourse = this.path[this.path.currentStep];
+          const newCourse = this.path[this.path.currentStep];
 
           this.angle = newCourse[0] * Math.PI / 180;
           this.speed = newCourse[1];
@@ -168,14 +168,13 @@ class Ship extends Entity {
         }
       } else if (this.speed) {
         // advance along path
-        let radialDistance = this.speed * this.game.clockTick;
+        const radialDistance = this.speed * this.game.clockTick;
         this.x += radialDistance * Math.cos(this.angle);
         this.y += radialDistance * Math.sin(this.angle);
       } else {
         // path currently has the Ship stopped
         this.idle();
       }
-
     } else {
       // no path then the Ship is stopped
       this.idle();
@@ -206,7 +205,7 @@ class Ship extends Entity {
     this.weapon = new this.weaponType(this, manifest);
   }
 
-  /**Helpers for repeated work. */
+  /** Helpers for repeated work. */
   // Idle hover effect
   idle() {
     if (this.idleTrans) {
@@ -232,19 +231,19 @@ class Ship extends Entity {
   }
 
   disarm() {
-    for (let projectile of this.weapon.bay) {
+    for (const projectile of this.weapon.bay) {
       projectile.removeFromWorld = true;
     }
     this.bay = [];
   }
 
   static getInitPoint(game, manifest) {
-    let width = manifest.radius || 50;
-    let range = game.surfaceWidth - 2 * width;
-    let x = manifest.originX || Math.floor(Math.random() * range) + width;
-    let y = manifest.originY || -manifest.sprite.height;
+    const width = manifest.radius || 50;
+    const range = game.surfaceWidth - 2 * width;
+    const x = manifest.originX || Math.floor(Math.random() * range) + width;
+    const y = manifest.originY || -manifest.sprite.height;
 
-    return {x: x, y: y};
+    return { x, y };
   }
 }
 
@@ -263,15 +262,27 @@ class Plane extends Entity {
     this.idle = new Sprite(spritesheet, 0, 0, 300, 330, 1, 0, 0.2, false);
     this.right = new Sprite(spritesheet, 300, 0, 300, 330, 1, 0, 0.2, false);
     this.left = new Sprite(spritesheet, 600, 0, 300, 330, 1, 0, 0.2, false);
-    this.rollRight = new Sprite(spritesheet, 0, 330, 300, 330, 8, 0.15, 0.2, false);
-    this.rollLeft = new Sprite(spritesheet, 0, 660, 300, 330, 8, 0.15, 0.2, false);
+    this.rollRight = new Sprite(spritesheet, 0, 330, 300, 330, 8, 0.07, 0.2, false);
+    this.rollLeft = new Sprite(spritesheet, 0, 660, 300, 330, 8, 0.07, 0.2, false);
     this.sprite = this.idle;
 
     // initial parameters
     this.game = game;
     this.ctx = game.ctx;
     this.radius = 30;
-    this.speed = 600;
+    this.speed = 400;
+    // specific to rolling
+    // double tap time in seconds
+    this.doubleTapTime = 0.1;
+    this.timeSinceLastLPress = 0;
+    this.timeSinceLastRPress = 0;
+    this.performingManeuver = false;
+    this.rollDirection = '';
+    this.rollDistance = 200;
+    this.rollTimer = 0;
+    // specific to shooting
+    this.timeSinceLastSpacePress = 0;
+    this.fireRate = 0.25;
 
     this.idleCount = 0;
   }
@@ -279,7 +290,7 @@ class Plane extends Entity {
   update() {
     // It might be better to use a changeX and changeY variable
     // This way we apply a sprite depending on how the position has changed
-    //console.log("called");
+    // console.log("called");
     if (this.isOutsideScreen()) {
       // correct all bounds
       this.x = Math.max(this.x, this.radius);
@@ -288,38 +299,70 @@ class Plane extends Entity {
       this.y = Math.min(this.y, this.game.surfaceHeight - this.radius);
     }
 
-    if(this.game.keysDown['ArrowLeft'])  {
-      this.x -= this.speed * this.game.clockTick;
-      this.sprite = this.left;
-    }
-    if(this.game.keysDown['ArrowRight']) {
-      this.x += this.speed * this.game.clockTick;
-      this.sprite = this.right;
-    }
-    if(this.game.keysDown['ArrowUp'])  {
-      this.y -= this.speed * this.game.clockTick;
-    }
-    if(this.game.keysDown['ArrowDown'])  {
-      this.y += this.speed * this.game.clockTick;
-    }
-    if(this.game.keysDown['Space']) {
-      let angle = -Math.PI / 2;
+    // This makes me worry about an overflow, or slowing our game down.
+    // But it works great for what we need.
+    this.timeSinceLastSpacePress += this.game.clockTick;
+    this.timeSinceLastLPress += this.game.clockTick;
+    this.timeSinceLastRPress += this.game.clockTick;
 
-      // for now, a projectile for the player must have instantFire = true
-      let newBullet = new Bullet(this.game, {
-        owner: this,
-        origin: {
-          x: this.x,
-          y: this.y - this.radius
-        },
-        angle: angle
-      });
-      newBullet.isSpawned = true;
-      this.game.addEntity(newBullet);
-      //this.game.keysDown['Space'] = false;
+    if (!this.performingManeuver) {
+      if (this.game.keysDown.ArrowLeft) {
+        if (this.timeSinceLastLPress < this.doubleTapTime && this.sprite !== this.left) {
+          this.performingManeuver = true;
+          this.rollDirection = 'left';
+          this.sprite = this.rollLeft;
+        }
+        this.timeSinceLastLPress = 0;
+        if (this.sprite !== this.left) {
+          this.timeSinceLastLRPress += this.game.clockTick;
+        }
+        this.x -= this.speed * this.game.clockTick;
+        this.sprite = this.left;
+      }
+      if (this.game.keysDown.ArrowRight) {
+        if (this.timeSinceLastRPress < this.doubleTapTime && this.sprite !== this.right) {
+          this.performingManeuver = true;
+          this.rollDirection = 'right';
+          this.sprite = this.rollRight;
+        }
+        this.timeSinceLastRPress = 0;
+        this.x += this.speed * this.game.clockTick;
+        this.sprite = this.right;
+      }
+      if (this.game.keysDown.ArrowUp) {
+        this.y -= this.speed * this.game.clockTick;
+      }
+      if (this.game.keysDown.ArrowDown) {
+        this.y += this.speed * this.game.clockTick;
+      }
+    } else {
+      // We're rolling, call roll
+      this.performManeuver();
+    }
+    if (this.game.keysDown.Space) {
+      if (this.timeSinceLastSpacePress > this.fireRate) {
+        this.timeSinceLastSpacePress = 0;
+        // for now, a projectile for the player must have instantFire = true
+        const newBullet = new Bullet(this.game, {
+          owner: this,
+          origin: {
+            x: this.x,
+            y: this.y - this.radius,
+          },
+          angle: -Math.PI / 2,
+        });
+        newBullet.isSpawned = true;
+        this.game.addEntity(newBullet);
+        // this.game.keysDown['Space'] = false;
+      }
     }
 
-    if(!this.game.keysDown['ArrowLeft'] && !this.game.keysDown['ArrowRight'] && !this.game.keysDown['ArrowUp'] && !this.game.keysDown['ArrowDown']) {
+
+    if (!this.game.keysDown.ArrowLeft
+      && !this.game.keysDown.ArrowRight
+      && !this.game.keysDown.ArrowUp
+      && !this.game.keysDown.ArrowDown
+      && !this.performingManeuver) {
       this.sprite = this.idle;
       if (this.idleTrans) {
         this.idleCount += 1;
@@ -345,15 +388,39 @@ class Plane extends Entity {
     }
   }
 
+  /**
+   * This method is called while controls are taken from the user and
+   * this.performingManeuver is true. This handles the maneuver and then returns
+   * control to the user by setting this.performingManeuver to false.
+   */
+  performManeuver() {
+    if (this.rollTimer > this.rollDistance) {
+      this.rollTimer = 0;
+      this.performingManeuver = false;
+      this.sprite = this.idle;
+    }
+    if (this.rollDirection === 'left') {
+      // Rolling should be faster than just moving, so mult speed by a constant
+      // greater than 1
+      this.x -= this.speed * this.game.clockTick * 1.5;
+      this.sprite = this.rollLeft;
+    }
+    if (this.rollDirection === 'right') {
+      this.x += this.speed * this.game.clockTick * 1.5;
+    }
+    this.rollTimer += this.speed * this.game.clockTick * 1.5;
+    this.sprite = this.rollRight;
+  }
+
   draw() {
     this.sprite.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
     super.draw();
   }
 
   static getInitPoint(game) {
-    let x = game.ctx.canvas.width/2;
-    let y = game.ctx.canvas.height - 100;
-    return {x: x, y: y};
+    const x = game.ctx.canvas.width / 2;
+    const y = game.ctx.canvas.height - 100;
+    return { x, y };
   }
 }
 
@@ -387,7 +454,7 @@ class Projectile extends Entity {
       this.y += this.speedY * this.game.clockTick;
     } else {
       // adjust position relative to turret
-      let point = this.owner.weapon.getTurretPosition(this.angle);
+      const point = this.owner.weapon.getTurretPosition(this.angle);
       this.x = point.x;
       this.y = point.y;
     }
@@ -459,10 +526,10 @@ class Weapon {
   }
 
   fireAll() {
-    for (let projectile of this.bay) {
+    for (const projectile of this.bay) {
       if (projectile.targeting) {
-        //update heading before launch
-        let target = this.getPlayerHeading(projectile.originX, projectile.originY);
+        // update heading before launch
+        const target = this.getPlayerHeading(projectile.originX, projectile.originY);
         projectile.angle = target.angle;
         projectile.distance = target.distance;
       } else {
@@ -483,50 +550,48 @@ class Weapon {
       for (let i = 0; i < this.fullCount; i++) {
         this.loadNext();
       }
-     } else {
+    } else {
       this.isLoaded = false;
     }
-
   }
 
   loadNext() {
-    let angle = this.getPlayerHeading(this.owner.x, this.owner.y).angle;
-    let origin = this.getTurretPosition(angle);
+    const angle = this.getPlayerHeading(this.owner.x, this.owner.y).angle;
+    const origin = this.getTurretPosition(angle);
 
-    let manifest = {
+    const manifest = {
       owner: this.owner,
-      origin: origin,
-      angle: angle,
+      origin,
+      angle,
       speed: this.bulletSpeed,
       accel: this.bulletAcceleration,
       targeting: this.targeting,
-    }
+    };
 
-    let newProjectile = new this.payload(this.owner.game, manifest);
+    const newProjectile = new this.payload(this.owner.game, manifest);
     this.bay.push(newProjectile);
     this.owner.game.addEntity(newProjectile);
   }
 
   getTurretPosition(angle) {
-    let x = this.owner.radius * Math.cos(angle) + this.owner.x;
-    let y = this.owner.radius * Math.sin(angle) + this.owner.y;
-    return {x: x, y: y};
+    const x = this.owner.radius * Math.cos(angle) + this.owner.x;
+    const y = this.owner.radius * Math.sin(angle) + this.owner.y;
+    return { x, y };
   }
 
   // returns the coordinates of the player with respect to the given point
   getPlayerHeading(originX, originY) {
-    let player = this.owner.game.player;
+    const player = this.owner.game.player;
 
-    let deltaX = player.x - originX;
-    let deltaY = player.y - originY;
-    let angle = Math.atan2(deltaY, deltaX);
+    const deltaX = player.x - originX;
+    const deltaY = player.y - originY;
+    const angle = Math.atan2(deltaY, deltaX);
 
     return {
-      angle: angle,
-      distance: (deltaX * deltaX + deltaY * deltaY)
+      angle,
+      distance: (deltaX * deltaX + deltaY * deltaY),
     };
   }
-
 }
 
 /**
@@ -568,10 +633,10 @@ class CircleWeapon extends Weapon {
   }
 
   fireAll() {
-    for (let projectile of this.bay) {
+    for (const projectile of this.bay) {
       if (projectile.targeting) {
-        //update heading before launch
-        let target = this.getPlayerHeading(projectile.originX, projectile.originY);
+        // update heading before launch
+        const target = this.getPlayerHeading(projectile.originX, projectile.originY);
         projectile.angle = target.angle;
         projectile.distance = target.distance;
       } else {
@@ -590,27 +655,26 @@ class CircleWeapon extends Weapon {
       for (let i = 0; i < this.fullCount; i++) {
         this.loadNext();
       }
-     } else {
+    } else {
       this.isLoaded = false;
     }
-
   }
 
   loadNext() {
     // Add Math.PI/2 to make sure one bullet is always on the nose
-    let angle = this.bay.length * this.spacing + Math.PI / 2;
-    let origin = this.getTurretPosition(angle);
+    const angle = this.bay.length * this.spacing + Math.PI / 2;
+    const origin = this.getTurretPosition(angle);
 
-    let manifest = {
+    const manifest = {
       owner: this.owner,
-      origin: origin,
-      angle: angle,
+      origin,
+      angle,
       speed: this.bulletSpeed,
       accel: this.bulletAcceleration,
       targeting: this.targeting,
-    }
+    };
 
-    let newProjectile = new this.payload(this.owner.game, manifest);
+    const newProjectile = new this.payload(this.owner.game, manifest);
     this.bay.push(newProjectile);
     this.owner.game.addEntity(newProjectile);
   }

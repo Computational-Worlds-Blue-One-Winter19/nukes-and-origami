@@ -54,8 +54,8 @@ class Bullet extends Projectile {
       angle: manifest.angle,
       distance: manifest.distance,
       sprite: new Sprite(AM.getAsset('./img/bullet.png'), 0, 0, 640, 320, 1, 0, 0.04, false),
-      speed: manifest.speed || 50,
-      accel: manifest.accel || 1.2,
+      speed: manifest.speed || 500,
+      accel: manifest.accel || 1.0,
       radius: 8,
       rotate: true,
       targeting: manifest.targeting // will set target angle at launch
