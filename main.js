@@ -48,9 +48,7 @@ class NukesAndOrigami extends GameEngine {
     console.log("Player hit called");
     if (this.lives === 0) { // game over 
       this.gameOver()
-    } else {
-      player.returnToInitPoint(Plane.getInitPoint(this))
-    }
+    } 
   }
 
   // eventually this should be scripted.
