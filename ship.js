@@ -302,6 +302,9 @@ class Plane extends Entity {
       this.y = Math.min(this.y, this.game.surfaceHeight - this.radius);
     }
 
+    // Check if the plane has been hit by an enemy projectile
+    this.updateCollisionDetection();
+
     // This makes me worry about an overflow, or slowing our game down.
     // But it works great for what we need.
     this.timeSinceLastSpacePress += this.game.clockTick;
@@ -420,6 +423,21 @@ class Plane extends Entity {
   draw() {
     this.sprite.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
     super.draw();
+  }
+
+  /**
+   * Collisions: Detects collision with
+   * player and collision with enemy bullets.
+   * */
+  updateCollisionDetection() {
+    // Check for hit from crane bullets
+    for (let i = 0; i < this.game.entities.length; i += 1) {
+      const entity = this.game.entities[i];
+      if (entity instanceof Projectile && !entity.playerShot && this.isCollided(entity)) {
+        this.game.onPlayerHit(this);
+        entity.removeFromWorld = true;
+      }
+    }
   }
 
   returnToInitPoint(coordinate) {
