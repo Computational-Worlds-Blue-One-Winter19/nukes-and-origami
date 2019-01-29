@@ -5,8 +5,6 @@
    */
 function loadTemplates() {
   
-  
-  
   /** Circle bullet from Nathan. */
   projectile.circleBullet = {
     radius: 10,
@@ -23,8 +21,7 @@ function loadTemplates() {
     payload: {
       type: projectile.circleBullet,
       speed: 500,
-      acceleration: 1,
-      targeting: false
+      acceleration: 1
     },
     rotation: {
       angle: 720,
@@ -43,8 +40,7 @@ ring.spiralAlpha2 = {
     payload: {
       type: projectile.circleBullet,
       speed: 500,
-      acceleration: 1,
-      targeting: false
+      acceleration: 1
     },
     rotation: {
       angle: 720,
@@ -63,8 +59,7 @@ ring.spiralAlpha2 = {
     payload: {
       type: projectile.circleBullet,
       speed: 500,
-      acceleration: 1,
-      targeting: false
+      acceleration: 1
     },
     rotation: {
       angle: 180,
@@ -76,6 +71,26 @@ ring.spiralAlpha2 = {
       cooldownTime: .01,
       rapidReload: true,
       targetPlayer: false
+    }
+  }
+
+  ring.spiralAlpha4 = {
+    payload: {
+      type: projectile.circleBullet,
+      speed: 300,
+      acceleration: 1
+    },
+    rotation: {
+      angle: 180,
+      frequency: 20
+    },
+    firing: {
+      count: 10,
+      loadTime: 0.05,
+      cooldownTime: .45,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: true
     }
   }
 
@@ -113,10 +128,57 @@ ring.spiralAlpha2 = {
       weaponsAdvantage: 0
     },
     path: [[180, 100, 5], [0, 100, 5], [180, 100, 5], [0, 100, 5], [90, 100, 60]],
-    weapon: ring.spiralAlpha3
+    weapon: ring.spiralAlpha4
+  };
+
+  ship.idleCrane = {
+    config: {
+      hitValue: 5,
+      radius: 50,
+      sprite: sprite.crane,
+      snapLine: 150,
+      snapLineSpeed: 150,
+      snapLineWait: 0,
+      origin: {
+        x: 500, // omit x to get random position
+        y: -50
+      },
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0
+    },
+    weapon: ring.spiralAlpha4
   };
 
   // Player sprite and ship are defined here, but not compatible with other ships.
+  /** A player bullet small and orange */
+  projectile.player1 = {
+    radius: 8,
+    draw: function (ctx) {
+      ctx.strokeStyle = 'orange';
+      ctx.beginPath();
+      ctx.arc(this.current.x, this.current.y, this.config.radius, 0 * Math.PI, 2 * Math.PI);
+      ctx.stroke();
+      ctx.fill();
+    }
+  }
+
+  /** A simple ring for the player only shoots up */
+  ring.player = {
+    payload: {
+      type: projectile.player1,
+      speed: 500,
+      acceleration: 1
+    },
+    firing: {
+      angle: 270,
+      count: 1,
+      loadTime: 0.01,
+      cooldownTime: .25,
+      rapidReload: true,
+      viewTurret: false
+    }
+  }
+  
   sprite.plane = {
     default: {
       image: AM.getAsset('./img/plane.png'),
@@ -190,8 +252,9 @@ ring.spiralAlpha2 = {
     config: {
       radius: 40,
       sprite: sprite.plane,
-      speed: 50
-    }
+      speed: 400
+    },
+    weapon: ring.player
   }
 
 } // end of objects file

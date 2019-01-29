@@ -36,7 +36,8 @@ class NukesAndOrigami extends GameEngine {
   }
 
   // notification of ship destruction.
-  onEnemyDestruction() {
+  onEnemyDestruction(enemy) {
+    this.increaseScoreBy(enemy.config.hitValue);
     this.spawnEnemy();
   }
 
@@ -55,13 +56,12 @@ class NukesAndOrigami extends GameEngine {
   // eventually this should be scripted.
   spawnEnemy() {
     //path: [[180, 100, 5], [0, 100, 5], [180, 100, 5], [0, 100, 5], [90, 100, 60]];
-    let crane1 = new Ship(this, ship.demoCrane);
-    let crane2 = new Ship(this, ship.demoCrane);
-    //crane1.initializePath([[180, 100, 5], [0, 100, 5]]);
-    //crane1.path = null;
-    crane2.initializePath([[90,25,60]]);
-    console.dir(ship.demoCrane);
     
+    //let crane2 = new Ship(this, ship.demoCrane);
+    //crane1.initializePath([[180, 100, 5], [0, 100, 5]]);
+    //crane2.initializePath([[90,25,60]]);
+    
+    let crane1 = new Ship(this, ship.idleCrane);
     this.addEntity(crane1);
     //this.addEntity(crane2);
   }

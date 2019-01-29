@@ -120,6 +120,7 @@ class Ship extends Entity {
 
     // set parameters
     this.config = manifest.config;
+    this.snapLine = this.config.snapLine;
     
     // additional fields
     this.idleTrans = false;
@@ -136,7 +137,7 @@ class Ship extends Entity {
   }
 
   update() {
-    if (this.config.snapLine) {
+    if (this.snapLine) {
       // we are enroute to the snapLine
       this.updateSnapPath();
     } else {
@@ -150,6 +151,7 @@ class Ship extends Entity {
 
   draw() {
     this.sprite.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
+    this.weapon.draw();
     super.draw();
   }
 
@@ -177,7 +179,6 @@ class Ship extends Entity {
         this.disarm();
         this.removeFromWorld = true;
         this.game.onEnemyDestruction(this);
-        this.game.increaseScoreBy(this.hitValue);
       }
     }
   }
@@ -233,8 +234,8 @@ class Ship extends Entity {
     this.current.y += this.config.snapLineSpeed * this.game.clockTick;
 
     // check for arrival at snapLine
-    if (this.current.y >= this.config.snapLine) {
-      this.config.snapLine = null;
+    if (this.current.y >= this.snapLine) {
+      this.snapLine = null;
     }
   }
 
@@ -276,10 +277,11 @@ class Ship extends Entity {
   }
 
   disarm() {
-    for (const projectile of this.weapon.bay) {
-      projectile.removeFromWorld = true;
-    }
-    this.bay = [];
+    // for (const projectile of this.weapon.bay) {
+    //   projectile.removeFromWorld = true;
+    // }
+    // bullets are not added to world until after launch, so just remove bays.
+    this.weapon.bay = [];
   }
 
   static getInitPoint(game, manifest) {
@@ -302,23 +304,26 @@ class Ship extends Entity {
 class Plane extends Entity {
   constructor(game, manifest) {
     super(game, Plane.getInitPoint(game));
+    this.config = manifest.config;
+    this.isPlayer = true;
 
+    // load sprites
     this.idle = new Sprite(manifest.config.sprite.default);
     this.left = new Sprite(manifest.config.sprite.left);
     this.right = new Sprite(manifest.config.sprite.right);
     this.rollLeft = new Sprite(manifest.config.sprite.rollLeft);
     this.rollRight = new Sprite(manifest.config.sprite.rollRight);
 
-    this.config = {
-      radius: manifest.config.radius,
-      speed: manifest.config.speed
+    // load weapon
+    if (manifest.weapon) {
+      this.weapon = new Ring(this, manifest.weapon);
     }
-    
+        
     // initial parameters
     this.sprite = this.idle;
     this.game = game;
     this.ctx = game.ctx;
-    this.speed = 400;
+    this.speed = this.config.speed || 400;
     // specific to rolling
     // double tap time in seconds
     this.doubleTapTime = 0.1;
@@ -346,6 +351,11 @@ class Plane extends Entity {
       this.current.y = Math.max(this.current.y, this.config.radius);
       this.current.y = Math.min(this.current.y, this.game.surfaceHeight - this.config.radius);
     }
+
+    if (this.weapon) {
+      this.weapon.update();
+    }
+    
 
     // This makes me worry about an overflow, or slowing our game down.
     // But it works great for what we need.
@@ -390,21 +400,24 @@ class Plane extends Entity {
       this.performManeuver();
     }
     if (this.game.keysDown.Space) {
-      if (this.timeSinceLastSpacePress > this.fireRate) {
-        this.timeSinceLastSpacePress = 0;
-        // for now, a projectile for the player must have instantFire = true
-        const newBullet = new Bullet(this.game, {
-          owner: this,
-          origin: {
-            x: this.current.x,
-            y: this.current.y - this.config.radius,
-          },
-          angle: -Math.PI / 2,
-        });
-        newBullet.isSpawned = true;
-        this.game.addEntity(newBullet);
-        // this.game.keysDown['Space'] = false;
-      }
+      // if (this.timeSinceLastSpacePress > this.fireRate) {
+      //   this.timeSinceLastSpacePress = 0;
+      //   // for now, a projectile for the player must have instantFire = true
+      //   const newBullet = new Bullet(this.game, {
+      //     owner: this,
+      //     origin: {
+      //       x: this.current.x,
+      //       y: this.current.y - this.config.radius,
+      //     },
+      //     angle: -Math.PI / 2,
+      //   });
+      //   newBullet.isSpawned = true;
+      //   this.game.addEntity(newBullet);
+      //   // this.game.keysDown['Space'] = false;
+      // }
+
+      // call ring to handle firing
+      this.weapon
     }
 
 
@@ -464,6 +477,7 @@ class Plane extends Entity {
 
   draw() {
     this.sprite.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
+    this.weapon.draw();
     super.draw();
   }
 
@@ -480,7 +494,9 @@ class Plane extends Entity {
   }
 }
 
-/** A simple parent class for projectiles. */
+/** 
+ * A simple parent class for projectiles. 
+ * */
 class Projectile extends Entity {
   constructor(game, manifest) {
     super(game, manifest.origin);
@@ -529,137 +545,20 @@ class Projectile extends Entity {
       this.current.y = point.y;
     }
   }
+  
+  // default draw is used for sprite animations where draw() is not overriden
+  draw() {
+    this.ctx.save();
 
-  // draw() {
-  //   this.ctx.save();
-
-  //   if (this.rotate) {
-  //     this.ctx.translate(this.current.x, this.current.y);
-  //     this.ctx.rotate(this.angle);
-  //     this.ctx.translate(-this.current.x, -this.current.y);
-  //   }
+    if (this.rotate) {
+      this.ctx.translate(this.current.x, this.current.y);
+      this.ctx.rotate(this.angle);
+      this.ctx.translate(-this.current.x, -this.current.y);
+    }
     
-  //   this.sprite.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
-  //   this.ctx.restore();
-  //   super.draw();
-  // }
-}
-
-/**
- * A generic Weapon. The weapon has a payload and a cooldown period.
- * The position of the turret is sent to each enemy,
- * along with
- */
-class Weapon {
-  constructor(owner, manifest) {
-    this.owner = owner;
-    this.payload = manifest.payload;
-    this.loadTime = manifest.loadTime;
-    this.cooldownTime = manifest.cooldownTime;
-    this.fullCount = manifest.turretCount || 1;
-    this.rapidReload = manifest.rapidReload;
-    //this.targeting = manifest.targeting;
-    //this.bulletSpeed = manifest.bulletSpeed;
-    //this.bulletAcceleration = manifest.bulletAcceleration;
-    this.bay = [];
-    this.isLoaded = false;
-    this.elapsedLoadTime = 0;
-    this.elapsedFireTime = 0;
-  }
-
-  update() {
-    const elapsedTime = this.owner.game.clockTick;
-
-    if (this.isLoaded) {
-      // manage firing sequence
-      this.elapsedFireTime += elapsedTime;
-
-      if (this.elapsedFireTime > this.cooldownTime) {
-        this.fireAll();
-        this.elapsedFireTime = 0;
-        this.reload();
-      }
-    } else {
-      // manage load sequence
-      this.elapsedLoadTime += elapsedTime;
-
-      if (this.elapsedLoadTime > this.loadTime) {
-        this.elapsedLoadTime = 0;
-        this.loadNext();
-      }
-
-      if (this.bay.length === this.fullCount) {
-        this.isLoaded = true;
-        this.elapsedLoadTime = 0;
-      }
-    }
-  }
-
-  fireAll() {
-    for (let projectile of this.bay) {
-      if (this.targetPlayer) {
-        // update heading before launch
-        const target = this.getPlayerHeading(projectile.originX, projectile.originY);
-        projectile.angle = target.angle;
-        projectile.distance = target.distance;
-      } else {
-        // Fire straight down
-        projectile.angle = Math.PI / 2;
-        // Some large number to ensure the bullet goes off screen.
-        projectile.distance = 1000;
-      }
-
-      projectile.isSpawned = true;
-    }
-  }
-
-  reload() {
-    this.bay = [];
-
-    if (this.rapidReload) {
-      for (let i = 0; i < this.fullCount; i++) {
-        this.loadNext();
-      }
-    } else {
-      this.isLoaded = false;
-    }
-  }
-
-  loadNext() {
-    const angle = this.getPlayerHeading(this.owner.current.x, this.owner.current.y).angle;
-    const origin = this.getTurretPosition(angle);
-
-    const manifest = {
-      owner: this.owner,
-      origin,
-      angle,
-      payload: this.payload,
-      rotation: this.rotation
-    };
-
-    const newProjectile = new Projectile(this.owner.game, manifest);
-    this.bay.push(newProjectile);
-    this.owner.game.addEntity(newProjectile);
-  }
-
-  getTurretPosition(angle) {
-    const x = this.owner.config.radius * Math.cos(angle) + this.owner.current.x;
-    const y = this.owner.config.radius * Math.sin(angle) + this.owner.current.y;
-    return { x, y };
-  }
-
-  // returns the coordinates of the player with respect to the given point
-  getPlayerHeading(originX, originY) {
-    const player = this.owner.game.player;
-
-    const deltaX = player.current.x - originX;
-    const deltaY = player.current.y - originY;
-    const angle = Math.atan2(deltaY, deltaX);
-
-    return {
-      angle,
-      distance: (deltaX * deltaX + deltaY * deltaY),
-    };
+    this.sprite.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
+    this.ctx.restore();
+    super.draw();
   }
 }
 
@@ -672,8 +571,9 @@ class Ring {
     this.payload = manifest.payload;
     this.rotation = manifest.rotation;
     this.firing = manifest.firing;
-
+  
     // Functionality specific to CircleTargetWeapon
+    this.baseAngle = toRadians(manifest.firing.angle) || 0;
     this.spacing = 2 * Math.PI / this.firing.count;
     this.bay = [];
     this.isLoaded = false;
@@ -684,7 +584,17 @@ class Ring {
   update() {
     const elapsedTime = this.owner.game.clockTick;
 
-    if (this.isLoaded) {
+    if (this.owner.isPlayer && this.isLoaded) {
+      this.elapsedFireTime += elapsedTime;
+
+      // check for space bar
+      if (this.owner.game.keysDown.Space && this.elapsedFireTime > this.firing.cooldownTime) {
+        this.fireAll();
+        this.elapsedFireTime = 0;
+        this.reload();
+      }
+      
+    } else if (this.isLoaded) {
       // manage firing sequence
       this.elapsedFireTime += elapsedTime;
 
@@ -707,10 +617,30 @@ class Ring {
         this.elapsedLoadTime = 0;
       }
     }
+
+    // update all bullets if in view
+    if (this.firing.viewTurret) {
+      for (let projectile of this.bay) {
+        projectile.update();
+      }
+
+    }
+
+  }
+
+  draw() {
+    if (this.firing.viewTurret) {
+      const ctx = this.owner.game.ctx;
+      
+      for (let projectile of this.bay) {
+        projectile.draw(ctx);
+      }
+
+    }
   }
 
   fireAll() {
-    for (const projectile of this.bay) {
+    for (let projectile of this.bay) {
       projectile.update();
       
       if (projectile.targeting) {
@@ -741,7 +671,7 @@ class Ring {
     // Add Math.PI/2 to make sure one bullet is always on the nose
     // const angle = this.bay.length * this.spacing + Math.PI / 2;
     // This is a good idea, but I commented out to debug something else! -Jared
-    const angle = this.bay.length * this.spacing;
+    const angle = this.baseAngle + this.bay.length * this.spacing;
     const origin = this.getTurretPosition(angle);
 
     const manifest = {
@@ -776,5 +706,127 @@ class Ring {
       distance: (deltaX * deltaX + deltaY * deltaY),
     };
   }
+
+
+
+// /**
+//  * A generic Weapon. The weapon has a payload and a cooldown period.
+//  * The position of the turret is sent to each enemy,
+//  * along with
+//  */
+// class Weapon {
+//   constructor(owner, manifest) {
+//     this.owner = owner;
+//     this.payload = manifest.payload;
+//     this.loadTime = manifest.loadTime;
+//     this.cooldownTime = manifest.cooldownTime;
+//     this.fullCount = manifest.turretCount || 1;
+//     this.rapidReload = manifest.rapidReload;
+//     //this.targeting = manifest.targeting;
+//     //this.bulletSpeed = manifest.bulletSpeed;
+//     //this.bulletAcceleration = manifest.bulletAcceleration;
+//     this.bay = [];
+//     this.isLoaded = false;
+//     this.elapsedLoadTime = 0;
+//     this.elapsedFireTime = 0;
+//   }
+
+//   update() {
+//     const elapsedTime = this.owner.game.clockTick;
+
+//     if (this.isLoaded) {
+//       // manage firing sequence
+//       this.elapsedFireTime += elapsedTime;
+
+//       if (this.elapsedFireTime > this.cooldownTime) {
+//         this.fireAll();
+//         this.elapsedFireTime = 0;
+//         this.reload();
+//       }
+//     } else {
+//       // manage load sequence
+//       this.elapsedLoadTime += elapsedTime;
+
+//       if (this.elapsedLoadTime > this.loadTime) {
+//         this.elapsedLoadTime = 0;
+//         this.loadNext();
+//       }
+
+//       if (this.bay.length === this.fullCount) {
+//         this.isLoaded = true;
+//         this.elapsedLoadTime = 0;
+//       }
+//     }
+//   }
+
+//   fireAll() {
+//     for (let projectile of this.bay) {
+//       if (this.targetPlayer) {
+//         // update heading before launch
+//         const target = this.getPlayerHeading(projectile.originX, projectile.originY);
+//         projectile.angle = target.angle;
+//         projectile.distance = target.distance;
+//       } else {
+//         // Fire straight down
+//         projectile.angle = Math.PI / 2;
+//         // Some large number to ensure the bullet goes off screen.
+//         projectile.distance = 1000;
+//       }
+
+//       projectile.isSpawned = true;
+//     }
+//   }
+
+//   reload() {
+//     this.bay = [];
+
+//     if (this.rapidReload) {
+//       for (let i = 0; i < this.fullCount; i++) {
+//         this.loadNext();
+//       }
+//     } else {
+//       this.isLoaded = false;
+//     }
+//   }
+
+//   loadNext() {
+//     const angle = this.getPlayerHeading(this.owner.current.x, this.owner.current.y).angle;
+//     const origin = this.getTurretPosition(angle);
+
+//     const manifest = {
+//       owner: this.owner,
+//       origin,
+//       angle,
+//       payload: this.payload,
+//       rotation: this.rotation
+//     };
+
+//     const newProjectile = new Projectile(this.owner.game, manifest);
+//     this.bay.push(newProjectile);
+//     this.owner.game.addEntity(newProjectile);
+//   }
+
+//   getTurretPosition(angle) {
+//     const x = this.owner.config.radius * Math.cos(angle) + this.owner.current.x;
+//     const y = this.owner.config.radius * Math.sin(angle) + this.owner.current.y;
+//     return { x, y };
+//   }
+
+//   // returns the coordinates of the player with respect to the given point
+//   getPlayerHeading(originX, originY) {
+//     const player = this.owner.game.player;
+
+//     const deltaX = player.current.x - originX;
+//     const deltaY = player.current.y - originY;
+//     const angle = Math.atan2(deltaY, deltaX);
+
+//     return {
+//       angle,
+//       distance: (deltaX * deltaX + deltaY * deltaY),
+//     };
+//   }
+// }
+
+
 
 }
