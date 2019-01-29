@@ -490,6 +490,10 @@ class Projectile extends Entity {
     this.angle = manifest.angle;
     this.initialAngle = manifest.angle;
     this.payload = manifest.payload;
+    this.rotation = manifest.rotation;
+
+    // convert rotation angle to radians
+    //this.rotation.angle = toRadians
 
     this.config = {
       radius: manifest.payload.type.radius
@@ -515,7 +519,7 @@ class Projectile extends Entity {
     } else {
       // adjust position relative to turret
       if (!this.playerShot) {
-        let delta = this.game.timer.getWave(toRadians(720), .2);
+        let delta = this.game.timer.getWave(toRadians(this.rotation.angle), this.rotation.frequency);
         this.angle = this.initialAngle + delta;
         //this.angle += toRadians(55);
         //console.log('delta:' + delta);
@@ -629,7 +633,8 @@ class Weapon {
       owner: this.owner,
       origin,
       angle,
-      payload: this.payload
+      payload: this.payload,
+      rotation: this.rotation
     };
 
     const newProjectile = new Projectile(this.owner.game, manifest);
@@ -743,7 +748,8 @@ class Ring {
       owner: this.owner,
       origin,
       angle,
-      payload: this.payload
+      payload: this.payload,
+      rotation: this.rotation
     };
 
     const newProjectile = new Projectile(this.owner.game, manifest);

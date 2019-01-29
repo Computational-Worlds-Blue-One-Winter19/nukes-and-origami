@@ -19,7 +19,7 @@ function loadTemplates() {
   }
 
   /** A ring is attached to the ship's weapon and fires a payload */
-  ring.spiral = {
+  ring.spiralAlpha1 = {
     payload: {
       type: projectile.circleBullet,
       speed: 500,
@@ -34,6 +34,46 @@ function loadTemplates() {
       count: 3,
       loadTime: 0.01,
       cooldownTime: .1,
+      rapidReload: true,
+      targetPlayer: false
+    }
+  }
+
+ring.spiralAlpha2 = {
+    payload: {
+      type: projectile.circleBullet,
+      speed: 500,
+      acceleration: 1,
+      targeting: false
+    },
+    rotation: {
+      angle: 720,
+      frequency: 4
+    },
+    firing: {
+      count: 1,
+      loadTime: 0.05,
+      cooldownTime: .01,
+      rapidReload: true,
+      targetPlayer: false
+    }
+  }
+
+  ring.spiralAlpha3 = {
+    payload: {
+      type: projectile.circleBullet,
+      speed: 500,
+      acceleration: 1,
+      targeting: false
+    },
+    rotation: {
+      angle: 180,
+      frequency: 1
+    },
+    firing: {
+      count: 1,
+      loadTime: 0.05,
+      cooldownTime: .01,
       rapidReload: true,
       targetPlayer: false
     }
@@ -66,14 +106,14 @@ function loadTemplates() {
       snapLineSpeed: 150,
       snapLineWait: 0,
       origin: {
-        //x: 500,
+        x: 500, // omit x to get random position
         y: -50
       },
       weaponsOnEntrance: false,
       weaponsAdvantage: 0
     },
     path: [[180, 100, 5], [0, 100, 5], [180, 100, 5], [0, 100, 5], [90, 100, 60]],
-    weapon: ring.spiral
+    weapon: ring.spiralAlpha3
   };
 
   // Player sprite and ship are defined here, but not compatible with other ships.

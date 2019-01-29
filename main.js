@@ -58,7 +58,7 @@ class NukesAndOrigami extends GameEngine {
     let crane1 = new Ship(this, ship.demoCrane);
     let crane2 = new Ship(this, ship.demoCrane);
     //crane1.initializePath([[180, 100, 5], [0, 100, 5]]);
-    crane1.path = null;
+    //crane1.path = null;
     crane2.initializePath([[90,25,60]]);
     console.dir(ship.demoCrane);
     
