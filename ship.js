@@ -341,10 +341,8 @@ class Plane extends Entity {
     // console.log("called");
     if (this.isOutsideScreen()) {
       // correct all bounds
-      this.current.x = Math.max(this.current.x
-, this.config.radius);
-      this.current.x = Math.min(this.current.x
-, this.game.surfaceWidth - this.config.radius);
+      this.current.x = Math.max(this.current.x, this.config.radius);
+      this.current.x = Math.min(this.current.x, this.game.surfaceWidth - this.config.radius);
       this.current.y = Math.max(this.current.y, this.config.radius);
       this.current.y = Math.min(this.current.y, this.game.surfaceHeight - this.config.radius);
     }
@@ -364,8 +362,7 @@ class Plane extends Entity {
           this.sprite = this.rollLeft;
         }
         this.timeSinceLastLPress = 0;
-        this.current.x
- -= this.speed * this.game.clockTick;
+        this.current.x -= this.speed * this.game.clockTick;
         this.sprite = this.left;
       }
       if (this.game.keysDown.ArrowRight && !this.game.keysDown.ArrowLeft) {
@@ -376,8 +373,7 @@ class Plane extends Entity {
           this.sprite = this.rollRight;
         }
         this.timeSinceLastRPress = 0;
-        this.current.x
- += this.speed * this.game.clockTick;
+        this.current.x += this.speed * this.game.clockTick;
         this.sprite = this.right;
       }
       if (this.game.keysDown.ArrowLeft && this.game.keysDown.ArrowRight) {
@@ -400,8 +396,7 @@ class Plane extends Entity {
         const newBullet = new Bullet(this.game, {
           owner: this,
           origin: {
-            x: this.current.x
-    ,
+            x: this.current.x,
             y: this.current.y - this.config.radius,
           },
           angle: -Math.PI / 2,
@@ -493,6 +488,7 @@ class Projectile extends Entity {
     this.origin = manifest.origin;
     this.current = manifest.origin;
     this.angle = manifest.angle;
+    this.initialAngle = manifest.angle;
     this.payload = manifest.payload;
 
     this.config = {
@@ -518,7 +514,13 @@ class Projectile extends Entity {
       this.current.y += this.speedY * this.game.clockTick;
     } else {
       // adjust position relative to turret
-      const point = this.owner.weapon.getTurretPosition(this.angle);
+      if (!this.playerShot) {
+        let delta = this.game.timer.getWave(toRadians(720), .2);
+        this.angle = this.initialAngle + delta;
+        //this.angle += toRadians(55);
+        //console.log('delta:' + delta);
+      } 
+      let point = this.owner.weapon.getTurretPosition(this.angle);
       this.current.x = point.x;
       this.current.y = point.y;
     }
@@ -704,17 +706,17 @@ class Ring {
 
   fireAll() {
     for (const projectile of this.bay) {
+      projectile.update();
+      
       if (projectile.targeting) {
         // update heading before launch
         const target = this.getPlayerHeading(projectile.originX, projectile.originY);
         projectile.angle = target.angle;
         projectile.distance = target.distance;
-      } else {
-
-        // projectile.angle =
-      }
+      } 
 
       projectile.isSpawned = true;
+      this.owner.game.addEntity(projectile);
     }
   }
 
@@ -732,7 +734,8 @@ class Ring {
 
   loadNext() {
     // Add Math.PI/2 to make sure one bullet is always on the nose
-    //const angle = this.bay.length * this.spacing + Math.PI / 2;
+    // const angle = this.bay.length * this.spacing + Math.PI / 2;
+    // This is a good idea, but I commented out to debug something else! -Jared
     const angle = this.bay.length * this.spacing;
     const origin = this.getTurretPosition(angle);
 
@@ -745,7 +748,7 @@ class Ring {
 
     const newProjectile = new Projectile(this.owner.game, manifest);
     this.bay.push(newProjectile);
-    this.owner.game.addEntity(newProjectile);
+    //this.owner.game.addEntity(newProjectile);
   }
 
   getTurretPosition(angle) {

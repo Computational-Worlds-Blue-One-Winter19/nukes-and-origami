@@ -13,22 +13,43 @@ window.requestAnimFrame = (function requestAnimFrame() {
 }());
 
 
-class Timer {
-  constructor() {
-    this.gameTime = 0;
-    this.maxStep = 0.05;
-    this.wallLastTimestamp = 0;
-  }
+// class Timer {
+//   constructor() {
+//     this.gameTime = 0;
+//     this.maxStep = 0.05;
+//     this.wallLastTimestamp = 0;
+//   }
 
-  tick() {
-    const wallCurrent = Date.now();
-    const wallDelta = (wallCurrent - this.wallLastTimestamp) / 1000;
-    this.wallLastTimestamp = wallCurrent;
+//   tick() {
+//     const wallCurrent = Date.now();
+//     const wallDelta = (wallCurrent - this.wallLastTimestamp) / 1000;
+//     this.wallLastTimestamp = wallCurrent;
 
-    const gameDelta = Math.min(wallDelta, this.maxStep);
-    this.gameTime += gameDelta;
-    return gameDelta;
-  }
+//     const gameDelta = Math.min(wallDelta, this.maxStep);
+//     this.gameTime += gameDelta;
+//     return gameDelta;
+//   }
+// }
+
+function Timer() {
+  this.gameTime = 0;
+  this.maxStep = 0.05;
+  this.wallLastTimestamp = 0;
+}
+
+Timer.prototype.tick = function () {
+  const wallCurrent = Date.now();
+  const wallDelta = (wallCurrent - this.wallLastTimestamp) / 1000;
+  this.wallLastTimestamp = wallCurrent;
+
+  const gameDelta = Math.min(wallDelta, this.maxStep);
+  this.gameTime += gameDelta;
+  return gameDelta;
+}
+
+Timer.prototype.getWave = function (amp, freq) {
+  let angle = 2 * Math.PI * freq * this.gameTime;
+  return amp * Math.sin(angle);
 }
 
 class GameEngine {

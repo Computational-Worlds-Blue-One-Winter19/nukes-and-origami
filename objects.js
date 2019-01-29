@@ -31,10 +31,10 @@ function loadTemplates() {
       frequency: 4
     },
     firing: {
-      count: 5,
+      count: 3,
       loadTime: 0.01,
-      cooldownTime: 1,
-      rapidReload: false,
+      cooldownTime: .1,
+      rapidReload: true,
       targetPlayer: false
     }
   }
