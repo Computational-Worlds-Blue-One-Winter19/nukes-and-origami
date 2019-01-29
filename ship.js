@@ -495,9 +495,14 @@ class Projectile extends Entity {
     this.angle = manifest.angle;
     this.payload = manifest.payload;
 
+    this.config = {
+      radius: manifest.payload.type.radius
+    }
+
     // set fields
     this.speed = manifest.payload.speed;
-    this.draw = manifest.payload.draw;
+    this.acceleration = manifest.payload.acceleration;
+    this.draw = manifest.payload.type.draw;
     this.playerShot = (this.owner === game.player);    
   }
 
@@ -505,7 +510,7 @@ class Projectile extends Entity {
     if (this.isOutsideScreen()) {
       this.removeFromWorld = true;
     } else if (this.isSpawned) {
-      this.speed *= this.accel;
+      this.speed *= this.acceleration;
       this.speedX = this.speed * Math.cos(this.angle);
       this.speedY = this.speed * Math.sin(this.angle);
 
@@ -519,19 +524,19 @@ class Projectile extends Entity {
     }
   }
 
-  draw() {
-    this.ctx.save();
+  // draw() {
+  //   this.ctx.save();
 
-    if (this.rotate) {
-      this.ctx.translate(this.current.x, this.current.y);
-      this.ctx.rotate(this.angle);
-      this.ctx.translate(-this.current.x, -this.current.y);
-    }
+  //   if (this.rotate) {
+  //     this.ctx.translate(this.current.x, this.current.y);
+  //     this.ctx.rotate(this.angle);
+  //     this.ctx.translate(-this.current.x, -this.current.y);
+  //   }
     
-    this.sprite.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
-    this.ctx.restore();
-    super.draw();
-  }
+  //   this.sprite.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
+  //   this.ctx.restore();
+  //   super.draw();
+  // }
 }
 
 /**
@@ -615,7 +620,7 @@ class Weapon {
   }
 
   loadNext() {
-    const angle = this.getPlayerHeading(this.owner.x, this.owner.y).angle;
+    const angle = this.getPlayerHeading(this.owner.current.x, this.owner.current.y).angle;
     const origin = this.getTurretPosition(angle);
 
     const manifest = {
@@ -631,8 +636,8 @@ class Weapon {
   }
 
   getTurretPosition(angle) {
-    const x = this.owner.radius * Math.cos(angle) + this.owner.x;
-    const y = this.owner.radius * Math.sin(angle) + this.owner.y;
+    const x = this.owner.config.radius * Math.cos(angle) + this.owner.current.x;
+    const y = this.owner.config.radius * Math.sin(angle) + this.owner.current.y;
     return { x, y };
   }
 
@@ -660,9 +665,9 @@ class Ring {
     this.payload = manifest.payload;
     this.rotation = manifest.rotation;
     this.firing = manifest.firing;
-    
+
     // Functionality specific to CircleTargetWeapon
-    this.spacing = 2 * Math.PI / this.fullCount;
+    this.spacing = 2 * Math.PI / this.firing.count;
     this.bay = [];
     this.isLoaded = false;
     this.elapsedLoadTime = 0;
@@ -676,7 +681,7 @@ class Ring {
       // manage firing sequence
       this.elapsedFireTime += elapsedTime;
 
-      if (this.elapsedFireTime > this.cooldownTime) {
+      if (this.elapsedFireTime > this.firing.cooldownTime) {
         this.fireAll();
         this.elapsedFireTime = 0;
         this.reload();
@@ -685,12 +690,12 @@ class Ring {
       // manage load sequence
       this.elapsedLoadTime += elapsedTime;
 
-      if (this.elapsedLoadTime > this.loadTime) {
+      if (this.elapsedLoadTime > this.firing.loadTime) {
         this.elapsedLoadTime = 0;
         this.loadNext();
       }
 
-      if (this.bay.length === this.fullCount) {
+      if (this.bay.length === this.firing.count) {
         this.isLoaded = true;
         this.elapsedLoadTime = 0;
       }
@@ -716,8 +721,8 @@ class Ring {
   reload() {
     this.bay = [];
 
-    if (this.rapidReload) {
-      for (let i = 0; i < this.fullCount; i++) {
+    if (this.firing.rapidReload) {
+      for (let i = 0; i < this.firing.count; i++) {
         this.loadNext();
       }
     } else {
@@ -727,7 +732,8 @@ class Ring {
 
   loadNext() {
     // Add Math.PI/2 to make sure one bullet is always on the nose
-    const angle = this.bay.length * this.spacing + Math.PI / 2;
+    //const angle = this.bay.length * this.spacing + Math.PI / 2;
+    const angle = this.bay.length * this.spacing;
     const origin = this.getTurretPosition(angle);
 
     const manifest = {
@@ -741,4 +747,25 @@ class Ring {
     this.bay.push(newProjectile);
     this.owner.game.addEntity(newProjectile);
   }
+
+  getTurretPosition(angle) {
+    const x = this.owner.config.radius * Math.cos(angle) + this.owner.current.x;
+    const y = this.owner.config.radius * Math.sin(angle) + this.owner.current.y;
+    return { x, y };
+  }
+
+  // returns the coordinates of the player with respect to the given point
+  getPlayerHeading(originX, originY) {
+    const player = this.owner.game.player;
+
+    const deltaX = player.current.x - originX;
+    const deltaY = player.current.y - originY;
+    const angle = Math.atan2(deltaY, deltaX);
+
+    return {
+      angle,
+      distance: (deltaX * deltaX + deltaY * deltaY),
+    };
+  }
+
 }

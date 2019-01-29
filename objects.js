@@ -1,30 +1,18 @@
-function loadTemplates() {
-  /**
+/**
    * Main configuration for various game assets.
    * An enemy vessel extends Ship and declares a manifest with its attributes.
    * Attributes include path, weapon assembly, dimension, spritesheet details and hit value. 
    */
-
-  /**
-   * A Bullet is only concerned about its own trajectory. Other Entity objects
-   * will check for their own collision. If a Bullet leaves the screen, then
-   * it will report back to its owner and then set removeFromWorld to true.
-   *
-   * A Bullet is provided with an origin point and an initial angle and
-   * distance to a target. It may then update its coordinates in any manner.
-   *
-   * You can set the rotate flag to true if the sprite has a clear orientation.
-   * You can also override draw() to make unique patterns. If targeting = true
-   * then the bullet will get an updated angle to the player before firing,
-   * otherwise the angle is from the turret position.
-   */
-
+function loadTemplates() {
+  
+  
+  
   /** Circle bullet from Nathan. */
   projectile.circleBullet = {
     radius: 10,
     draw: function (ctx) {
       ctx.beginPath();
-      ctx.arc(this.x, this.y, this.radius, 0 * Math.PI, 2 * Math.PI);
+      ctx.arc(this.current.x, this.current.y, this.config.radius, 0 * Math.PI, 2 * Math.PI);
       ctx.stroke();
       ctx.fill();
     }
@@ -34,7 +22,7 @@ function loadTemplates() {
   ring.spiral = {
     payload: {
       type: projectile.circleBullet,
-      speed: 150,
+      speed: 500,
       acceleration: 1,
       targeting: false
     },
@@ -43,6 +31,7 @@ function loadTemplates() {
       frequency: 4
     },
     firing: {
+      count: 5,
       loadTime: 0.01,
       cooldownTime: 1,
       rapidReload: false,
@@ -77,13 +66,13 @@ function loadTemplates() {
       snapLineSpeed: 150,
       snapLineWait: 0,
       origin: {
-        x: 500,
+        //x: 500,
         y: -50
       },
       weaponsOnEntrance: false,
       weaponsAdvantage: 0
     },
-    //path: [[180, 100, 5], [0, 100, 5], [180, 100, 5], [0, 100, 5], [90, 100, 60]],
+    path: [[180, 100, 5], [0, 100, 5], [180, 100, 5], [0, 100, 5], [90, 100, 60]],
     weapon: ring.spiral
   };
 
