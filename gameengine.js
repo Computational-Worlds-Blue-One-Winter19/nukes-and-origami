@@ -13,22 +13,43 @@ window.requestAnimFrame = (function requestAnimFrame() {
 }());
 
 
-class Timer {
-  constructor() {
-    this.gameTime = 0;
-    this.maxStep = 0.05;
-    this.wallLastTimestamp = 0;
-  }
+// class Timer {
+//   constructor() {
+//     this.gameTime = 0;
+//     this.maxStep = 0.05;
+//     this.wallLastTimestamp = 0;
+//   }
 
-  tick() {
-    const wallCurrent = Date.now();
-    const wallDelta = (wallCurrent - this.wallLastTimestamp) / 1000;
-    this.wallLastTimestamp = wallCurrent;
+//   tick() {
+//     const wallCurrent = Date.now();
+//     const wallDelta = (wallCurrent - this.wallLastTimestamp) / 1000;
+//     this.wallLastTimestamp = wallCurrent;
 
-    const gameDelta = Math.min(wallDelta, this.maxStep);
-    this.gameTime += gameDelta;
-    return gameDelta;
-  }
+//     const gameDelta = Math.min(wallDelta, this.maxStep);
+//     this.gameTime += gameDelta;
+//     return gameDelta;
+//   }
+// }
+
+function Timer() {
+  this.gameTime = 0;
+  this.maxStep = 0.05;
+  this.wallLastTimestamp = 0;
+}
+
+Timer.prototype.tick = function () {
+  const wallCurrent = Date.now();
+  const wallDelta = (wallCurrent - this.wallLastTimestamp) / 1000;
+  this.wallLastTimestamp = wallCurrent;
+
+  const gameDelta = Math.min(wallDelta, this.maxStep);
+  this.gameTime += gameDelta;
+  return gameDelta;
+}
+
+Timer.prototype.getWave = function (amp, T) {
+  let angle = 2 * Math.PI / T * this.gameTime;
+  return amp * Math.sin(angle);
 }
 
 class GameEngine {
@@ -70,6 +91,9 @@ class GameEngine {
     this.ctx.canvas.addEventListener('keydown', (e) => {
       if (e.code === 'KeyP') {
         that.pause();
+      } if (e.code === 'KeyD') {
+        // toggle outlines for debugging
+        that.showOutlines = !that.showOutlines;
       } else {
         that.keysDown[e.code] = true;
         e.preventDefault();
@@ -84,7 +108,7 @@ class GameEngine {
   }
 
   addEntity(entity) {
-    console.log('added entity');
+    //console.log('added entity');
     this.entities.push(entity);
   }
 
@@ -161,8 +185,7 @@ class Entity {
   constructor(game, point) {
     this.game = game;
     this.ctx = game.ctx;
-    this.x = point.x;
-    this.y = point.y;
+    this.current = point;
     this.removeFromWorld = false;
   }
 
@@ -170,19 +193,19 @@ class Entity {
   }
 
   draw() {
-    if (this.game.showOutlines && this.radius) {
+    if (this.game.showOutlines && this.config.radius) {
       this.game.ctx.beginPath();
       this.game.ctx.strokeStyle = 'red';
-      this.game.ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+      this.game.ctx.arc(this.current.x, this.current.y, this.config.radius, 0, Math.PI * 2, false);
       this.game.ctx.stroke();
       this.game.ctx.closePath();
     }
   }
 
   isCollided(other) {
-    if (this.radius && other instanceof Entity && other.radius) {
-      const distance_squared = (((this.x - other.x) * (this.x - other.x)) + ((this.y - other.y) * (this.y - other.y)));
-      const radii_squared = (this.radius + other.radius) * (this.radius + other.radius);
+    if (this.config.radius && other instanceof Entity && other.config.radius) {
+      const distance_squared = Math.pow(this.current.x - other.current.x, 2) + Math.pow(this.current.y - other.current.y, 2);
+      const radii_squared = Math.pow(this.config.radius + other.config.radius, 2);
       return distance_squared < radii_squared;
     }
   }
@@ -192,15 +215,9 @@ class Entity {
     //   return (this.x < this.radius || this.x > this.game.surfaceWidth - this.radius ||
     //     this.y > this.game.surfaceHeight - this.radius || this.y < this.radius);
     // }
-    if (this.radius) {
-      return (this.x < 0 - this.radius || this.x > this.game.surfaceWidth + this.radius
-         || this.y < 0 - this.radius || this.y > this.game.surfaceHeight + this.radius);
-    }
-  }
-
-  isOffscreen() {
-    if (this.radius) {
-
+    if (this.config.radius) {
+      return (this.current.x < 0 - this.config.radius || this.current.x > this.game.surfaceWidth + this.config.radius
+         || this.current.y < 0 - this.config.radius || this.current.y > this.game.surfaceHeight + this.config.radius);
     }
   }
 
