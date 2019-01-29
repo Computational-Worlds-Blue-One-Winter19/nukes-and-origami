@@ -1,189 +1,24 @@
-/**
- * Main configuration for various game assets.
- * An enemy vessel extends Ship and declares a manifest with its attributes.
- * Attributes include path, weapon assembly, dimension, spritesheet details and hit value. 
- */
+const AM = new AssetManager();
 
-/** MANIFESTS FOR ENEMY SHIPS * */
-class Crane extends Ship {
-  constructor(game) {
-    super(game, {
-      hitValue: 5,
-      path: [[180, 100, 5], [0, 100, 5], [180, 100, 5], [0, 100, 5], [90, 100, 60]], // heading,speed,duration
-      radius: 50,
-      sprite: new Sprite(AM.getAsset('./img/crane-sheet.png'), 0, 0, 440, 330, 4, 0.1, 0.3, false),
-      snapLine: 100,
-      snapLineSpeed: 150,
-      originX: 700,
-      originY: -50,
-      snapLineWait: 0,
-      weaponsOnEntrance: false,
-      weaponsAdvantage: 0,
-      weapon: {
-        type: CircleWeapon,
-        payload: CircleBullet,
-        turretLoadTime: 0.01,
-        turretCooldownTime: 1,
-        turretCount: 9,
-        bulletSpeed: 150,
-        bulletAcceleration: 1.0,
-        rapidReload: true,
-        targeting: false,
-      },
-    });
-  }
-}
+/** These hold the object templates defined in objects.js */
+const ring = {};
+const sprite = {};
+const ship = {};
+const projectile = {};
 
-/**
- * A Bullet is only concerned about its own trajectory. Other Entity objects
- * will check for their own collision. If a Bullet leaves the screen, then
- * it will report back to its owner and then set removeFromWorld to true.
- *
- * A Bullet is provided with an origin point and an initial angle and
- * distance to a target. It may then update its coordinates in any manner.
- *
- * You can set the rotate flag to true if the sprite has a clear orientation.
- * You can also override draw() to make unique patterns. If targeting = true
- * then the bullet will get an updated angle to the player before firing,
- * otherwise the angle is from the turret position.
- */
-class Bullet extends Projectile {
-  constructor(game, manifest) {
-    super(game, {
-      owner: manifest.owner,
-      origin: manifest.origin,
-      angle: manifest.angle,
-      distance: manifest.distance,
-      sprite: new Sprite(AM.getAsset('./img/bullet.png'), 0, 0, 640, 320, 1, 0, 0.04, false),
-      speed: manifest.speed || 500,
-      accel: manifest.accel || 1.0,
-      radius: 8,
-      rotate: true,
-      targeting: manifest.targeting, // will set target angle at launch
-    });
-    // this.isSpawned = true;
-  }
-}
-
-
-/** Circle bullet from Nathan. */
-class CircleBullet extends Projectile {
-  constructor(game, manifest) {
-    super(game, {
-      owner: manifest.owner,
-      origin: manifest.origin,
-      angle: manifest.angle,
-      distance: manifest.distance,
-      targeting: manifest.targeting,
-      speed: manifest.speed || 50,
-      accel: manifest.accel || 1.2,
-      radius: 10,
-    });
-  }
-
-  draw() {
-    this.game.ctx.beginPath();
-    this.game.ctx.arc(this.x, this.y, this.radius, 0 * Math.PI, 2 * Math.PI);
-    this.game.ctx.stroke();
-    this.game.ctx.fill();
-  }
-}
-
-/** Circle bullet from Nathan. Jared can't get this to work. I was hoping to
- * see one using De Castelijau's algorithm.
-*/
-class SmartCircle extends Projectile {
-  constructor(game, manifest) {
-    super(game, {
-      owner: manifest.owner,
-      origin: manifest.origin,
-      angle: manifest.angle,
-      distance: manifest.distance,
-      speed: 50,
-      accel: 1,
-      radius: 300,
-    });
-  }
-
-  draw() {
-    this.game.ctx.strokeRect(390, 390, 20, 20);
-    this.game.ctx.beginPath();
-    this.game.ctx.arc(this.x, this.y, 10, 0 * Math.PI, 2 * Math.PI);
-    this.game.ctx.stroke();
-    this.game.ctx.fill();
-  }
-
-  update() {
-    this.x = Math.pow((1 - this.t), 2) * 390 + 2 * (1 - this.t) * this.t * this.x + Math.pow(this.t, 2) * this.game.player.x;
-    this.bulletY = Math.pow((1 - this.t), 2) * 390 + 2 * (1 - this.t) * this.t * this.y + Math.pow(this.t, 2) * this.game.player.y;
-    this.t += 0.01;
-    if (this.t >= 1) {
-      this.t = 0;
-    }
-    this.x = this.radius * Math.cos(this.toRadians(this.angle)) + 10;
-    this.y = this.radius * Math.sin(this.toRadians(this.angle)) - 10;
-    this.angle += 10;
-  }
-
-  toRadians(angle) {
-    return angle * (Math.PI / 180);
-  }
-}
-
-/**
- * Custom Animation Class.
- */
-class Sprite {
-  constructor(source, originX, originY, frameWidth, frameHeight, numberOfFrames,
-    timePerFrame, scale, flip) {
-    this.sheet = source; // Source spritesheet
-    this.oriX = originX; // Top left X point of where to start on the spritesheet
-    this.oriY = originY; // Top left Y point of where to start on the spritesheet
-    this.width = frameWidth; // Pixel width of each frame
-    this.height = frameHeight; // Pixel height of each frame
-    this.len = numberOfFrames; // # of frames in this sprite (to let user pick
-    // certain frames from a sheet containing multiple animations)
-    this.time = timePerFrame; // time each frame should be displayed. If time = 0, don't loop
-    this.scale = scale; // Size scale
-    this.flip = flip; // BOOLEAN. Flip image over Y axis?
-    this.totalTime = timePerFrame * numberOfFrames; // Not set by user
-    this.elapsedTime = 0; // Not set by user
-    this.currentFrame = 0;
-  }
-
-  drawFrame(tick, ctx, x, y) {
-    this.elapsedTime += tick;
-    if (this.time !== 0) {
-      if (this.elapsedTime >= this.totalTime) { // The isDone() function does exactly this. Use either.
-      // All frames used. Start over to loop.
-        this.elapsedTime = 0;
-      }
-      this.currentFrame = (Math.floor(this.elapsedTime / this.time)) % this.len;
-    // console.log(this.currentFrame);
-    }
-
-    const locX = x - (this.width / 2) * this.scale;
-    const locY = y - (this.height / 2) * this.scale;
-
-    ctx.drawImage(this.sheet,
-      this.oriX + (this.width * this.currentFrame),
-      this.oriY, // NOTE: does not work for spritesheets where one animation goes to next line!
-      this.width,
-      this.height,
-      locX,
-      locY,
-      this.width * this.scale,
-      this.height * this.scale);
-    // }
-    if (this.time !== 0) {
-      this.currentFrame += 1;
-    }
-  }
-
-  isDone() {
-    return this.elapsedTime >= this.totalTime;
-  }
-}
+/** These are the image assets declared by filename */
+AM.queueDownload('./img/crane-sheet.png');
+AM.queueDownload('./img/plane.png');
+AM.queueDownload('./img/spacebg.png');
+AM.queueDownload('./img/paper-wallpaper.png');
+AM.queueDownload('./img/lined-paper.png');
+AM.queueDownload('./img/bullet.png');
+AM.queueDownload('./img/slippy_roll.png');
+AM.queueDownload('./img/slippy_end.png');
+AM.queueDownload('./img/slippy_greatjob.png');
+AM.queueDownload('./img/slippy_inbound.png');
+AM.queueDownload('./img/slippy_mission_done.png');
+AM.queueDownload('./img/nuke_single.png');
 
 /**
  * NukesAndOrigami extends GameEngine and adds additional functions
@@ -219,12 +54,12 @@ class NukesAndOrigami extends GameEngine {
 
   // eventually this should be scripted.
   spawnEnemy() {
-    this.addEntity(new Crane(this));
+    this.addEntity(new Ship(this, ship.demoCrane));
   }
 
   // establishes a new player Plane
   spawnPlayer() {
-    this.player = new Plane(this, AM.getAsset('./img/plane.png'));
+    this.player = new Plane(this, ship.player);
     this.addEntity(this.player);
   }
 
@@ -236,38 +71,26 @@ class NukesAndOrigami extends GameEngine {
     this.score += value;
     updateScoreBoard(this.score);
   }
-
-
 }
 
-/** Load assets and initialize the game. */
-const AM = new AssetManager();
-
-AM.queueDownload('./img/crane-sheet.png');
-AM.queueDownload('./img/plane.png');
-AM.queueDownload('./img/spacebg.png');
-AM.queueDownload('./img/paper-wallpaper.png');
-AM.queueDownload('./img/lined-paper.png');
-AM.queueDownload('./img/bullet.png');
-AM.queueDownload('./img/slippy_roll.png');
-AM.queueDownload('./img/slippy_end.png');
-AM.queueDownload('./img/slippy_greatjob.png');
-AM.queueDownload('./img/slippy_inbound.png');
-AM.queueDownload('./img/slippy_mission_done.png');
-AM.queueDownload('./img/nuke_single.png');
-
+/** Call AssetManager to download assets and launch the game. */
 AM.downloadAll(() => {
   const canvas = document.getElementById('gameWorld');
   const ctx = canvas.getContext('2d');
+  
+  loadTemplates();
   const game = new NukesAndOrigami();
-
-  // game.showOutlines = true;
+  game.showOutlines = false;
   game.init(ctx);
   game.spawnPlayer();
   game.start();
   game.spawnEnemy();
   console.log('All Done!');
 });
+
+
+
+
 
 
 // we should get back to the following code for narration and background...
@@ -370,4 +193,45 @@ AM.downloadAll(() => {
 //   }
 //   }
 
+// }
+
+// /** Circle bullet from Nathan. Jared can't get this to work. I was hoping to
+//  * see one using De Castelijau's algorithm.
+// */
+// class SmartCircle extends Projectile {
+//   constructor(game, manifest) {
+//     super(game, {
+//       owner: manifest.owner,
+//       origin: manifest.origin,
+//       angle: manifest.angle,
+//       distance: manifest.distance,
+//       speed: 50,
+//       accel: 1,
+//       radius: 300,
+//     });
+//   }
+
+//   draw() {
+//     this.game.ctx.strokeRect(390, 390, 20, 20);
+//     this.game.ctx.beginPath();
+//     this.game.ctx.arc(this.x, this.y, 10, 0 * Math.PI, 2 * Math.PI);
+//     this.game.ctx.stroke();
+//     this.game.ctx.fill();
+//   }
+
+//   update() {
+//     this.x = Math.pow((1 - this.t), 2) * 390 + 2 * (1 - this.t) * this.t * this.x + Math.pow(this.t, 2) * this.game.player.x;
+//     this.bulletY = Math.pow((1 - this.t), 2) * 390 + 2 * (1 - this.t) * this.t * this.y + Math.pow(this.t, 2) * this.game.player.y;
+//     this.t += 0.01;
+//     if (this.t >= 1) {
+//       this.t = 0;
+//     }
+//     this.x = this.radius * Math.cos(this.toRadians(this.angle)) + 10;
+//     this.y = this.radius * Math.sin(this.toRadians(this.angle)) - 10;
+//     this.angle += 10;
+//   }
+
+//   toRadians(angle) {
+//     return angle * (Math.PI / 180);
+//   }
 // }

@@ -1,58 +1,4 @@
 /**
- * Custom Animation Class.
- */
-class Sprite {
-  constructor(config) {
-    this.sheet = config.image; // Source spritesheet
-    this.oriX = config.dimension.originX; // Top left X point of where to start on the spritesheet
-    this.oriY = config.dimension.originY; // Top left Y point of where to start on the spritesheet
-    this.width = config.dimension.frameWidth; // Pixel width of each frame
-    this.height = config.dimension.frameHeight; // Pixel height of each frame
-    this.len = config.dimension.frameCount; // # of frames in this sprite (to let user pick
-    // certain frames from a sheet containing multiple animations)
-    this.time = config.dimension.timePerFrame; // time each frame should be displayed. If time = 0, don't loop
-    this.scale = config.dimension.scale; // Size scale
-    this.flip = config.dimension.flip; // BOOLEAN. Flip image over Y axis?
-    this.totalTime = config.dimension.timePerFrame * config.dimension.frameCount; // Not set by user
-    this.elapsedTime = 0; // Not set by user
-    this.currentFrame = 0;
-  }
-
-  drawFrame(tick, ctx, x, y) {
-    this.elapsedTime += tick;
-    if (this.time !== 0) {
-      if (this.elapsedTime >= this.totalTime) { // The isDone() function does exactly this. Use either.
-      // All frames used. Start over to loop.
-        this.elapsedTime = 0;
-      }
-      this.currentFrame = (Math.floor(this.elapsedTime / this.time)) % this.len;
-    // console.log(this.currentFrame);
-    }
-
-    const locX = x - (this.width / 2) * this.scale;
-    const locY = y - (this.height / 2) * this.scale;
-
-    ctx.drawImage(this.sheet,
-      this.oriX + (this.width * this.currentFrame),
-      this.oriY, // NOTE: does not work for spritesheets where one animation goes to next line!
-      this.width,
-      this.height,
-      locX,
-      locY,
-      this.width * this.scale,
-      this.height * this.scale);
-    // }
-    if (this.time !== 0) {
-      this.currentFrame += 1;
-    }
-  }
-
-  isDone() {
-    return this.elapsedTime >= this.totalTime;
-  }
-}
-
-/**
  * The basic functionality of an EnemyShip. On update() the bridge checks in with
  * major systems to update its own state.
  *
@@ -115,16 +61,23 @@ class Sprite {
 /** The Ship Class */
 class Ship extends Entity {
   constructor(game, manifest) {
-    super(game, Ship.getInitPoint(game, manifest));
-    this.sprite = new Sprite(manifest.config.sprite.default);
+    super(game, Ship.getInitPoint(game, manifest)); // super must be called first
+    this.init(manifest); // then load the manifest
+  }
 
-    // set parameters
-    this.config = manifest.config;
-    
-    // additional fields
-    this.idleTrans = false;
-    this.idleCount = 0;
-    this.lastFired = 0;
+  init(manifest) {
+    // set required parameters
+    this.sprite = manifest.sprite;
+
+    // set optional parameters
+    this.hitValue = manifest.hitValue || 0;
+    this.radius = manifest.radius || 50;
+    this.snapLine = manifest.snapLine || 200;
+    this.snapLineSpeed = manifest.snapLineSpeed || 50;
+    this.snapLineWait = manifest.snapLineWait || 2;
+    this.weaponsOnEntrance = manifest.weaponsOnEntrance || false;
+    this.weaponsAdvantage = manifest.weaponsAdvantage || this.snapLineWait / 2;
+    this.weaponType = manifest.weapon.type || Weapon;
 
     if (manifest.path) {
       this.initializePath(manifest.path);
@@ -133,10 +86,15 @@ class Ship extends Entity {
     if (manifest.weapon) {
       this.initializeWeapon(manifest.weapon);
     }
+
+    // additional fields
+    this.idleTrans = false;
+    this.idleCount = 0;
+    this.lastFired = 0;
   }
 
   update() {
-    if (this.config.snapLine) {
+    if (this.snapLine) {
       // we are enroute to the snapLine
       this.updateSnapPath();
     } else {
@@ -149,7 +107,7 @@ class Ship extends Entity {
   }
 
   draw() {
-    this.sprite.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
+    this.sprite.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
     super.draw();
   }
 
@@ -159,7 +117,7 @@ class Ship extends Entity {
    * */
   updateCollisionDetection() {
     // Check upper y bounds if Crane has left the bottom of the screen
-    if (this.current.y > this.game.surfaceHeight + this.config.radius) {
+    if (this.y > this.game.surfaceHeight + this.radius) {
       this.disarm();
       this.removeFromWorld = true;
       return;
@@ -206,16 +164,16 @@ class Ship extends Entity {
           // update heading and speed
           const newCourse = this.path[this.path.currentStep];
 
-          this.current.angle = newCourse[0] * Math.PI / 180;
-          this.current.speed = newCourse[1];
+          this.angle = newCourse[0] * Math.PI / 180;
+          this.speed = newCourse[1];
           this.path.targetTime = newCourse[2];
           this.path.elapsedTime = 0;
         }
-      } else if (this.current.speed) {
+      } else if (this.speed) {
         // advance along path
-        const radialDistance = this.current.speed * this.game.clockTick;
-        this.current.x += radialDistance * Math.cos(this.current.angle);
-        this.current.y += radialDistance * Math.sin(this.current.angle);
+        const radialDistance = this.speed * this.game.clockTick;
+        this.x += radialDistance * Math.cos(this.angle);
+        this.y += radialDistance * Math.sin(this.angle);
       } else {
         // path currently has the Ship stopped
         this.idle();
@@ -230,11 +188,11 @@ class Ship extends Entity {
    * SnapPath: manage the transition to the starting point.
    */
   updateSnapPath() {
-    this.current.y += this.config.snapLineSpeed * this.game.clockTick;
+    this.y += this.snapLineSpeed * this.game.clockTick;
 
     // check for arrival at snapLine
-    if (this.current.y >= this.config.snapLine) {
-      this.config.snapLine = null;
+    if (this.y >= this.snapLine) {
+      this.snapLine = null;
     }
   }
 
@@ -247,7 +205,7 @@ class Ship extends Entity {
 
   initializeWeapon(manifest) {
     // do stuff here to configure a new weapon system.
-    this.weapon = new Ring(this, manifest);
+    this.weapon = new this.weaponType(this, manifest);
   }
 
   /** Helpers for repeated work. */
@@ -257,7 +215,7 @@ class Ship extends Entity {
       this.idleCount += 1;
       // TODO: you can make this simpler
       if (this.idleCount % 30 === 0) {
-        this.current.y += 1;
+        this.y += 1;
       }
       if (this.idleCount === 300) {
         this.idleTrans = !this.idleTrans;
@@ -266,7 +224,7 @@ class Ship extends Entity {
     } else {
       this.idleCount += 1;
       if (this.idleCount % 30 === 0) {
-        this.current.y -= 1;
+        this.y -= 1;
       }
       if (this.idleCount === 300) {
         this.idleTrans = !this.idleTrans;
@@ -283,10 +241,10 @@ class Ship extends Entity {
   }
 
   static getInitPoint(game, manifest) {
-    const width = manifest.config.radius || 50;
+    const width = manifest.radius || 50;
     const range = game.surfaceWidth - 2 * width;
-    const x = manifest.config.origin.x || Math.floor(Math.random() * range) + width;
-    const y = manifest.config.origin.y || -manifest.config.sprite.default.height;
+    const x = manifest.originX || Math.floor(Math.random() * range) + width;
+    const y = manifest.originY || -manifest.sprite.height;
 
     return { x, y };
   }
@@ -300,24 +258,21 @@ class Ship extends Entity {
  */
 /** MANIFEST FOR THE PLAYER PLANE (Not a Ship) */
 class Plane extends Entity {
-  constructor(game, manifest) {
+  constructor(game, spritesheet) {
     super(game, Plane.getInitPoint(game));
 
-    this.idle = new Sprite(manifest.config.sprite.default);
-    this.left = new Sprite(manifest.config.sprite.left);
-    this.right = new Sprite(manifest.config.sprite.right);
-    this.rollLeft = new Sprite(manifest.config.sprite.rollLeft);
-    this.rollRight = new Sprite(manifest.config.sprite.rollRight);
-
-    this.config = {
-      radius: manifest.config.radius,
-      speed: manifest.config.speed
-    }
-    
-    // initial parameters
+    // set animation sprite sheets
+    this.idle = new Sprite(spritesheet, 0, 0, 300, 330, 1, 0, 0.2, false);
+    this.right = new Sprite(spritesheet, 300, 0, 300, 330, 1, 0, 0.2, false);
+    this.left = new Sprite(spritesheet, 600, 0, 300, 330, 1, 0, 0.2, false);
+    this.rollRight = new Sprite(spritesheet, 0, 330, 300, 330, 8, 0.07, 0.2, false);
+    this.rollLeft = new Sprite(spritesheet, 0, 660, 300, 330, 8, 0.07, 0.2, false);
     this.sprite = this.idle;
+
+    // initial parameters
     this.game = game;
     this.ctx = game.ctx;
+    this.radius = 30;
     this.speed = 400;
     // specific to rolling
     // double tap time in seconds
@@ -341,12 +296,10 @@ class Plane extends Entity {
     // console.log("called");
     if (this.isOutsideScreen()) {
       // correct all bounds
-      this.current.x = Math.max(this.current.x
-, this.config.radius);
-      this.current.x = Math.min(this.current.x
-, this.game.surfaceWidth - this.config.radius);
-      this.current.y = Math.max(this.current.y, this.config.radius);
-      this.current.y = Math.min(this.current.y, this.game.surfaceHeight - this.config.radius);
+      this.x = Math.max(this.x, this.radius);
+      this.x = Math.min(this.x, this.game.surfaceWidth - this.radius);
+      this.y = Math.max(this.y, this.radius);
+      this.y = Math.min(this.y, this.game.surfaceHeight - this.radius);
     }
 
     // This makes me worry about an overflow, or slowing our game down.
@@ -364,8 +317,7 @@ class Plane extends Entity {
           this.sprite = this.rollLeft;
         }
         this.timeSinceLastLPress = 0;
-        this.current.x
- -= this.speed * this.game.clockTick;
+        this.x -= this.speed * this.game.clockTick;
         this.sprite = this.left;
       }
       if (this.game.keysDown.ArrowRight && !this.game.keysDown.ArrowLeft) {
@@ -376,18 +328,17 @@ class Plane extends Entity {
           this.sprite = this.rollRight;
         }
         this.timeSinceLastRPress = 0;
-        this.current.x
- += this.speed * this.game.clockTick;
+        this.x += this.speed * this.game.clockTick;
         this.sprite = this.right;
       }
       if (this.game.keysDown.ArrowLeft && this.game.keysDown.ArrowRight) {
         this.sprite = this.idle;
       }
       if (this.game.keysDown.ArrowUp) {
-        this.current.y -= this.speed * this.game.clockTick;
+        this.y -= this.speed * this.game.clockTick;
       }
       if (this.game.keysDown.ArrowDown) {
-        this.current.y += this.speed * this.game.clockTick;
+        this.y += this.speed * this.game.clockTick;
       }
     } else {
       // We're rolling, call roll
@@ -400,9 +351,8 @@ class Plane extends Entity {
         const newBullet = new Bullet(this.game, {
           owner: this,
           origin: {
-            x: this.current.x
-    ,
-            y: this.current.y - this.config.radius,
+            x: this.x,
+            y: this.y - this.radius,
           },
           angle: -Math.PI / 2,
         });
@@ -423,7 +373,7 @@ class Plane extends Entity {
         this.idleCount += 1;
         // every 10 frames
         if (this.idleCount % 5 === 0) {
-          this.current.y += 1;
+          this.y += 1;
         }
         // go other way every 60 frames
         if (this.idleCount === 30) {
@@ -433,7 +383,7 @@ class Plane extends Entity {
       } else {
         this.idleCount += 1;
         if (this.idleCount % 5 === 0) {
-          this.current.y -= 1;
+          this.y -= 1;
         }
         if (this.idleCount === 30) {
           this.idleTrans = !this.idleTrans;
@@ -457,25 +407,25 @@ class Plane extends Entity {
     if (this.rollDirection === 'left') {
       // Rolling should be faster than just moving, so mult speed by a constant
       // greater than 1
-      this.current.x -= this.speed * this.game.clockTick * 1.5;
+      this.x -= this.speed * this.game.clockTick * 1.5;
       this.sprite = this.rollLeft;
     }
     if (this.rollDirection === 'right') {
-      this.current.x += this.speed * this.game.clockTick * 1.5;
+      this.x += this.speed * this.game.clockTick * 1.5;
     }
     this.rollTimer += this.speed * this.game.clockTick * 1.5;
     this.sprite = this.rollRight;
   }
 
   draw() {
-    this.sprite.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
+    this.sprite.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
     super.draw();
   }
 
   returnToInitPoint(coordinate) {
     const { x, y } = coordinate;
-    this.current.x = x;
-    this.current.y = y;
+    this.x = x;
+    this.y = y;
   }
 
   static getInitPoint(game) {
@@ -490,15 +440,17 @@ class Projectile extends Entity {
   constructor(game, manifest) {
     super(game, manifest.origin);
     this.owner = manifest.owner;
-    this.origin = manifest.origin;
-    this.current = manifest.origin;
+    this.originX = manifest.origin.x;
+    this.originY = manifest.origin.y;
     this.angle = manifest.angle;
-    this.payload = manifest.payload;
-
-    // set fields
-    this.speed = manifest.payload.speed;
-    this.draw = manifest.payload.draw;
-    this.playerShot = (this.owner === game.player);    
+    this.speed = manifest.speed;
+    this.accel = manifest.accel;
+    this.rotate = manifest.rotate;
+    this.sprite = manifest.sprite;
+    this.playerShot = (this.owner === game.player);
+    this.radius = manifest.radius || 8;
+    this.rapidReload = manifest.rapidReload;
+    this.targeting = manifest.targeting;
   }
 
   update() {
@@ -509,13 +461,13 @@ class Projectile extends Entity {
       this.speedX = this.speed * Math.cos(this.angle);
       this.speedY = this.speed * Math.sin(this.angle);
 
-      this.current.x += this.speedX * this.game.clockTick;
-      this.current.y += this.speedY * this.game.clockTick;
+      this.x += this.speedX * this.game.clockTick;
+      this.y += this.speedY * this.game.clockTick;
     } else {
       // adjust position relative to turret
       const point = this.owner.weapon.getTurretPosition(this.angle);
-      this.current.x = point.x;
-      this.current.y = point.y;
+      this.x = point.x;
+      this.y = point.y;
     }
   }
 
@@ -523,12 +475,12 @@ class Projectile extends Entity {
     this.ctx.save();
 
     if (this.rotate) {
-      this.ctx.translate(this.current.x, this.current.y);
+      this.ctx.translate(this.x, this.y);
       this.ctx.rotate(this.angle);
-      this.ctx.translate(-this.current.x, -this.current.y);
+      this.ctx.translate(-this.x, -this.y);
+      this.sprite.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
     }
-    
-    this.sprite.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
+
     this.ctx.restore();
     super.draw();
   }
@@ -543,13 +495,13 @@ class Weapon {
   constructor(owner, manifest) {
     this.owner = owner;
     this.payload = manifest.payload;
-    this.loadTime = manifest.loadTime;
-    this.cooldownTime = manifest.cooldownTime;
+    this.loadTime = manifest.turretLoadTime;
+    this.cooldownTime = manifest.turretCooldownTime;
     this.fullCount = manifest.turretCount || 1;
     this.rapidReload = manifest.rapidReload;
-    //this.targeting = manifest.targeting;
-    //this.bulletSpeed = manifest.bulletSpeed;
-    //this.bulletAcceleration = manifest.bulletAcceleration;
+    this.targeting = manifest.targeting;
+    this.bulletSpeed = manifest.bulletSpeed;
+    this.bulletAcceleration = manifest.bulletAcceleration;
     this.bay = [];
     this.isLoaded = false;
     this.elapsedLoadTime = 0;
@@ -585,8 +537,8 @@ class Weapon {
   }
 
   fireAll() {
-    for (let projectile of this.bay) {
-      if (this.targetPlayer) {
+    for (const projectile of this.bay) {
+      if (projectile.targeting) {
         // update heading before launch
         const target = this.getPlayerHeading(projectile.originX, projectile.originY);
         projectile.angle = target.angle;
@@ -622,10 +574,12 @@ class Weapon {
       owner: this.owner,
       origin,
       angle,
-      payload: this.payload
+      speed: this.bulletSpeed,
+      accel: this.bulletAcceleration,
+      targeting: this.targeting,
     };
 
-    const newProjectile = new Projectile(this.owner.game, manifest);
+    const newProjectile = new this.payload(this.owner.game, manifest);
     this.bay.push(newProjectile);
     this.owner.game.addEntity(newProjectile);
   }
@@ -640,8 +594,8 @@ class Weapon {
   getPlayerHeading(originX, originY) {
     const player = this.owner.game.player;
 
-    const deltaX = player.current.x - originX;
-    const deltaY = player.current.y - originY;
+    const deltaX = player.x - originX;
+    const deltaY = player.y - originY;
     const angle = Math.atan2(deltaY, deltaX);
 
     return {
@@ -654,19 +608,11 @@ class Weapon {
 /**
  * This weapon spawns a circle of bullets around the enemy and then fires them all at once at the player
  */
-class Ring {
+class CircleWeapon extends Weapon {
   constructor(owner, manifest) {
-    this.owner = owner;
-    this.payload = manifest.payload;
-    this.rotation = manifest.rotation;
-    this.firing = manifest.firing;
-    
+    super(owner, manifest);
     // Functionality specific to CircleTargetWeapon
     this.spacing = 2 * Math.PI / this.fullCount;
-    this.bay = [];
-    this.isLoaded = false;
-    this.elapsedLoadTime = 0;
-    this.elapsedFireTime = 0;
   }
 
   update() {
@@ -734,10 +680,12 @@ class Ring {
       owner: this.owner,
       origin,
       angle,
-      payload: this.payload
+      speed: this.bulletSpeed,
+      accel: this.bulletAcceleration,
+      targeting: this.targeting,
     };
 
-    const newProjectile = new Projectile(this.owner.game, manifest);
+    const newProjectile = new this.payload(this.owner.game, manifest);
     this.bay.push(newProjectile);
     this.owner.game.addEntity(newProjectile);
   }
