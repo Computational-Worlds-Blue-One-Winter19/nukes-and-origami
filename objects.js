@@ -1,11 +1,6 @@
-/**
-   * Main configuration for various game assets.
-   * An enemy vessel extends Ship and declares a manifest with its attributes.
-   * Attributes include path, weapon assembly, dimension, spritesheet details and hit value. 
-   */
 function loadTemplates() {
   
-  /** Circle bullet from Nathan. */
+  /***** PROJECTILES: SHAPES AND SPRITES *****/
   projectile.circleBullet = {
     radius: 10,
     draw: function (ctx) {
@@ -16,7 +11,7 @@ function loadTemplates() {
     }
   }
 
-  /** A ring is attached to the ship's weapon and fires a payload */
+  /***** RING: FIRING PATTERNS *****/
   ring.spiralAlpha1 = {
     payload: {
       type: projectile.circleBullet,
@@ -85,6 +80,7 @@ ring.spiralAlpha2 = {
       frequency: 20
     },
     firing: {
+      angle: 90,
       count: 10,
       loadTime: 0.05,
       cooldownTime: .45,
@@ -94,24 +90,7 @@ ring.spiralAlpha2 = {
     }
   }
 
-  /** The Crane spritesheet configuration */
-  sprite.crane = {
-    default: {
-      image: AM.getAsset('./img/crane-sheet.png'),
-      dimension: {
-        originX: 0,
-        originY: 0,
-        frameWidth: 440,
-        frameHeight: 330,
-        frameCount: 4,
-        timePerFrame: 0.1,
-        scale: 0.3,
-        flip: false
-      }
-    }
-  }
-
-  /** The Enemy Crane ship manifest */
+  /***** ENEMY SHIPS *****/
   ship.demoCrane = {
     config: {
       hitValue: 5,
@@ -149,8 +128,8 @@ ring.spiralAlpha2 = {
     weapon: ring.spiralAlpha4
   };
 
-  // Player sprite and ship are defined here, but not compatible with other ships.
-  /** A player bullet small and orange */
+
+  /***** ALL PLAYER THINGS *****/
   projectile.player1 = {
     radius: 8,
     draw: function (ctx) {
@@ -178,76 +157,7 @@ ring.spiralAlpha2 = {
       viewTurret: false
     }
   }
-  
-  sprite.plane = {
-    default: {
-      image: AM.getAsset('./img/plane.png'),
-      dimension: {
-        originX: 0,
-        originY: 0,
-        frameWidth: 300,
-        frameHeight: 330,
-        frameCount: 1,
-        timePerFrame: 0,
-        scale: 0.2,
-        flip: false
-      }
-    },
-    right: {
-      image: AM.getAsset('./img/plane.png'),
-      dimension: {
-        originX: 300,
-        originY: 0,
-        frameWidth: 300,
-        frameHeight: 330,
-        frameCount: 1,
-        timePerFrame: 0,
-        scale: 0.2,
-        flip: false
-      }
-    },
-    left: {
-      image: AM.getAsset('./img/plane.png'),
-      dimension: {
-        originX: 600,
-        originY: 0,
-        frameWidth: 300,
-        frameHeight: 330,
-        frameCount: 1,
-        timePerFrame: 0,
-        scale: 0.2,
-        flip: false
-      }
-    },
-    rollRight: {
-      image: AM.getAsset('./img/plane.png'),
-      dimension: {
-        originX: 0,
-        originY: 330,
-        frameWidth: 300,
-        frameHeight: 330,
-        frameCount: 8,
-        timePerFrame: 0.07,
-        scale: 0.2,
-        flip: false
-      }
-    },
-    rollLeft: {
-      image: AM.getAsset('./img/plane.png'),
-      dimension: {
-        originX: 0,
-        originY: 660,
-        frameWidth: 300,
-        frameHeight: 330,
-        frameCount: 8,
-        timePerFrame: 0.07,
-        scale: 0.2,
-        flip: false
-      }
-    }
-  }
-  
-  // The default properties for the player ship are defined here.
+    
   ship.player = {
     config: {
       radius: 40,
