@@ -100,16 +100,60 @@ ring.spiralAlpha2 = {
       angle: 90,
       count: 1,
       loadTime: 0.005,
-      cooldownTime: .15,
+      cooldownTime: .1,
       rapidReload: true,
       targetPlayer: true,
       viewTurret: false,
       pulse: {
-        duration: 2,
+        duration: 4,
         delay: .5
       }
     }    
   }
+
+  ring.uniLinear = {
+    payload: {
+      type: projectile.circleBullet,
+      speed: 250,
+      acceleration: 1
+    },
+    firing: {
+      angle: 90,
+      count: 1,
+      loadTime: 0.005,
+      cooldownTime: .1,
+      rapidReload: true,
+      targetPlayer: true,
+      viewTurret: false,
+      pulse: {
+        duration: 4,
+        delay: .5
+      }
+    }   
+  }
+  
+  ring.uniLinear2 = {
+    payload: {
+      type: projectile.circleBullet,
+      speed: 250,
+      acceleration: 1
+    },
+    firing: {
+      radius: 15,
+      angle: 90,
+      count: 5,
+      loadTime: 0.005,
+      cooldownTime: .09,
+      rapidReload: true,
+      targetPlayer: true,
+      viewTurret: true,
+      pulse: {
+        duration: 7,
+        delay: 1
+      }
+    }     
+  }
+
 
   /***** ENEMY SHIPS *****/
   ship.demoCrane = {
@@ -146,7 +190,7 @@ ring.spiralAlpha2 = {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0
     },
-    weapon: ring.uniLinear
+    weapon: ring.uniLinear2
   };
 
 

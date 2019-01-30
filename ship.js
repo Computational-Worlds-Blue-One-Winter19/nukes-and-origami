@@ -594,6 +594,7 @@ class Ring {
     this.baseAngle = toRadians(manifest.firing.angle) || 0;
     this.spacing = 2 * Math.PI / this.firing.count;
     this.bay = [];
+    this.radius = manifest.firing.radius || this.owner.config.radius;
     
     // set firing parameters
     this.loadTime = this.firing.loadTime;
@@ -731,8 +732,8 @@ class Ring {
   }
 
   getTurretPosition(angle) {
-    const x = this.owner.config.radius * Math.cos(angle) + this.owner.current.x;
-    const y = this.owner.config.radius * Math.sin(angle) + this.owner.current.y;
+    const x = this.radius * Math.cos(angle) + this.owner.current.x;
+    const y = this.radius * Math.sin(angle) + this.owner.current.y;
     return { x, y };
   }
 
