@@ -493,7 +493,7 @@ class Plane extends Entity {
     if(this.invincTime > 0) {
       this.invincCtr += this.game.clockTick;
       if(this.invincCtr > 0.08) {
-        console.log("blink changed");
+        
         this.blinking = !this.blinking;
         this.invincCtr = 0;
       }
