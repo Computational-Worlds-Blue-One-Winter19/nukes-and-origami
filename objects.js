@@ -89,7 +89,7 @@ ring.spiralAlpha2 = {
       loadTime: 0.05,
       cooldownTime: .45,
       rapidReload: true,
-      targetPlayer: false,
+      targetPlayer: true,
       viewTurret: true
     }
   }

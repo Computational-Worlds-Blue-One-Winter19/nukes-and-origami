@@ -661,9 +661,9 @@ class Ring {
     for (let projectile of this.bay) {
       projectile.update();
       
-      if (projectile.targeting) {
+      if (this.firing.targetPlayer) {
         // update heading before launch
-        const target = this.getPlayerHeading(projectile.originX, projectile.originY);
+        const target = this.getPlayerHeading(projectile.origin.x, projectile.origin.y);
         projectile.angle = target.angle;
         projectile.distance = target.distance;
       } 
