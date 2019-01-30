@@ -146,7 +146,7 @@ ring.spiralAlpha2 = {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0
     },
-    weapon: ring.spiralAlpha4
+    weapon: ring.spiralAlpha1
   };
 
   // Player sprite and ship are defined here, but not compatible with other ships.

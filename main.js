@@ -9,6 +9,7 @@ const projectile = {};
 /** These are the image assets declared by filename */
 AM.queueDownload('./img/crane-sheet.png');
 AM.queueDownload('./img/plane.png');
+AM.queueDownload('./img/purple_plane.png');
 AM.queueDownload('./img/spacebg.png');
 AM.queueDownload('./img/paper-wallpaper.png');
 AM.queueDownload('./img/lined-paper.png');
@@ -43,9 +44,12 @@ class NukesAndOrigami extends GameEngine {
 
   // notification of player destruction.
   onPlayerHit(player) {
-    this.lives -= 1;
-    removeLifeFromBoard()
-    console.log("Player hit called");
+    // player.invincTime += this.clockTick;
+    if(player.invincTime == 0)  {
+      this.lives -= 1;
+      removeLifeFromBoard()
+      player.invincTime += this.clockTick;
+    }
     if (this.lives === 0) { // game over 
       this.gameOver()
     } 
