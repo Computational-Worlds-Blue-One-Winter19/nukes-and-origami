@@ -2,7 +2,7 @@ function loadTemplates() {
   
   /***** PROJECTILES: SHAPES AND SPRITES *****/
   projectile.circleBullet = {
-    radius: 10,
+    radius: 6,
     draw: function (ctx) {
       ctx.beginPath();
       ctx.arc(this.current.x, this.current.y, this.config.radius, 0 * Math.PI, 2 * Math.PI);
@@ -90,6 +90,27 @@ ring.spiralAlpha2 = {
     }
   }
 
+  ring.uniLinear = {
+    payload: {
+      type: projectile.circleBullet,
+      speed: 250,
+      acceleration: 1
+    },
+    firing: {
+      angle: 90,
+      count: 1,
+      loadTime: 0.005,
+      cooldownTime: .15,
+      rapidReload: true,
+      targetPlayer: true,
+      viewTurret: false,
+      pulse: {
+        duration: 2,
+        delay: .5
+      }
+    }    
+  }
+
   /***** ENEMY SHIPS *****/
   ship.demoCrane = {
     config: {
@@ -125,7 +146,7 @@ ring.spiralAlpha2 = {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0
     },
-    weapon: ring.spiralAlpha4
+    weapon: ring.uniLinear
   };
 
 

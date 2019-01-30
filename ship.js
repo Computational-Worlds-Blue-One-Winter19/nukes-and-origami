@@ -552,7 +552,7 @@ class Projectile extends Entity {
       this.current.y += this.speedY * this.game.clockTick;
     } else {
       // adjust position relative to turret
-      if (!this.playerShot) {
+      if (this.rotation) {
         let delta = this.game.timer.getWave(toRadians(this.rotation.angle), this.rotation.frequency);
         this.angle = this.initialAngle + delta;
         //this.angle += toRadians(55);
@@ -594,46 +594,34 @@ class Ring {
     this.baseAngle = toRadians(manifest.firing.angle) || 0;
     this.spacing = 2 * Math.PI / this.firing.count;
     this.bay = [];
-    this.isLoaded = false;
-    this.elapsedLoadTime = 0;
-    this.elapsedFireTime = 0;
+    
+    // set firing parameters
+    this.loadTime = this.firing.loadTime;
+    this.coolTime = this.firing.cooldownTime;
+        
+    if (this.firing.pulse) {
+      this.activeTime = this.firing.pulse.duration;
+      this.waitTime = this.firing.pulse.delay;      
+    } else {
+      this.activeTime = Infinity;
+      this.waitTime = 0;
+    }
+
+    // set firing conditionals
+    this.elapsedTime = 0;
+    this.elapsedActiveTime = 0;
+    this.isLoading = true;
+    this.isReady = false;
+    this.isCooling = false;
+    this.isWaiting = false;
   }
 
   update() {
-    const elapsedTime = this.owner.game.clockTick;
-
-    if (this.owner.isPlayer && this.isLoaded) {
-      this.elapsedFireTime += elapsedTime;
-
-      // check for space bar
-      if (this.owner.game.keysDown.Space && this.elapsedFireTime > this.firing.cooldownTime) {
-        this.fireAll();
-        this.elapsedFireTime = 0;
-        this.reload();
-      }
-      
-    } else if (this.isLoaded) {
-      // manage firing sequence
-      this.elapsedFireTime += elapsedTime;
-
-      if (this.elapsedFireTime > this.firing.cooldownTime) {
-        this.fireAll();
-        this.elapsedFireTime = 0;
-        this.reload();
-      }
-    } else {
-      // manage load sequence
-      this.elapsedLoadTime += elapsedTime;
-
-      if (this.elapsedLoadTime > this.firing.loadTime) {
-        this.elapsedLoadTime = 0;
-        this.loadNext();
-      }
-
-      if (this.bay.length === this.firing.count) {
-        this.isLoaded = true;
-        this.elapsedLoadTime = 0;
-      }
+    this.elapsedTime += this.owner.game.clockTick;
+    
+    // update active time counter
+    if (!this.isWaiting) {
+      this.elapsedActiveTime += this.elapsedTime;
     }
 
     // update all bullets if in view
@@ -641,11 +629,37 @@ class Ring {
       for (let projectile of this.bay) {
         projectile.update();
       }
-
     }
 
-  }
+    // take some action based on weapon state
+    if (this.isLoading && this.elapsedTime > this.loadTime) {
 
+      // check if loaded
+      if (this.bay.length === this.firing.count) {
+        this.isLoading = false;
+        this.isReady = true;
+        this.elapsedTime = 0;
+      } else {
+        this.loadNext();
+      }
+    } else if (this.isReady) {
+      // a player only fires on command
+      if (this.owner.isPlayer && !this.owner.game.keysDown.Space) {
+        return;
+      }
+      this.fireAll();
+    } else if (this.isCooling && this.elapsedTime > this.coolTime) {
+      this.isCooling = false;
+      this.isLoading = true;
+      this.elapsedTime = 0;
+    } else if (this.isWaiting && this.elapsedTime > this.waitTime) {
+      this.isWaiting = false;
+      this.isLoading = true;
+      this.elapsedActiveTime = 0;
+      this.elapsedTime = 0;
+    }
+  }
+  
   draw() {
     if (this.firing.viewTurret) {
       const ctx = this.owner.game.ctx;
@@ -671,6 +685,21 @@ class Ring {
       projectile.isSpawned = true;
       this.owner.game.addEntity(projectile);
     }
+
+    // if rapid reload then force them in
+    if (this.firing.rapidReload) {
+      this.reload();
+    }
+
+    // set next state to cooldown or waiting
+    this.isReady = false;
+    this.elapsedTime = 0;
+
+    if (this.elapsedActiveTime > this.activeTime) {
+      this.isWaiting = true;
+    } else {
+      this.isCooling = true;
+    }
   }
 
   reload() {
@@ -680,15 +709,12 @@ class Ring {
       for (let i = 0; i < this.firing.count; i++) {
         this.loadNext();
       }
-    } else {
-      this.isLoaded = false;
-    }
+    } 
   }
 
   loadNext() {
-    // Add Math.PI/2 to make sure one bullet is always on the nose
-    // const angle = this.bay.length * this.spacing + Math.PI / 2;
-    // This is a good idea, but I commented out to debug something else! -Jared
+     
+
     const angle = this.baseAngle + this.bay.length * this.spacing;
     const origin = this.getTurretPosition(angle);
 
@@ -702,7 +728,6 @@ class Ring {
 
     const newProjectile = new Projectile(this.owner.game, manifest);
     this.bay.push(newProjectile);
-    //this.owner.game.addEntity(newProjectile);
   }
 
   getTurretPosition(angle) {
