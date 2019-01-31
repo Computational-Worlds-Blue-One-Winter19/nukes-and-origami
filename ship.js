@@ -362,10 +362,8 @@ class Plane extends Entity {
 
     if(this.invincTime != 0 && this.invincTime < this.invincDuration)  {
       this.invincTime += this.game.clockTick;
-      //TODO: CHANGE SPRITE??
     } else if (this.invincTime > this.invincDuration) {
       this.invincTime = 0;
-      //TODO: CHANGE SPRITE BACK TO NORMAL??
     }
 
     if (this.weapon) {
@@ -502,6 +500,8 @@ class Plane extends Entity {
         this.blinking = !this.blinking;
         this.invincCtr = 0;
       }
+    } else {
+      this.blinking = false;
     }
     if(!this.blinking)  {
       this.sprite.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);

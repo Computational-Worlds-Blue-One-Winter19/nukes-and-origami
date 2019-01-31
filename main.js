@@ -11,7 +11,7 @@ AM.queueDownload('./img/bat-sheet.png');
 AM.queueDownload('./img/crane-sheet.png');
 AM.queueDownload('./img/plane.png');
 AM.queueDownload('./img/purple_plane.png');
-AM.queueDownload('./img/spacebg.png');
+AM.queueDownload('./img/notebook.png');
 AM.queueDownload('./img/paper-wallpaper.png');
 AM.queueDownload('./img/lined-paper.png');
 AM.queueDownload('./img/bullet.png');
@@ -163,7 +163,14 @@ AM.downloadAll(() => {
   loadTemplates();
 
   const game = new NukesAndOrigami();
+
+  var point1 = {x: 0, y: 0};
+  var point2 = {x: 0, y: -canvas.height};
+
+  game.showOutlines = false;
   game.init(ctx);
+  game.addEntity(new Background(game, AM.getAsset('./img/notebook.png'), canvas.height, point1));
+  game.addEntity(new Background(game, AM.getAsset('./img/notebook.png'), canvas.height, point2));
   game.spawnPlayer();
   game.start();
   // game.spawnEnemy();
@@ -175,4 +182,41 @@ AM.downloadAll(() => {
 /** Global helpers (could go elsewhere) */
 function toRadians(angle) {
   return angle * Math.PI / 180;
+}
+
+// we should get back to the following code for narration and background...
+
+// const slippyArr = [AM.getAsset('./img/slippy_inbound.png'),
+//   AM.getAsset('./img/slippy_roll.png'),
+//   AM.getAsset('./img/slippy_greatjob.png'),
+//   AM.getAsset('./img/slippy_mission_done.png'),
+//   AM.getAsset('./img/slippy_end.png')];
+// gameEngine.addEntity(new Background(gameEngine, AM.getAsset('./img/spacebg.png'), 0, 0));
+// gameEngine.addEntity(new Background(gameEngine, AM.getAsset('./img/spacebg.png'), 0, -screenWidth));
+// gameEngine.addEntity(new Slippy(gameEngine, slippyArr));
+// gameEngine.addEntity(new Nuke(gameEngine, AM.getAsset('./img/nuke_single.png')));
+// gameEngine.addEntity(new Bullet(gameEngine, AM.getAsset('./img/bullet.png')));
+
+// We should get back to this stuff for narration and background
+
+class Background extends Entity {
+  constructor(game, spritesheet, canvasHeight, point) {
+    super(game, point);
+    this.spritesheet = spritesheet;
+    this.game = game;
+    this.ctx = game.ctx;
+    this.canvasHeight = canvasHeight;
+  }
+
+  draw() {
+    this.ctx.drawImage(this.spritesheet,
+      this.current.x, this.current.y);
+  }
+
+  update() {
+    this.current.y += 1;
+    if (this.current.y >= this.canvasHeight) {
+      this.current.y = -this.canvasHeight;
+    }
+  }
 }
