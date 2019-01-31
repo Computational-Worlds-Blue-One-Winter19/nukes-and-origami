@@ -1,5 +1,5 @@
 function loadTemplates() {
-  
+
   /***** PROJECTILES: SHAPES AND SPRITES *****/
   projectile.circleBullet = {
     radius: 6,
@@ -257,7 +257,7 @@ ring.spiralAlpha2 = {
       viewTurret: false
     }
   }
-    
+
   ship.player = {
     config: {
       radius: 40,
