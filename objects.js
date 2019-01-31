@@ -50,7 +50,7 @@ function loadTemplates() {
     }
   }
 
-  
+
 
   /***** RING: FIRING PATTERNS *****/
   ring.linearTest = {
@@ -69,7 +69,7 @@ function loadTemplates() {
       targetPlayer: false
     }
   }
-  
+
   ring.spiralAlpha1 = {
     payload: {
       type: projectile.circleBullet,
@@ -89,7 +89,7 @@ function loadTemplates() {
     }
   }
 
-ring.spiralAlpha2 = {
+  ring.spiralAlpha2 = {
     payload: {
       type: projectile.circleBullet,
       speed: 500,
@@ -177,7 +177,7 @@ ring.spiralAlpha2 = {
         duration: 3,
         delay: .5
       }
-    }     
+    }
   }
 
   ring.spreadBeta1 = {
@@ -198,9 +198,9 @@ ring.spiralAlpha2 = {
         duration: 4,
         delay: .5
       }
-    }   
+    }
   }
-  
+
   ring.spreadBeta2 = {
     payload: {
       type: projectile.microBullet,
@@ -221,7 +221,7 @@ ring.spiralAlpha2 = {
         duration: 2,
         delay: 1
       }
-    }     
+    }
   }
 
   ring.spreadBeta3 = {
@@ -244,7 +244,7 @@ ring.spiralAlpha2 = {
         duration: 3,
         delay: .5
       }
-    }     
+    }
   }
 
   ring.spreadBeta4 = {
@@ -267,9 +267,52 @@ ring.spiralAlpha2 = {
         duration: 3,
         delay: .5
       }
-    }     
+    }
   }
-  
+
+  ring.singleTargetPlayer = {
+    payload: {
+      type: projectile.circleBullet,
+      speed: 100,
+      acceleration: 1
+    },
+    firing: {
+      angle: 90,
+      count: 1,
+      loadTime: 0.05,
+      cooldownTime: 2,
+      rapidReload: true,
+      targetPlayer: true,
+      pulse: {
+        duration: 0.5,
+        delay: 0.5
+      },
+    }
+  }
+
+  ring.doubleStraightDownPulse = {
+    payload: {
+      type: projectile.microBullet,
+      speed: 250,
+      acceleration: 1
+    },
+    firing: {
+      spread: 100,
+      radius: 15,
+      angle: 90,
+      count: 5,
+      loadTime: 0.005,
+      cooldownTime: .09,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: true,
+      pulse: {
+        duration: 2,
+        delay: 1
+      }
+    }
+  }
+
   ring.jaredAlpha1 = {
     payload: {
       type: projectile.circleBullet,
@@ -318,7 +361,7 @@ ring.spiralAlpha2 = {
         duration: .75,
         delay: .5
       }
-    }     
+    }
   }
 
   ring.jaredBeta1 = {
@@ -343,8 +386,33 @@ ring.spiralAlpha2 = {
         duration: 3,
         delay: .5
       }
-    }     
+    }
   }
+
+  ring.slowPulseSpiral = {
+      payload: {
+        type: projectile.microBullet,
+        speed: 100,
+        acceleration: 1
+      },
+      rotation: {
+        angle: 720,
+        frequency: 15
+      },
+      firing: {
+        angle: 0,
+        count: 1,
+        loadTime: 0.05,
+        cooldownTime: .01,
+        rapidReload: true,
+        targetPlayer: false,
+        viewTurret: false,
+        // pulse: {
+        //   duration: 2,
+        //   delay: 1
+        // }
+      }
+    }
 
   /***** ENEMY SHIPS *****/
   ship.demoCrane = {
@@ -389,6 +457,74 @@ ring.spiralAlpha2 = {
       hitValue: 5,
       radius: 50,
       sprite: sprite.bat,
+      snapLine: 100,
+      snapLineSpeed: 200,
+      snapLineWait: 1,
+      origin: {
+        x: 500, // omit x to get random position
+        y: -50
+      },
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0,
+      pulse: {
+        duration: 0.5,
+        delay: 2
+      },
+
+      waitOffScreen: 4
+    },
+    weapon: ring.singleTargetPlayer
+  };
+
+  ship.openingBat = {
+    config: {
+      hitValue: 5,
+      radius: 50,
+      sprite: sprite.bat,
+      snapLine: 100,
+      snapLineSpeed: 200,
+      snapLineWait: 1,
+      origin: {
+        x: 500, // omit x to get random position
+        y: -50
+      },
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0,
+      pulse: {
+        duration: 0.5,
+        delay: 2
+      },
+
+      waitOffScreen: 20
+    },
+    weapon: ring.spreadBeta2
+  };
+
+  ship.mediumDoubleTurretBat = {
+    config: {
+      hitValue: 5,
+      radius: 30,
+      sprite: sprite.bat,
+      snapLine: 100,
+      snapLineSpeed: 200,
+      snapLineWait: 1,
+      origin: {
+        x: 500, // omit x to get random position
+        y: -50
+      },
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0,
+
+      waitOffScreen: 70,
+    },
+    weapon: ring.doubleStraightDownPulse
+  };
+
+  ship.easyIdleSpiralCrane = {
+    config: {
+      hitValue: 5,
+      radius: 50,
+      sprite: sprite.crane,
       snapLine: 150,
       snapLineSpeed: 150,
       snapLineWait: 0,
@@ -397,10 +533,13 @@ ring.spiralAlpha2 = {
         y: -50
       },
       weaponsOnEntrance: false,
-      weaponsAdvantage: 0
+      weaponsAdvantage: 0,
+
+      waitOffScreen: 50,
     },
-    weapon: ring.jaredAlpha2
+    weapon: ring.slowPulseSpiral
   };
+
 
   /***** ALL PLAYER THINGS *****/
   projectile.player1 = {
@@ -418,7 +557,7 @@ ring.spiralAlpha2 = {
   ring.player = {
     payload: {
       type: projectile.player1,
-      speed: 500,
+      speed: 600,
       acceleration: 1
     },
     firing: {
@@ -433,9 +572,9 @@ ring.spiralAlpha2 = {
 
   ship.player = {
     config: {
-      radius: 40,
+      radius: 15,
       sprite: sprite.plane,
-      speed: 400
+      speed: 300
     },
     weapon: ring.player
   }
