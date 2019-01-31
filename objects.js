@@ -1,13 +1,37 @@
-/**
-   * Main configuration for various game assets.
-   * An enemy vessel extends Ship and declares a manifest with its attributes.
-   * Attributes include path, weapon assembly, dimension, spritesheet details and hit value. 
-   */
 function loadTemplates() {
-  
-  /** Circle bullet from Nathan. */
+
+  /**
+   * A custom projectile overrides the update method. This is called after the projectile has spawned.
+   * Access origin.x, origin.y, current.x, current.y, that.initialAngle, that.angle, that.speed,
+   * that.acceleration, that.game.clockTick
+   */
+  projectile.testBullet = {
+    radius: 3,
+
+    draw: function (ctx) {
+      ctx.beginPath();
+      ctx.arc(this.current.x, this.current.y, this.config.radius, 0 * Math.PI, 2 * Math.PI);
+      ctx.stroke();
+      ctx.fill();
+    },
+
+    update: function() {
+      // this will override standard behavior
+      let deltaX = this.current.x - this.origin.x;
+      let deltaY = this.current.y - this.origin.y;
+      let r = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+
+      this.angle += toRadians(1);
+      r = 10 * Math.cos(6 * this.angle);
+
+      this.current.x = this.origin.x + r * Math.cos(this.angle);
+      this.current.y = this.origin.y + r * Math.sin(this.angle);
+    }
+  }
+
+  /***** PROJECTILES: SHAPES AND SPRITES *****/
   projectile.circleBullet = {
-    radius: 10,
+    radius: 6,
     draw: function (ctx) {
       ctx.beginPath();
       ctx.arc(this.current.x, this.current.y, this.config.radius, 0 * Math.PI, 2 * Math.PI);
@@ -16,7 +40,36 @@ function loadTemplates() {
     }
   }
 
-  /** A ring is attached to the ship's weapon and fires a payload */
+  projectile.microBullet = {
+    radius: 3,
+    draw: function (ctx) {
+      ctx.beginPath();
+      ctx.arc(this.current.x, this.current.y, this.config.radius, 0 * Math.PI, 2 * Math.PI);
+      ctx.stroke();
+      ctx.fill();
+    }
+  }
+
+
+
+  /***** RING: FIRING PATTERNS *****/
+  ring.linearTest = {
+    payload: {
+      type: projectile.testBullet,
+      speed: 500,
+      acceleration: 1
+    },
+    firing: {
+      radius: 5,
+      count: 1,
+      angle: 90,
+      loadTime: 0.01,
+      cooldownTime: .1,
+      rapidReload: true,
+      targetPlayer: false
+    }
+  }
+
   ring.spiralAlpha1 = {
     payload: {
       type: projectile.circleBullet,
@@ -36,22 +89,29 @@ function loadTemplates() {
     }
   }
 
-ring.spiralAlpha2 = {
+  ring.spiralAlpha2 = {
     payload: {
       type: projectile.circleBullet,
       speed: 500,
       acceleration: 1
     },
     rotation: {
-      angle: 720,
+      angle: 45,
       frequency: 4
     },
     firing: {
-      count: 1,
+      angle: 90,
+      count: 2,
+      spread: 90,
       loadTime: 0.05,
       cooldownTime: .01,
       rapidReload: true,
-      targetPlayer: false
+      targetPlayer: false,
+      viewTurret: true,
+      pulse: {
+        duration: 3,
+        delay: .5
+      }
     }
   }
 
@@ -85,33 +145,276 @@ ring.spiralAlpha2 = {
       frequency: 20
     },
     firing: {
+      angle: 90,
       count: 10,
       loadTime: 0.05,
       cooldownTime: .45,
       rapidReload: true,
-      targetPlayer: false,
+      targetPlayer: true,
       viewTurret: true
     }
   }
 
-  /** The Crane spritesheet configuration */
-  sprite.crane = {
-    default: {
-      image: AM.getAsset('./img/crane-sheet.png'),
-      dimension: {
-        originX: 0,
-        originY: 0,
-        frameWidth: 440,
-        frameHeight: 330,
-        frameCount: 4,
-        timePerFrame: 0.1,
-        scale: 0.3,
-        flip: false
+  ring.fixedSpeed = {
+    payload: {
+      type: projectile.microBullet,
+      speed: 250,
+      acceleration: 1
+    },
+    rotation: {
+      speed: .25
+    },
+    firing: {
+      radius: 80,
+      angle: 90,
+      count: 1,
+      loadTime: 0.005,
+      cooldownTime: .1,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: true,
+      pulse: {
+        duration: 3,
+        delay: .5
       }
     }
   }
 
-  /** The Enemy Crane ship manifest */
+  ring.spreadBeta1 = {
+    payload: {
+      type: projectile.circleBullet,
+      speed: 250,
+      acceleration: 1
+    },
+    firing: {
+      angle: 90,
+      count: 1,
+      loadTime: 0.005,
+      cooldownTime: .1,
+      rapidReload: true,
+      targetPlayer: true,
+      viewTurret: false,
+      pulse: {
+        duration: 4,
+        delay: .5
+      }
+    }
+  }
+
+  ring.spreadBeta2 = {
+    payload: {
+      type: projectile.microBullet,
+      speed: 250,
+      acceleration: 1
+    },
+    firing: {
+      spread: 15,
+      radius: 15,
+      angle: 90,
+      count: 5,
+      loadTime: 0.005,
+      cooldownTime: .09,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: true,
+      pulse: {
+        duration: 2,
+        delay: 1
+      }
+    }
+  }
+
+  ring.spreadBeta3 = {
+    payload: {
+      type: projectile.microBullet,
+      speed: 250,
+      acceleration: 1
+    },
+    firing: {
+      spread: 180,
+      radius: 15,
+      angle: 90,
+      count: 2,
+      loadTime: 0.005,
+      cooldownTime: .09,
+      rapidReload: true,
+      targetPlayer: true,
+      viewTurret: true,
+      pulse: {
+        duration: 3,
+        delay: .5
+      }
+    }
+  }
+
+  ring.spreadBeta4 = {
+    payload: {
+      type: projectile.microBullet,
+      speed: 250,
+      acceleration: 1
+    },
+    firing: {
+      spread: 100,
+      radius: 15,
+      angle: 90,
+      count: 5,
+      loadTime: 0.005,
+      cooldownTime: .09,
+      rapidReload: true,
+      targetPlayer: true,
+      viewTurret: true,
+      pulse: {
+        duration: 3,
+        delay: .5
+      }
+    }
+  }
+
+  ring.singleTargetPlayer = {
+    payload: {
+      type: projectile.circleBullet,
+      speed: 100,
+      acceleration: 1
+    },
+    firing: {
+      angle: 90,
+      count: 1,
+      loadTime: 0.05,
+      cooldownTime: 2,
+      rapidReload: true,
+      targetPlayer: true,
+      pulse: {
+        duration: 0.5,
+        delay: 0.5
+      },
+    }
+  }
+
+  ring.doubleStraightDownPulse = {
+    payload: {
+      type: projectile.microBullet,
+      speed: 250,
+      acceleration: 1
+    },
+    firing: {
+      spread: 100,
+      radius: 15,
+      angle: 90,
+      count: 5,
+      loadTime: 0.005,
+      cooldownTime: .09,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: true,
+      pulse: {
+        duration: 2,
+        delay: 1
+      }
+    }
+  }
+
+  ring.jaredAlpha1 = {
+    payload: {
+      type: projectile.circleBullet,
+      speed: 500,
+      acceleration: 1
+    },
+    rotation: {
+      angle: 45,
+      frequency: 4
+    },
+    firing: {
+      angle: 90,
+      count: 2,
+      spread: 90,
+      loadTime: 0.005,
+      cooldownTime: .01,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: true,
+      pulse: {
+        duration: 3,
+        delay: .5
+      }
+    }
+  }
+
+  ring.jaredAlpha2 = {
+    payload: {
+      type: projectile.microBullet,
+      speed: 500,
+      acceleration: 1
+    },
+    rotation: {
+      speed: .25
+    },
+    firing: {
+      radius: 80,
+      angle: 90,
+      count: 4,
+      loadTime: 0.005,
+      cooldownTime: .01,
+      rapidReload: true,
+      targetPlayer: true,
+      viewTurret: true,
+      pulse: {
+        duration: .75,
+        delay: .5
+      }
+    }
+  }
+
+  ring.jaredBeta1 = {
+    payload: {
+      type: projectile.microBullet,
+      speed: 250,
+      acceleration: 1
+    },
+    rotation: {
+      speed: 1
+    },
+    firing: {
+      radius: 80,
+      angle: 90,
+      count: 1,
+      loadTime: 0.005,
+      cooldownTime: .09,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: true,
+      pulse: {
+        duration: 3,
+        delay: .5
+      }
+    }
+  }
+
+  ring.slowPulseSpiral = {
+      payload: {
+        type: projectile.microBullet,
+        speed: 100,
+        acceleration: 1
+      },
+      rotation: {
+        angle: 720,
+        frequency: 15
+      },
+      firing: {
+        angle: 0,
+        count: 1,
+        loadTime: 0.05,
+        cooldownTime: .01,
+        rapidReload: true,
+        targetPlayer: false,
+        viewTurret: false,
+        // pulse: {
+        //   duration: 2,
+        //   delay: 1
+        // }
+      }
+    }
+
+  /***** ENEMY SHIPS *****/
   ship.demoCrane = {
     config: {
       hitValue: 5,
@@ -146,11 +449,98 @@ ring.spiralAlpha2 = {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0
     },
-    weapon: ring.spiralAlpha1
+    weapon: ring.jaredBeta1
   };
 
-  // Player sprite and ship are defined here, but not compatible with other ships.
-  /** A player bullet small and orange */
+  ship.easyBat = {
+    config: {
+      hitValue: 5,
+      radius: 50,
+      sprite: sprite.bat,
+      snapLine: 100,
+      snapLineSpeed: 200,
+      snapLineWait: 1,
+      origin: {
+        x: 500, // omit x to get random position
+        y: -50
+      },
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0,
+      pulse: {
+        duration: 0.5,
+        delay: 2
+      },
+
+      waitOffScreen: 4
+    },
+    weapon: ring.singleTargetPlayer
+  };
+
+  ship.openingBat = {
+    config: {
+      hitValue: 5,
+      radius: 50,
+      sprite: sprite.bat,
+      snapLine: 100,
+      snapLineSpeed: 200,
+      snapLineWait: 1,
+      origin: {
+        x: 500, // omit x to get random position
+        y: -50
+      },
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0,
+      pulse: {
+        duration: 0.5,
+        delay: 2
+      },
+
+      waitOffScreen: 20
+    },
+    weapon: ring.spreadBeta2
+  };
+
+  ship.mediumDoubleTurretBat = {
+    config: {
+      hitValue: 5,
+      radius: 30,
+      sprite: sprite.bat,
+      snapLine: 100,
+      snapLineSpeed: 200,
+      snapLineWait: 1,
+      origin: {
+        x: 500, // omit x to get random position
+        y: -50
+      },
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0,
+
+      waitOffScreen: 70,
+    },
+    weapon: ring.doubleStraightDownPulse
+  };
+
+  ship.easyIdleSpiralCrane = {
+    config: {
+      hitValue: 5,
+      radius: 50,
+      sprite: sprite.crane,
+      snapLine: 150,
+      snapLineSpeed: 150,
+      snapLineWait: 0,
+      origin: {
+        x: 500, // omit x to get random position
+        y: -50
+      },
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0,
+      waitOffScreen: 40,
+    },
+    weapon: ring.slowPulseSpiral
+  };
+
+
+  /***** ALL PLAYER THINGS *****/
   projectile.player1 = {
     radius: 8,
     draw: function (ctx) {
@@ -166,7 +556,7 @@ ring.spiralAlpha2 = {
   ring.player = {
     payload: {
       type: projectile.player1,
-      speed: 500,
+      speed: 600,
       acceleration: 1
     },
     firing: {
@@ -178,81 +568,12 @@ ring.spiralAlpha2 = {
       viewTurret: false
     }
   }
-  
-  sprite.plane = {
-    default: {
-      image: AM.getAsset('./img/plane.png'),
-      dimension: {
-        originX: 0,
-        originY: 0,
-        frameWidth: 300,
-        frameHeight: 330,
-        frameCount: 1,
-        timePerFrame: 0,
-        scale: 0.2,
-        flip: false
-      }
-    },
-    right: {
-      image: AM.getAsset('./img/plane.png'),
-      dimension: {
-        originX: 300,
-        originY: 0,
-        frameWidth: 300,
-        frameHeight: 330,
-        frameCount: 1,
-        timePerFrame: 0,
-        scale: 0.2,
-        flip: false
-      }
-    },
-    left: {
-      image: AM.getAsset('./img/plane.png'),
-      dimension: {
-        originX: 600,
-        originY: 0,
-        frameWidth: 300,
-        frameHeight: 330,
-        frameCount: 1,
-        timePerFrame: 0,
-        scale: 0.2,
-        flip: false
-      }
-    },
-    rollRight: {
-      image: AM.getAsset('./img/plane.png'),
-      dimension: {
-        originX: 0,
-        originY: 330,
-        frameWidth: 300,
-        frameHeight: 330,
-        frameCount: 8,
-        timePerFrame: 0.07,
-        scale: 0.2,
-        flip: false
-      }
-    },
-    rollLeft: {
-      image: AM.getAsset('./img/plane.png'),
-      dimension: {
-        originX: 0,
-        originY: 660,
-        frameWidth: 300,
-        frameHeight: 330,
-        frameCount: 8,
-        timePerFrame: 0.07,
-        scale: 0.2,
-        flip: false
-      }
-    }
-  }
-  
-  // The default properties for the player ship are defined here.
+
   ship.player = {
     config: {
-      radius: 40,
+      radius: 15,
       sprite: sprite.plane,
-      speed: 400
+      speed: 300
     },
     weapon: ring.player
   }

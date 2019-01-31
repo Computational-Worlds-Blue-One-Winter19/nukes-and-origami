@@ -11,6 +11,7 @@
     <script type="text/javascript" src="./gameboard.js"></script>
     <script type="text/javascript" src="./ship.js"></script>
     <script type="text/javascript" src="./main.js"></script>
+    <script type="text/javascript" src="./sprites.js"></script>
     <script type="text/javascript" src="./objects.js"></script>
 </head>
 <body>
@@ -25,6 +26,65 @@
         <div class="score">
             <h2>Score: </h2>
             <h2 id="user-score">0</h2>
+        </div>
+        <div class="controls">
+            <div class="key-container">
+                <div class="key special space-key">
+                    <span>
+                        Space   
+                    </span>
+                </div>
+                <span class="control-description">Shoot Bullets</span>
+            </div>
+            <div class="key-container">
+                <div class="key special">
+                    <span>
+                        P   
+                    </span>
+                </div>
+                <span class="control-description">Pause / Resume Game</span>
+            </div>
+            <div class="key-container">
+                <div class="key special">
+                    <span>
+                        &larr;
+                    </span>
+                </div>
+                <span class="control-description">Move Left</span>
+            </div>
+            <div class="key-container">
+                <div class="key special">
+                    <span>
+                        &uarr;
+                    </span>
+                </div>
+                <span class="control-description">Move Up</span>
+            </div>
+            <div class="key-container">
+                <div class="key special">
+                    <span>
+                        &rarr;   
+                    </span>
+                </div>
+                <span class="control-description">Move Right</span>
+            </div>
+            <div class="key-container">
+                <div class="key special">
+                    <span>
+                        &darr;   
+                    </span>
+                </div>
+                <span class="control-description">Move Down</span>
+            </div>
+            <div class="key-container">
+                <!-- <div class="key special">
+                    <span>
+                        &larr;  
+                    </span>
+                </div> -->
+                <span class="control-description">Double Tap Left or Right to Roll</span>
+            </div>
+            
         </div>
         <div class="overlay" id="pause-message">
             <p>Paused</p>
