@@ -589,13 +589,15 @@ class Ring {
     this.payload = manifest.payload;
     this.rotation = manifest.rotation;
     this.firing = manifest.firing;
-  
-    // Functionality specific to CircleTargetWeapon
-    this.baseAngle = toRadians(manifest.firing.angle) || 0;
-    this.spacing = 2 * Math.PI / this.firing.count;
-    this.bay = [];
     this.radius = manifest.firing.radius || this.owner.config.radius;
-    
+    this.bay = [];
+
+    // compute spacing and adjust base angle
+    this.spread = toRadians(manifest.firing.spread) || 0;
+    this.baseAngle = toRadians(manifest.firing.angle) || 0;
+    this.baseAngle -= this.spread/2;
+    this.spacing = this.spread / (this.firing.count - 1) || 0;
+        
     // set firing parameters
     this.loadTime = this.firing.loadTime;
     this.coolTime = this.firing.cooldownTime;

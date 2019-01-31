@@ -11,6 +11,16 @@ function loadTemplates() {
     }
   }
 
+  projectile.microBullet = {
+    radius: 3,
+    draw: function (ctx) {
+      ctx.beginPath();
+      ctx.arc(this.current.x, this.current.y, this.config.radius, 0 * Math.PI, 2 * Math.PI);
+      ctx.stroke();
+      ctx.fill();
+    }
+  }
+
   /***** RING: FIRING PATTERNS *****/
   ring.spiralAlpha1 = {
     payload: {
@@ -90,28 +100,7 @@ ring.spiralAlpha2 = {
     }
   }
 
-  ring.uniLinear = {
-    payload: {
-      type: projectile.circleBullet,
-      speed: 250,
-      acceleration: 1
-    },
-    firing: {
-      angle: 90,
-      count: 1,
-      loadTime: 0.005,
-      cooldownTime: .1,
-      rapidReload: true,
-      targetPlayer: true,
-      viewTurret: false,
-      pulse: {
-        duration: 4,
-        delay: .5
-      }
-    }    
-  }
-
-  ring.uniLinear = {
+  ring.spreadBeta1 = {
     payload: {
       type: projectile.circleBullet,
       speed: 250,
@@ -132,13 +121,60 @@ ring.spiralAlpha2 = {
     }   
   }
   
-  ring.uniLinear2 = {
+  ring.spreadBeta2 = {
     payload: {
-      type: projectile.circleBullet,
+      type: projectile.microBullet,
       speed: 250,
       acceleration: 1
     },
     firing: {
+      spread: 15,
+      radius: 15,
+      angle: 90,
+      count: 5,
+      loadTime: 0.005,
+      cooldownTime: .09,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: true,
+      pulse: {
+        duration: 2,
+        delay: 1
+      }
+    }     
+  }
+
+  ring.spreadBeta3 = {
+    payload: {
+      type: projectile.microBullet,
+      speed: 250,
+      acceleration: 1
+    },
+    firing: {
+      spread: 180,
+      radius: 15,
+      angle: 90,
+      count: 2,
+      loadTime: 0.005,
+      cooldownTime: .09,
+      rapidReload: true,
+      targetPlayer: true,
+      viewTurret: true,
+      pulse: {
+        duration: 3,
+        delay: .5
+      }
+    }     
+  }
+
+  ring.spreadBeta4 = {
+    payload: {
+      type: projectile.microBullet,
+      speed: 250,
+      acceleration: 1
+    },
+    firing: {
+      spread: 100,
       radius: 15,
       angle: 90,
       count: 5,
@@ -148,12 +184,11 @@ ring.spiralAlpha2 = {
       targetPlayer: true,
       viewTurret: true,
       pulse: {
-        duration: 7,
-        delay: 1
+        duration: 3,
+        delay: .5
       }
     }     
   }
-
 
   /***** ENEMY SHIPS *****/
   ship.demoCrane = {
@@ -190,7 +225,7 @@ ring.spiralAlpha2 = {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0
     },
-    weapon: ring.uniLinear2
+    weapon: ring.spreadBeta3
   };
 
 
