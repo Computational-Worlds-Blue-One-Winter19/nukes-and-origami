@@ -131,8 +131,7 @@ div.key > span {
 	cursor: pointer;
 }
 
-div.key > span:hover
-{
+div.key > span:hover {
 	background-color: #75b4fb;
 	border: 1px solid #5a88c5;
 	color: #fff;
@@ -143,29 +142,22 @@ div.key > span:hover
 	cursor: pointer;
 }
 
-div.key > span:active
-{
+div.key > span:active {
 	margin-top: 2px;
 	box-shadow: none;
 	-moz-box-shadow: none;
 	-webkit-box-shadow: none;
 }
 
-div.key.special > span
-{
+div.key.special > span {
 	padding-top: 6px;
 	font-size: 20px;
 }
 
-div.key.icon > span
-{
+div.key.icon > span {
 	font-size: 14px;
 }
+
 center > h4 {
      margin-top: 50px; 
 }
-
-ul#keys-freebie { display: table; list-style: none; margin: 0 auto; padding: 0; }
-ul#keys-freebie > li { float: left; margin-right: 20px; margin-bottom: 20px; padding: 10px 10px; }
-ul#keys-freebie > li:last-child { margin-right: 0; }
-ul#keys-freebie > li > span { margin-bottom: 10px; }
