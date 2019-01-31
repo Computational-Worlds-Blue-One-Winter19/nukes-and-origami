@@ -452,7 +452,7 @@ function loadTemplates() {
     weapon: ring.jaredBeta1
   };
 
-  ship.idleBat = {
+  ship.easyBat = {
     config: {
       hitValue: 5,
       radius: 50,
@@ -535,7 +535,7 @@ function loadTemplates() {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
 
-      waitOffScreen: 50,
+      waitOffScreen: 40,
     },
     weapon: ring.slowPulseSpiral
   };
