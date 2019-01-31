@@ -10,7 +10,7 @@ const projectile = {};
 AM.queueDownload('./img/crane-sheet.png');
 AM.queueDownload('./img/plane.png');
 AM.queueDownload('./img/purple_plane.png');
-AM.queueDownload('./img/spacebg.png');
+AM.queueDownload('./img/notebook.png');
 AM.queueDownload('./img/paper-wallpaper.png');
 AM.queueDownload('./img/lined-paper.png');
 AM.queueDownload('./img/bullet.png');
@@ -88,11 +88,16 @@ class NukesAndOrigami extends GameEngine {
 AM.downloadAll(() => {
   const canvas = document.getElementById('gameWorld');
   const ctx = canvas.getContext('2d');
-  
   loadTemplates();
   const game = new NukesAndOrigami();
+
+  var point1 = {x: 0, y: 0};
+  var point2 = {x: 0, y: -canvas.height};
+
   game.showOutlines = false;
   game.init(ctx);
+  game.addEntity(new Background(game, AM.getAsset('./img/notebook.png'), canvas.height, point1));
+  game.addEntity(new Background(game, AM.getAsset('./img/notebook.png'), canvas.height, point2));
   game.spawnPlayer();
   game.start();
   game.spawnEnemy();
@@ -119,28 +124,27 @@ function toRadians(angle) {
 
 // We should get back to this stuff for narration and background
 
-// class Background extends Entity {
-//   constructor(game, spritesheet, xCoordinate, yCoordinate) {
-//     super(game, xCoordinate, yCoordinate);
-//     this.x = xCoordinate;
-//     this.y = yCoordinate;
-//     this.spritesheet = spritesheet;
-//     this.game = game;
-//     this.ctx = game.ctx;
-//   }
+class Background extends Entity {
+  constructor(game, spritesheet, canvasHeight, point) {
+    super(game, point);
+    this.spritesheet = spritesheet;
+    this.game = game;
+    this.ctx = game.ctx;
+    this.canvasHeight = canvasHeight;
+  }
 
-//   draw() {
-//     this.ctx.drawImage(this.spritesheet,
-//       this.x, this.y);
-//   }
+  draw() {
+    this.ctx.drawImage(this.spritesheet,
+      this.current.x, this.current.y);
+  }
 
-//   update() {
-//     this.y += 5;
-//     if (this.y === screenWidth) {
-//       this.y = -screenWidth;
-//     }
-//   }
-// }
+  update() {
+    this.current.y += 5;
+    if (this.current.y >= this.canvasHeight) {
+      this.current.y = -this.canvasHeight;
+    }
+  }
+}
 
 // class Slippy extends Entity {
 //   constructor(game, spritesheet) {
