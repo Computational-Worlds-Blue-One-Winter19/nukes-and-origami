@@ -273,7 +273,7 @@ ring.spiralAlpha2 = {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0
     },
-    weapon: ring.linearTest
+    weapon: ring.spreadBeta2
   };
 
 
