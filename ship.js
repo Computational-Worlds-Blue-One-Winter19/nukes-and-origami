@@ -559,6 +559,7 @@ class Projectile extends Entity {
     this.speed = manifest.payload.speed;
     this.acceleration = manifest.payload.acceleration;
     this.draw = manifest.payload.type.draw;
+    this.customUpdate = manifest.payload.type.update;
     this.playerShot = (this.owner === game.player);    
   }
 
@@ -566,12 +567,18 @@ class Projectile extends Entity {
     if (this.isOutsideScreen()) {
       this.removeFromWorld = true;
     } else if (this.isSpawned) {
-      this.speed *= this.acceleration;
-      this.speedX = this.speed * Math.cos(this.angle);
-      this.speedY = this.speed * Math.sin(this.angle);
 
-      this.current.x += this.speedX * this.game.clockTick;
-      this.current.y += this.speedY * this.game.clockTick;
+      if (this.customUpdate) {
+        this.customUpdate(this);
+      } else {
+        this.speed *= this.acceleration;
+        this.speedX = this.speed * Math.cos(this.angle);
+        this.speedY = this.speed * Math.sin(this.angle);
+  
+        this.current.x += this.speedX * this.game.clockTick;
+        this.current.y += this.speedY * this.game.clockTick;
+      }
+      
     } else {
       // adjust position relative to turret
       if (this.rotation) {
@@ -581,8 +588,8 @@ class Projectile extends Entity {
         //console.log('delta:' + delta);
       } 
       let point = this.owner.weapon.getTurretPosition(this.angle);
-      this.current.x = point.x;
-      this.current.y = point.y;
+      this.current = point;
+      this.origin = point;
     }
   }
   

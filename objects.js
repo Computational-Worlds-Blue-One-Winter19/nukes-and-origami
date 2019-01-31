@@ -1,5 +1,34 @@
 function loadTemplates() {
 
+  /**
+   * A custom projectile overrides the update method. This is called after the projectile has spawned.
+   * Access origin.x, origin.y, current.x, current.y, that.initialAngle, that.angle, that.speed,
+   * that.acceleration, that.game.clockTick
+   */
+  projectile.testBullet = {
+    radius: 3,
+
+    draw: function (ctx) {
+      ctx.beginPath();
+      ctx.arc(this.current.x, this.current.y, this.config.radius, 0 * Math.PI, 2 * Math.PI);
+      ctx.stroke();
+      ctx.fill();
+    },
+
+    update: function() {
+      // this will override standard behavior
+      let deltaX = this.current.x - this.origin.x;
+      let deltaY = this.current.y - this.origin.y;
+      let r = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+
+      this.angle += toRadians(1);
+      r = 10 * Math.cos(6 * this.angle);
+
+      this.current.x = this.origin.x + r * Math.cos(this.angle);
+      this.current.y = this.origin.y + r * Math.sin(this.angle);
+    }
+  }
+
   /***** PROJECTILES: SHAPES AND SPRITES *****/
   projectile.circleBullet = {
     radius: 6,
@@ -21,7 +50,26 @@ function loadTemplates() {
     }
   }
 
+  
+
   /***** RING: FIRING PATTERNS *****/
+  ring.linearTest = {
+    payload: {
+      type: projectile.testBullet,
+      speed: 500,
+      acceleration: 1
+    },
+    firing: {
+      radius: 5,
+      count: 1,
+      angle: 90,
+      loadTime: 0.01,
+      cooldownTime: .1,
+      rapidReload: true,
+      targetPlayer: false
+    }
+  }
+  
   ring.spiralAlpha1 = {
     payload: {
       type: projectile.circleBullet,
@@ -225,7 +273,7 @@ ring.spiralAlpha2 = {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0
     },
-    weapon: ring.spreadBeta3
+    weapon: ring.linearTest
   };
 
 
