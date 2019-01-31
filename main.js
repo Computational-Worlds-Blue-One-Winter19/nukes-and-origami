@@ -59,8 +59,9 @@ class NukesAndOrigami extends GameEngine {
     //crane1.initializePath([[180, 100, 5], [0, 100, 5]]);
     //crane2.initializePath([[90,25,60]]);
     
-    let crane1 = new Ship(this, ship.idleCrane);
-    this.addEntity(crane1);
+    //let crane1 = new Ship(this, ship.idleCrane);
+    
+    this.addEntity(new Ship(this, ship.idleBat));
     //this.addEntity(crane2);
   }
 
@@ -94,6 +95,7 @@ AM.downloadAll(() => {
   game.start();
   game.spawnEnemy();
   console.log('All Done!');
+  canvas.focus();
 });
 
 /** Global helpers (could go elsewhere) */
