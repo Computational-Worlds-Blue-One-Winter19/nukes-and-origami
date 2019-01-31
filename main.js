@@ -7,17 +7,13 @@ const ship = {};
 const projectile = {};
 
 /** These are the image assets declared by filename */
+AM.queueDownload('./img/bat-sheet.png');
 AM.queueDownload('./img/crane-sheet.png');
 AM.queueDownload('./img/plane.png');
 AM.queueDownload('./img/spacebg.png');
 AM.queueDownload('./img/paper-wallpaper.png');
 AM.queueDownload('./img/lined-paper.png');
 AM.queueDownload('./img/bullet.png');
-AM.queueDownload('./img/slippy_roll.png');
-AM.queueDownload('./img/slippy_end.png');
-AM.queueDownload('./img/slippy_greatjob.png');
-AM.queueDownload('./img/slippy_inbound.png');
-AM.queueDownload('./img/slippy_mission_done.png');
 AM.queueDownload('./img/nuke_single.png');
 
 /**

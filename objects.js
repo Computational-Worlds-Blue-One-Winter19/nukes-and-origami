@@ -214,7 +214,7 @@ ring.spiralAlpha2 = {
     config: {
       hitValue: 5,
       radius: 50,
-      sprite: sprite.crane,
+      sprite: sprite.bat,
       snapLine: 150,
       snapLineSpeed: 150,
       snapLineWait: 0,

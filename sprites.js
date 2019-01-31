@@ -17,6 +17,23 @@ function loadSpriteSheets() {
     }
   }
 
+  /** The Crane spritesheet configuration */
+  sprite.bat = {
+    default: {
+      image: AM.getAsset('./img/bat-sheet.png'),
+      dimension: {
+        originX: 0,
+        originY: 0,
+        frameWidth: 330,
+        frameHeight: 190,
+        frameCount: 4,
+        timePerFrame: 0.1,
+        scale: 0.3,
+        flip: false
+      }
+    }
+  }
+
   /** The Player Plane SpriteSheet */
   sprite.plane = {
     default: {
