@@ -336,7 +336,10 @@ class Plane extends Entity {
     // specific to shooting
     this.timeSinceLastSpacePress = 0;
     this.fireRate = 0.25;
-
+    this.invincTime = 0;
+    this.invincDuration = 2;
+    this.invincCtr = 0;
+    this.blinking = false;
     this.idleCount = 0;
   }
 
@@ -350,6 +353,14 @@ class Plane extends Entity {
       this.current.x = Math.min(this.current.x, this.game.surfaceWidth - this.config.radius);
       this.current.y = Math.max(this.current.y, this.config.radius);
       this.current.y = Math.min(this.current.y, this.game.surfaceHeight - this.config.radius);
+    }
+
+    if(this.invincTime != 0 && this.invincTime < this.invincDuration)  {
+      this.invincTime += this.game.clockTick;
+      //TODO: CHANGE SPRITE??
+    } else if (this.invincTime > this.invincDuration) {
+      this.invincTime = 0;
+      //TODO: CHANGE SPRITE BACK TO NORMAL??
     }
 
     if (this.weapon) {
@@ -479,7 +490,18 @@ class Plane extends Entity {
   }
 
   draw() {
-    this.sprite.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
+    if(this.invincTime > 0) {
+      this.invincCtr += this.game.clockTick;
+      if(this.invincCtr > 0.08) {
+        
+        this.blinking = !this.blinking;
+        this.invincCtr = 0;
+      }
+    }
+    if(!this.blinking)  {
+      this.sprite.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
+    }
+
     this.weapon.draw();
     super.draw();
   }
