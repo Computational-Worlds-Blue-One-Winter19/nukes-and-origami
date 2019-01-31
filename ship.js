@@ -121,7 +121,7 @@ class Ship extends Entity {
     // set parameters
     this.config = manifest.config;
     this.snapLine = this.config.snapLine;
-    
+
     // additional fields
     this.idleTrans = false;
     this.idleCount = 0;
@@ -137,7 +137,9 @@ class Ship extends Entity {
   }
 
   update() {
-    if (this.snapLine) {
+    if (this.config.waitOffScreen > 0) {
+      this.config.waitOffScreen -= this.game.clockTick;
+    } else if (this.snapLine) {
       // we are enroute to the snapLine
       this.updateSnapPath();
     } else {
@@ -207,10 +209,13 @@ class Ship extends Entity {
           // update heading and speed
           const newCourse = this.path[this.path.currentStep];
 
-          this.current.angle = newCourse[0] * Math.PI / 180;
-          this.current.speed = newCourse[1];
-          this.path.targetTime = newCourse[2];
-          this.path.elapsedTime = 0;
+          // To not error when we get to the end of the path.
+          if (newCourse) {
+            this.current.angle = newCourse[0] * Math.PI / 180;
+            this.current.speed = newCourse[1];
+            this.path.targetTime = newCourse[2];
+            this.path.elapsedTime = 0;
+          }
         }
       } else if (this.current.speed) {
         // advance along path
@@ -318,7 +323,7 @@ class Plane extends Entity {
     if (manifest.weapon) {
       this.weapon = new Ring(this, manifest.weapon);
     }
-        
+
     // initial parameters
     this.sprite = this.idle;
     this.game = game;
@@ -366,7 +371,7 @@ class Plane extends Entity {
     if (this.weapon) {
       this.weapon.update();
     }
-    
+
 
     // Check if the plane has been hit by an enemy projectile
     this.updateCollisionDetection();
@@ -493,7 +498,7 @@ class Plane extends Entity {
     if(this.invincTime > 0) {
       this.invincCtr += this.game.clockTick;
       if(this.invincCtr > 0.08) {
-        
+
         this.blinking = !this.blinking;
         this.invincCtr = 0;
       }
@@ -534,8 +539,8 @@ class Plane extends Entity {
   }
 }
 
-/** 
- * A simple parent class for projectiles. 
+/**
+ * A simple parent class for projectiles.
  * */
 class Projectile extends Entity {
   constructor(game, manifest) {
@@ -574,7 +579,7 @@ class Projectile extends Entity {
       this.current.y += this.speedY * this.game.clockTick;
     }
   }
-  
+
   // default draw is used for sprite animations where draw() is not overriden
   draw() {
     this.ctx.save();
@@ -584,7 +589,7 @@ class Projectile extends Entity {
       this.ctx.rotate(this.angle);
       this.ctx.translate(-this.current.x, -this.current.y);
     }
-    
+
     this.sprite.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
     this.ctx.restore();
     super.draw();
@@ -630,10 +635,10 @@ class Ring {
     // set firing parameters
     this.loadTime = this.firing.loadTime;
     this.coolTime = this.firing.cooldownTime;
-        
+
     if (this.firing.pulse) {
       this.activeTime = this.firing.pulse.duration;
-      this.waitTime = this.firing.pulse.delay;      
+      this.waitTime = this.firing.pulse.delay;
     } else {
       this.activeTime = Infinity;
       this.waitTime = 0;
@@ -650,7 +655,7 @@ class Ring {
 
   update() {
     this.elapsedTime += this.owner.game.clockTick;
-    
+
     // update active time counter
     if (!this.isWaiting) {
       this.elapsedActiveTime += this.elapsedTime;
@@ -703,11 +708,11 @@ class Ring {
       this.elapsedTime = 0;
     }
   }
-  
+
   draw() {
     if (this.firing.viewTurret) {
       const ctx = this.owner.game.ctx;
-      
+
       for (let projectile of this.bay) {
         projectile.draw(ctx);
       }
@@ -756,7 +761,7 @@ class Ring {
         let turretAngle = this.currentAngle + i * this.spacing;
         this.loadNext(this.getTurretPosition(turretAngle), turretAngle);
       }
-    } 
+    }
   }
 
   loadNext(origin, angle) {
