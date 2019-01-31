@@ -137,7 +137,9 @@ class Ship extends Entity {
   }
 
   update() {
-    if (this.snapLine) {
+    if (this.config.waitOffScreen > 0) {
+      this.config.waitOffScreen -= this.game.clockTick;
+    } else if (this.snapLine) {
       // we are enroute to the snapLine
       this.updateSnapPath();
     } else {
@@ -534,8 +536,8 @@ class Plane extends Entity {
   }
 }
 
-/** 
- * A simple parent class for projectiles. 
+/**
+ * A simple parent class for projectiles.
  * */
 class Projectile extends Entity {
   constructor(game, manifest) {
@@ -559,7 +561,7 @@ class Projectile extends Entity {
     this.speed = manifest.payload.speed;
     this.acceleration = manifest.payload.acceleration;
     this.draw = manifest.payload.type.draw;
-    this.playerShot = (this.owner === game.player);    
+    this.playerShot = (this.owner === game.player);
   }
 
   update() {
@@ -579,7 +581,7 @@ class Projectile extends Entity {
         this.angle = this.initialAngle + delta;
         //this.angle += toRadians(55);
         //console.log('delta:' + delta);
-      } 
+      }
       let point = this.owner.weapon.getTurretPosition(this.angle);
       this.current.x = point.x;
       this.current.y = point.y;
@@ -626,7 +628,7 @@ class Ring {
         
     if (this.firing.pulse) {
       this.activeTime = this.firing.pulse.duration;
-      this.waitTime = this.firing.pulse.delay;      
+      this.waitTime = this.firing.pulse.delay;
     } else {
       this.activeTime = Infinity;
       this.waitTime = 0;
@@ -705,7 +707,7 @@ class Ring {
         const target = this.getPlayerHeading(projectile.origin.x, projectile.origin.y);
         projectile.angle = target.angle;
         projectile.distance = target.distance;
-      } 
+      }
 
       projectile.isSpawned = true;
       this.owner.game.addEntity(projectile);
@@ -734,7 +736,7 @@ class Ring {
       for (let i = 0; i < this.firing.count; i++) {
         this.loadNext();
       }
-    } 
+    }
   }
 
   loadNext() {

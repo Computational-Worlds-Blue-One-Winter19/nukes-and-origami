@@ -29,13 +29,16 @@ class NukesAndOrigami extends GameEngine {
     this.score = 0;
 
     // Initilize the game board
-    initializeScoreBoardLives(this.lives)
+    initializeScoreBoardLives(this.lives);
   }
 
   // notification of ship destruction.
   onEnemyDestruction(enemy) {
     this.increaseScoreBy(enemy.config.hitValue);
-    this.spawnEnemy();
+    
+    // Commented out because all enemies are loaded in at once
+    // and held off screen.
+    // this.spawnEnemy();
   }
 
   // notification of player destruction.
@@ -46,13 +49,48 @@ class NukesAndOrigami extends GameEngine {
       removeLifeFromBoard()
       player.invincTime += this.clockTick;
     }
-    if (this.lives === 0) { // game over 
+    if (this.lives === 0) { // game over
       //this.gameOver()
-    } 
+    }
+  }
+  
+  spawnEnemies() {
+    // Slowly strafe right off screen
+    let strafeRight = [[0, 50, 20]];
+    
+    // Slowly strafe left off screen
+    let strafeLeft = [[180, 50, 20]];
+    
+    // Advance down then down-right
+    let cornerRight = [[90, 50, 2], [45, 50, 10]];
+    
+    // Advance down then down-left
+    let cornerLeft = [[90, 50, 2], [135, 50, 10]];
+    
+    let ezCrane1 = new Ship(this, ship.easyCrane);
+    let ezCrane2 = new Ship(this, ship.easyCrane);
+    
+    ezCrane1.initializePath(strafeRight);
+    ezCrane1.config.origin.x = 200;
+    
+    ship.easyCrane.config.waitOffScreen = 2;
+    
+    ezCrane2.initializePath(strafeLeft);
+    ezCrane2.config.origin.x = 600;
+    
+    
+    this.addEntity(ezCrane1);
+    this.addEntity(ezCrane2);
+    let ezCrane3 = new Ship(this, ship.easyDoubleTurretCrane);
+    let ezCrane4 = new Ship(this, ship.easyDoubleTurretCrane);
+    
+    ezCrane3.initializePath(strafeRight)
   }
 
   // eventually this should be scripted.
   spawnEnemy() {
+    
+    
     //path: [[180, 100, 5], [0, 100, 5], [180, 100, 5], [0, 100, 5], [90, 100, 60]];
     
     //let crane2 = new Ship(this, ship.demoCrane);
@@ -72,7 +110,7 @@ class NukesAndOrigami extends GameEngine {
 
   /**
    * Increases the current player's score by the given value
-   * @param {Int} value 
+   * @param {Int} value
    */
   increaseScoreBy(value) {
     this.score += value;
@@ -92,7 +130,8 @@ AM.downloadAll(() => {
   game.init(ctx);
   game.spawnPlayer();
   game.start();
-  game.spawnEnemy();
+  // game.spawnEnemy();
+  game.spawnEnemies();
   console.log('All Done!');
 });
 
