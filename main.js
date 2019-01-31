@@ -139,7 +139,7 @@ class Background extends Entity {
   }
 
   update() {
-    this.current.y += 5;
+    this.current.y += 1;
     if (this.current.y >= this.canvasHeight) {
       this.current.y = -this.canvasHeight;
     }
