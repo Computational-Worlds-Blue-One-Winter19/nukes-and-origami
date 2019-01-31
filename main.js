@@ -35,7 +35,7 @@ class NukesAndOrigami extends GameEngine {
   // notification of ship destruction.
   onEnemyDestruction(enemy) {
     this.increaseScoreBy(enemy.config.hitValue);
-    
+
     // Commented out because all enemies are loaded in at once
     // and held off screen.
     // this.spawnEnemy();
@@ -53,50 +53,85 @@ class NukesAndOrigami extends GameEngine {
       //this.gameOver()
     }
   }
-  
+
   spawnEnemies() {
     // Slowly strafe right off screen
     let strafeRight = [[0, 50, 20]];
-    
+
     // Slowly strafe left off screen
     let strafeLeft = [[180, 50, 20]];
-    
-    // Advance down then down-right
-    let cornerRight = [[90, 50, 2], [45, 50, 10]];
-    
-    // Advance down then down-left
-    let cornerLeft = [[90, 50, 2], [135, 50, 10]];
-    
-    let ezCrane1 = new Ship(this, ship.easyCrane);
-    let ezCrane2 = new Ship(this, ship.easyCrane);
-    
-    ezCrane1.initializePath(strafeRight);
-    ezCrane1.config.origin.x = 200;
-    
-    ship.easyCrane.config.waitOffScreen = 2;
-    
-    ezCrane2.initializePath(strafeLeft);
-    ezCrane2.config.origin.x = 600;
-    
-    
-    this.addEntity(ezCrane1);
-    this.addEntity(ezCrane2);
-    let ezCrane3 = new Ship(this, ship.easyDoubleTurretCrane);
-    let ezCrane4 = new Ship(this, ship.easyDoubleTurretCrane);
-    
-    ezCrane3.initializePath(strafeRight)
+
+    // Advance down, then left, then southeast
+    let cornerRight = [[90, 50, 2], [180, 50, 2], [45, 50, 30]];
+
+    // Advance down, then right, then southwest
+    let cornerLeft = [[90, 50, 2], [0, 50, 2], [135, 50, 30]];
+
+    // WAVE 1
+
+    let ezBat1 = new Ship(this, ship.easyBat);
+    let ezBat2 = new Ship(this, ship.easyBat);
+
+    // Object.assign assigns a copy of the array.
+    ezBat1.initializePath(Object.assign({}, strafeRight));
+    ezBat1.current.x = 200;
+
+    ezBat2.initializePath(Object.assign({}, strafeLeft));
+    ezBat2.current.x = 800;
+
+    this.addEntity(ezBat1);
+    this.addEntity(ezBat2);
+
+    // WAVE 2
+
+    let openingBat1 = new Ship(this, ship.openingBat);
+    let openingbat2 = new Ship(this, ship.openingBat);
+
+    // Object.assign assigns a copy of the array.
+    openingBat1.initializePath(Object.assign({}, strafeRight));
+    openingBat1.current.x = 200;
+
+    openingbat2.initializePath(Object.assign({}, strafeLeft));
+    openingbat2.current.x = 800;
+
+    this.addEntity(openingBat1);
+    this.addEntity(openingbat2);
+
+    // WAVE 3
+
+    let spiralCrane1 = new Ship(this, Object.assign({}, ship.easyIdleSpiralCrane));
+    let spiralCrane2 = new Ship(this, Object.assign({}, ship.easyIdleSpiralCrane));
+
+    spiralCrane1.current.x = 200;
+
+    spiralCrane2.current.x = 800;
+
+    this.addEntity(spiralCrane1);
+    this.addEntity(spiralCrane2);
+
+    // WAVE 3
+
+    let doubleBat1 = new Ship(this, Object.assign({}, ship.mediumDoubleTurretBat));
+    let doubleBat2 = new Ship(this, Object.assign({}, ship.mediumDoubleTurretBat));
+
+    doubleBat1.initializePath(Object.assign({}, cornerRight));
+
+    doubleBat2.initializePath(Object.assign({}, cornerLeft));
+
+    this.addEntity(doubleBat1);
+    this.addEntity(doubleBat2);
   }
 
   // eventually this should be scripted.
   spawnEnemy() {
-    
-    
+
+
     //path: [[180, 100, 5], [0, 100, 5], [180, 100, 5], [0, 100, 5], [90, 100, 60]];
-    
+
     //let crane2 = new Ship(this, ship.demoCrane);
     //crane1.initializePath([[180, 100, 5], [0, 100, 5]]);
     //crane2.initializePath([[90,25,60]]);
-    
+
     let crane1 = new Ship(this, ship.idleCrane);
     this.addEntity(crane1);
     //this.addEntity(crane2);
@@ -122,10 +157,10 @@ class NukesAndOrigami extends GameEngine {
 AM.downloadAll(() => {
   const canvas = document.getElementById('gameWorld');
   const ctx = canvas.getContext('2d');
-  
+
   loadSpriteSheets();
   loadTemplates();
-  
+
   const game = new NukesAndOrigami();
   game.init(ctx);
   game.spawnPlayer();

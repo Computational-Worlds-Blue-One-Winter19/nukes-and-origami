@@ -120,7 +120,7 @@ function loadTemplates() {
       }
     }
   }
-  
+
   ring.spreadBeta2 = {
     payload: {
       type: projectile.microBullet,
@@ -189,7 +189,7 @@ function loadTemplates() {
       }
     }
   }
-  
+
   ring.singleTargetPlayer = {
     payload: {
       type: projectile.circleBullet,
@@ -202,10 +202,14 @@ function loadTemplates() {
       loadTime: 0.05,
       cooldownTime: 2,
       rapidReload: true,
-      targetPlayer: true
+      targetPlayer: true,
+      pulse: {
+        duration: 0.5,
+        delay: 0.5
+      },
     }
   }
-  
+
   ring.doubleStraightDownPulse = {
     payload: {
       type: projectile.microBullet,
@@ -228,6 +232,31 @@ function loadTemplates() {
       }
     }
   }
+
+  ring.slowPulseSpiral = {
+      payload: {
+        type: projectile.microBullet,
+        speed: 100,
+        acceleration: 1
+      },
+      rotation: {
+        angle: 720,
+        frequency: 15
+      },
+      firing: {
+        angle: 0,
+        count: 1,
+        loadTime: 0.05,
+        cooldownTime: .01,
+        rapidReload: true,
+        targetPlayer: false,
+        viewTurret: false,
+        // pulse: {
+        //   duration: 2,
+        //   delay: 1
+        // }
+      }
+    }
 
   /***** ENEMY SHIPS *****/
   ship.demoCrane = {
@@ -266,27 +295,8 @@ function loadTemplates() {
     },
     weapon: ring.spreadBeta3
   };
-  
-  ship.easyCrane = {
-    config: {
-      hitValue: 5,
-      radius: 50,
-      sprite: sprite.crane,
-      snapLine: 100,
-      snapLineSpeed: 200,
-      snapLineWait: 1,
-      origin: {
-        x: 500, // omit x to get random position
-        y: -50
-      },
-      weaponsOnEntrance: false,
-      weaponsAdvantage: 0,
-      
-    },
-    weapon: ring.singleTargetPlayer
-  };
-  
-  ship.easyDoubleTurretCrane = {
+
+  ship.easyBat = {
     config: {
       hitValue: 5,
       radius: 50,
@@ -300,11 +310,80 @@ function loadTemplates() {
       },
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
-      
+      pulse: {
+        duration: 0.5,
+        delay: 2
+      },
+
+      waitOffScreen: 4
     },
     weapon: ring.singleTargetPlayer
   };
-  
+
+  ship.openingBat = {
+    config: {
+      hitValue: 5,
+      radius: 50,
+      sprite: sprite.bat,
+      snapLine: 100,
+      snapLineSpeed: 200,
+      snapLineWait: 1,
+      origin: {
+        x: 500, // omit x to get random position
+        y: -50
+      },
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0,
+      pulse: {
+        duration: 0.5,
+        delay: 2
+      },
+
+      waitOffScreen: 20
+    },
+    weapon: ring.spreadBeta2
+  };
+
+  ship.mediumDoubleTurretBat = {
+    config: {
+      hitValue: 5,
+      radius: 30,
+      sprite: sprite.bat,
+      snapLine: 100,
+      snapLineSpeed: 200,
+      snapLineWait: 1,
+      origin: {
+        x: 500, // omit x to get random position
+        y: -50
+      },
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0,
+
+      waitOffScreen: 70,
+    },
+    weapon: ring.doubleStraightDownPulse
+  };
+
+  ship.easyIdleSpiralCrane = {
+    config: {
+      hitValue: 5,
+      radius: 50,
+      sprite: sprite.crane,
+      snapLine: 150,
+      snapLineSpeed: 150,
+      snapLineWait: 0,
+      origin: {
+        x: 500, // omit x to get random position
+        y: -50
+      },
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0,
+
+      waitOffScreen: 50,
+    },
+    weapon: ring.slowPulseSpiral
+  };
+
 
   /***** ALL PLAYER THINGS *****/
   projectile.player1 = {
@@ -337,7 +416,7 @@ function loadTemplates() {
 
   ship.player = {
     config: {
-      radius: 40,
+      radius: 15,
       sprite: sprite.plane,
       speed: 300
     },
