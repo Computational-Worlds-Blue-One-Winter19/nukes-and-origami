@@ -534,7 +534,6 @@ function loadTemplates() {
       },
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
-
       waitOffScreen: 40,
     },
     weapon: ring.slowPulseSpiral
