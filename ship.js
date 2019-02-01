@@ -162,8 +162,11 @@ class Ship extends Entity {
    * player and collision with player bullets.
    * */
   updateCollisionDetection() {
-    // Check upper y bounds if Crane has left the bottom of the screen
-    if (this.current.y > this.game.surfaceHeight + this.config.radius) {
+    // Check upper y bounds if Crane has left the bottom, left or right of the screen
+    const pastTheLeftOfTheScreen = this.current.x < 0 - this.config.radius;
+    const pastTheRightOfTheScreen = this.current.x > this.game.surfaceWidth + this.config.radius;
+    const pastTheBottomOfTheScreen = this.current.y > this.game.surfaceHeight + this.config.radius;
+    if (pastTheBottomOfTheScreen || pastTheLeftOfTheScreen || pastTheRightOfTheScreen) {
       this.disarm();
       this.removeFromWorld = true;
       return;
@@ -360,7 +363,7 @@ class Plane extends Entity {
       this.current.y = Math.min(this.current.y, this.game.surfaceHeight - this.config.radius);
     }
 
-    if(this.invincTime != 0 && this.invincTime < this.invincDuration)  {
+    if (this.invincTime != 0 && this.invincTime < this.invincDuration) {
       this.invincTime += this.game.clockTick;
     } else if (this.invincTime > this.invincDuration) {
       this.invincTime = 0;
@@ -434,7 +437,7 @@ class Plane extends Entity {
       // }
 
       // call ring to handle firing
-      this.weapon
+      this.weapon;
     }
 
 
@@ -493,17 +496,16 @@ class Plane extends Entity {
   }
 
   draw() {
-    if(this.invincTime > 0) {
+    if (this.invincTime > 0) {
       this.invincCtr += this.game.clockTick;
-      if(this.invincCtr > 0.08) {
-
+      if (this.invincCtr > 0.08) {
         this.blinking = !this.blinking;
         this.invincCtr = 0;
       }
     } else {
       this.blinking = false;
     }
-    if(!this.blinking)  {
+    if (!this.blinking) {
       this.sprite.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
     }
 
@@ -566,11 +568,11 @@ class Projectile extends Entity {
     }
 
     // convert rotation angle to radians
-    //this.rotation.angle = toRadians
+    // this.rotation.angle = toRadians
 
     this.config = {
-      radius: manifest.payload.type.radius
-    }
+      radius: manifest.payload.type.radius,
+    };
 
     // set fields
     this.speed = manifest.payload.speed;
@@ -656,7 +658,7 @@ class Ring {
       this.spacing = 2 * Math.PI / this.firing.count;
     }
 
-    this.initialAngle -= spread/2;
+    this.initialAngle -= spread / 2;
     this.currentAngle = this.initialAngle;
 
     // set firing parameters
@@ -690,32 +692,31 @@ class Ring {
 
     // compute current angle
     if (this.fixedRotation) {
-      let doublePI = 2 * Math.PI;
-      let delta = doublePI * this.fixedRotation * this.owner.game.clockTick;
+      const doublePI = 2 * Math.PI;
+      const delta = doublePI * this.fixedRotation * this.owner.game.clockTick;
       this.currentAngle = (this.currentAngle + delta) % doublePI;
     } else if (this.sineRotation) {
-      let delta = this.owner.game.timer.getWave(toRadians(this.sineRotation), this.sineFrequency);
+      const delta = this.owner.game.timer.getWave(toRadians(this.sineRotation), this.sineFrequency);
       this.currentAngle = this.initialAngle + delta;
     }
 
     // update each turret if visible
     if (this.firing.viewTurret || this.isReady) {
       for (let i = 0; i < this.bay.length; i++) {
-        let turretAngle = this.currentAngle + i * this.spacing;
+        const turretAngle = this.currentAngle + i * this.spacing;
         this.bay[i].current = this.getTurretPosition(turretAngle);
       }
     }
 
     // take some action based on weapon state
     if (this.isLoading && this.elapsedTime > this.loadTime) {
-
       // check if loaded
       if (this.bay.length === this.firing.count) {
         this.isLoading = false;
         this.isReady = true;
         this.elapsedTime = 0;
       } else {
-        let turretAngle = this.currentAngle + this.bay.length * this.spacing;
+        const turretAngle = this.currentAngle + this.bay.length * this.spacing;
         this.loadNext(this.getTurretPosition(turretAngle), turretAngle);
       }
     } else if (this.isReady) {
@@ -740,16 +741,15 @@ class Ring {
     if (this.firing.viewTurret) {
       const ctx = this.owner.game.ctx;
 
-      for (let projectile of this.bay) {
+      for (const projectile of this.bay) {
         projectile.draw(ctx);
       }
-
     }
   }
 
   fireAll() {
     for (let i = 0; i < this.bay.length; i++) {
-      let projectile = this.bay[i];
+      const projectile = this.bay[i];
       // let turretAngle = this.currentAngle + i * this.spacing;
       // projectile.current = this.getTurretPosition(turretAngle);
 
@@ -785,7 +785,7 @@ class Ring {
 
     if (this.firing.rapidReload) {
       for (let i = 0; i < this.firing.count; i++) {
-        let turretAngle = this.currentAngle + i * this.spacing;
+        const turretAngle = this.currentAngle + i * this.spacing;
         this.loadNext(this.getTurretPosition(turretAngle), turretAngle);
       }
     }
@@ -796,7 +796,7 @@ class Ring {
       owner: this.owner,
       origin,
       angle,
-      payload: this.payload
+      payload: this.payload,
     };
 
     const newProjectile = new Projectile(this.owner.game, manifest);
@@ -822,5 +822,4 @@ class Ring {
       distance: (deltaX * deltaX + deltaY * deltaY),
     };
   }
-
 }
