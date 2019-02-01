@@ -558,8 +558,9 @@ class Projectile extends Entity {
       this.scale = this.payload.type.scale;
       this.drawImage = this.drawStillImage;
     } else if (this.payload.type.sprite) {
-      this.image = this.payload.type.sprite;
-      this.drawImage = this.drawSprite;
+      this.sprite = new Sprite(this.payload.type.sprite.default);
+      this.drawImage = this.drawSpriteFrame;
+      this.rotate = this.payload.type.rotate;
     } else {
       this.drawImage = this.payload.type.draw;
     }
@@ -608,7 +609,7 @@ class Projectile extends Entity {
     super.draw();
   }
 
-  drawSprite(ctx, x, y) {
+  drawSpriteFrame(ctx, x, y) {
     this.sprite.drawFrame(this.game.clockTick, ctx, x, y);
   }
 

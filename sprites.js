@@ -17,6 +17,24 @@ function loadSpriteSheets() {
     }
   }
 
+  /** Experiment: mini-sized Crane projectiles */
+  sprite.miniCrane = {
+    default: {
+      image: AM.getAsset('./img/crane-sheet.png'),
+      dimension: {
+        originX: 0,
+        originY: 0,
+        frameWidth: 440,
+        frameHeight: 330,
+        frameCount: 4,
+        timePerFrame: 0.1,
+        scale: 0.08,
+        flip: false
+      }
+    }
+  }
+
+
   /** The Crane spritesheet configuration */
   sprite.bat = {
     default: {

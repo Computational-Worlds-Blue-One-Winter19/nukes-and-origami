@@ -43,6 +43,12 @@ function loadTemplates() {
     image: AM.getAsset('./img/rainbow_ball.png'),
     scale: 0.008
   }
+
+  projectile.miniCrane = {
+    radius: 15,
+    rotate: false,
+    sprite: sprite.miniCrane
+  }
  
   projectile.circleBullet = {
     radius: 6,
@@ -69,7 +75,7 @@ function loadTemplates() {
   /***** RING: FIRING PATTERNS *****/
   ring.linearTest = {
     payload: {
-      type: projectile.rainbowBall,
+      type: projectile.miniCrane,
       speed: 300,
       acceleration: 1
     },
@@ -150,7 +156,7 @@ function loadTemplates() {
 
   ring.spiralAlpha4 = {
     payload: {
-      type: projectile.circleBullet,
+      type: projectile.miniCrane,
       speed: 300,
       acceleration: 1
     },
@@ -418,6 +424,31 @@ function loadTemplates() {
         count: 1,
         loadTime: 0.05,
         cooldownTime: .01,
+        rapidReload: true,
+        targetPlayer: false,
+        viewTurret: false,
+        // pulse: {
+        //   duration: 2,
+        //   delay: 1
+        // }
+      }
+    }
+
+    ring.slowPulseSpiral2 = {
+      payload: {
+        type: projectile.miniCrane,
+        speed: 100,
+        acceleration: 1
+      },
+      rotation: {
+        angle: 720,
+        frequency: 15
+      },
+      firing: {
+        angle: 0,
+        count: 1,
+        loadTime: 0.05,
+        cooldownTime: .03,
         rapidReload: true,
         targetPlayer: false,
         viewTurret: false,
