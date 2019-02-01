@@ -547,10 +547,23 @@ class Projectile extends Entity {
     super(game, manifest.origin);
     this.owner = manifest.owner;
     this.origin = manifest.origin;
-    this.current = manifest.origin;
-    this.angle = manifest.angle;
+    this.current = this.origin;
     this.initialAngle = manifest.angle;
+    this.angle = this.initialAngle;
     this.payload = manifest.payload;
+    
+    //check for sprite or image and set desired function
+    if (this.payload.type.image) {
+      this.image = this.payload.type.image;
+      this.scale = this.payload.type.scale;
+      this.drawImage = this.drawStillImage;
+    } else if (this.payload.type.sprite) {
+      this.sprite = new Sprite(this.payload.type.sprite.default);
+      this.drawImage = this.drawSpriteFrame;
+      this.rotate = this.payload.type.rotate;
+    } else {
+      this.drawImage = this.payload.type.draw;
+    }
 
     // convert rotation angle to radians
     //this.rotation.angle = toRadians
@@ -562,7 +575,6 @@ class Projectile extends Entity {
     // set fields
     this.speed = manifest.payload.speed;
     this.acceleration = manifest.payload.acceleration;
-    this.draw = manifest.payload.type.draw;
     this.customUpdate = manifest.payload.type.update;
     this.playerShot = (this.owner === game.player);
   }
@@ -581,18 +593,33 @@ class Projectile extends Entity {
   }
 
   // default draw is used for sprite animations where draw() is not overriden
-  draw() {
-    this.ctx.save();
+  draw(ctx) {
+    ctx.save();
+
+    let x = this.current.x;
+    let y = this.current.y;
 
     if (this.rotate) {
-      this.ctx.translate(this.current.x, this.current.y);
-      this.ctx.rotate(this.angle);
-      this.ctx.translate(-this.current.x, -this.current.y);
+      ctx.translate(x, y);
+      ctx.rotate(this.angle);
+      ctx.translate(-x, -y);
     }
-
-    this.sprite.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
-    this.ctx.restore();
+    this.drawImage(ctx, x, y);
+    ctx.restore();
     super.draw();
+  }
+
+  drawSpriteFrame(ctx, x, y) {
+    this.sprite.drawFrame(this.game.clockTick, ctx, x, y);
+  }
+
+  drawStillImage(ctx, x, y) {
+    let width = this.image.width * this.scale;
+    let height = this.image.height * this.scale;
+
+    const locX = x - width / 2;
+    const locY = y - height / 2;
+    ctx.drawImage(this.image, locX, locY, width, height);
   }
 }
 
