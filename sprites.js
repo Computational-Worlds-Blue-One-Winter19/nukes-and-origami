@@ -1,5 +1,5 @@
 function loadSpriteSheets() {
-  
+
   /** The Crane spritesheet configuration */
   sprite.crane = {
     default: {
@@ -27,6 +27,38 @@ function loadSpriteSheets() {
         frameWidth: 330,
         frameHeight: 190,
         frameCount: 4,
+        timePerFrame: 0.1,
+        scale: 0.3,
+        flip: false
+      }
+    }
+  }
+
+  sprite.owl = {
+    default: {
+      image: AM.getAsset('./img/owl.png'),
+      dimension: {
+        originX: 0,
+        originY: 0,
+        frameWidth: 620,
+        frameHeight: 330,
+        frameCount: 10,
+        timePerFrame: 0.1,
+        scale: 0.3,
+        flip: false
+      }
+    }
+  }
+
+  sprite.dove = {
+    default: {
+      image: AM.getAsset('./img/dove.png'),
+      dimension: {
+        originX: 0,
+        originY: 0,
+        frameWidth: 617,
+        frameHeight: 330,
+        frameCount: 6,
         timePerFrame: 0.1,
         scale: 0.3,
         flip: false
@@ -102,5 +134,5 @@ function loadSpriteSheets() {
       }
     }
   } //end plane
-  
+
 }

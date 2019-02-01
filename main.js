@@ -16,6 +16,9 @@ AM.queueDownload('./img/paper-wallpaper.png');
 AM.queueDownload('./img/lined-paper.png');
 AM.queueDownload('./img/bullet.png');
 AM.queueDownload('./img/nuke_single.png');
+AM.queueDownload('./img/owl.png');
+AM.queueDownload('./img/dove.png');
+AM.queueDownload('./img/rainbow_ball.png');
 
 /**
  * NukesAndOrigami extends GameEngine and adds additional functions
@@ -72,7 +75,8 @@ class NukesAndOrigami extends GameEngine {
     let ezBat1 = new Ship(this, ship.easyBat);
     let ezBat2 = new Ship(this, ship.easyBat);
 
-    // Object.assign assigns a copy of the array.
+    // Object.assign assigns a copy of the array. (otherwise we get strange
+    // concurrent modification issues)
     ezBat1.initializePath(Object.assign({}, strafeRight));
     ezBat1.current.x = 200;
 
@@ -109,7 +113,7 @@ class NukesAndOrigami extends GameEngine {
     this.addEntity(spiralCrane1);
     this.addEntity(spiralCrane2);
 
-    // WAVE 3
+    // WAVE 4
 
     let doubleBat1 = new Ship(this, Object.assign({}, ship.mediumDoubleTurretBat));
     let doubleBat2 = new Ship(this, Object.assign({}, ship.mediumDoubleTurretBat));
