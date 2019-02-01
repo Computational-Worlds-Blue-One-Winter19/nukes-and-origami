@@ -8,9 +8,9 @@ function loadTemplates() {
   projectile.testBullet = {
     radius: 3,
 
-    draw: function (ctx) {
+    draw: function (ctx, x, y) {
       ctx.beginPath();
-      ctx.arc(this.current.x, this.current.y, this.config.radius, 0 * Math.PI, 2 * Math.PI);
+      ctx.arc(x, y, this.config.radius, 0 * Math.PI, 2 * Math.PI);
       ctx.stroke();
       ctx.fill();
     },
@@ -30,6 +30,26 @@ function loadTemplates() {
   }
 
   /***** PROJECTILES: SHAPES AND SPRITES *****/
+  projectile.paperBall = {
+    radius: 15,
+    rotate: false,
+    image: AM.getAsset('./img/paper_ball.png'),
+    scale: 0.008
+  }
+
+  projectile.rainbowBall = {
+    radius: 15,
+    rotate: false,
+    image: AM.getAsset('./img/rainbow_ball.png'),
+    scale: 0.008
+  }
+
+  projectile.miniCrane = {
+    radius: 15,
+    rotate: false,
+    sprite: sprite.miniCrane
+  }
+ 
   projectile.circleBullet = {
     radius: 6,
     draw: function (ctx) {
@@ -55,8 +75,8 @@ function loadTemplates() {
   /***** RING: FIRING PATTERNS *****/
   ring.linearTest = {
     payload: {
-      type: projectile.testBullet,
-      speed: 500,
+      type: projectile.miniCrane,
+      speed: 300,
       acceleration: 1
     },
     firing: {
@@ -64,7 +84,7 @@ function loadTemplates() {
       count: 1,
       angle: 90,
       loadTime: 0.01,
-      cooldownTime: .1,
+      cooldownTime: 1,
       rapidReload: true,
       targetPlayer: false
     }
@@ -136,7 +156,7 @@ function loadTemplates() {
 
   ring.spiralAlpha4 = {
     payload: {
-      type: projectile.circleBullet,
+      type: projectile.miniCrane,
       speed: 300,
       acceleration: 1
     },
@@ -182,7 +202,7 @@ function loadTemplates() {
 
   ring.spreadBeta1 = {
     payload: {
-      type: projectile.circleBullet,
+      type: projectile.paperBall,
       speed: 250,
       acceleration: 1
     },
@@ -414,6 +434,31 @@ function loadTemplates() {
       }
     }
 
+    ring.slowPulseSpiral2 = {
+      payload: {
+        type: projectile.miniCrane,
+        speed: 100,
+        acceleration: 1
+      },
+      rotation: {
+        angle: 720,
+        frequency: 15
+      },
+      firing: {
+        angle: 0,
+        count: 1,
+        loadTime: 0.05,
+        cooldownTime: .03,
+        rapidReload: true,
+        targetPlayer: false,
+        viewTurret: false,
+        // pulse: {
+        //   duration: 2,
+        //   delay: 1
+        // }
+      }
+    }
+
   /***** ENEMY SHIPS *****/
   ship.demoCrane = {
     config: {
@@ -449,7 +494,7 @@ function loadTemplates() {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0
     },
-    weapon: ring.jaredBeta1
+    weapon: ring.linearTest
   };
 
   ship.easyBat = {
@@ -555,7 +600,7 @@ function loadTemplates() {
   /** A simple ring for the player only shoots up */
   ring.player = {
     payload: {
-      type: projectile.player1,
+      type: projectile.paperBall,
       speed: 600,
       acceleration: 1
     },
