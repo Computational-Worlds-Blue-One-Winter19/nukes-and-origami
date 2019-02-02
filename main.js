@@ -12,8 +12,6 @@ AM.queueDownload('./img/crane-sheet.png');
 AM.queueDownload('./img/plane.png');
 AM.queueDownload('./img/purple_plane.png');
 AM.queueDownload('./img/notebook.png');
-AM.queueDownload('./img/paper-wallpaper.png');
-AM.queueDownload('./img/lined-paper.png');
 AM.queueDownload('./img/bullet.png');
 AM.queueDownload('./img/nuke_single.png');
 AM.queueDownload('./img/owl.png');
