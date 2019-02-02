@@ -38,7 +38,6 @@ class NukesAndOrigami extends GameEngine {
   // notification of ship destruction.
   onEnemyDestruction(enemy) {
     this.increaseScoreBy(enemy.config.hitValue);
-    let that = this;
     console.log('spawning entity');
     this.addEntity(new Projectile(this, {
       owner: null,
@@ -50,8 +49,13 @@ class NukesAndOrigami extends GameEngine {
       payload: {
         type: {
           sprite: sprite.rainbowBall,
+          radius: 30
         },
         speed: 60,
+        powerUp: function () {
+          this.lives += 1;
+          addLife();
+        }
       },
     }));
   }
@@ -196,17 +200,6 @@ class NukesAndOrigami extends GameEngine {
   testScene() {
     // spawn a single enemy to the center
     this.addEntity(new Ship(this, ship.idleCrane));
-
-
-    //path: [[180, 100, 5], [0, 100, 5], [180, 100, 5], [0, 100, 5], [90, 100, 60]];
-
-    //let crane2 = new Ship(this, ship.demoCrane);
-    //crane1.initializePath([[180, 100, 5], [0, 100, 5]]);
-    //crane2.initializePath([[90,25,60]]);
-
-    //let crane1 = new Ship(this, ship.idleCrane);
-
-    //this.addEntity(crane2);
   }
 
   // establishes a new player Plane
@@ -279,21 +272,6 @@ AM.downloadAll(() => {
 function toRadians(angle) {
   return angle * Math.PI / 180;
 }
-
-// we should get back to the following code for narration and background...
-
-// const slippyArr = [AM.getAsset('./img/slippy_inbound.png'),
-//   AM.getAsset('./img/slippy_roll.png'),
-//   AM.getAsset('./img/slippy_greatjob.png'),
-//   AM.getAsset('./img/slippy_mission_done.png'),
-//   AM.getAsset('./img/slippy_end.png')];
-// gameEngine.addEntity(new Background(gameEngine, AM.getAsset('./img/spacebg.png'), 0, 0));
-// gameEngine.addEntity(new Background(gameEngine, AM.getAsset('./img/spacebg.png'), 0, -screenWidth));
-// gameEngine.addEntity(new Slippy(gameEngine, slippyArr));
-// gameEngine.addEntity(new Nuke(gameEngine, AM.getAsset('./img/nuke_single.png')));
-// gameEngine.addEntity(new Bullet(gameEngine, AM.getAsset('./img/bullet.png')));
-
-// We should get back to this stuff for narration and background
 
 class Background extends Entity {
   constructor(game, spritesheet, canvasHeight, point) {
