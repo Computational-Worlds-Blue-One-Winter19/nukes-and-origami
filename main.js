@@ -16,6 +16,10 @@ AM.queueDownload('./img/paper-wallpaper.png');
 AM.queueDownload('./img/lined-paper.png');
 AM.queueDownload('./img/bullet.png');
 AM.queueDownload('./img/nuke_single.png');
+AM.queueDownload('./img/nuke_single.png');
+AM.queueDownload('./img/paper_ball.png');
+AM.queueDownload('./img/rainbow_ball.png');
+
 
 /**
  * NukesAndOrigami extends GameEngine and adds additional functions
@@ -35,10 +39,6 @@ class NukesAndOrigami extends GameEngine {
   // notification of ship destruction.
   onEnemyDestruction(enemy) {
     this.increaseScoreBy(enemy.config.hitValue);
-
-    // Commented out because all enemies are loaded in at once
-    // and held off screen.
-    // this.spawnEnemy();
   }
 
   // notification of player destruction.
@@ -122,9 +122,10 @@ class NukesAndOrigami extends GameEngine {
     this.addEntity(doubleBat2);
   }
 
-  // eventually this should be scripted.
-  spawnEnemy() {
-
+  testScene() {
+    // spawn a single enemy to the center
+    this.addEntity(new Ship(this, ship.idleCrane));
+    
 
     //path: [[180, 100, 5], [0, 100, 5], [180, 100, 5], [0, 100, 5], [90, 100, 60]];
 
@@ -134,7 +135,6 @@ class NukesAndOrigami extends GameEngine {
 
     //let crane1 = new Ship(this, ship.idleCrane);
 
-    this.addEntity(new Ship(this, ship.idleBat));
     //this.addEntity(crane2);
   }
 
@@ -152,6 +152,14 @@ class NukesAndOrigami extends GameEngine {
     this.score += value;
     updateScoreBoard(this.score);
   }
+
+  addBackground() {
+    var canvas = this.ctx.canvas;
+    var point1 = {x: 0, y: 0};
+    var point2 = {x: 0, y: -canvas.height};
+    this.addEntity(new Background(this, AM.getAsset('./img/notebook.png'), canvas.height, point1));
+    this.addEntity(new Background(this, AM.getAsset('./img/notebook.png'), canvas.height, point2));
+  }
 }
 
 /** Call AssetManager to download assets and launch the game. */
@@ -163,18 +171,19 @@ AM.downloadAll(() => {
   loadTemplates();
 
   const game = new NukesAndOrigami();
-
-  var point1 = {x: 0, y: 0};
-  var point2 = {x: 0, y: -canvas.height};
-
-  game.showOutlines = false;
   game.init(ctx);
-  game.addEntity(new Background(game, AM.getAsset('./img/notebook.png'), canvas.height, point1));
-  game.addEntity(new Background(game, AM.getAsset('./img/notebook.png'), canvas.height, point2));
-  game.spawnPlayer();
   game.start();
-  // game.spawnEnemy();
+  
+  // add background and player
+  game.addBackground();
+  game.spawnPlayer();
+  
+  // view test stage
+  //game.testScene();
+    
+  // run prototype level
   game.spawnEnemies();
+    
   console.log('All Done!');
   canvas.focus();
 });
