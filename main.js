@@ -20,6 +20,7 @@ AM.queueDownload('./img/owl.png');
 AM.queueDownload('./img/dove.png');
 AM.queueDownload('./img/rainbow_ball.png');
 AM.queueDownload('./img/paper_ball.png');
+AM.queueDownload('./img/clouds.png');
 
 /**
  * NukesAndOrigami extends GameEngine and adds additional functions
@@ -235,8 +236,18 @@ class NukesAndOrigami extends GameEngine {
       x: 0,
       y: -canvas.height
     };
+    var cloudPoint1 = {
+      x: 0,
+      y: canvas.height - 2304
+    }
+    var cloudPoint2 = {
+      x: 0,
+      y: canvas.height - (2304 * 2)
+    }
     this.addEntity(new Background(this, AM.getAsset('./img/notebook.png'), canvas.height, point1));
     this.addEntity(new Background(this, AM.getAsset('./img/notebook.png'), canvas.height, point2));
+    this.addEntity(new Clouds(this, AM.getAsset('./img/clouds.png'), canvas.height, cloudPoint1));
+    this.addEntity(new Clouds(this, AM.getAsset('./img/clouds.png'), canvas.height, cloudPoint2));
   }
 }
 
@@ -304,6 +315,28 @@ class Background extends Entity {
     this.current.y += 1;
     if (this.current.y >= this.canvasHeight) {
       this.current.y = -this.canvasHeight;
+    }
+  }
+}
+
+class Clouds extends Entity{
+  constructor(game, spritesheet, canvasHeight, point) {
+    super(game, point);
+    this.startY = point.y;
+    this.spritesheet = spritesheet;
+    this.game = game;
+    this.ctx = game.ctx;
+    this.canvasHeight = canvasHeight;
+  }
+
+  draw()  {
+    this.ctx.drawImage(this.spritesheet, this.current.x, this.current.y);
+  }
+
+  update()  {
+    this.current.y += 2;
+    if(this.current.y >= this.canvasHeight) {
+      this.current.y = this.startY;
     }
   }
 }
