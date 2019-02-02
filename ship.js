@@ -332,15 +332,10 @@ class Plane extends Entity {
     this.game = game;
     this.ctx = game.ctx;
     this.speed = this.config.speed || 400;
-    // specific to rolling
-    // double tap time in seconds
-    this.doubleTapTime = 0.1;
-    this.timeSinceLastLPress = 0;
-    this.timeSinceLastRPress = 0;
-    this.performingManeuver = false;
     this.rollDirection = '';
     this.rollDistance = 200;
     this.rollTimer = 0;
+    this.rolling = false;
     // specific to shooting
     this.timeSinceLastSpacePress = 0;
     this.fireRate = 0.25;
@@ -373,38 +368,32 @@ class Plane extends Entity {
       this.weapon.update();
     }
 
-
     // Check if the plane has been hit by an enemy projectile
     this.updateCollisionDetection();
 
     // This makes me worry about an overflow, or slowing our game down.
     // But it works great for what we need.
-    this.timeSinceLastSpacePress += this.game.clockTick;
-    this.timeSinceLastLPress += this.game.clockTick;
-    this.timeSinceLastRPress += this.game.clockTick;
-
-    if (!this.performingManeuver) {
+    //this.timeSinceLastSpacePress += this.game.clockTick;
+    if(!this.rolling)  {
       if (this.game.keysDown.ArrowLeft && !this.game.keysDown.ArrowRight) {
-        if (this.timeSinceLastLPress < this.doubleTapTime
-          && this.sprite !== this.left) {
-          this.performingManeuver = true;
+        if(this.game.keysDown.KeyC) {
           this.rollDirection = 'left';
-          this.sprite = this.rollLeft;
+          this.rolling = true;
+          this.performManeuver();
+        } else {
+          this.current.x -= this.speed * this.game.clockTick;
+          this.sprite = this.left;
         }
-        this.timeSinceLastLPress = 0;
-        this.current.x -= this.speed * this.game.clockTick;
-        this.sprite = this.left;
       }
       if (this.game.keysDown.ArrowRight && !this.game.keysDown.ArrowLeft) {
-        if (this.timeSinceLastRPress < this.doubleTapTime
-          && this.sprite !== this.right) {
-          this.performingManeuver = true;
+        if(this.game.keysDown.KeyC) {
           this.rollDirection = 'right';
-          this.sprite = this.rollRight;
+          this.rolling = true;
+          this.performManeuver();
+        } else {
+          this.current.x += this.speed * this.game.clockTick;
+          this.sprite = this.right;
         }
-        this.timeSinceLastRPress = 0;
-        this.current.x += this.speed * this.game.clockTick;
-        this.sprite = this.right;
       }
       if (this.game.keysDown.ArrowLeft && this.game.keysDown.ArrowRight) {
         this.sprite = this.idle;
@@ -416,9 +405,9 @@ class Plane extends Entity {
         this.current.y += this.speed * this.game.clockTick;
       }
     } else {
-      // We're rolling, call roll
       this.performManeuver();
     }
+    
     if (this.game.keysDown.Space) {
       // if (this.timeSinceLastSpacePress > this.fireRate) {
       //   this.timeSinceLastSpacePress = 0;
@@ -473,13 +462,13 @@ class Plane extends Entity {
 
   /**
    * This method is called while controls are taken from the user and
-   * this.performingManeuver is true. This handles the maneuver and then returns
-   * control to the user by setting this.performingManeuver to false.
+   * this.rolling is true. This handles the maneuver and then returns
+   * control to the user by setting this.rolling to false.
    */
   performManeuver() {
     if (this.rollTimer > this.rollDistance) {
       this.rollTimer = 0;
-      this.performingManeuver = false;
+      this.rolling = false;
       this.sprite = this.idle;
     }
     if (this.rollDirection === 'left') {
@@ -490,15 +479,15 @@ class Plane extends Entity {
     }
     if (this.rollDirection === 'right') {
       this.current.x += this.speed * this.game.clockTick * 1.5;
+      this.sprite = this.rollRight;
     }
     this.rollTimer += this.speed * this.game.clockTick * 1.5;
-    this.sprite = this.rollRight;
   }
 
   draw() {
     if (this.invincTime > 0) {
       this.invincCtr += this.game.clockTick;
-      if (this.invincCtr > 0.08) {
+      if(this.invincCtr > 0.08) {
         this.blinking = !this.blinking;
         this.invincCtr = 0;
       }
