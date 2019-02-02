@@ -7,7 +7,7 @@ class PowerUp extends Entity {
   }
 
   init(manifest) {
-
+    
   }
 
   /**

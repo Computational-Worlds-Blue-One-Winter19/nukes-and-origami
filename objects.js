@@ -501,7 +501,7 @@ function loadTemplates() {
     config: {
       hitValue: 5,
       radius: 50,
-      sprite: sprite.bat,
+      sprite: sprite.dove,
       snapLine: 100,
       snapLineSpeed: 200,
       snapLineWait: 1,
