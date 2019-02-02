@@ -553,7 +553,7 @@ class Projectile extends Entity {
     this.initialAngle = manifest.angle;
     this.angle = this.initialAngle;
     this.payload = manifest.payload;
-    
+
     //check for sprite or image and set desired function
     if (this.payload.type.image) {
       this.image = this.payload.type.image;
@@ -576,7 +576,7 @@ class Projectile extends Entity {
 
     // set fields
     this.speed = manifest.payload.speed;
-    this.acceleration = manifest.payload.acceleration;
+    this.acceleration = manifest.payload.acceleration || 1;
     this.customUpdate = manifest.payload.type.update;
     this.playerShot = (this.owner === game.player);
   }

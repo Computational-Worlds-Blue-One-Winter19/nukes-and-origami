@@ -34,8 +34,6 @@ function loadSpriteSheets() {
     }
   }
 
-
-  /** The Crane spritesheet configuration */
   sprite.bat = {
     default: {
       image: AM.getAsset('./img/bat-sheet.png'),
@@ -80,6 +78,23 @@ function loadSpriteSheets() {
         timePerFrame: 0.1,
         scale: 0.3,
         flip: false
+      }
+    }
+  }
+
+  sprite.rainbowBall = {
+    default: {
+      image: AM.getAsset('./img/rainbow_ball.png'),
+      dimension: {
+        originX: 0,
+        originY: 0,
+        // LOL THIS BALL IMAGE IS BIGGER THAN 4K
+        frameWidth: 3035,
+        frameHeight: 2910,
+        frameCount: 1,
+        timePerFrame: 30,
+        scale: 0.02,
+        flip: false,
       }
     }
   }

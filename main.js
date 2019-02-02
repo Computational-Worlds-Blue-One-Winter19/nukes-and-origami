@@ -18,6 +18,8 @@ AM.queueDownload('./img/bullet.png');
 AM.queueDownload('./img/nuke_single.png');
 AM.queueDownload('./img/owl.png');
 AM.queueDownload('./img/dove.png');
+AM.queueDownload('./img/rainbow_ball.png');
+AM.queueDownload('./img/paper_ball.png');
 
 /**
  * NukesAndOrigami extends GameEngine and adds additional functions
@@ -37,12 +39,28 @@ class NukesAndOrigami extends GameEngine {
   // notification of ship destruction.
   onEnemyDestruction(enemy) {
     this.increaseScoreBy(enemy.config.hitValue);
+    let that = this;
+    console.log('spawning entity');
+    this.addEntity(new Projectile(this, {
+      owner: null,
+      origin: {
+        x: enemy.current.x,
+        y: enemy.current.y,
+      },
+      angle: Math.PI / 2,
+      payload: {
+        type: {
+          sprite: sprite.rainbowBall,
+        },
+        speed: 50,
+      },
+    }));
   }
 
   // notification of player destruction.
   onPlayerHit(player) {
     // player.invincTime += this.clockTick;
-    if(player.invincTime == 0)  {
+    if (player.invincTime == 0) {
       this.lives -= 1;
       removeLifeFromBoard()
       player.invincTime += this.clockTick;
@@ -54,16 +72,28 @@ class NukesAndOrigami extends GameEngine {
 
   spawnEnemies() {
     // Slowly strafe right off screen
-    let strafeRight = [[0, 50, 20]];
+    let strafeRight = [
+      [0, 50, 20]
+    ];
 
     // Slowly strafe left off screen
-    let strafeLeft = [[180, 50, 20]];
+    let strafeLeft = [
+      [180, 50, 20]
+    ];
 
     // Advance down, then left, then southeast
-    let cornerRight = [[90, 50, 2], [180, 50, 2], [45, 50, 30]];
+    let cornerRight = [
+      [90, 50, 2],
+      [180, 50, 2],
+      [45, 50, 30]
+    ];
 
     // Advance down, then right, then southwest
-    let cornerLeft = [[90, 50, 2], [0, 50, 2], [135, 50, 30]];
+    let cornerLeft = [
+      [90, 50, 2],
+      [0, 50, 2],
+      [135, 50, 30]
+    ];
 
     // WAVE 1
 
@@ -119,6 +149,23 @@ class NukesAndOrigami extends GameEngine {
 
     this.addEntity(doubleBat1);
     this.addEntity(doubleBat2);
+
+    // This commented out section is a good example of how to
+    // use Projectile to spawn random items on screen.
+    //
+    // this.addEntity(new Projectile(this, {
+    //   owner: this,
+    //   origin: {
+    //     x: 400,
+    //     y: 400
+    //   },
+    //   angle: 90,
+    //   payload: {
+    //     type: {
+    //       sprite: sprite.rainbowBall,
+    //     },
+    //   },
+    // }));
   }
 
   testScene() {
@@ -154,8 +201,14 @@ class NukesAndOrigami extends GameEngine {
 
   addBackground() {
     var canvas = this.ctx.canvas;
-    var point1 = {x: 0, y: 0};
-    var point2 = {x: 0, y: -canvas.height};
+    var point1 = {
+      x: 0,
+      y: 0
+    };
+    var point2 = {
+      x: 0,
+      y: -canvas.height
+    };
     this.addEntity(new Background(this, AM.getAsset('./img/notebook.png'), canvas.height, point1));
     this.addEntity(new Background(this, AM.getAsset('./img/notebook.png'), canvas.height, point2));
   }
