@@ -52,7 +52,7 @@ class NukesAndOrigami extends GameEngine {
         type: {
           sprite: sprite.rainbowBall,
         },
-        speed: 50,
+        speed: 60,
       },
     }));
   }
