@@ -140,12 +140,38 @@ class NukesAndOrigami extends GameEngine {
 
     // WAVE 4
 
+    let dodgeOwl1 = new Ship(this, Object.assign({}, ship.dodgeOwl));
+    let dodgeOwl2 = new Ship(this, Object.assign({}, ship.dodgeOwl));
+    let dodgeOwl3 = new Ship(this, Object.assign({}, ship.dodgeOwl));
+
+    dodgeOwl1.current.x = 500;
+
+    dodgeOwl2.current.x = 400;
+
+    dodgeOwl3.current.x = 600;
+
+    this.addEntity(dodgeOwl1);
+    this.addEntity(dodgeOwl2);
+    this.addEntity(dodgeOwl3);
+
+    // WAVE 5
+
+    let denseDove1 = new Ship(this, Object.assign({}, ship.denseDove));
+
+    denseDove1.current.x = 500;
+
+    this.addEntity(denseDove1);
+
+    // WAVE 6
+
     let doubleBat1 = new Ship(this, Object.assign({}, ship.mediumDoubleTurretBat));
     let doubleBat2 = new Ship(this, Object.assign({}, ship.mediumDoubleTurretBat));
 
     doubleBat1.initializePath(Object.assign({}, cornerRight));
+    doubleBat1.current.x = 400;
 
     doubleBat2.initializePath(Object.assign({}, cornerLeft));
+    doubleBat2.current.x = 600;
 
     this.addEntity(doubleBat1);
     this.addEntity(doubleBat2);

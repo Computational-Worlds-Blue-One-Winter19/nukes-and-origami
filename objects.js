@@ -49,7 +49,7 @@ function loadTemplates() {
     rotate: false,
     sprite: sprite.miniCrane
   }
- 
+
   projectile.circleBullet = {
     radius: 6,
     draw: function (ctx) {
@@ -290,6 +290,29 @@ function loadTemplates() {
     }
   }
 
+  ring.gap1 = {
+    payload: {
+      type: projectile.miniCrane,
+      speed: 250,
+      acceleration: 1
+    },
+    firing: {
+      spread: 340,
+      radius: 100,
+      angle: 270,
+      count: 70,
+      loadTime: 0.005,
+      cooldownTime: .09,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: true,
+      pulse: {
+        duration: 3,
+        delay: 2
+      }
+    }
+  }
+
   ring.singleTargetPlayer = {
     payload: {
       type: projectile.circleBullet,
@@ -501,7 +524,7 @@ function loadTemplates() {
     config: {
       hitValue: 5,
       radius: 50,
-      sprite: sprite.dove,
+      sprite: sprite.bat,
       snapLine: 100,
       snapLineSpeed: 200,
       snapLineWait: 1,
@@ -560,7 +583,7 @@ function loadTemplates() {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
 
-      waitOffScreen: 70,
+      waitOffScreen: 130,
     },
     weapon: ring.doubleStraightDownPulse
   };
@@ -571,7 +594,7 @@ function loadTemplates() {
       radius: 50,
       sprite: sprite.crane,
       snapLine: 150,
-      snapLineSpeed: 150,
+      snapLineSpeed: 300,
       snapLineWait: 0,
       origin: {
         x: 500, // omit x to get random position
@@ -582,6 +605,44 @@ function loadTemplates() {
       waitOffScreen: 40,
     },
     weapon: ring.slowPulseSpiral
+  };
+
+  ship.dodgeOwl = {
+    config: {
+      hitValue: 5,
+      radius: 70,
+      sprite: sprite.owl,
+      snapLine: 150,
+      snapLineSpeed: 300,
+      snapLineWait: 0.5,
+      origin: {
+        x: 500, // omit x to get random position
+        y: -50
+      },
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0,
+      waitOffScreen: 110,
+    },
+    weapon: ring.jaredAlpha1
+  };
+
+  ship.denseDove = {
+    config: {
+      hitValue: 5,
+      radius: 70,
+      sprite: sprite.dove,
+      snapLine: 200,
+      snapLineSpeed: 300,
+      snapLineWait: 1,
+      origin: {
+        x: 500, // omit x to get random position
+        y: -50
+      },
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0,
+      waitOffScreen: 50,
+    },
+    weapon: ring.gap1
   };
 
 
