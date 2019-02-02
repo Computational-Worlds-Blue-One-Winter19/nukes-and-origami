@@ -238,11 +238,11 @@ class NukesAndOrigami extends GameEngine {
     };
     var cloudPoint1 = {
       x: 0,
-      y: canvas.height - 2304
+      y: -2304
     }
     var cloudPoint2 = {
       x: 0,
-      y: canvas.height - (2304 * 2)
+      y: -2304 * 2
     }
     this.addEntity(new Background(this, AM.getAsset('./img/notebook.png'), canvas.height, point1));
     this.addEntity(new Background(this, AM.getAsset('./img/notebook.png'), canvas.height, point2));
@@ -336,7 +336,7 @@ class Clouds extends Entity{
   update()  {
     this.current.y += 2;
     if(this.current.y >= this.canvasHeight) {
-      this.current.y = this.startY;
+      this.current.y = -3840;
     }
   }
 }
