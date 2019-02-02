@@ -503,18 +503,28 @@ class Plane extends Entity {
   }
 
   /**
-   * Collisions: Detects collision with
-   * player and collision with enemy bullets.
+   * Collisions: Detects collision with any objects that have a radius.
    * */
   updateCollisionDetection() {
-    // Check for hit from crane bullets
     for (let i = 0; i < this.game.entities.length; i += 1) {
       const entity = this.game.entities[i];
+      
       if (entity instanceof Projectile && !entity.playerShot && this.isCollided(entity)) {
-        this.game.onPlayerHit(this);
-        entity.removeFromWorld = true;
+        
+        // handle powerUp grab by player
+        if (entity.payload.powerUp && !entity.isPlayer) {
+          
+          // TODO: store powerUps for user activation and update the HUD inventory
+          entity.payload.powerUp(); // for now just run the enclosed powerUp
+          
+          entity.removeFromWorld = true;
+        } else {
+          // hit by enemy bullet
+          this.game.onPlayerHit(this);
+          entity.removeFromWorld = true;  
+        }
       }
-    }
+    }// end for loop
   }
 
   returnToInitPoint(coordinate) {
