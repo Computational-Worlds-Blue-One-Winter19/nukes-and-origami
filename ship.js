@@ -22,11 +22,11 @@ class Sprite {
     this.elapsedTime += tick;
     if (this.time !== 0) {
       if (this.elapsedTime >= this.totalTime) { // The isDone() function does exactly this. Use either.
-      // All frames used. Start over to loop.
+        // All frames used. Start over to loop.
         this.elapsedTime = 0;
       }
       this.currentFrame = (Math.floor(this.elapsedTime / this.time)) % this.len;
-    // console.log(this.currentFrame);
+      // console.log(this.currentFrame);
     }
 
     const locX = x - (this.width / 2) * this.scale;
@@ -298,7 +298,10 @@ class Ship extends Entity {
     const x = manifest.config.origin.x || Math.floor(Math.random() * range) + width;
     const y = manifest.config.origin.y || -manifest.config.sprite.default.height;
 
-    return { x, y };
+    return {
+      x,
+      y
+    };
   }
 }
 
@@ -379,15 +382,10 @@ class Plane extends Entity {
 
     // This makes me worry about an overflow, or slowing our game down.
     // But it works great for what we need.
-    this.timeSinceLastSpacePress += this.game.clockTick;
-    this.timeSinceLastLPress += this.game.clockTick;
-    this.timeSinceLastRPress += this.game.clockTick;
-
-    if (!this.performingManeuver) {
+    //this.timeSinceLastSpacePress += this.game.clockTick;
+    if (!this.rolling) {
       if (this.game.keysDown.ArrowLeft && !this.game.keysDown.ArrowRight) {
-        if (this.timeSinceLastLPress < this.doubleTapTime
-          && this.sprite !== this.left) {
-          this.performingManeuver = true;
+        if (this.game.keysDown.KeyC) {
           this.rollDirection = 'left';
           this.sprite = this.rollLeft;
         }
@@ -396,9 +394,7 @@ class Plane extends Entity {
         this.sprite = this.left;
       }
       if (this.game.keysDown.ArrowRight && !this.game.keysDown.ArrowLeft) {
-        if (this.timeSinceLastRPress < this.doubleTapTime
-          && this.sprite !== this.right) {
-          this.performingManeuver = true;
+        if (this.game.keysDown.KeyC) {
           this.rollDirection = 'right';
           this.sprite = this.rollRight;
         }
@@ -419,6 +415,7 @@ class Plane extends Entity {
       // We're rolling, call roll
       this.performManeuver();
     }
+
     if (this.game.keysDown.Space) {
       // if (this.timeSinceLastSpacePress > this.fireRate) {
       //   this.timeSinceLastSpacePress = 0;
@@ -441,11 +438,11 @@ class Plane extends Entity {
     }
 
 
-    if (!this.game.keysDown.ArrowLeft
-      && !this.game.keysDown.ArrowRight
-      && !this.game.keysDown.ArrowUp
-      && !this.game.keysDown.ArrowDown
-      && !this.performingManeuver) {
+    if (!this.game.keysDown.ArrowLeft &&
+      !this.game.keysDown.ArrowRight &&
+      !this.game.keysDown.ArrowUp &&
+      !this.game.keysDown.ArrowDown &&
+      !this.performingManeuver) {
       this.sprite = this.idle;
       if (this.idleTrans) {
         this.idleCount += 1;
@@ -529,7 +526,10 @@ class Plane extends Entity {
   }
 
   returnToInitPoint(coordinate) {
-    const { x, y } = coordinate;
+    const {
+      x,
+      y
+    } = coordinate;
     this.current.x = x;
     this.current.y = y;
   }
@@ -537,7 +537,10 @@ class Plane extends Entity {
   static getInitPoint(game) {
     const x = game.ctx.canvas.width / 2;
     const y = game.ctx.canvas.height - 100;
-    return { x, y };
+    return {
+      x,
+      y
+    };
   }
 }
 
@@ -585,30 +588,36 @@ class Projectile extends Entity {
     if (this.customUpdate) {
       this.customUpdate(this);
     } else {
-      this.speed *= this.acceleration;
-      this.speedX = this.speed * Math.cos(this.angle);
-      this.speedY = this.speed * Math.sin(this.angle);
+      if (!this.isOutsideScreen()) {
+        this.speed *= this.acceleration;
+        this.speedX = this.speed * Math.cos(this.angle);
+        this.speedY = this.speed * Math.sin(this.angle);
 
-      this.current.x += this.speedX * this.game.clockTick;
-      this.current.y += this.speedY * this.game.clockTick;
+        this.current.x += this.speedX * this.game.clockTick;
+        this.current.y += this.speedY * this.game.clockTick;
+      }
     }
   }
 
   // default draw is used for sprite animations where draw() is not overriden
   draw(ctx) {
-    ctx.save();
+    if (!this.isOutsideScreen()) {
 
-    let x = this.current.x;
-    let y = this.current.y;
 
-    if (this.rotate) {
-      ctx.translate(x, y);
-      ctx.rotate(this.angle);
-      ctx.translate(-x, -y);
+      ctx.save();
+
+      let x = this.current.x;
+      let y = this.current.y;
+
+      if (this.rotate) {
+        ctx.translate(x, y);
+        ctx.rotate(this.angle);
+        ctx.translate(-x, -y);
+      }
+      this.drawImage(ctx, x, y);
+      ctx.restore();
+      super.draw();
     }
-    this.drawImage(ctx, x, y);
-    ctx.restore();
-    super.draw();
   }
 
   drawSpriteFrame(ctx, x, y) {
@@ -806,7 +815,10 @@ class Ring {
   getTurretPosition(angle) {
     const x = this.radius * Math.cos(angle) + this.owner.current.x;
     const y = this.radius * Math.sin(angle) + this.owner.current.y;
-    return { x, y };
+    return {
+      x,
+      y
+    };
   }
 
   // returns the coordinates of the player with respect to the given point
