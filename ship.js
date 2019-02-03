@@ -203,7 +203,7 @@ class Ship extends Entity {
 
       if (this.path.elapsedTime > this.path.targetTime) {
         // Advance to next step
-        this.path.currentStep++;
+        this.path.currentStep += 1;
 
         if (this.path.currentStep === this.path.length) {
           // the path is completed then remove it from this instance
@@ -300,7 +300,7 @@ class Ship extends Entity {
 
     return {
       x,
-      y
+      y,
     };
   }
 }
@@ -376,7 +376,7 @@ class Plane extends Entity {
 
     // This makes me worry about an overflow, or slowing our game down.
     // But it works great for what we need.
-    //this.timeSinceLastSpacePress += this.game.clockTick;
+    // this.timeSinceLastSpacePress += this.game.clockTick;
     if (!this.rolling) {
       if (this.game.keysDown.ArrowLeft && !this.game.keysDown.ArrowRight) {
         if (this.game.keysDown.KeyC) {
@@ -433,11 +433,11 @@ class Plane extends Entity {
     }
 
 
-    if (!this.game.keysDown.ArrowLeft &&
-      !this.game.keysDown.ArrowRight &&
-      !this.game.keysDown.ArrowUp &&
-      !this.game.keysDown.ArrowDown &&
-      !this.performingManeuver) {
+    if (!this.game.keysDown.ArrowLeft
+      && !this.game.keysDown.ArrowRight
+      && !this.game.keysDown.ArrowUp
+      && !this.game.keysDown.ArrowDown
+      && !this.performingManeuver) {
       this.sprite = this.idle;
       if (this.idleTrans) {
         this.idleCount += 1;
@@ -490,7 +490,7 @@ class Plane extends Entity {
   draw() {
     if (this.invincTime > 0) {
       this.invincCtr += this.game.clockTick;
-      if(this.invincCtr > 0.08) {
+      if (this.invincCtr > 0.08) {
         this.blinking = !this.blinking;
         this.invincCtr = 0;
       }
@@ -511,20 +511,18 @@ class Plane extends Entity {
   updateCollisionDetection() {
     for (let i = 0; i < this.game.entities.length; i += 1) {
       const entity = this.game.entities[i];
-      
+
       if (entity instanceof Projectile && !entity.playerShot && this.isCollided(entity)) {
-        
         // handle powerUp grab by player
         if (entity.payload.powerUp && !entity.isPlayer) {
-          
           // TODO: store powerUps for user activation and update the HUD inventory
           entity.payload.powerUp(); // for now just run the enclosed powerUp
-          
+
           entity.removeFromWorld = true;
         } else {
           // hit by enemy bullet
           this.game.onPlayerHit(this);
-          entity.removeFromWorld = true;  
+          entity.removeFromWorld = true;
         }
       }
     }// end for loop
@@ -533,7 +531,7 @@ class Plane extends Entity {
   returnToInitPoint(coordinate) {
     const {
       x,
-      y
+      y,
     } = coordinate;
     this.current.x = x;
     this.current.y = y;
@@ -544,7 +542,7 @@ class Plane extends Entity {
     const y = game.ctx.canvas.height - 100;
     return {
       x,
-      y
+      y,
     };
   }
 }
@@ -562,7 +560,7 @@ class Projectile extends Entity {
     this.angle = this.initialAngle;
     this.payload = manifest.payload;
 
-    //check for sprite or image and set desired function
+    // check for sprite or image and set desired function
     if (this.payload.type.image) {
       this.image = this.payload.type.image;
       this.scale = this.payload.type.scale;
@@ -592,27 +590,28 @@ class Projectile extends Entity {
   update() {
     if (this.customUpdate) {
       this.customUpdate(this);
-    } else {
-      if (!this.isOutsideScreen()) {
-        this.speed *= this.acceleration;
-        this.speedX = this.speed * Math.cos(this.angle);
-        this.speedY = this.speed * Math.sin(this.angle);
+    } else if (!this.isOutsideScreen()) {
+      this.speed *= this.acceleration;
+      this.speedX = this.speed * Math.cos(this.angle);
+      this.speedY = this.speed * Math.sin(this.angle);
 
-        this.current.x += this.speedX * this.game.clockTick;
-        this.current.y += this.speedY * this.game.clockTick;
-      }
+      this.current.x += this.speedX * this.game.clockTick;
+      this.current.y += this.speedY * this.game.clockTick;
+    } else if (this.isOutsideScreen) {
+      this.removeFromWorld = true;
     }
   }
 
   // default draw is used for sprite animations where draw() is not overriden
   draw(ctx) {
     if (!this.isOutsideScreen()) {
-
-
       ctx.save();
 
-      let x = this.current.x;
-      let y = this.current.y;
+      // Using object deconstructing to access the fields withing the current object
+      const {
+        x,
+        y,
+      } = this.current;
 
       if (this.rotate) {
         ctx.translate(x, y);
@@ -630,8 +629,8 @@ class Projectile extends Entity {
   }
 
   drawStillImage(ctx, x, y) {
-    let width = this.image.width * this.scale;
-    let height = this.image.height * this.scale;
+    const width = this.image.width * this.scale;
+    const height = this.image.height * this.scale;
 
     const locX = x - width / 2;
     const locY = y - height / 2;
@@ -822,7 +821,7 @@ class Ring {
     const y = this.radius * Math.sin(angle) + this.owner.current.y;
     return {
       x,
-      y
+      y,
     };
   }
 
