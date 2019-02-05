@@ -69,10 +69,6 @@ function loadTemplates() {
     },
   };
 
-  projectile.rainbowBall = {
-
-  };
-
   /** *** RING: FIRING PATTERNS **** */
   ring.linearTest = {
     payload: {
