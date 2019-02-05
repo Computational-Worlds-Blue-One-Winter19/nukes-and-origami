@@ -41,21 +41,6 @@ function loadTemplates() {
     rotate: false,
     image: AM.getAsset('./img/rainbow_ball.png'),
     scale: 0.008,
-    manifest: {
-      owner: null,
-      angle: Math.PI / 2,
-      payload: {
-        type: {
-          sprite: projectile.rainbowBall,
-          radius: 30,
-        },
-        speed: 60,
-        powerUp() {
-          this.lives += 1;
-          addLife();
-        },
-      },
-    },
   };
 
   projectile.miniCrane = {

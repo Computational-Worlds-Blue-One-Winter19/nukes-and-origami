@@ -97,9 +97,13 @@ h2 {
 }
 
 /* The bottom style classes are used for the keys */
-
 .key-container {
     display: flex;
+}
+
+.pair {
+    display: flex;
+    flex-direction: row;
 }
 
 .control-description {

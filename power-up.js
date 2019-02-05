@@ -3,12 +3,11 @@ const MAX_RANDOM = 100;
 
 class PowerUp {
   /**
-   *
-   * @param {Boolean} instantActivation
-   * @param {Optional && Int} dropRate
+   * Constructor for a power up
+   * @param {Optional && Int} dropRate Drop rate determines the change that the power up is dropped,
+   * if one isn't given the DEFAULT_DROP_RATE is used
    */
-  constructor(instantActivation, dropRate) {
-    this.instantActivation = instantActivation;
+  constructor(dropRate) {
     this.dropRate = dropRate || DEFAULT_DROP_RATE;
   }
 
@@ -48,6 +47,9 @@ class PowerUp {
     return Math.floor(Math.random() * Math.floor(max));
   }
 
+  /**
+   * Returns whether or not the power up should be dropped
+   */
   shouldDrop() {
     return PowerUp.getRandomInt(MAX_RANDOM) < this.dropRate;
   }
@@ -91,6 +93,8 @@ class Shield extends PowerUp {
         powerUp() {
           // Add the power up to the screen inventory
           addPowerUp('./img/shield-icon.png');
+
+          // TODO: Add actual functionality
         },
       },
     };
@@ -111,8 +115,9 @@ class RapidFire extends PowerUp {
         },
         speed: 60,
         powerUp() {
-          this.lives += 1;
-          addLife();
+          addPowerUp('./img/shield-icon.png');
+
+          // TODO: Add actual functionality
         },
       },
     };
