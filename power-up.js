@@ -1,9 +1,9 @@
 const DEFAULT_DROP_RATE = 5;
 
 class PowerUp extends Entity {
-  constructor(game, manifest) {
-    super(game, PowerUp.getInitPoint(game, manifest));
-    this.init(manifest);
+  constructor() {
+    
+    
   }
 
   init(manifest) {

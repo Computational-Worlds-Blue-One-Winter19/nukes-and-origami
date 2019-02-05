@@ -361,7 +361,7 @@ class Plane extends Entity {
       this.current.y = Math.min(this.current.y, this.game.surfaceHeight - this.config.radius);
     }
 
-    if (this.invincTime != 0 && this.invincTime < this.invincDuration) {
+    if (this.invincTime !== 0 && this.invincTime < this.invincDuration) {
       this.invincTime += this.game.clockTick;
     } else if (this.invincTime > this.invincDuration) {
       this.invincTime = 0;
@@ -588,18 +588,17 @@ class Projectile extends Entity {
   }
 
   update() {
-
     if (this.customUpdate) {
       this.customUpdate(this);
     } else if (this.isOutsideScreen()) {
-        this.removeFromWorld = true;
+      this.removeFromWorld = true;
     } else { // We can assume the projectile is not outside the game screen
-        this.speed *= this.acceleration;
-        this.speedX = this.speed * Math.cos(this.angle);
-        this.speedY = this.speed * Math.sin(this.angle);
+      this.speed *= this.acceleration;
+      this.speedX = this.speed * Math.cos(this.angle);
+      this.speedY = this.speed * Math.sin(this.angle);
 
-        this.current.x += this.speedX * this.game.clockTick;
-        this.current.y += this.speedY * this.game.clockTick;
+      this.current.x += this.speedX * this.game.clockTick;
+      this.current.y += this.speedY * this.game.clockTick;
     }
   }
 

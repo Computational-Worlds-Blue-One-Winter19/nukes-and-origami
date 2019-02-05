@@ -38,7 +38,8 @@ class NukesAndOrigami extends GameEngine {
   // notification of ship destruction.
   onEnemyDestruction(enemy) {
     this.increaseScoreBy(enemy.config.hitValue);
-    console.log('spawning entity');
+
+    
     this.addEntity(new Projectile(this, {
       owner: null,
       origin: {
