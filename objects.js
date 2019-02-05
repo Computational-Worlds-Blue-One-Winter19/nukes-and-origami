@@ -1,5 +1,4 @@
 function loadTemplates() {
-
   /**
    * A custom projectile overrides the update method. This is called after the projectile has spawned.
    * Access origin.x, origin.y, current.x, current.y, that.initialAngle, that.angle, that.speed,
@@ -8,17 +7,17 @@ function loadTemplates() {
   projectile.testBullet = {
     radius: 3,
 
-    draw: function (ctx, x, y) {
+    draw(ctx, x, y) {
       ctx.beginPath();
       ctx.arc(x, y, this.config.radius, 0 * Math.PI, 2 * Math.PI);
       ctx.stroke();
       ctx.fill();
     },
 
-    update: function() {
+    update() {
       // this will override standard behavior
-      let deltaX = this.current.x - this.origin.x;
-      let deltaY = this.current.y - this.origin.y;
+      const deltaX = this.current.x - this.origin.x;
+      const deltaY = this.current.y - this.origin.y;
       let r = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
 
       this.angle += toRadians(1);
@@ -26,58 +25,57 @@ function loadTemplates() {
 
       this.current.x = this.origin.x + r * Math.cos(this.angle);
       this.current.y = this.origin.y + r * Math.sin(this.angle);
-    }
-  }
+    },
+  };
 
-  /***** PROJECTILES: SHAPES AND SPRITES *****/
+  /** *** PROJECTILES: SHAPES AND SPRITES **** */
   projectile.paperBall = {
     radius: 15,
     rotate: false,
     image: AM.getAsset('./img/paper_ball.png'),
-    scale: 0.008
-  }
+    scale: 0.008,
+  };
 
   projectile.rainbowBall = {
     radius: 15,
     rotate: false,
     image: AM.getAsset('./img/rainbow_ball.png'),
-    scale: 0.008
-  }
+    scale: 0.008,
+  };
 
   projectile.miniCrane = {
     radius: 15,
     rotate: false,
-    sprite: sprite.miniCrane
-  }
+    sprite: sprite.miniCrane,
+  };
 
   projectile.circleBullet = {
     radius: 6,
-    draw: function (ctx) {
+    draw(ctx) {
       ctx.beginPath();
       ctx.arc(this.current.x, this.current.y, this.config.radius, 0 * Math.PI, 2 * Math.PI);
       ctx.stroke();
       ctx.fill();
-    }
-  }
+    },
+  };
 
   projectile.microBullet = {
     radius: 3,
-    draw: function (ctx) {
+    draw(ctx) {
       ctx.beginPath();
       ctx.arc(this.current.x, this.current.y, this.config.radius, 0 * Math.PI, 2 * Math.PI);
       ctx.stroke();
       ctx.fill();
-    }
-  }
+    },
+  };
 
 
-
-  /***** RING: FIRING PATTERNS *****/
+  /** *** RING: FIRING PATTERNS **** */
   ring.linearTest = {
     payload: {
       type: projectile.miniCrane,
       speed: 300,
-      acceleration: 1
+      acceleration: 1,
     },
     firing: {
       radius: 5,
@@ -86,146 +84,146 @@ function loadTemplates() {
       loadTime: 0.01,
       cooldownTime: 1,
       rapidReload: true,
-      targetPlayer: false
-    }
-  }
+      targetPlayer: false,
+    },
+  };
 
   ring.spiralAlpha1 = {
     payload: {
       type: projectile.circleBullet,
       speed: 500,
-      acceleration: 1
+      acceleration: 1,
     },
     rotation: {
       angle: 720,
-      frequency: 4
+      frequency: 4,
     },
     firing: {
       count: 3,
       loadTime: 0.01,
-      cooldownTime: .1,
+      cooldownTime: 0.1,
       rapidReload: true,
-      targetPlayer: false
-    }
-  }
+      targetPlayer: false,
+    },
+  };
 
   ring.spiralAlpha2 = {
     payload: {
       type: projectile.circleBullet,
       speed: 500,
-      acceleration: 1
+      acceleration: 1,
     },
     rotation: {
       angle: 45,
-      frequency: 4
+      frequency: 4,
     },
     firing: {
       angle: 90,
       count: 2,
       spread: 90,
       loadTime: 0.05,
-      cooldownTime: .01,
+      cooldownTime: 0.01,
       rapidReload: true,
       targetPlayer: false,
       viewTurret: true,
       pulse: {
         duration: 3,
-        delay: .5
-      }
-    }
-  }
+        delay: 0.5,
+      },
+    },
+  };
 
   ring.spiralAlpha3 = {
     payload: {
       type: projectile.circleBullet,
       speed: 500,
-      acceleration: 1
+      acceleration: 1,
     },
     rotation: {
       angle: 180,
-      frequency: 1
+      frequency: 1,
     },
     firing: {
       count: 1,
       loadTime: 0.05,
-      cooldownTime: .01,
+      cooldownTime: 0.01,
       rapidReload: true,
-      targetPlayer: false
-    }
-  }
+      targetPlayer: false,
+    },
+  };
 
   ring.spiralAlpha4 = {
     payload: {
       type: projectile.miniCrane,
       speed: 300,
-      acceleration: 1
+      acceleration: 1,
     },
     rotation: {
       angle: 180,
-      frequency: 20
+      frequency: 20,
     },
     firing: {
       angle: 90,
       count: 10,
       loadTime: 0.05,
-      cooldownTime: .45,
+      cooldownTime: 0.45,
       rapidReload: true,
       targetPlayer: true,
-      viewTurret: true
-    }
-  }
+      viewTurret: true,
+    },
+  };
 
   ring.fixedSpeed = {
     payload: {
       type: projectile.microBullet,
       speed: 250,
-      acceleration: 1
+      acceleration: 1,
     },
     rotation: {
-      speed: .25
+      speed: 0.25,
     },
     firing: {
       radius: 80,
       angle: 90,
       count: 1,
       loadTime: 0.005,
-      cooldownTime: .1,
+      cooldownTime: 0.1,
       rapidReload: true,
       targetPlayer: false,
       viewTurret: true,
       pulse: {
         duration: 3,
-        delay: .5
-      }
-    }
-  }
+        delay: 0.5,
+      },
+    },
+  };
 
   ring.spreadBeta1 = {
     payload: {
       type: projectile.paperBall,
       speed: 250,
-      acceleration: 1
+      acceleration: 1,
     },
     firing: {
       angle: 90,
       count: 1,
       loadTime: 0.005,
-      cooldownTime: .1,
+      cooldownTime: 0.1,
       rapidReload: true,
       targetPlayer: true,
       viewTurret: false,
       pulse: {
         duration: 4,
-        delay: .5
-      }
-    }
-  }
+        delay: 0.5,
+      },
+    },
+  };
 
   ring.spreadBeta2 = {
     payload: {
       type: projectile.microBullet,
       speed: 250,
-      acceleration: 1
+      acceleration: 1,
     },
     firing: {
       spread: 15,
@@ -233,22 +231,22 @@ function loadTemplates() {
       angle: 90,
       count: 5,
       loadTime: 0.005,
-      cooldownTime: .09,
+      cooldownTime: 0.09,
       rapidReload: true,
       targetPlayer: false,
       viewTurret: true,
       pulse: {
         duration: 2,
-        delay: 1
-      }
-    }
-  }
+        delay: 1,
+      },
+    },
+  };
 
   ring.spreadBeta3 = {
     payload: {
       type: projectile.microBullet,
       speed: 250,
-      acceleration: 1
+      acceleration: 1,
     },
     firing: {
       spread: 180,
@@ -256,22 +254,22 @@ function loadTemplates() {
       angle: 90,
       count: 2,
       loadTime: 0.005,
-      cooldownTime: .09,
+      cooldownTime: 0.09,
       rapidReload: true,
       targetPlayer: true,
       viewTurret: true,
       pulse: {
         duration: 3,
-        delay: .5
-      }
-    }
-  }
+        delay: 0.5,
+      },
+    },
+  };
 
   ring.spreadBeta4 = {
     payload: {
       type: projectile.microBullet,
       speed: 250,
-      acceleration: 1
+      acceleration: 1,
     },
     firing: {
       spread: 100,
@@ -279,22 +277,22 @@ function loadTemplates() {
       angle: 90,
       count: 5,
       loadTime: 0.005,
-      cooldownTime: .09,
+      cooldownTime: 0.09,
       rapidReload: true,
       targetPlayer: true,
       viewTurret: true,
       pulse: {
         duration: 3,
-        delay: .5
-      }
-    }
-  }
+        delay: 0.5,
+      },
+    },
+  };
 
   ring.gap1 = {
     payload: {
       type: projectile.miniCrane,
       speed: 250,
-      acceleration: 1
+      acceleration: 1,
     },
     firing: {
       spread: 340,
@@ -302,22 +300,22 @@ function loadTemplates() {
       angle: 270,
       count: 70,
       loadTime: 0.005,
-      cooldownTime: .09,
+      cooldownTime: 0.09,
       rapidReload: true,
       targetPlayer: false,
       viewTurret: true,
       pulse: {
         duration: 3,
-        delay: 2
-      }
-    }
-  }
+        delay: 2,
+      },
+    },
+  };
 
   ring.singleTargetPlayer = {
     payload: {
       type: projectile.circleBullet,
       speed: 100,
-      acceleration: 1
+      acceleration: 1,
     },
     firing: {
       angle: 90,
@@ -328,16 +326,16 @@ function loadTemplates() {
       targetPlayer: true,
       pulse: {
         duration: 0.5,
-        delay: 0.5
+        delay: 0.5,
       },
-    }
-  }
+    },
+  };
 
   ring.doubleStraightDownPulse = {
     payload: {
       type: projectile.microBullet,
       speed: 250,
-      acceleration: 1
+      acceleration: 1,
     },
     firing: {
       spread: 100,
@@ -345,144 +343,144 @@ function loadTemplates() {
       angle: 90,
       count: 5,
       loadTime: 0.005,
-      cooldownTime: .09,
+      cooldownTime: 0.09,
       rapidReload: true,
       targetPlayer: false,
       viewTurret: true,
       pulse: {
         duration: 2,
-        delay: 1
-      }
-    }
-  }
+        delay: 1,
+      },
+    },
+  };
 
   ring.jaredAlpha1 = {
     payload: {
       type: projectile.circleBullet,
       speed: 500,
-      acceleration: 1
+      acceleration: 1,
     },
     rotation: {
       angle: 45,
-      frequency: 4
+      frequency: 4,
     },
     firing: {
       angle: 90,
       count: 2,
       spread: 90,
       loadTime: 0.005,
-      cooldownTime: .01,
+      cooldownTime: 0.01,
       rapidReload: true,
       targetPlayer: false,
       viewTurret: true,
       pulse: {
         duration: 3,
-        delay: .5
-      }
-    }
-  }
+        delay: 0.5,
+      },
+    },
+  };
 
   ring.jaredAlpha2 = {
     payload: {
       type: projectile.microBullet,
       speed: 500,
-      acceleration: 1
+      acceleration: 1,
     },
     rotation: {
-      speed: .25
+      speed: 0.25,
     },
     firing: {
       radius: 80,
       angle: 90,
       count: 4,
       loadTime: 0.005,
-      cooldownTime: .01,
+      cooldownTime: 0.01,
       rapidReload: true,
       targetPlayer: true,
       viewTurret: true,
       pulse: {
-        duration: .75,
-        delay: .5
-      }
-    }
-  }
+        duration: 0.75,
+        delay: 0.5,
+      },
+    },
+  };
 
   ring.jaredBeta1 = {
     payload: {
       type: projectile.microBullet,
       speed: 250,
-      acceleration: 1
+      acceleration: 1,
     },
     rotation: {
-      speed: 1
+      speed: 1,
     },
     firing: {
       radius: 80,
       angle: 90,
       count: 1,
       loadTime: 0.005,
-      cooldownTime: .09,
+      cooldownTime: 0.09,
       rapidReload: true,
       targetPlayer: false,
       viewTurret: true,
       pulse: {
         duration: 3,
-        delay: .5
-      }
-    }
-  }
+        delay: 0.5,
+      },
+    },
+  };
 
   ring.slowPulseSpiral = {
-      payload: {
-        type: projectile.microBullet,
-        speed: 100,
-        acceleration: 1
-      },
-      rotation: {
-        angle: 720,
-        frequency: 15
-      },
-      firing: {
-        angle: 0,
-        count: 1,
-        loadTime: 0.05,
-        cooldownTime: .01,
-        rapidReload: true,
-        targetPlayer: false,
-        viewTurret: false,
-        // pulse: {
-        //   duration: 2,
-        //   delay: 1
-        // }
-      }
-    }
+    payload: {
+      type: projectile.microBullet,
+      speed: 100,
+      acceleration: 1,
+    },
+    rotation: {
+      angle: 720,
+      frequency: 15,
+    },
+    firing: {
+      angle: 0,
+      count: 1,
+      loadTime: 0.05,
+      cooldownTime: 0.01,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: false,
+      // pulse: {
+      //   duration: 2,
+      //   delay: 1
+      // }
+    },
+  };
 
-    ring.slowPulseSpiral2 = {
-      payload: {
-        type: projectile.miniCrane,
-        speed: 100,
-        acceleration: 1
-      },
-      rotation: {
-        angle: 720,
-        frequency: 15
-      },
-      firing: {
-        angle: 0,
-        count: 1,
-        loadTime: 0.05,
-        cooldownTime: .03,
-        rapidReload: true,
-        targetPlayer: false,
-        viewTurret: false,
-        // pulse: {
-        //   duration: 2,
-        //   delay: 1
-        // }
-      }
-    }
+  ring.slowPulseSpiral2 = {
+    payload: {
+      type: projectile.miniCrane,
+      speed: 100,
+      acceleration: 1,
+    },
+    rotation: {
+      angle: 720,
+      frequency: 15,
+    },
+    firing: {
+      angle: 0,
+      count: 1,
+      loadTime: 0.05,
+      cooldownTime: 0.03,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: false,
+      // pulse: {
+      //   duration: 2,
+      //   delay: 1
+      // }
+    },
+  };
 
-  /***** ENEMY SHIPS *****/
+  /** *** ENEMY SHIPS **** */
   ship.demoCrane = {
     config: {
       hitValue: 5,
@@ -493,13 +491,13 @@ function loadTemplates() {
       snapLineWait: 0,
       origin: {
         x: 500, // omit x to get random position
-        y: -50
+        y: -50,
       },
       weaponsOnEntrance: false,
-      weaponsAdvantage: 0
+      weaponsAdvantage: 0,
     },
     path: [[180, 100, 5], [0, 100, 5], [180, 100, 5], [0, 100, 5], [90, 100, 60]],
-    weapon: ring.spiralAlpha4
+    weapon: ring.spiralAlpha4,
   };
 
   ship.idleCrane = {
@@ -512,12 +510,12 @@ function loadTemplates() {
       snapLineWait: 0,
       origin: {
         x: 500, // omit x to get random position
-        y: -50
+        y: -50,
       },
       weaponsOnEntrance: false,
-      weaponsAdvantage: 0
+      weaponsAdvantage: 0,
     },
-    weapon: ring.linearTest
+    weapon: ring.linearTest,
   };
 
   ship.easyBat = {
@@ -530,18 +528,18 @@ function loadTemplates() {
       snapLineWait: 1,
       origin: {
         x: 500, // omit x to get random position
-        y: -50
+        y: -50,
       },
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
       pulse: {
         duration: 0.5,
-        delay: 2
+        delay: 2,
       },
 
-      waitOffScreen: 4
+      waitOffScreen: 4,
     },
-    weapon: ring.singleTargetPlayer
+    weapon: ring.singleTargetPlayer,
   };
 
   ship.openingBat = {
@@ -554,18 +552,18 @@ function loadTemplates() {
       snapLineWait: 1,
       origin: {
         x: 500, // omit x to get random position
-        y: -50
+        y: -50,
       },
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
       pulse: {
         duration: 0.5,
-        delay: 2
+        delay: 2,
       },
 
-      waitOffScreen: 20
+      waitOffScreen: 20,
     },
-    weapon: ring.spreadBeta2
+    weapon: ring.spreadBeta2,
   };
 
   ship.mediumDoubleTurretBat = {
@@ -578,14 +576,14 @@ function loadTemplates() {
       snapLineWait: 1,
       origin: {
         x: 500, // omit x to get random position
-        y: -50
+        y: -50,
       },
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
 
       waitOffScreen: 130,
     },
-    weapon: ring.doubleStraightDownPulse
+    weapon: ring.doubleStraightDownPulse,
   };
 
   ship.easyIdleSpiralCrane = {
@@ -598,13 +596,13 @@ function loadTemplates() {
       snapLineWait: 0,
       origin: {
         x: 500, // omit x to get random position
-        y: -50
+        y: -50,
       },
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
       waitOffScreen: 40,
     },
-    weapon: ring.slowPulseSpiral
+    weapon: ring.slowPulseSpiral,
   };
 
   ship.dodgeOwl = {
@@ -617,13 +615,13 @@ function loadTemplates() {
       snapLineWait: 0.5,
       origin: {
         x: 500, // omit x to get random position
-        y: -50
+        y: -50,
       },
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
       waitOffScreen: 110,
     },
-    weapon: ring.jaredAlpha1
+    weapon: ring.jaredAlpha1,
   };
 
   ship.denseDove = {
@@ -636,52 +634,51 @@ function loadTemplates() {
       snapLineWait: 1,
       origin: {
         x: 500, // omit x to get random position
-        y: -50
+        y: -50,
       },
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
       waitOffScreen: 50,
     },
-    weapon: ring.gap1
+    weapon: ring.gap1,
   };
 
 
-  /***** ALL PLAYER THINGS *****/
+  /** *** ALL PLAYER THINGS **** */
   projectile.player1 = {
     radius: 8,
-    draw: function (ctx) {
+    draw(ctx) {
       ctx.strokeStyle = 'orange';
       ctx.beginPath();
       ctx.arc(this.current.x, this.current.y, this.config.radius, 0 * Math.PI, 2 * Math.PI);
       ctx.stroke();
       ctx.fill();
-    }
-  }
+    },
+  };
 
   /** A simple ring for the player only shoots up */
   ring.player = {
     payload: {
       type: projectile.paperBall,
       speed: 600,
-      acceleration: 1
+      acceleration: 1,
     },
     firing: {
       angle: 270,
       count: 1,
       loadTime: 0.01,
-      cooldownTime: .25,
+      cooldownTime: 0.25,
       rapidReload: true,
-      viewTurret: false
-    }
-  }
+      viewTurret: false,
+    },
+  };
 
   ship.player = {
     config: {
       radius: 15,
       sprite: sprite.plane,
-      speed: 300
+      speed: 300,
     },
-    weapon: ring.player
-  }
-
+    weapon: ring.player,
+  };
 } // end of objects file

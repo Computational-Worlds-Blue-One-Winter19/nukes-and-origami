@@ -49,13 +49,13 @@ class NukesAndOrigami extends GameEngine {
       payload: {
         type: {
           sprite: sprite.rainbowBall,
-          radius: 30
+          radius: 30,
         },
         speed: 60,
-        powerUp: function () {
+        powerUp() {
           this.lives += 1;
           addLife();
-        }
+        },
       },
     }));
   }
@@ -65,43 +65,43 @@ class NukesAndOrigami extends GameEngine {
     // player.invincTime += this.clockTick;
     if (player.invincTime == 0) {
       this.lives -= 1;
-      removeLifeFromBoard()
+      removeLifeFromBoard();
       player.invincTime += this.clockTick;
     }
     if (this.lives === 0) { // game over
-      //this.gameOver()
+      // this.gameOver()
     }
   }
 
   spawnEnemies() {
     // Slowly strafe right off screen
-    let strafeRight = [
-      [0, 50, 20]
+    const strafeRight = [
+      [0, 50, 20],
     ];
 
     // Slowly strafe left off screen
-    let strafeLeft = [
-      [180, 50, 20]
+    const strafeLeft = [
+      [180, 50, 20],
     ];
 
     // Advance down, then left, then southeast
-    let cornerRight = [
+    const cornerRight = [
       [90, 50, 2],
       [180, 50, 2],
-      [45, 50, 30]
+      [45, 50, 30],
     ];
 
     // Advance down, then right, then southwest
-    let cornerLeft = [
+    const cornerLeft = [
       [90, 50, 2],
       [0, 50, 2],
-      [135, 50, 30]
+      [135, 50, 30],
     ];
 
     // WAVE 1
 
-    let ezBat1 = new Ship(this, ship.easyBat);
-    let ezBat2 = new Ship(this, ship.easyBat);
+    const ezBat1 = new Ship(this, ship.easyBat);
+    const ezBat2 = new Ship(this, ship.easyBat);
 
     // Object.assign assigns a copy of the array. (otherwise we get strange
     // concurrent modification issues)
@@ -116,8 +116,8 @@ class NukesAndOrigami extends GameEngine {
 
     // WAVE 2
 
-    let openingBat1 = new Ship(this, ship.openingBat);
-    let openingbat2 = new Ship(this, ship.openingBat);
+    const openingBat1 = new Ship(this, ship.openingBat);
+    const openingbat2 = new Ship(this, ship.openingBat);
 
     // Object.assign assigns a copy of the array.
     openingBat1.initializePath(Object.assign({}, strafeRight));
@@ -131,8 +131,8 @@ class NukesAndOrigami extends GameEngine {
 
     // WAVE 3
 
-    let spiralCrane1 = new Ship(this, Object.assign({}, ship.easyIdleSpiralCrane));
-    let spiralCrane2 = new Ship(this, Object.assign({}, ship.easyIdleSpiralCrane));
+    const spiralCrane1 = new Ship(this, Object.assign({}, ship.easyIdleSpiralCrane));
+    const spiralCrane2 = new Ship(this, Object.assign({}, ship.easyIdleSpiralCrane));
 
     spiralCrane1.current.x = 200;
 
@@ -143,9 +143,9 @@ class NukesAndOrigami extends GameEngine {
 
     // WAVE 4
 
-    let dodgeOwl1 = new Ship(this, Object.assign({}, ship.dodgeOwl));
-    let dodgeOwl2 = new Ship(this, Object.assign({}, ship.dodgeOwl));
-    let dodgeOwl3 = new Ship(this, Object.assign({}, ship.dodgeOwl));
+    const dodgeOwl1 = new Ship(this, Object.assign({}, ship.dodgeOwl));
+    const dodgeOwl2 = new Ship(this, Object.assign({}, ship.dodgeOwl));
+    const dodgeOwl3 = new Ship(this, Object.assign({}, ship.dodgeOwl));
 
     dodgeOwl1.current.x = 500;
 
@@ -159,7 +159,7 @@ class NukesAndOrigami extends GameEngine {
 
     // WAVE 5
 
-    let denseDove1 = new Ship(this, Object.assign({}, ship.denseDove));
+    const denseDove1 = new Ship(this, Object.assign({}, ship.denseDove));
 
     denseDove1.current.x = 500;
 
@@ -167,8 +167,8 @@ class NukesAndOrigami extends GameEngine {
 
     // WAVE 6
 
-    let doubleBat1 = new Ship(this, Object.assign({}, ship.mediumDoubleTurretBat));
-    let doubleBat2 = new Ship(this, Object.assign({}, ship.mediumDoubleTurretBat));
+    const doubleBat1 = new Ship(this, Object.assign({}, ship.mediumDoubleTurretBat));
+    const doubleBat2 = new Ship(this, Object.assign({}, ship.mediumDoubleTurretBat));
 
     doubleBat1.initializePath(Object.assign({}, cornerRight));
     doubleBat1.current.x = 400;
@@ -218,23 +218,24 @@ class NukesAndOrigami extends GameEngine {
   }
 
   addBackground() {
-    var canvas = this.ctx.canvas;
-    var point1 = {
+    // Using object deconstructing to access the canvas property
+    const { canvas } = this.ctx;
+    const point1 = {
       x: 0,
-      y: 0
+      y: 0,
     };
-    var point2 = {
+    const point2 = {
       x: 0,
-      y: -canvas.height
+      y: -canvas.height,
     };
-    var cloudPoint1 = {
+    const cloudPoint1 = {
       x: 0,
-      y: -2304
-    }
-    var cloudPoint2 = {
+      y: -2304,
+    };
+    const cloudPoint2 = {
       x: 0,
-      y: -2304 * 2
-    }
+      y: -2304 * 2,
+    };
     this.addEntity(new Background(this, AM.getAsset('./img/notebook.png'), canvas.height, point1));
     this.addEntity(new Background(this, AM.getAsset('./img/notebook.png'), canvas.height, point2));
     this.addEntity(new Clouds(this, AM.getAsset('./img/clouds.png'), canvas.height, cloudPoint1));
@@ -259,7 +260,7 @@ AM.downloadAll(() => {
   game.spawnPlayer();
 
   // view test stage
-  //game.testScene();
+  // game.testScene();
 
   // run prototype level
   game.spawnEnemies();
@@ -295,7 +296,7 @@ class Background extends Entity {
   }
 }
 
-class Clouds extends Entity{
+class Clouds extends Entity {
   constructor(game, spritesheet, canvasHeight, point) {
     super(game, point);
     this.startY = point.y;
@@ -305,13 +306,13 @@ class Clouds extends Entity{
     this.canvasHeight = canvasHeight;
   }
 
-  draw()  {
+  draw() {
     this.ctx.drawImage(this.spritesheet, this.current.x, this.current.y);
   }
 
-  update()  {
+  update() {
     this.current.y += 2;
-    if(this.current.y >= this.canvasHeight) {
+    if (this.current.y >= this.canvasHeight) {
       this.current.y = -3840;
     }
   }
