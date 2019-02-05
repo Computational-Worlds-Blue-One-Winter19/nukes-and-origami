@@ -1,13 +1,15 @@
-const DEFAULT_DROP_RATE = 5;
+const DEFAULT_DROP_RATE = 10;
+const MAX_RANDOM = 100;
 
-class PowerUp extends Entity {
-  constructor() {
-    
-    
-  }
-
-  init(manifest) {
-    
+class PowerUp {
+  /**
+   *
+   * @param {Boolean} instantActivation
+   * @param {Optional && Int} dropRate
+   */
+  constructor(instantActivation, dropRate) {
+    this.instantActivation = instantActivation;
+    this.dropRate = dropRate || DEFAULT_DROP_RATE;
   }
 
   /**
@@ -44,5 +46,75 @@ class PowerUp extends Entity {
      */
   static getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
+  }
+
+  shouldDrop() {
+    return PowerUp.getRandomInt(MAX_RANDOM) < this.dropRate;
+  }
+}
+
+class ExtraLife extends PowerUp {
+  constructor() {
+    super(true, 50);
+
+    this.manifest = {
+      owner: null,
+      angle: Math.PI / 2,
+      payload: {
+        type: {
+          sprite: sprite.rainbowBall,
+          radius: 30,
+        },
+        speed: 60,
+        powerUp() {
+          this.lives += 1;
+          addLife();
+        },
+      },
+    };
+  }
+}
+
+class Shield extends PowerUp {
+  constructor() {
+    super(false, 100);
+
+    this.manifest = {
+      owner: null,
+      angle: Math.PI / 2,
+      payload: {
+        type: {
+          sprite: sprite.shield,
+          radius: 30,
+        },
+        speed: 60,
+        powerUp() {
+          // Add the power up to the screen inventory
+          addPowerUp('./img/shield-icon.png');
+        },
+      },
+    };
+  }
+}
+
+class RapidFire extends PowerUp {
+  constructor() {
+    super(false);
+
+    this.manifest = {
+      owner: null,
+      angle: Math.PI / 2,
+      payload: {
+        type: {
+          sprite: sprite.RapidFire,
+          radius: 30,
+        },
+        speed: 60,
+        powerUp() {
+          this.lives += 1;
+          addLife();
+        },
+      },
+    };
   }
 }

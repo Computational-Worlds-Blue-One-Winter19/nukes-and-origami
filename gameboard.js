@@ -101,6 +101,7 @@ function hideMessage(type) {
 
 // Inventory related functions
 function addPowerUp(src) {
+  console.log('Inside the addPowerUp');
   const img = new Image();
   img.src = src;
 

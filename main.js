@@ -39,28 +39,22 @@ class NukesAndOrigami extends GameEngine {
 
   // notification of ship destruction.
   onEnemyDestruction(enemy) {
-    this.increaseScoreBy(enemy.config.hitValue);
+    const {
+      current,
+      hitValue,
+      powerUp,
+    } = enemy;
+    this.increaseScoreBy(hitValue);
 
-
-    this.addEntity(new Projectile(this, {
-      owner: null,
-      origin: {
-        x: enemy.current.x,
-        y: enemy.current.y,
-      },
-      angle: Math.PI / 2,
-      payload: {
-        type: {
-          sprite: sprite.rainbowBall,
-          radius: 30,
+    if (powerUp && powerUp.shouldDrop()) {
+      this.addEntity(new Projectile(this, {
+        origin: {
+          x: current.x,
+          y: current.y,
         },
-        speed: 60,
-        powerUp() {
-          this.lives += 1;
-          addLife();
-        },
-      },
-    }));
+        ...powerUp.manifest,
+      }));
+    }
   }
 
   // notification of player destruction.

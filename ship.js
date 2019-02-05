@@ -108,6 +108,7 @@ class Sprite {
  *     snapLineWait: time to wait on snapLine before initiating path and player interaction
  *     weaponsOnEntrance: if true then weapons will be activated prior to stepLine
  *     weaponsAdvantage: specifies the amount of time before snapLineWait that weapons activate.
+ *     powerUps: A powerup that the ship can drop when destroyed
  *
  * Overriding: consider adding functionality to the Enemy class.
  */
@@ -121,6 +122,8 @@ class Ship extends Entity {
     // set parameters
     this.config = manifest.config;
     this.snapLine = this.config.snapLine;
+    this.hitValue = this.config.hitValue;
+    this.powerUp = this.config.powerUp;
 
     // additional fields
     this.idleTrans = false;

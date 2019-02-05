@@ -41,6 +41,21 @@ function loadTemplates() {
     rotate: false,
     image: AM.getAsset('./img/rainbow_ball.png'),
     scale: 0.008,
+    manifest: {
+      owner: null,
+      angle: Math.PI / 2,
+      payload: {
+        type: {
+          sprite: projectile.rainbowBall,
+          radius: 30,
+        },
+        speed: 60,
+        powerUp() {
+          this.lives += 1;
+          addLife();
+        },
+      },
+    },
   };
 
   projectile.miniCrane = {
@@ -67,6 +82,10 @@ function loadTemplates() {
       ctx.stroke();
       ctx.fill();
     },
+  };
+
+  projectile.rainbowBall = {
+
   };
 
   /** *** RING: FIRING PATTERNS **** */
@@ -483,6 +502,7 @@ function loadTemplates() {
   ship.demoCrane = {
     config: {
       hitValue: 5,
+      powerUp: new Shield(),
       radius: 50,
       sprite: sprite.crane,
       snapLine: 150,
@@ -502,6 +522,7 @@ function loadTemplates() {
   ship.idleCrane = {
     config: {
       hitValue: 5,
+      powerUp: new ExtraLife(),
       radius: 50,
       sprite: sprite.crane,
       snapLine: 150,
@@ -520,6 +541,7 @@ function loadTemplates() {
   ship.easyBat = {
     config: {
       hitValue: 5,
+      powerUp: new Shield(),
       radius: 50,
       sprite: sprite.bat,
       snapLine: 100,
@@ -544,6 +566,7 @@ function loadTemplates() {
   ship.openingBat = {
     config: {
       hitValue: 5,
+      powerUp: new ExtraLife(),
       radius: 50,
       sprite: sprite.bat,
       snapLine: 100,
@@ -568,6 +591,7 @@ function loadTemplates() {
   ship.mediumDoubleTurretBat = {
     config: {
       hitValue: 5,
+      powerUp: new ExtraLife(),
       radius: 30,
       sprite: sprite.bat,
       snapLine: 100,
@@ -588,6 +612,7 @@ function loadTemplates() {
   ship.easyIdleSpiralCrane = {
     config: {
       hitValue: 5,
+      powerUp: new ExtraLife(),
       radius: 50,
       sprite: sprite.crane,
       snapLine: 150,
@@ -607,6 +632,7 @@ function loadTemplates() {
   ship.dodgeOwl = {
     config: {
       hitValue: 5,
+      powerUp: new ExtraLife(),
       radius: 70,
       sprite: sprite.owl,
       snapLine: 150,
@@ -626,6 +652,7 @@ function loadTemplates() {
   ship.denseDove = {
     config: {
       hitValue: 5,
+      powerUp: new ExtraLife(),
       radius: 70,
       sprite: sprite.dove,
       snapLine: 200,
