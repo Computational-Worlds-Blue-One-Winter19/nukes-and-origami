@@ -1,4 +1,4 @@
-const DEFAULT_DROP_RATE = 10;
+const DEFAULT_DROP_RATE = 50;
 const MAX_RANDOM = 100;
 
 class PowerUp {
@@ -57,7 +57,7 @@ class PowerUp {
 
 class ExtraLife extends PowerUp {
   constructor() {
-    super(true, 50);
+    super(50);
 
     this.manifest = {
       owner: null,
@@ -68,8 +68,8 @@ class ExtraLife extends PowerUp {
           radius: 30,
         },
         speed: 60,
-        powerUp() {
-          this.lives += 1;
+        powerUp(entity) {
+          entity.game.lives += 1;
           addLife();
         },
       },
@@ -79,7 +79,7 @@ class ExtraLife extends PowerUp {
 
 class Shield extends PowerUp {
   constructor() {
-    super(false, 100);
+    super(100);
 
     this.manifest = {
       owner: null,
@@ -90,10 +90,10 @@ class Shield extends PowerUp {
           radius: 30,
         },
         speed: 60,
-        powerUp() {
+        powerUp(entity) {
           // Add the power up to the screen inventory
           addPowerUp('./img/shield-icon.png');
-
+          // this.weapon.cooldown = 0.01;
           // TODO: Add actual functionality
         },
       },
@@ -103,21 +103,22 @@ class Shield extends PowerUp {
 
 class RapidFire extends PowerUp {
   constructor() {
-    super(false);
+    super(100);
 
     this.manifest = {
       owner: null,
       angle: Math.PI / 2,
       payload: {
         type: {
-          sprite: sprite.RapidFire,
+          sprite: sprite.rapidFire,
           radius: 30,
         },
         speed: 60,
-        powerUp() {
-          addPowerUp('./img/shield-icon.png');
-
-          // TODO: Add actual functionality
+        powerUp(entity) {
+          addPowerUp('./img/rapid-bullet.png');
+          console.log('Inside the rapidFire');
+          // TODO: Add actual functionality to move activation inside player
+          entity.weapon.coolTime = 0.01;
         },
       },
     };

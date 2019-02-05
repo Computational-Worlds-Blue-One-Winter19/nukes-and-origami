@@ -37,6 +37,10 @@ class NukesAndOrigami extends GameEngine {
     initializeScoreBoardLives(this.lives);
   }
 
+  increaseLivesCount() {
+    this.lives += 1;
+  }
+
   // notification of ship destruction.
   onEnemyDestruction(enemy) {
     const {
@@ -60,7 +64,7 @@ class NukesAndOrigami extends GameEngine {
   // notification of player destruction.
   onPlayerHit(player) {
     // player.invincTime += this.clockTick;
-    if (player.invincTime == 0) {
+    if (player.invincTime === 0) {
       this.lives -= 1;
       removeLifeFromBoard();
       player.invincTime += this.clockTick;

@@ -519,8 +519,11 @@ class Plane extends Entity {
         // handle powerUp grab by player
         if (entity.payload.powerUp && !entity.isPlayer) {
           // TODO: store powerUps for user activation and update the HUD inventory
-          entity.payload.powerUp(); // for now just run the enclosed powerUp
+          console.log('Calling the power up');
+          // console.log(`Lives is ${this.pa}`)
+          entity.payload.powerUp(this); // for now just run the enclosed powerUp
 
+          console.log('Done callign the power up;');
           entity.removeFromWorld = true;
         } else {
           // hit by enemy bullet
