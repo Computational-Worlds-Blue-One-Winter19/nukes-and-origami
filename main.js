@@ -17,6 +17,8 @@ AM.queueDownload('./img/nuke_single.png');
 AM.queueDownload('./img/owl.png');
 AM.queueDownload('./img/dove.png');
 AM.queueDownload('./img/rainbow_ball.png');
+AM.queueDownload('./img/shield-icon.png');
+AM.queueDownload('./img/rapid-bullet.png');
 AM.queueDownload('./img/paper_ball.png');
 AM.queueDownload('./img/clouds.png');
 
@@ -39,7 +41,7 @@ class NukesAndOrigami extends GameEngine {
   onEnemyDestruction(enemy) {
     this.increaseScoreBy(enemy.config.hitValue);
 
-    
+
     this.addEntity(new Projectile(this, {
       owner: null,
       origin: {

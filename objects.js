@@ -69,20 +69,6 @@ function loadTemplates() {
     },
   };
 
-  projectile.shield = {
-    radius: 15,
-    rotate: false,
-    image: AM.getAsset('./img/shield-icon'),
-    scale: 0.008,
-  };
-
-  projectile.rapidFire = {
-    radius: 15,
-    rotate: false,
-    image: AM.getAsset('./img/rapid-bullet.png'),
-    scale: 0.008,
-  };
-
   /** *** RING: FIRING PATTERNS **** */
   ring.linearTest = {
     payload: {
