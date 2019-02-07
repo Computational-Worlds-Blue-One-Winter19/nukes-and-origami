@@ -64,6 +64,7 @@ class GameEngine {
     this.surfaceWidth = null;
     this.surfaceHeight = null;
     this.keysDown = [];
+    this.stats = new Stats();
   }
 
   init(ctx) {
@@ -73,6 +74,7 @@ class GameEngine {
     this.startInput();
 
     this.timer = new Timer();
+    document.body.appendChild(this.stats.domElement);
   }
 
   start() {
@@ -144,6 +146,7 @@ class GameEngine {
       this.clockTick = this.timer.tick();
       this.update();
       this.draw();
+      this.stats.update(); // remove for production
       this.space = null;
       this.arrowUpPressed = null;
       this.arrowDownPressed = null;
