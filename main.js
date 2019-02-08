@@ -9,8 +9,8 @@ const projectile = {};
 /** These are the image assets declared by filename */
 AM.queueDownload('./img/bat-sheet.png');
 AM.queueDownload('./img/crane-sheet.png');
-AM.queueDownload('./img/plane.png');
-AM.queueDownload('./img/purple_plane.png');
+AM.queueDownload('./img/plane-small.png');
+AM.queueDownload('./img/purple-plane-small.png');
 AM.queueDownload('./img/notebook.png');
 AM.queueDownload('./img/bullet.png');
 AM.queueDownload('./img/nuke_single.png');

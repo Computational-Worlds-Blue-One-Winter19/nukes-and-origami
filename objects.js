@@ -676,7 +676,7 @@ function loadTemplates() {
   ship.player = {
     config: {
       radius: 15,
-      sprite: sprite.plane,
+      sprite: sprite.purplePlane,
       speed: 300,
     },
     weapon: ring.player,

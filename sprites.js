@@ -102,70 +102,138 @@ function loadSpriteSheets() {
   /** The Player Plane SpriteSheet */
   sprite.plane = {
     default: {
-      image: AM.getAsset('./img/plane.png'),
+      image: AM.getAsset('./img/plane-small.png'),
       dimension: {
         originX: 0,
         originY: 0,
-        frameWidth: 300,
-        frameHeight: 330,
+        frameWidth: 60,
+        frameHeight: 66,
         frameCount: 1,
         timePerFrame: 0,
-        scale: 0.2,
+        scale: 1.0,
         flip: false
       }
     },
     right: {
-      image: AM.getAsset('./img/plane.png'),
+      image: AM.getAsset('./img/plane-small.png'),
       dimension: {
-        originX: 300,
+        originX: 60,
         originY: 0,
-        frameWidth: 300,
-        frameHeight: 330,
+        frameWidth: 60,
+        frameHeight: 66,
         frameCount: 1,
         timePerFrame: 0,
-        scale: 0.2,
+        scale: 1.0,
         flip: false
       }
     },
     left: {
-      image: AM.getAsset('./img/plane.png'),
+      image: AM.getAsset('./img/plane-small.png'),
       dimension: {
-        originX: 600,
+        originX: 120,
         originY: 0,
-        frameWidth: 300,
-        frameHeight: 330,
+        frameWidth: 60,
+        frameHeight: 66,
         frameCount: 1,
         timePerFrame: 0,
-        scale: 0.2,
+        scale: 1.0,
         flip: false
       }
     },
     rollRight: {
-      image: AM.getAsset('./img/plane.png'),
+      image: AM.getAsset('./img/plane-small.png'),
       dimension: {
         originX: 0,
-        originY: 330,
-        frameWidth: 300,
-        frameHeight: 330,
+        originY: 66,
+        frameWidth: 60,
+        frameHeight: 66,
         frameCount: 8,
         timePerFrame: 0.07,
-        scale: 0.2,
+        scale: 1.0,
         flip: false
       }
     },
     rollLeft: {
-      image: AM.getAsset('./img/plane.png'),
+      image: AM.getAsset('./img/plane-small.png'),
       dimension: {
         originX: 0,
-        originY: 660,
-        frameWidth: 300,
-        frameHeight: 330,
+        originY: 132,
+        frameWidth: 60,
+        frameHeight: 66,
         frameCount: 8,
         timePerFrame: 0.07,
-        scale: 0.2,
+        scale: 1.0,
         flip: false
       }
     }
   } //end plane
+  
+  sprite.purplePlane = {
+    default: {
+      image: AM.getAsset('./img/purple-plane-small.png'),
+      dimension: {
+        originX: 0,
+        originY: 0,
+        frameWidth: 60,
+        frameHeight: 66,
+        frameCount: 1,
+        timePerFrame: 0,
+        scale: 1.0,
+        flip: false
+      }
+    },
+    right: {
+      image: AM.getAsset('./img/purple-plane-small.png'),
+      dimension: {
+        originX: 60,
+        originY: 0,
+        frameWidth: 60,
+        frameHeight: 66,
+        frameCount: 1,
+        timePerFrame: 0,
+        scale: 1.0,
+        flip: false
+      }
+    },
+    left: {
+      image: AM.getAsset('./img/purple-plane-small.png'),
+      dimension: {
+        originX: 120,
+        originY: 0,
+        frameWidth: 60,
+        frameHeight: 66,
+        frameCount: 1,
+        timePerFrame: 0,
+        scale: 1.0,
+        flip: false
+      }
+    },
+    rollRight: {
+      image: AM.getAsset('./img/purple-plane-small.png'),
+      dimension: {
+        originX: 0,
+        originY: 66,
+        frameWidth: 60,
+        frameHeight: 66,
+        frameCount: 8,
+        timePerFrame: 0.07,
+        scale: 1.0,
+        flip: false
+      }
+    },
+    rollLeft: {
+      image: AM.getAsset('./img/purple-plane-small.png'),
+      dimension: {
+        originX: 0,
+        originY: 132,
+        frameWidth: 60,
+        frameHeight: 66,
+        frameCount: 8,
+        timePerFrame: 0.07,
+        scale: 1.0,
+        flip: false
+      }
+    }
+  } //end purple plane
 
 }
