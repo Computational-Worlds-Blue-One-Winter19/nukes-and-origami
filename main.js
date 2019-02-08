@@ -105,10 +105,10 @@ class NukesAndOrigami extends GameEngine {
 
     // Object.assign assigns a copy of the array. (otherwise we get strange
     // concurrent modification issues)
-    ezBat1.initializePath(Object.assign({}, strafeRight));
+    ezBat1.initializePath(strafeRight);
     ezBat1.current.x = 200;
 
-    ezBat2.initializePath(Object.assign({}, strafeLeft));
+    ezBat2.initializePath(strafeLeft);
     ezBat2.current.x = 800;
 
     this.addEntity(ezBat1);
@@ -120,10 +120,10 @@ class NukesAndOrigami extends GameEngine {
     const openingbat2 = new Ship(this, ship.openingBat);
 
     // Object.assign assigns a copy of the array.
-    openingBat1.initializePath(Object.assign({}, strafeRight));
+    openingBat1.initializePath(strafeRight);
     openingBat1.current.x = 200;
 
-    openingbat2.initializePath(Object.assign({}, strafeLeft));
+    openingbat2.initializePath(strafeLeft);
     openingbat2.current.x = 800;
 
     this.addEntity(openingBat1);
@@ -131,8 +131,8 @@ class NukesAndOrigami extends GameEngine {
 
     // WAVE 3
 
-    const spiralCrane1 = new Ship(this, Object.assign({}, ship.easyIdleSpiralCrane));
-    const spiralCrane2 = new Ship(this, Object.assign({}, ship.easyIdleSpiralCrane));
+    const spiralCrane1 = new Ship(this, ship.easyIdleSpiralCrane);
+    const spiralCrane2 = new Ship(this, ship.easyIdleSpiralCrane);
 
     spiralCrane1.current.x = 200;
 
@@ -143,9 +143,9 @@ class NukesAndOrigami extends GameEngine {
 
     // WAVE 4
 
-    const dodgeOwl1 = new Ship(this, Object.assign({}, ship.dodgeOwl));
-    const dodgeOwl2 = new Ship(this, Object.assign({}, ship.dodgeOwl));
-    const dodgeOwl3 = new Ship(this, Object.assign({}, ship.dodgeOwl));
+    const dodgeOwl1 = new Ship(this, ship.dodgeOwl);
+    const dodgeOwl2 = new Ship(this, ship.dodgeOwl);
+    const dodgeOwl3 = new Ship(this, ship.dodgeOwl);
 
     dodgeOwl1.current.x = 500;
 
@@ -159,7 +159,7 @@ class NukesAndOrigami extends GameEngine {
 
     // WAVE 5
 
-    const denseDove1 = new Ship(this, Object.assign({}, ship.denseDove));
+    const denseDove1 = new Ship(ship.denseDove);
 
     denseDove1.current.x = 500;
 
@@ -167,13 +167,13 @@ class NukesAndOrigami extends GameEngine {
 
     // WAVE 6
 
-    const doubleBat1 = new Ship(this, Object.assign({}, ship.mediumDoubleTurretBat));
-    const doubleBat2 = new Ship(this, Object.assign({}, ship.mediumDoubleTurretBat));
+    const doubleBat1 = new Ship(this, ship.mediumDoubleTurretBat);
+    const doubleBat2 = new Ship(this, ship.mediumDoubleTurretBat);
 
-    doubleBat1.initializePath(Object.assign({}, cornerRight));
+    doubleBat1.initializePath(cornerRight);
     doubleBat1.current.x = 400;
 
-    doubleBat2.initializePath(Object.assign({}, cornerLeft));
+    doubleBat2.initializePath(cornerLeft);
     doubleBat2.current.x = 600;
 
     this.addEntity(doubleBat1);
@@ -256,14 +256,14 @@ AM.downloadAll(() => {
   game.start();
 
   // add background and player
-  game.addBackground();
+  //game.addBackground();
   game.spawnPlayer();
 
   // view test stage
-  // game.testScene();
+  game.testScene();
 
   // run prototype level
-  game.spawnEnemies();
+  //game.spawnEnemies();
 
   console.log('All Done!');
   canvas.focus();

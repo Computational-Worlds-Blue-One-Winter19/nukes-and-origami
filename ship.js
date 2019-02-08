@@ -210,11 +210,11 @@ class Ship extends Entity {
           this.path = null;
         } else {
           // update heading and speed
-          const newCourse = this.path[this.path.currentStep];
+          let newCourse = this.path[this.path.currentStep];
 
           // To not error when we get to the end of the path.
           if (newCourse) {
-            this.current.angle = newCourse[0] * Math.PI / 180;
+            this.current.angle = toRadians(newCourse[0]);
             this.current.speed = newCourse[1];
             this.path.targetTime = newCourse[2];
             this.path.elapsedTime = 0;
@@ -248,15 +248,15 @@ class Ship extends Entity {
   }
 
   initializePath(path) {
-    this.path = path;
+    this.path = Object.assign({}, path);
     this.path.elapsedTime = 0;
     this.path.targetTime = 0;
     this.path.currentStep = -1;
   }
 
-  initializeWeapon(manifest) {
+  initializeWeapon(weaponManifest) {
     // do stuff here to configure a new weapon system.
-    this.weapon = new Ring(this, manifest);
+    this.weapon = new Ring(this, weaponManifest);
   }
 
   /** Helpers for repeated work. */
@@ -293,10 +293,10 @@ class Ship extends Entity {
   }
 
   static getInitPoint(game, manifest) {
-    const width = manifest.config.radius || 50;
-    const range = game.surfaceWidth - 2 * width;
-    const x = manifest.config.origin.x || Math.floor(Math.random() * range) + width;
-    const y = manifest.config.origin.y || -manifest.config.sprite.default.height;
+    let width = manifest.config.radius || 50;
+    let range = game.surfaceWidth - 2 * width;
+    let x = manifest.config.origin.x || Math.floor(Math.random() * range) + width;
+    let y = manifest.config.origin.y || -manifest.config.sprite.default.height;
 
     return {
       x,
@@ -538,7 +538,7 @@ class Plane extends Entity {
   }
 
   static getInitPoint(game) {
-    const x = game.ctx.canvas.width / 2;
+    let x = game.ctx.canvas.width / 2;
     const y = game.ctx.canvas.height - 100;
     return {
       x,
@@ -650,103 +650,8 @@ class Projectile extends Entity {
     ctx.drawImage(this.image, locX, locY, width, height);
   }
 
-
 }
 
-
-
-
-
-
-// /** Old Projectile */
-// class Projectile extends Entity {
-//   constructor(game, manifest) {
-//     super(game, manifest.origin);
-//     this.owner = manifest.owner;
-//     this.origin = manifest.origin;
-//     this.current = this.origin;
-//     this.initialAngle = manifest.angle;
-//     this.angle = this.initialAngle;
-//     this.payload = manifest.payload;
-
-//     // check for sprite or image and set desired function
-//     if (this.payload.type.image) {
-//       this.image = this.payload.type.image;
-//       this.scale = this.payload.type.scale;
-//       this.drawImage = this.drawStillImage;
-//     } else if (this.payload.type.sprite) {
-//       this.sprite = new Sprite(this.payload.type.sprite.default);
-//       this.drawImage = this.drawSpriteFrame;
-//       this.rotate = this.payload.type.rotate;
-//     } else {
-//       this.drawImage = this.payload.type.draw;
-//     }
-
-//     // convert rotation angle to radians
-//     // this.rotation.angle = toRadians
-
-//     this.config = {
-//       radius: manifest.payload.type.radius,
-//     };
-
-//     // set fields
-//     this.speed = manifest.payload.speed;
-//     this.acceleration = manifest.payload.acceleration || 1;
-//     this.customUpdate = manifest.payload.type.update;
-//     this.playerShot = (this.owner === game.player);
-//   }
-
-//   update() {
-
-//     if (this.customUpdate) {
-//       this.customUpdate(this);
-//     } else if (this.isOutsideScreen()) {
-//         this.removeFromWorld = true;
-//     } else { // We can assume the projectile is not outside the game screen
-//         this.speed *= this.acceleration;
-//         this.speedX = this.speed * Math.cos(this.angle);
-//         this.speedY = this.speed * Math.sin(this.angle);
-
-//         this.current.x += this.speedX * this.game.clockTick;
-//         this.current.y += this.speedY * this.game.clockTick;
-//     }
-//   }
-
-//   // default draw is used for sprite animations where draw() is not overriden
-//   draw(ctx) {
-//     if (!this.isOutsideScreen()) {
-//       ctx.save();
-
-//       // Using object deconstructing to access the fields withing the current object
-//       const {
-//         x,
-//         y,
-//       } = this.current;
-
-//       if (this.rotate) {
-//         ctx.translate(x, y);
-//         ctx.rotate(this.angle);
-//         ctx.translate(-x, -y);
-//       }
-//       this.drawImage(ctx, x, y);
-//       ctx.restore();
-//       super.draw();
-//     }
-//   }
-
-//   drawSpriteFrame(ctx, x, y) {
-//     this.sprite.drawFrame(this.game.clockTick, ctx, x, y);
-//   }
-
-//   drawStillImage(ctx, x, y) {
-//     const width = this.image.width * this.scale;
-//     const height = this.image.height * this.scale;
-
-//     const locX = x - width / 2;
-//     const locY = y - height / 2;
-//     ctx.drawImage(this.image, locX, locY, width, height);
-//   }
-// }
 
 /**
  * This weapon spawns a circle of bullets around the enemy and then fires them all at once at the player

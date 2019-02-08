@@ -74,7 +74,7 @@ function loadTemplates() {
   ring.linearTest = {
     payload: {
       type: projectile.microBullet,
-      speed: 30,
+      speed: 75,
     },
     firing: {
       radius: 5,
@@ -663,9 +663,10 @@ function loadTemplates() {
     },
     firing: {
       angle: 270,
+      radius: 35,
       count: 1,
       loadTime: 0.01,
-      cooldownTime: 0.25,
+      cooldownTime: 0.025, // changed from 0.25 for testing
       rapidReload: true,
       viewTurret: false,
     },
