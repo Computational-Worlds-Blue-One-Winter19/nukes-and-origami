@@ -73,9 +73,8 @@ function loadTemplates() {
   /** *** RING: FIRING PATTERNS **** */
   ring.linearTest = {
     payload: {
-      type: projectile.miniCrane,
-      speed: 300,
-      acceleration: 1,
+      type: projectile.microBullet,
+      speed: 30,
     },
     firing: {
       radius: 5,
@@ -659,9 +658,8 @@ function loadTemplates() {
   /** A simple ring for the player only shoots up */
   ring.player = {
     payload: {
-      type: projectile.paperBall,
-      speed: 600,
-      acceleration: 1,
+      type: projectile.microBullet,
+      speed: 500,
     },
     firing: {
       angle: 270,

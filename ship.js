@@ -144,7 +144,7 @@ class Ship extends Entity {
       this.updateSnapPath();
     } else {
       // check all systems
-      this.updateCollisionDetection();
+      //this.updateCollisionDetection();
       this.updateWeapons();
       this.updateHelm();
     }
@@ -178,7 +178,7 @@ class Ship extends Entity {
     }
 
     // Check for hit from player bullets
-    for (const e of this.game.entities) {
+    for (let e of this.game.entities) {
       if (e instanceof Projectile && e.playerShot && this.isCollided(e)) {
         e.removeFromWorld = true;
         this.disarm();
@@ -372,7 +372,7 @@ class Plane extends Entity {
     }
 
     // Check if the plane has been hit by an enemy projectile
-    this.updateCollisionDetection();
+    //this.updateCollisionDetection();
 
     // This makes me worry about an overflow, or slowing our game down.
     // But it works great for what we need.
@@ -547,66 +547,79 @@ class Plane extends Entity {
   }
 }
 
-/**
- * A simple parent class for projectiles.
+
+/** New Projectile */
+/** 
+ * A simple parent class for projectiles. 
  * */
 class Projectile extends Entity {
   constructor(game, manifest) {
-    super(game, manifest.origin);
+    super(game, getXandY(manifest.origin, manifest.current));
+    
+    manifest = Object.assign({}, manifest);
+    
     this.owner = manifest.owner;
-    this.origin = manifest.origin;
-    this.current = this.origin;
-    this.initialAngle = manifest.angle;
-    this.angle = this.initialAngle;
-    this.payload = manifest.payload;
+    this.current = Object.assign({}, manifest.current);
+    this.current.velocity = Object.assign({}, manifest.current.velocity);
+    this.current.acceleration = Object.assign({}, manifest.current.acceleration);
+
+    // convert angles to radians
+    this.current.velocity.angular = toRadians(this.current.velocity.angular);
+    this.current.acceleration.angular = toRadians(this.current.acceleration.angular);
+    
+    this.type = manifest.type;
 
     // check for sprite or image and set desired function
-    if (this.payload.type.image) {
-      this.image = this.payload.type.image;
-      this.scale = this.payload.type.scale;
+    if (this.type.image) {
+      this.image = this.type.image;
+      this.scale = this.type.scale;
       this.drawImage = this.drawStillImage;
-    } else if (this.payload.type.sprite) {
-      this.sprite = new Sprite(this.payload.type.sprite.default);
+    } else if (this.type.sprite) {
+      this.sprite = new Sprite(this.type.sprite.default);
       this.drawImage = this.drawSpriteFrame;
-      this.rotate = this.payload.type.rotate;
+      this.rotate = this.type.rotate;
     } else {
-      this.drawImage = this.payload.type.draw;
+      this.drawImage = this.type.draw;
+    }
+    
+    this.config = {
+      radius: manifest.type.radius
     }
 
-    // convert rotation angle to radians
-    // this.rotation.angle = toRadians
-
-    this.config = {
-      radius: manifest.payload.type.radius,
-    };
-
-    // set fields
-    this.speed = manifest.payload.speed;
-    this.acceleration = manifest.payload.acceleration || 1;
-    this.customUpdate = manifest.payload.type.update;
-    this.playerShot = (this.owner === game.player);
+    this.draw = manifest.type.draw;
+    this.customUpdate = manifest.type.update;
+    this.playerShot = (this.owner === game.player);    
   }
 
   update() {
+    if (this.isOutsideScreen(this)) {
+      this.removeFromWorld = true;
+      return;
+    }
+    
+    let previous = {
+      x: this.current.x,
+      y: this.current.y,
+    }
 
     if (this.customUpdate) {
       this.customUpdate(this);
-    } else if (this.isOutsideScreen()) {
-        this.removeFromWorld = true;
-    } else { // We can assume the projectile is not outside the game screen
-        this.speed *= this.acceleration;
-        this.speedX = this.speed * Math.cos(this.angle);
-        this.speedY = this.speed * Math.sin(this.angle);
-
-        this.current.x += this.speedX * this.game.clockTick;
-        this.current.y += this.speedY * this.game.clockTick;
+    } else {
+      let elapsedTime = this.game.clockTick;
+      this.current.velocity.radial += this.current.acceleration.radial * elapsedTime;
+      this.current.radius = this.current.velocity.radial * elapsedTime;
+      //this.current.velocity.angular += this.acceleration.angular * elapsedTime;
+      this.current.angle += this.current.velocity.angular * elapsedTime;      
     }
-  }
 
+    let point = getXandY(previous, this.current);
+    this.current.x = point.x;
+    this.current.y = point.y;
+  }
+  
   // default draw is used for sprite animations where draw() is not overriden
-  draw(ctx) {
-    if (!this.isOutsideScreen()) {
-      ctx.save();
+  draw() {
+    ctx.save();
 
       // Using object deconstructing to access the fields withing the current object
       const {
@@ -622,7 +635,6 @@ class Projectile extends Entity {
       this.drawImage(ctx, x, y);
       ctx.restore();
       super.draw();
-    }
   }
 
   drawSpriteFrame(ctx, x, y) {
@@ -637,7 +649,104 @@ class Projectile extends Entity {
     const locY = y - height / 2;
     ctx.drawImage(this.image, locX, locY, width, height);
   }
+
+
 }
+
+
+
+
+
+
+// /** Old Projectile */
+// class Projectile extends Entity {
+//   constructor(game, manifest) {
+//     super(game, manifest.origin);
+//     this.owner = manifest.owner;
+//     this.origin = manifest.origin;
+//     this.current = this.origin;
+//     this.initialAngle = manifest.angle;
+//     this.angle = this.initialAngle;
+//     this.payload = manifest.payload;
+
+//     // check for sprite or image and set desired function
+//     if (this.payload.type.image) {
+//       this.image = this.payload.type.image;
+//       this.scale = this.payload.type.scale;
+//       this.drawImage = this.drawStillImage;
+//     } else if (this.payload.type.sprite) {
+//       this.sprite = new Sprite(this.payload.type.sprite.default);
+//       this.drawImage = this.drawSpriteFrame;
+//       this.rotate = this.payload.type.rotate;
+//     } else {
+//       this.drawImage = this.payload.type.draw;
+//     }
+
+//     // convert rotation angle to radians
+//     // this.rotation.angle = toRadians
+
+//     this.config = {
+//       radius: manifest.payload.type.radius,
+//     };
+
+//     // set fields
+//     this.speed = manifest.payload.speed;
+//     this.acceleration = manifest.payload.acceleration || 1;
+//     this.customUpdate = manifest.payload.type.update;
+//     this.playerShot = (this.owner === game.player);
+//   }
+
+//   update() {
+
+//     if (this.customUpdate) {
+//       this.customUpdate(this);
+//     } else if (this.isOutsideScreen()) {
+//         this.removeFromWorld = true;
+//     } else { // We can assume the projectile is not outside the game screen
+//         this.speed *= this.acceleration;
+//         this.speedX = this.speed * Math.cos(this.angle);
+//         this.speedY = this.speed * Math.sin(this.angle);
+
+//         this.current.x += this.speedX * this.game.clockTick;
+//         this.current.y += this.speedY * this.game.clockTick;
+//     }
+//   }
+
+//   // default draw is used for sprite animations where draw() is not overriden
+//   draw(ctx) {
+//     if (!this.isOutsideScreen()) {
+//       ctx.save();
+
+//       // Using object deconstructing to access the fields withing the current object
+//       const {
+//         x,
+//         y,
+//       } = this.current;
+
+//       if (this.rotate) {
+//         ctx.translate(x, y);
+//         ctx.rotate(this.angle);
+//         ctx.translate(-x, -y);
+//       }
+//       this.drawImage(ctx, x, y);
+//       ctx.restore();
+//       super.draw();
+//     }
+//   }
+
+//   drawSpriteFrame(ctx, x, y) {
+//     this.sprite.drawFrame(this.game.clockTick, ctx, x, y);
+//   }
+
+//   drawStillImage(ctx, x, y) {
+//     const width = this.image.width * this.scale;
+//     const height = this.image.height * this.scale;
+
+//     const locX = x - width / 2;
+//     const locY = y - height / 2;
+//     ctx.drawImage(this.image, locX, locY, width, height);
+//   }
+// }
 
 /**
  * This weapon spawns a circle of bullets around the enemy and then fires them all at once at the player
@@ -655,33 +764,33 @@ class Ring {
     if (this.rotation && this.rotation.speed) {
       this.fixedRotation = this.rotation.speed;
     } else if (this.rotation && this.rotation.angle) {
-      this.sineRotation = this.rotation.angle;
+      this.sineAmplitude = toRadians(this.rotation.angle);
       this.sineFrequency = this.rotation.frequency || 1;
     }
 
     // compute spacing and adjust base angle
-    this.initialAngle = toRadians(manifest.firing.angle || 0);
+    this.initialAngle = toRadians(manifest.firing.angle) || 0;
     this.firing.count = manifest.firing.count || 1;
-    this.spacing = 0;
+    this.spacing = 0;   
     let spread = 0;
-
+    
     if (manifest.firing.spread && this.firing.count > 1) {
       spread = toRadians(manifest.firing.spread);
       this.spacing = spread / (this.firing.count - 1);
     } else if (this.firing.count > 1) {
       this.spacing = 2 * Math.PI / this.firing.count;
-    }
-
-    this.initialAngle -= spread / 2;
+    } 
+    
+    this.initialAngle -= spread/2;
     this.currentAngle = this.initialAngle;
-
+        
     // set firing parameters
     this.loadTime = this.firing.loadTime;
     this.coolTime = this.firing.cooldownTime;
-
+        
     if (this.firing.pulse) {
       this.activeTime = this.firing.pulse.duration;
-      this.waitTime = this.firing.pulse.delay;
+      this.waitTime = this.firing.pulse.delay;      
     } else {
       this.activeTime = Infinity;
       this.waitTime = 0;
@@ -694,11 +803,22 @@ class Ring {
     this.isReady = false;
     this.isCooling = false;
     this.isWaiting = false;
+
+    // convert old speed/accel to new format
+  //   if (this.payload.acceleration && !this.payload.acceleration.radial) {
+  //     const radial = this.payload.acceleration;
+  //     this.payload.acceleration = { radial: radial, angular: 0 }
+  //   }
+
+  //   if (this.payload.speed && !this.payload.speed.radial) {
+  //     const radial = this.payload.speed;
+  //     this.payload.velocity = { radial: radial, angular: 0 }
+  //   }
   }
 
   update() {
     this.elapsedTime += this.owner.game.clockTick;
-
+    
     // update active time counter
     if (!this.isWaiting) {
       this.elapsedActiveTime += this.elapsedTime;
@@ -706,32 +826,35 @@ class Ring {
 
     // compute current angle
     if (this.fixedRotation) {
-      const doublePI = 2 * Math.PI;
-      const delta = doublePI * this.fixedRotation * this.owner.game.clockTick;
+      let doublePI = 2 * Math.PI;
+      let delta = doublePI * this.fixedRotation * this.owner.game.clockTick;
       this.currentAngle = (this.currentAngle + delta) % doublePI;
-    } else if (this.sineRotation) {
-      const delta = this.owner.game.timer.getWave(toRadians(this.sineRotation), this.sineFrequency);
+    } else if (this.sineAmplitude) {
+      let delta = this.owner.game.timer.getWave(this.sineAmplitude, this.sineFrequency);
       this.currentAngle = this.initialAngle + delta;
+    } 
+
+    // update each turret
+    for (let i = 0; i < this.bay.length; i++) {
+      this.bay[i].current.angle = this.currentAngle + i * this.spacing;
+
+      let currentPosition = getXandY(this.owner.current, this.bay[i].current);
+      this.bay[i].current.x = currentPosition.x;
+      this.bay[i].current.y = currentPosition.y;
     }
 
-    // update each turret if visible
-    if (this.firing.viewTurret || this.isReady) {
-      for (let i = 0; i < this.bay.length; i++) {
-        const turretAngle = this.currentAngle + i * this.spacing;
-        this.bay[i].current = this.getTurretPosition(turretAngle);
-      }
-    }
+    // if we 
 
     // take some action based on weapon state
     if (this.isLoading && this.elapsedTime > this.loadTime) {
+
       // check if loaded
       if (this.bay.length === this.firing.count) {
         this.isLoading = false;
         this.isReady = true;
         this.elapsedTime = 0;
       } else {
-        const turretAngle = this.currentAngle + this.bay.length * this.spacing;
-        this.loadNext(this.getTurretPosition(turretAngle), turretAngle);
+        this.loadNext();
       }
     } else if (this.isReady) {
       // a player only fires on command
@@ -750,31 +873,35 @@ class Ring {
       this.elapsedTime = 0;
     }
   }
-
+  
   draw() {
     if (this.firing.viewTurret) {
       const ctx = this.owner.game.ctx;
-
-      for (const projectile of this.bay) {
+      
+      for (let projectile of this.bay) {
         projectile.draw(ctx);
       }
+
     }
   }
 
   fireAll() {
-    for (let i = 0; i < this.bay.length; i++) {
-      const projectile = this.bay[i];
-      // let turretAngle = this.currentAngle + i * this.spacing;
-      // projectile.current = this.getTurretPosition(turretAngle);
+    let shipLocation = {
+      x: this.owner.current.x,
+      y: this.owner.current.y,
+    }
+    
+    let playerLocation = null;
 
-      if (this.firing.targetPlayer) {
-        // update heading before launch
-        const target = this.getPlayerHeading(projectile.current.x, projectile.current.y);
-        projectile.angle = target.angle;
-        projectile.distance = target.distance;
-      }
-      projectile.origin = projectile.current;
-      projectile.isSpawned = true;
+    if (this.firing.targetPlayer) {
+      // get player coordinates relative to this Ship
+      playerLocation = this.getPlayerLocation(shipLocation);
+    }
+    
+    for (let projectile of this.bay) {
+      // projectile.current.x = shipLocation.x;
+      // projectile.current.y = shipLocation.y;
+      // projectile.target = playerLocation;
       this.owner.game.addEntity(projectile);
     }
 
@@ -799,44 +926,66 @@ class Ring {
 
     if (this.firing.rapidReload) {
       for (let i = 0; i < this.firing.count; i++) {
-        const turretAngle = this.currentAngle + i * this.spacing;
-        this.loadNext(this.getTurretPosition(turretAngle), turretAngle);
+        this.loadNext();
       }
-    }
+    } 
   }
 
-  loadNext(origin, angle) {
+  loadNext() {
+    let angle = this.currentAngle + this.bay.length * this.spacing;
+    let velocity = this.payload.velocity || {radial: this.payload.speed, angular: 0 };
+    let acceleration = this.payload.acceleration;
+
+    // add missing acceleration or convert from old format
+    if (!acceleration) {
+      acceleration = {radial: 0, angular: 0};
+    } else if (!(acceleration instanceof Object)) {
+      acceleration = {radial: acceleration, angular: 0};
+    }
+
     const manifest = {
       owner: this.owner,
-      origin,
-      angle,
-      payload: this.payload,
+      origin: this.owner.current,
+      current: {
+        radius: this.radius,
+        angle: angle,
+        velocity: velocity,
+        acceleration: acceleration,
+      },
+      type: this.payload.type
     };
+    console.dir(manifest);
 
     const newProjectile = new Projectile(this.owner.game, manifest);
     this.bay.push(newProjectile);
   }
 
-  getTurretPosition(angle) {
-    const x = this.radius * Math.cos(angle) + this.owner.current.x;
-    const y = this.radius * Math.sin(angle) + this.owner.current.y;
-    return {
-      x,
-      y,
-    };
-  }
-
-  // returns the coordinates of the player with respect to the given point
-  getPlayerHeading(originX, originY) {
+  // returns the polar coordinates of the player with respect to the given point
+  getPlayerLocation(point) {
     const player = this.owner.game.player;
-
-    const deltaX = player.current.x - originX;
-    const deltaY = player.current.y - originY;
+    const deltaX = player.current.x - point.x;
+    const deltaY = player.current.y - point.y;
     const angle = Math.atan2(deltaY, deltaX);
 
     return {
-      angle,
-      distance: (deltaX * deltaX + deltaY * deltaY),
+      radius: deltaX * deltaX + deltaY * deltaY,
+      angle: angle
     };
   }
+
+}
+
+/** Get x and y coordinates given origin:{x, y} and current:{r, theta} */
+function getXandY(origin, current) {
+  let x = origin.x + current.radius * Math.cos(current.angle);
+  let y = origin.y + current.radius * Math.sin(current.angle);
+  return {x:x, y:y}
+}
+
+function toRadians(angle) {
+  return angle * Math.PI / 180;
+}
+
+function toDegrees(rad) {
+  return rad * 180 / Math.PI; 
 }
