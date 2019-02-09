@@ -124,8 +124,7 @@ class Ship extends Entity {
       hitValue: manifest.config.hitValue || 1
     }
 
-    this.config = manifest.config;
-    this.snapLine = this.config.snapLine;
+    this.snapLine = manifest.config.snapLine;
 
     // additional fields
     this.idleTrans = false;
@@ -140,7 +139,6 @@ class Ship extends Entity {
     if (manifest.weapon) {
       this.initializeWeapon(manifest.weapon);
     }
-    
   }
 
   update() {
@@ -381,7 +379,7 @@ class Plane extends Entity {
     }
 
     // Check if the plane has been hit by an enemy projectile
-    //this.updateCollisionDetection();
+    this.updateCollisionDetection();
 
     // This makes me worry about an overflow, or slowing our game down.
     // But it works great for what we need.
@@ -601,8 +599,6 @@ class Ring {
       spread,
       spacing,
       waitTime,
-      cooldownTime: manifest.firing.cooldownTime,
-      loadTime: manifest.firing.loadTime,
       radius: manifest.firing.radius || this.owner.config.radius,
       viewTurret: manifest.firing.viewTurret,
       rapidReload: manifest.firing.rapidReload,
@@ -617,6 +613,8 @@ class Ring {
 
     // set firing conditionals
     this.status = {
+      cooldownTime: manifest.firing.cooldownTime || 0.05,
+      loadTime: manifest.firing.loadTime || 0.05,
       elapsedTime: 0,
       elapsedActiveTime: 0,
       isLoading: true,
@@ -630,15 +628,19 @@ class Ring {
   update() {
     let game = this.owner.game;
     this.status.elapsedTime += game.clockTick;
-    this.current.x = this.owner.current.x;
-    this.current.y = this.owner.current.y;
-        
-    // update active time counter
+    
+    // update active time counter; used for the pulse delay
     if (!this.status.isWaiting) {
       this.status.elapsedActiveTime += this.status.elapsedTime;
     }
 
-    // compute current angle
+    // update current ring coordinates before computing the location of each turret
+    // right now this uses the Ship position.
+    // TODO: point to weapon assembly + offset? for spacing-out the ring objects
+    this.current.x = this.owner.current.x;
+    this.current.y = this.owner.current.y;
+
+    // adjust angle for bay[0] if this ring is rotating
     if (this.fixedRotation) {
       let doublePI = 2 * Math.PI;
       let delta = doublePI * this.fixedRotation * this.status.elapsedTime;
@@ -648,21 +650,21 @@ class Ring {
       this.current.angle = this.config.baseAngle + delta;
     } 
 
-    // update each turret
+    // update each turret using the spacing offset from bay[0]
     for (let i = 0; i < this.bay.length; i++) {
       let projectile = this.bay[i];
-      
       projectile.current.angle = this.current.angle + i * this.config.spacing;
-
       let currentPosition = getXandY(this.current, {radius: this.config.radius, angle: projectile.current.angle});
       projectile.current.x = currentPosition.x;
       projectile.current.y = currentPosition.y;
     }
 
-    // take some action based on weapon state
+    // now that all projectiles have been updated we can evaluate the next
+    // action based on elapsed time of the current state.
     if (this.status.isLoading && this.status.elapsedTime > this.config.loadTime) {
 
-      // check if loaded
+      // Loading state
+      // if loaded then advance state else push a projectile to the next empty bay
       if (this.bay.length === this.config.count) {
         this.status.isLoading = false;
         this.status.isReady = true;
@@ -671,16 +673,23 @@ class Ring {
         this.bay.push(this.loadNext());
       }
     } else if (this.status.isReady) {
-      // a player only fires on command
-      if (this.owner.isPlayer && !this.owner.game.keysDown.Space) {
-        return;
+
+      // Ready state
+      // a player only fires on command, all others fire on ready
+      if (!this.owner.isPlayer || this.owner.game.keysDown.Space) {
+        this.fireAll();  
       }
-      this.fireAll();
+      
     } else if (this.status.isCooling && this.status.elapsedTime > this.config.cooldownTime) {
+      
+      // Cooldown state
       this.status.isCooling = false;
       this.status.isLoading = true;
       this.status.elapsedTime = 0;
     } else if (this.status.isWaiting && this.status.elapsedTime > this.config.waitTime) {
+      
+      // Waiting state
+      // duration is defined by pulse configuration
       this.status.isWaiting = false;
       this.status.isLoading = true;
       this.status.elapsedActiveTime = 0;
@@ -691,21 +700,25 @@ class Ring {
   draw() {
     if (this.config.viewTurret) {
       const ctx = this.owner.game.ctx;
-      
       for (let projectile of this.bay) {
         projectile.draw(ctx);
       }
-
     }
   }
 
   fireAll() {
-    
     if (this.config.targetPlayer) {
+      // right now targeting is broken.
+      // TODO: fix targeting
+
+      // TODO: also could have a tracking shot that only aims once at the start of the pulse
+      
       // get player coordinates relative to this Ship
       // playerLocation = this.getPlayerLocation(shipLocation);
     }
     
+    // the projectiles have been updated so just add to game and replace again
+    // this previously fired all and then looped back to reload. was that better?
     for (let i = 0; i < this.bay.length; i++) {
       let projectile = this.bay[i];
       this.owner.game.addEntity(projectile);
@@ -716,14 +729,15 @@ class Ring {
 
     }
 
+    // if we did not reload then clear-out the bay
     if (!this.config.rapidReload) {
       this.bay = [];
     }
 
-    // set next state to cooldown or waiting
     this.status.isReady = false;
     this.status.elapsedTime = 0;
 
+    // set next state to cooldown unless the pulse period is over then begin waiting
     if (this.status.elapsedActiveTime > this.config.activeTime) {
       this.status.isWaiting = true;
     } else {
@@ -731,20 +745,23 @@ class Ring {
     }
   }
 
+  
+  /** this returns a new Projectile configured for launch. */
   loadNext(previous) {
     let current;
 
     if (previous) {
+      // we can duplicate the state of the projectile that was just launched
       current = Object.assign({}, previous.current);
       current.velocity = Object.assign({}, previous.current.velocity);
       current.acceleration = Object.assign({}, previous.current.acceleration);
     } else {
+      // compute new coordinates assuming we will push to the next ordered bay
       let angle = this.current.angle + this.bay.length * this.config.spacing;
       let velocity = this.payload.velocity || {radial: this.payload.speed, angular: 0 };
       let acceleration = this.payload.acceleration;
     
       let point = getXandY(this.current, {radius: this.config.radius, angle: angle});
-
       current = {
         angle,
         velocity,
@@ -760,10 +777,11 @@ class Ring {
       payload: this.payload
     };
 
+    // return a configured projectile
     return new Projectile(this.owner.game, manifest);
   }
 
-  // returns the polar coordinates of the player with respect to the given point
+  /** returns the polar coordinates of the player with respect to the given point */ 
   getPlayerLocation(point) {
     const player = this.owner.game.player;
     const deltaX = player.current.x - point.x;
@@ -776,11 +794,16 @@ class Ring {
     };
   }
 
+  /** we can put other helpers here to help with guidance for homing missles. */
+
+
 }
 
-/** 
- * A simple parent class for projectiles. 
- * */
+
+/**
+ * The projectile class manages its own path given a velocity and acceleration.
+ * This can transport a payload, and be represented by an image or sprite.
+ */
 class Projectile extends Entity {
   constructor(game, manifest) {
     super(game, {x: manifest.current.x, y: manifest.current.y});
@@ -876,7 +899,9 @@ class Projectile extends Entity {
 }
 
 
-/** Get x and y coordinates given origin:{x, y} and current:{r, theta} */
+/** 
+ *  Returns {x,y} position of polar coordinates given the
+ *  origin:{x, y} and current:{radius, angle} */
 function getXandY(origin, current) {
   let x = origin.x + current.radius * Math.cos(current.angle);
   let y = origin.y + current.radius * Math.sin(current.angle);
