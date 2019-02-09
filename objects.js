@@ -87,6 +87,26 @@ function loadTemplates() {
     },
   };
 
+  ring.angularTest = {
+    payload: {
+      type: projectile.microBullet,
+      speed: 5,
+      acceleration: {
+        radial: 180,
+        angular: 5,
+      }
+    },
+    firing: {
+      radius: 5,
+      count: 1,
+      angle: 90,
+      loadTime: 0.01,
+      cooldownTime: 1,
+      rapidReload: true,
+      targetPlayer: false,
+    },
+  };
+
   ring.spiralAlpha1 = {
     payload: {
       type: projectile.circleBullet,
@@ -514,7 +534,7 @@ function loadTemplates() {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
     },
-    weapon: ring.linearTest,
+    weapon: ring.angularTest,
   };
 
   ship.easyBat = {

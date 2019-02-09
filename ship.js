@@ -602,17 +602,21 @@ class Projectile extends Entity {
       y: this.current.y,
     }
 
+    let deltaRadius = 0;
+
     if (this.customUpdate) {
       this.customUpdate(this);
     } else {
       let elapsedTime = this.game.clockTick;
+      
       this.current.velocity.radial += this.current.acceleration.radial * elapsedTime;
-      this.current.radius = this.current.velocity.radial * elapsedTime;
-      //this.current.velocity.angular += this.acceleration.angular * elapsedTime;
+      deltaRadius = this.current.velocity.radial * elapsedTime;
+      
+      this.current.velocity.angular += this.current.acceleration.angular * elapsedTime;
       this.current.angle += this.current.velocity.angular * elapsedTime;      
     }
 
-    let point = getXandY(previous, this.current);
+    let point = getXandY(previous, { angle: this.current.angle, radius: deltaRadius });
     this.current.x = point.x;
     this.current.y = point.y;
   }
