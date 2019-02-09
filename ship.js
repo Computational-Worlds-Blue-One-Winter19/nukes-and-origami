@@ -465,6 +465,13 @@ class Plane extends Entity {
     }
   }
 
+  playerEdgeDetection() {
+    return (this.current.x + ((this.sprite.width * this.sprite.scale) / 2) < this.game.surfaceWidth ||
+            this.current.x - ((this.sprite.width * this.sprite.scale) / 2) > 0 ||
+            this.current.y - ((this.sprite.height * this.sprite.scale) / 2) > 0 ||
+            this.current.y + ((this.sprite.height * this.sprite.scale) / 2) < this.game.surfaceHeight);
+  }
+
   /**
    * This method is called while controls are taken from the user and
    * this.rolling is true. This handles the maneuver and then returns
@@ -479,11 +486,15 @@ class Plane extends Entity {
     if (this.rollDirection === 'left') {
       // Rolling should be faster than just moving, so mult speed by a constant
       // greater than 1
-      this.current.x -= this.speed * this.game.clockTick * 1.5;
+      if(this.current.x - ((this.sprite.width * this.sprite.scale) / 2) > 0 ) {
+        this.current.x -= this.speed * this.game.clockTick * 1.5;
+      }
       this.sprite = this.rollLeft;
     }
     if (this.rollDirection === 'right') {
-      this.current.x += this.speed * this.game.clockTick * 1.5;
+      if(this.current.x + ((this.sprite.width * this.sprite.scale) / 2) < this.game.surfaceWidth)  {
+        this.current.x += this.speed * this.game.clockTick * 1.5;
+      }
       this.sprite = this.rollRight;
     }
     this.rollTimer += this.speed * this.game.clockTick * 1.5;
