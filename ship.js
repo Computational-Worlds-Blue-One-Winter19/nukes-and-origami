@@ -119,12 +119,10 @@ class Ship extends Entity {
     this.sprite = new Sprite(manifest.config.sprite.default);
         
     // store class constants in config
-    this.config = {
-      radius: manifest.config.radius || 50,
-      hitValue: manifest.config.hitValue || 1
-    }
-
-    this.snapLine = manifest.config.snapLine;
+    this.config = Object.assign({}, manifest.config);
+    this.config.radius = this.config.radius || 50;
+    this.config.hitValue = this.config.hitValue || 1;  
+    this.snapLine = this.config.snapLine;
 
     // additional fields
     this.idleTrans = false;
@@ -602,6 +600,8 @@ class Ring {
       radius: manifest.firing.radius || this.owner.config.radius,
       viewTurret: manifest.firing.viewTurret,
       rapidReload: manifest.firing.rapidReload,
+      cooldownTime: manifest.firing.cooldownTime || 0.05,
+      loadTime: manifest.firing.loadTime || 0.05,
     }
 
     // store instance variables
@@ -613,8 +613,6 @@ class Ring {
 
     // set firing conditionals
     this.status = {
-      cooldownTime: manifest.firing.cooldownTime || 0.05,
-      loadTime: manifest.firing.loadTime || 0.05,
       elapsedTime: 0,
       elapsedActiveTime: 0,
       isLoading: true,
@@ -748,13 +746,13 @@ class Ring {
   
   /** this returns a new Projectile configured for launch. */
   loadNext(previous) {
-    let current;
+    let origin;
 
     if (previous) {
       // we can duplicate the state of the projectile that was just launched
-      current = Object.assign({}, previous.current);
-      current.velocity = Object.assign({}, previous.current.velocity);
-      current.acceleration = Object.assign({}, previous.current.acceleration);
+      origin = Object.assign({}, previous.current);
+      origin.velocity = Object.assign({}, previous.current.velocity);
+      origin.acceleration = Object.assign({}, previous.current.acceleration);
     } else {
       // compute new coordinates assuming we will push to the next ordered bay
       let angle = this.current.angle + this.bay.length * this.config.spacing;
@@ -762,7 +760,7 @@ class Ring {
       let acceleration = this.payload.acceleration;
     
       let point = getXandY(this.current, {radius: this.config.radius, angle: angle});
-      current = {
+      origin = {
         angle,
         velocity,
         acceleration,
@@ -773,7 +771,7 @@ class Ring {
 
     let manifest = {
       owner: this.owner,
-      current,
+      origin,
       payload: this.payload
     };
 
@@ -806,15 +804,24 @@ class Ring {
  */
 class Projectile extends Entity {
   constructor(game, manifest) {
-    super(game, {x: manifest.current.x, y: manifest.current.y});
+    super(game, {x: manifest.origin.x, y: manifest.origin.y});
     
     this.owner = manifest.owner;
-    this.current = manifest.current;
+    this.current = manifest.origin;
     this.payload = manifest.payload.type;
     
     this.config = {
       radius: this.payload.radius
     }
+
+    // support for origin format
+    if (!this.current.angle) {
+      this.current.angle = manifest.angle;
+      this.current.velocity = {radial: manifest.payload.speed, angular: 0};
+      this.current.acceleration = {radial: 0, angular: 0};
+      this.payload.powerUp = manifest.payload.powerUp;
+    }
+
 
     // check for sprite or image and set desired function
     if (this.payload.image) {

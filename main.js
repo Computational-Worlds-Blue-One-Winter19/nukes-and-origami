@@ -41,18 +41,17 @@ class NukesAndOrigami extends GameEngine {
     console.log('spawning entity');
     this.addEntity(new Projectile(this, {
       owner: null,
-      current: {
+      origin: {
         x: enemy.current.x,
         y: enemy.current.y,
-        angle: Math.PI/2,
-        velocity: { radial: 60, angular: 0},
-        acceleration: { radial: 0, angular: 0},
       },
+      angle: Math.PI / 2,
       payload: {
         type: {
           sprite: sprite.rainbowBall,
           radius: 30,
         },
+        speed: 60,
         powerUp() {
           this.lives += 1;
           addLife();
