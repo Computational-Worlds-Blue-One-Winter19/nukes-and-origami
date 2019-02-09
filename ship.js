@@ -101,6 +101,7 @@ class Sprite {
  *     radius: size of this Ship for collisions (default 40)
  *     originX: specify the initial x coordinate. (default random)
  *     originY: specify the initial y coordinate. (default 3 * radius)
+ *     health: number of bullets needed to defeat ship
  *
  *     sprite: the Sprite to represent this object
  *     snapLine: the horizontal line that a ship must reach prior to becoming active
@@ -126,6 +127,7 @@ class Ship extends Entity {
     this.idleTrans = false;
     this.idleCount = 0;
     this.lastFired = 0;
+    this.health = manifest.config.health;
 
     if (manifest.path) {
       this.initializePath(manifest.path);
@@ -179,11 +181,15 @@ class Ship extends Entity {
 
     // Check for hit from player bullets
     for (const e of this.game.entities) {
-      if (e instanceof Projectile && e.playerShot && this.isCollided(e)) {
-        e.removeFromWorld = true;
-        this.disarm();
-        this.removeFromWorld = true;
-        this.game.onEnemyDestruction(this);
+      if (e instanceof Projectile && e.playerShot && this.isCollided(e) && !e.hitTarget) {
+        e.hitTarget = true;
+        this.health--;
+        if(this.health == 0)  {
+          e.removeFromWorld = true;
+          this.disarm();
+          this.removeFromWorld = true;
+          this.game.onEnemyDestruction(this);
+        }
       }
     }
   }
@@ -317,7 +323,7 @@ class Plane extends Entity {
     super(game, Plane.getInitPoint(game));
     this.config = manifest.config;
     this.isPlayer = true;
-
+    this.damage = 1; 
     // load sprites
     this.idle = new Sprite(manifest.config.sprite.default);
     this.left = new Sprite(manifest.config.sprite.left);
@@ -559,6 +565,7 @@ class Projectile extends Entity {
     this.initialAngle = manifest.angle;
     this.angle = this.initialAngle;
     this.payload = manifest.payload;
+    this.hitTarget = false;
 
     // check for sprite or image and set desired function
     if (this.payload.type.image) {
@@ -605,7 +612,7 @@ class Projectile extends Entity {
 
   // default draw is used for sprite animations where draw() is not overriden
   draw(ctx) {
-    if (!this.isOutsideScreen()) {
+    if (!this.isOutsideScreen() && !this.hitTarget) {
       ctx.save();
 
       // Using object deconstructing to access the fields withing the current object
