@@ -7,11 +7,11 @@ function loadSpriteSheets() {
       dimension: {
         originX: 0,
         originY: 0,
-        frameWidth: 440,
-        frameHeight: 330,
+        frameWidth: 220,
+        frameHeight: 165,
         frameCount: 4,
         timePerFrame: 0.1,
-        scale: 0.3,
+        scale: 0.6,
         flip: false
       }
     }
@@ -20,15 +20,15 @@ function loadSpriteSheets() {
   /** Experiment: mini-sized Crane projectiles */
   sprite.miniCrane = {
     default: {
-      image: AM.getAsset('./img/crane-sheet.png'),
+      image: AM.getAsset('./img/mini-crane-sheet.png'),
       dimension: {
         originX: 0,
         originY: 0,
-        frameWidth: 440,
-        frameHeight: 330,
+        frameWidth: 55,
+        frameHeight: 41,
         frameCount: 4,
         timePerFrame: 0.1,
-        scale: 0.08,
+        scale: 0.5,
         flip: false
       }
     }

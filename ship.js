@@ -878,11 +878,12 @@ class Projectile extends Entity {
       const {
         x,
         y,
+        angle,
       } = this.current;
 
-      if (this.rotate) {
+      if (this.config.rotate) {
         ctx.translate(x, y);
-        ctx.rotate(this.angle);
+        ctx.rotate(angle + Math.PI/2);
         ctx.translate(-x, -y);
       }
       this.drawImage(ctx, x, y);

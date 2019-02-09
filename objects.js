@@ -45,7 +45,7 @@ function loadTemplates() {
 
   projectile.miniCrane = {
     radius: 15,
-    rotate: false,
+    rotate: true,
     sprite: sprite.miniCrane,
   };
 
@@ -404,25 +404,21 @@ function loadTemplates() {
   ring.jaredAlpha2 = {
     payload: {
       type: projectile.microBullet,
-      speed: 500,
-      acceleration: 1,
+      speed: 50,
+      acceleration: 100,
     },
     rotation: {
-      speed: 0.25,
+      speed: 0,
     },
     firing: {
       radius: 80,
       angle: 90,
       count: 4,
       loadTime: 0.005,
-      cooldownTime: 0.01,
+      cooldownTime: 0.02,
       rapidReload: true,
       targetPlayer: true,
       viewTurret: true,
-      pulse: {
-        duration: 0.75,
-        delay: 0.5,
-      },
     },
   };
 
@@ -662,6 +658,24 @@ function loadTemplates() {
       waitOffScreen: 50,
     },
     weapon: ring.gap1,
+  };
+
+  ship.testDove = {
+    config: {
+      hitValue: 5,
+      radius: 70,
+      sprite: sprite.dove,
+      snapLine: 200,
+      snapLineSpeed: 300,
+      snapLineWait: 1,
+      origin: {
+        x: 500, // omit x to get random position
+        y: -50,
+      },
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0,
+    },
+    weapon: ring.jaredAlpha2,
   };
 
 

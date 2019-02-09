@@ -9,6 +9,7 @@ const projectile = {};
 /** These are the image assets declared by filename */
 AM.queueDownload('./img/bat-sheet.png');
 AM.queueDownload('./img/crane-sheet.png');
+AM.queueDownload('./img/mini-crane-sheet.png');
 AM.queueDownload('./img/plane-small.png');
 AM.queueDownload('./img/purple-plane-small.png');
 AM.queueDownload('./img/notebook.png');
@@ -201,7 +202,7 @@ class NukesAndOrigami extends GameEngine {
 
   testScene() {
     // spawn a single enemy to the center
-    this.addEntity(new Ship(this, ship.idleCrane));
+    this.addEntity(new Ship(this, ship.testDove));
   }
 
   // establishes a new player Plane
@@ -258,14 +259,14 @@ AM.downloadAll(() => {
   game.start();
 
   // add background and player
-  game.addBackground();
+  //game.addBackground();
   game.spawnPlayer();
 
   // view test stage
-  //game.testScene();
+  game.testScene();
 
   // run prototype level
-  game.spawnEnemies();
+  //game.spawnEnemies();
 
   console.log('All Done!');
   canvas.focus();
