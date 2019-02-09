@@ -48,8 +48,10 @@ class NukesAndOrigami extends GameEngine {
       angle: Math.PI / 2,
       payload: {
         type: {
-          sprite: sprite.rainbowBall,
-          radius: 30,
+          image: AM.getAsset('./img/rainbow_ball.png'),
+          scale: 0.8,
+          rotate: false,
+          radius: 120,
         },
         speed: 60,
         powerUp() {

@@ -33,14 +33,14 @@ function loadTemplates() {
     radius: 15,
     rotate: false,
     image: AM.getAsset('./img/paper_ball.png'),
-    scale: 0.008,
+    scale: 0.25,
   };
 
   projectile.rainbowBall = {
     radius: 15,
     rotate: false,
     image: AM.getAsset('./img/rainbow_ball.png'),
-    scale: 0.008,
+    scale: 0.25,
   };
 
   projectile.miniCrane = {
