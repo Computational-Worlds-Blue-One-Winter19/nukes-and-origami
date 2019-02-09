@@ -465,13 +465,6 @@ class Plane extends Entity {
     }
   }
 
-  playerEdgeDetection() {
-    return (this.current.x + ((this.sprite.width * this.sprite.scale) / 2) < this.game.surfaceWidth ||
-            this.current.x - ((this.sprite.width * this.sprite.scale) / 2) > 0 ||
-            this.current.y - ((this.sprite.height * this.sprite.scale) / 2) > 0 ||
-            this.current.y + ((this.sprite.height * this.sprite.scale) / 2) < this.game.surfaceHeight);
-  }
-
   /**
    * This method is called while controls are taken from the user and
    * this.rolling is true. This handles the maneuver and then returns
