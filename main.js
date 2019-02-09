@@ -41,9 +41,11 @@ class NukesAndOrigami extends GameEngine {
     console.log('spawning entity');
     this.addEntity(new Projectile(this, {
       owner: null,
-      origin: {
+      current: {
         x: enemy.current.x,
         y: enemy.current.y,
+        velocity: { radial: 60, angular: 0},
+        acceleration: { radial: 0, angular: 0},
       },
       angle: Math.PI / 2,
       payload: {
@@ -51,7 +53,6 @@ class NukesAndOrigami extends GameEngine {
           sprite: sprite.rainbowBall,
           radius: 30,
         },
-        speed: 60,
         powerUp() {
           this.lives += 1;
           addLife();
@@ -159,7 +160,7 @@ class NukesAndOrigami extends GameEngine {
 
     // WAVE 5
 
-    const denseDove1 = new Ship(ship.denseDove);
+    const denseDove1 = new Ship(this, ship.denseDove);
 
     denseDove1.current.x = 500;
 
@@ -260,19 +261,14 @@ AM.downloadAll(() => {
   game.spawnPlayer();
 
   // view test stage
-  game.testScene();
+  //game.testScene();
 
   // run prototype level
-  //game.spawnEnemies();
+  game.spawnEnemies();
 
   console.log('All Done!');
   canvas.focus();
 });
-
-/** Global helpers (could go elsewhere) */
-function toRadians(angle) {
-  return angle * Math.PI / 180;
-}
 
 class Background extends Entity {
   constructor(game, spritesheet, canvasHeight, point) {

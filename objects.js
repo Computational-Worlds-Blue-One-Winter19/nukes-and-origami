@@ -84,16 +84,17 @@ function loadTemplates() {
       cooldownTime: 1,
       rapidReload: true,
       targetPlayer: false,
+      viewTurret: true,
     },
   };
 
   ring.angularTest = {
     payload: {
       type: projectile.microBullet,
-      speed: 5,
+      speed: 25,
       acceleration: {
-        radial: 180,
-        angular: 5,
+        radial: 100,
+        angular: 0,
       }
     },
     firing: {
@@ -102,8 +103,9 @@ function loadTemplates() {
       angle: 90,
       loadTime: 0.01,
       cooldownTime: 1,
-      rapidReload: true,
+      rapidReload: false,
       targetPlayer: false,
+      viewTurret: true,
     },
   };
 
@@ -242,7 +244,7 @@ function loadTemplates() {
     payload: {
       type: projectile.microBullet,
       speed: 250,
-      acceleration: 1,
+      acceleration: 0,
     },
     firing: {
       spread: 15,
@@ -688,7 +690,7 @@ function loadTemplates() {
       loadTime: 0.01,
       cooldownTime: 0.025, // changed from 0.25 for testing
       rapidReload: true,
-      viewTurret: false,
+      viewTurret: true,
     },
   };
 
