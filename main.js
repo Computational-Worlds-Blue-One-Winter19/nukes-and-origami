@@ -44,10 +44,10 @@ class NukesAndOrigami extends GameEngine {
       current: {
         x: enemy.current.x,
         y: enemy.current.y,
+        angle: Math.PI/2,
         velocity: { radial: 60, angular: 0},
         acceleration: { radial: 0, angular: 0},
       },
-      angle: Math.PI / 2,
       payload: {
         type: {
           sprite: sprite.rainbowBall,
@@ -257,7 +257,7 @@ AM.downloadAll(() => {
   game.start();
 
   // add background and player
-  //game.addBackground();
+  game.addBackground();
   game.spawnPlayer();
 
   // view test stage

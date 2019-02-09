@@ -117,18 +117,10 @@ class Ship extends Entity {
   constructor(game, manifest) {
     super(game, Ship.getInitPoint(game, manifest));
     this.sprite = new Sprite(manifest.config.sprite.default);
-
-    // initialize any included weapon and path
-    if (manifest.path) {
-      this.initializePath(manifest.path);
-    }
-
-    if (manifest.weapon) {
-      this.initializeWeapon(manifest.weapon);
-    }
         
     // store class constants in config
     this.config = {
+      radius: manifest.config.radius || 50,
       hitValue: manifest.config.hitValue || 1
     }
 
@@ -140,6 +132,14 @@ class Ship extends Entity {
     this.idleCount = 0;
     this.lastFired = 0;
 
+    // initialize any included weapon and path
+    if (manifest.path) {
+      this.initializePath(manifest.path);
+    }
+
+    if (manifest.weapon) {
+      this.initializeWeapon(manifest.weapon);
+    }
     
   }
 
@@ -603,7 +603,7 @@ class Ring {
       waitTime,
       cooldownTime: manifest.firing.cooldownTime,
       loadTime: manifest.firing.loadTime,
-      radius: manifest.firing.radius || 50,
+      radius: manifest.firing.radius || this.owner.config.radius,
       viewTurret: manifest.firing.viewTurret,
       rapidReload: manifest.firing.rapidReload,
     }
@@ -787,21 +787,6 @@ class Projectile extends Entity {
     
     this.owner = manifest.owner;
     this.current = manifest.current;
-    
-    // convert angles to radians
-    // if (!(this.current.velocity && this.current.velocity instanceof Object)) {
-    //   let radialSpeed = this.current.velocity || 0;
-    //   this.current.velocity = {radial: radialSpeed, angular: 0};
-    // } else {
-    //   this.current.velocity.angular = toRadians(this.current.velocity.angular);
-    // }
-
-    // if (!(this.current.acceleration && this.current.acceleration instanceof Object)) {
-
-    // } else {
-    //   this.current.acceleration.angular = toRadians(this.current.acceleration.angular);
-    // }
-
     this.payload = manifest.payload.type;
     
     this.config = {
@@ -810,8 +795,8 @@ class Projectile extends Entity {
 
     // check for sprite or image and set desired function
     if (this.payload.image) {
-      this.image = this.type.image;
-      this.scale = this.type.scale;
+      this.image = this.payload.image;
+      this.scale = this.payload.scale;
       this.drawImage = this.drawStillImage;
     } else if (this.payload.sprite) {
       this.sprite = new Sprite(this.payload.sprite.default);

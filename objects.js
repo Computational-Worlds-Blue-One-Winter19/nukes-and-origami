@@ -680,7 +680,7 @@ function loadTemplates() {
   /** A simple ring for the player only shoots up */
   ring.player = {
     payload: {
-      type: projectile.microBullet,
+      type: projectile.paperBall,
       speed: 500,
     },
     firing: {
@@ -688,7 +688,7 @@ function loadTemplates() {
       radius: 35,
       count: 1,
       loadTime: 0.01,
-      cooldownTime: 0.025, // changed from 0.25 for testing
+      cooldownTime: 0.25, // changed from 0.25 for testing
       rapidReload: true,
       viewTurret: true,
     },
