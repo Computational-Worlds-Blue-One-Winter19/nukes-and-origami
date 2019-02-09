@@ -342,9 +342,12 @@ class Plane extends Entity {
     this.ctx = game.ctx;
     this.speed = this.config.speed || 400;
     this.rollDirection = '';
-    this.rollDistance = 200;
+    this.rollDistance = 250;
     this.rollTimer = 0;
     this.rolling = false;
+    this.timeSinceLastRoll = 0;
+    this.rollCooldown = 5; //seconds
+    this.canRoll = true;
     // specific to shooting
     this.timeSinceLastSpacePress = 0;
     this.fireRate = 0.25;
@@ -368,6 +371,14 @@ class Plane extends Entity {
       this.weapon.update();
     }
 
+    if(!this.canRoll) {
+      this.timeSinceLastRoll += this.game.clockTick;
+      if(this.timeSinceLastRoll > this.rollCooldown)  {
+        this.timeSinceLastRoll = 0;
+        this.canRoll = true;
+      }
+    }
+
     // Check if the plane has been hit by an enemy projectile
     this.updateCollisionDetection();
     // This makes me worry about an overflow, or slowing our game down.
@@ -375,11 +386,11 @@ class Plane extends Entity {
     // this.timeSinceLastSpacePress += this.game.clockTick;
     if (!this.rolling && !this.isOutsideScreen()) {
       if (this.game.keysDown.ArrowLeft && !this.game.keysDown.ArrowRight) {
-        if (this.game.keysDown.KeyC) {
+        if (this.game.keysDown.KeyC && this.canRoll) {
           this.rollDirection = 'left';
           this.rolling = true;
           this.performManeuver();
-          
+          this.canRoll = false;
         } else if (this.current.x - ((this.sprite.width * this.sprite.scale) / 2) > 0)  {
           this.current.x -= this.speed * this.game.clockTick;
           this.sprite = this.left;
@@ -388,10 +399,11 @@ class Plane extends Entity {
         }
       }
       if (this.game.keysDown.ArrowRight && !this.game.keysDown.ArrowLeft) {
-        if (this.game.keysDown.KeyC) {
+        if (this.game.keysDown.KeyC && this.canRoll) {
           this.rollDirection = 'right';
           this.rolling = true;
           this.performManeuver();
+          this.canRoll = false;
         } else if (this.current.x + ((this.sprite.width * this.sprite.scale) / 2) < this.game.surfaceWidth) {
           this.current.x += this.speed * this.game.clockTick;
           this.sprite = this.right;
