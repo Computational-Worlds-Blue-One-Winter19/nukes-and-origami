@@ -365,10 +365,12 @@ class ShieldEntity extends Entity {
     for (let i = 0; i < this.game.entities.length; i += 1) {
       const entity = this.game.entities[i];
 
-      // Bug still exists where all the sheilds are removed upon hit, should they be stackable?
       if (entity instanceof Projectile && !entity.playerShot && this.isCollided(entity) && !entity.payload.powerUp) {
         entity.removeFromWorld = true;
-        this.removeFromWorld = true;
+
+        const shieldHit = this.game.player.shield.entities.pop();
+        shieldHit.removeFromWorld = true;
+        removePowerUp('shield');
       }
     }// end for loop
   }

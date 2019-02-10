@@ -110,3 +110,17 @@ function addPowerUp(src, type) {
 
   container.appendChild(img);
 }
+
+function removePowerUp(type) {
+  // Need to get the parent element to be able to remove the power up icons
+  const parent = document.getElementById('inventory');
+
+
+  // Find all the images with the respective class type
+  const container = document.getElementsByClassName(type);
+
+  // If we find any go ahead and remove the last one
+  if (container.length) {
+    parent.removeChild(container[container.length - 1]);
+  }
+}
