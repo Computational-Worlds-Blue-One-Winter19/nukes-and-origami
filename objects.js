@@ -464,16 +464,16 @@ function loadTemplates() {
       angle: 90,
       spread: 20,
       count: 4,
-      loadTime: .05,
-      cooldownTime: 0.02,
+      loadTime: 0.0,
+      cooldownTime: 0.005,
       rapidReload: true,
       targetPlayer: true,
-      viewTurret: true,
+      viewTurret: false,
       pulse: {
-        duration: 1,
-        delay: 3,
-      }
-    },
+        duration: .4,
+        delay: 1.5,
+      },
+    }
   };
 
   ring.jaredBeta1 = {

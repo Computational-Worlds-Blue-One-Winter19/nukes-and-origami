@@ -548,7 +548,7 @@ class Ring {
     } else if (this.rotation && this.rotation.angle) {
       this.sineAmplitude = toRadians(this.rotation.angle);
       this.sineFrequency = this.rotation.frequency || 1;
-    }
+    } 
 
     // compute spacing and adjust base angle
     let baseAngle = toRadians(manifest.firing.angle) || 0;
@@ -610,6 +610,7 @@ class Ring {
       x: this.owner.current.x,
       y: this.owner.current.y,
       angle: baseAngle,
+      isLeadShot: this.config.targetPalyer,
     }
 
     // set firing conditionals
@@ -647,12 +648,11 @@ class Ring {
     } else if (this.sineAmplitude) {
       let delta = game.timer.getWave(this.sineAmplitude, this.sineFrequency);
       this.current.angle = this.config.baseAngle + delta;
-    } else if (this.config.targetPlayer) {
-      let target = this.getPlayerLocation(this.current);
-      this.current.angle = target.angle - this.config.spread/2;
-
+    } else if (this.current.isLeadShot) {
+        let target = this.getPlayerLocation(this.current);
+        this.current.angle = target.angle - this.config.spread/2;
+        this.current.isLeadShot = false;
     }
-
     // update each turret using the spacing offset from bay[0]
     for (let i = 0; i < this.bay.length; i++) {
       let projectile = this.bay[i];
@@ -677,7 +677,7 @@ class Ring {
         this.status.elapsedTime = 0;
       }
     } else if (this.status.isReady) {
-
+     
       // Ready state
       // a player only fires on command, all others fire on ready
       if (!this.owner.isPlayer || game.keysDown.Space) {
@@ -698,6 +698,9 @@ class Ring {
       this.status.isLoading = true;
       this.status.elapsedActiveTime = 0;
       this.status.elapsedTime = 0;
+
+      // if tracking then set flag to track next shot
+      this.current.isLeadShot = this.config.targetPlayer;
     }
   }
   
