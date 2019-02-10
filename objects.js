@@ -482,6 +482,7 @@ function loadTemplates() {
   /** *** ENEMY SHIPS **** */
   ship.demoCrane = {
     config: {
+      health: 3,
       hitValue: 5,
       powerUp: new RapidFire(),
       radius: 50,
@@ -502,6 +503,7 @@ function loadTemplates() {
 
   ship.idleCrane = {
     config: {
+      health: 3,
       hitValue: 5,
       powerUp: new ExtraLife(),
       radius: 50,
@@ -521,6 +523,7 @@ function loadTemplates() {
 
   ship.easyBat = {
     config: {
+      health: 3,
       hitValue: 5,
       powerUp: new RapidFire(),
       radius: 50,
@@ -546,6 +549,7 @@ function loadTemplates() {
 
   ship.openingBat = {
     config: {
+      health: 3,
       hitValue: 5,
       powerUp: new ExtraLife(),
       radius: 50,
@@ -571,6 +575,7 @@ function loadTemplates() {
 
   ship.mediumDoubleTurretBat = {
     config: {
+      health: 3,
       hitValue: 5,
       powerUp: new ExtraLife(),
       radius: 30,
@@ -592,6 +597,7 @@ function loadTemplates() {
 
   ship.easyIdleSpiralCrane = {
     config: {
+      health: 3,
       hitValue: 5,
       powerUp: new ExtraLife(),
       radius: 50,
@@ -612,6 +618,7 @@ function loadTemplates() {
 
   ship.dodgeOwl = {
     config: {
+      health: 3,
       hitValue: 5,
       powerUp: new ExtraLife(),
       radius: 70,
@@ -632,6 +639,7 @@ function loadTemplates() {
 
   ship.denseDove = {
     config: {
+      health: 15,
       hitValue: 5,
       powerUp: new ExtraLife(),
       radius: 70,
