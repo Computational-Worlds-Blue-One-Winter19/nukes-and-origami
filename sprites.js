@@ -90,11 +90,11 @@ function loadSpriteSheets() {
         originX: 0,
         originY: 0,
         // LOL THIS BALL IMAGE IS BIGGER THAN 4K
-        frameWidth: 3035,
-        frameHeight: 2910,
+        frameWidth: 300,
+        frameHeight: 288,
         frameCount: 1,
         timePerFrame: 30,
-        scale: 0.02,
+        scale: 0.1,
         flip: false,
       },
     },
@@ -147,23 +147,6 @@ function loadSpriteSheets() {
       },
     },
   };
-
-  sprite.rainbowBall = {
-    default: {
-      image: AM.getAsset('./img/rainbow_ball.png'),
-      dimension: {
-        originX: 0,
-        originY: 0,
-        // LOL THIS BALL IMAGE IS BIGGER THAN 4K
-        frameWidth: 3035,
-        frameHeight: 2910,
-        frameCount: 1,
-        timePerFrame: 30,
-        scale: 0.02,
-        flip: false,
-      }
-    }
-  }
 
   /** The Player Plane SpriteSheet */
   sprite.plane = {
