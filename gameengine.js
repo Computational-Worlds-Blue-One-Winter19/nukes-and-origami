@@ -48,7 +48,7 @@ Timer.prototype.tick = function () {
 }
 
 Timer.prototype.getWave = function (amp, T) {
-  let angle = 2 * Math.PI / T * this.gameTime;
+  let angle = 2 * Math.PI * this.gameTime / T;
   return amp * Math.sin(angle);
 }
 

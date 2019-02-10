@@ -669,6 +669,7 @@ class Ring {
         this.status.elapsedTime = 0;
       } else {
         this.bay.push(this.loadNext());
+        this.status.elapsedTime = 0;
       }
     } else if (this.status.isReady) {
 
@@ -787,13 +788,14 @@ class Ring {
 
   /** returns the polar coordinates of the player with respect to the given point */ 
   getPlayerLocation(point) {
-    const player = this.owner.game.player;
-    const deltaX = player.current.x - point.x;
-    const deltaY = player.current.y - point.y;
-    const angle = Math.atan2(deltaY, deltaX);
+    let player = this.owner.game.player;
+    let deltaX = player.current.x - point.x;
+    let deltaY = player.current.y - point.y;
+    let angle = Math.atan2(deltaY, deltaX);
+    let radius = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
 
     return {
-      radius: deltaX * deltaX + deltaY * deltaY,
+      radius: radius,
       angle: angle
     };
   }
@@ -817,7 +819,8 @@ class Projectile extends Entity {
     this.payload = manifest.payload.type;
     
     this.config = {
-      radius: this.payload.radius
+      radius: this.payload.radius,
+      isHoming: this.payload.isHoming,
     }
 
     // support for origin format
@@ -872,11 +875,13 @@ class Projectile extends Entity {
       
       this.current.velocity.angular += this.current.acceleration.angular * elapsedTime;
       this.current.angle += this.current.velocity.angular * elapsedTime;      
+
+      let point = getXandY(previous, { angle: this.current.angle, radius: deltaRadius });
+      this.current.x = point.x;
+      this.current.y = point.y;
     }
 
-    let point = getXandY(previous, { angle: this.current.angle, radius: deltaRadius });
-    this.current.x = point.x;
-    this.current.y = point.y;
+    
   }
   
   // default draw is used for sprite animations where draw() is not overriden

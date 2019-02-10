@@ -4,8 +4,9 @@ function loadTemplates() {
    * Access origin.x, origin.y, current.x, current.y, that.initialAngle, that.angle, that.speed,
    * that.acceleration, that.game.clockTick
    */
-  projectile.testBullet = {
+  projectile.homing = {
     radius: 3,
+    isHoming: true,
 
     draw(ctx, x, y) {
       ctx.beginPath();
@@ -15,16 +16,24 @@ function loadTemplates() {
     },
 
     update() {
-      // this will override standard behavior
-      const deltaX = this.current.x - this.origin.x;
-      const deltaY = this.current.y - this.origin.y;
-      let r = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+      let previous = {
+        x: this.current.x,
+        y: this.current.y,
+      }
+      
+      if (this.config.isHoming) {
+        let target = this.owner.weapon.getPlayerLocation(previous);
+        if (target.radius < 200) {
+          this.config.isHoming = false;
+        }
 
-      this.angle += toRadians(1);
-      r = 10 * Math.cos(6 * this.angle);
-
-      this.current.x = this.origin.x + r * Math.cos(this.angle);
-      this.current.y = this.origin.y + r * Math.sin(this.angle);
+        this.current.angle = target.angle;
+      }
+      
+      let deltaRadius = this.current.velocity.radial * this.game.clockTick;
+      let newPoint = getXandY(previous, {angle: this.current.angle, radius: deltaRadius });
+      this.current.x = newPoint.x;
+      this.current.y = newPoint.y;
     },
   };
 
@@ -403,9 +412,9 @@ function loadTemplates() {
 
   ring.jaredTest1 = {
     payload: {
-      type: projectile.microBullet,
+      type: projectile.homing,
       velocity: {
-        radial: 150,
+        radial: 400,
         angular: 0,
       },
       acceleration: {
@@ -420,15 +429,16 @@ function loadTemplates() {
     firing: {
       radius: 80,
       angle: 90,
+      spread: 20,
       count: 4,
-      loadTime: 0.005,
-      cooldownTime: 0.1,
+      loadTime: .05,
+      cooldownTime: 0.02,
       rapidReload: true,
       targetPlayer: false,
       viewTurret: true,
       pulse: {
         duration: 1,
-        delay: 1,
+        delay: 5,
       }
     },
   };
