@@ -66,7 +66,7 @@ class NukesAndOrigami extends GameEngine {
   // notification of player destruction.
   onPlayerHit(player) {
     // player.invincTime += this.clockTick;
-    if (player.invincTime == 0) {
+    if (player.invincTime == 0 && !player.isRolling) {
       this.lives -= 1;
       removeLifeFromBoard();
       player.invincTime += this.clockTick;
