@@ -9,11 +9,11 @@
     <script type="text/javascript" src="./gameengine.js"></script>
     <script type="text/javascript" src="./assetmanager.js"></script>
     <script type="text/javascript" src="./gameboard.js"></script>
-    <script type="text/javascript" src="./stats.js"></script>
-    <script type="text/javascript" src="./ship.js"></script>
-    <script type="text/javascript" src="./main.js"></script>
+    <script type="text/javascript" src="./power-up.js"></script>
     <script type="text/javascript" src="./sprites.js"></script>
     <script type="text/javascript" src="./objects.js"></script>
+    <script type="text/javascript" src="./ship.js"></script>
+    <script type="text/javascript" src="./main.js"></script>
 </head>
 <body>
     <canvas id="gameWorld" tabindex="1" width="1024" height="768" style="background: lightskyblue"></canvas>
@@ -56,18 +56,18 @@
             <div class="key-container">
                 <div class="key special">
                     <span>
-                        &uarr;
-                    </span>
-                </div>
-                <span class="control-description">Move Up</span>
-            </div>
-            <div class="key-container">
-                <div class="key special">
-                    <span>
                         &rarr;
                     </span>
                 </div>
                 <span class="control-description">Move Right</span>
+            </div>
+            <div class="key-container">
+                <div class="key special">
+                    <span>
+                        &uarr;
+                    </span>
+                </div>
+                <span class="control-description">Move Up</span>
             </div>
             <div class="key-container">
                 <div class="key special">
@@ -86,6 +86,14 @@
                 <span class="control-description">Roll</span>
             </div>
 
+        </div>
+        <!-- Inventory Container -->
+        <div class="inventory-container">
+            <h2>Power Ups</h2>
+            <div id="inventory">
+                <!-- <img src="./img/shield-icon.png" /> -->
+                <!-- <img src="./img/rapid-bullet.png" /> -->
+            </div>
         </div>
         <div class="overlay" id="pause-message">
             <p>Paused</p>

@@ -68,6 +68,17 @@ h2 {
     margin: 0px;
 }
 
+/* Iventory CSS Styles */
+#inventory {
+    /* Some items/pngs aren't square or don't have any height so we need to center align all items vertically */
+    display: flex;
+    align-items: center;
+}
+
+#inventory img {
+    width: 40px;
+}
+
 #pause-message, #game-over-message {
     font-family: 'VT323', monospace;
     font-size: 2em;
@@ -86,9 +97,13 @@ h2 {
 }
 
 /* The bottom style classes are used for the keys */
-
 .key-container {
     display: flex;
+}
+
+.pair {
+    display: flex;
+    flex-direction: row;
 }
 
 .control-description {

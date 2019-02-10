@@ -18,6 +18,8 @@ AM.queueDownload('./img/nuke_single.png');
 AM.queueDownload('./img/owl.png');
 AM.queueDownload('./img/dove.png');
 AM.queueDownload('./img/rainbow_ball.png');
+AM.queueDownload('./img/shield-icon.png');
+AM.queueDownload('./img/rapid-bullet.png');
 AM.queueDownload('./img/paper_ball.png');
 AM.queueDownload('./img/clouds.png');
 
@@ -36,31 +38,28 @@ class NukesAndOrigami extends GameEngine {
     initializeScoreBoardLives(this.lives);
   }
 
+  increaseLivesCount() {
+    this.lives += 1;
+  }
+
   // notification of ship destruction.
   onEnemyDestruction(enemy) {
-    this.increaseScoreBy(enemy.config.hitValue);
-    console.log('spawning entity');
-    this.addEntity(new Projectile(this, {
-      owner: null,
-      origin: {
-        x: enemy.current.x,
-        y: enemy.current.y,
-      },
-      angle: Math.PI / 2,
-      payload: {
-        type: {
-          image: AM.getAsset('./img/rainbow_ball.png'),
-          scale: 0.8,
-          rotate: false,
-          radius: 120,
+    const {
+      current,
+      hitValue,
+      powerUp,
+    } = enemy;
+    this.increaseScoreBy(hitValue);
+
+    if (powerUp && powerUp.shouldDrop()) {
+      this.addEntity(new Projectile(this, {
+        origin: {
+          x: current.x,
+          y: current.y,
         },
-        speed: 60,
-        powerUp() {
-          this.lives += 1;
-          addLife();
-        },
-      },
-    }));
+        ...powerUp.manifest,
+      }));
+    }
   }
 
   // notification of player destruction.
