@@ -18,6 +18,7 @@ AM.queueDownload('./img/owl.png');
 AM.queueDownload('./img/dove.png');
 AM.queueDownload('./img/rainbow_ball.png');
 AM.queueDownload('./img/shield-icon.png');
+AM.queueDownload('./img/shield.png');
 AM.queueDownload('./img/rapid-bullet.png');
 AM.queueDownload('./img/paper_ball.png');
 AM.queueDownload('./img/clouds.png');
@@ -63,8 +64,7 @@ class NukesAndOrigami extends GameEngine {
 
   // notification of player destruction.
   onPlayerHit(player) {
-    // player.invincTime += this.clockTick;
-    if (player.invincTime === 0) {
+    if (player.invincTime === 0 && !player.rolling) {
       this.lives -= 1;
       removeLifeFromBoard();
       player.invincTime += this.clockTick;
@@ -316,5 +316,46 @@ class Clouds extends Entity {
     if (this.current.y >= this.canvasHeight) {
       this.current.y = -3840;
     }
+  }
+}
+
+class ShieldEntity extends Entity {
+  constructor(game, point) {
+    super(game, point);
+    console.log('Inside constructor');
+    this.offset = 0;
+    this.current.y = point.y - this.offset;
+    this.current.x = point.x - this.offset;
+    this.game = game;
+    this.spritesheet = new Sprite(sprite.shield.default);
+    this.ctx = game.ctx;
+    this.config = {
+      radius: 50,
+    };
+    // this.radius = 40;
+  }
+
+  draw() {
+    const {
+      x,
+      y,
+    } = this.current;
+
+    this.ctx.drawImage(this.spritesheet.sheet, x, y);
+    // super.draw();
+    console.log('Inside the draw');
+
+    if (this.game.showOutlines && this.config.radius) {
+      this.game.ctx.beginPath();
+      this.game.ctx.strokeStyle = 'red';
+      this.game.ctx.arc(this.current.x, this.current.y, this.config.radius, 0, Math.PI * 2, false);
+      this.game.ctx.stroke();
+      this.game.ctx.closePath();
+    }
+  }
+
+  update() {
+    this.current.y = this.game.player.current.y - (this.offset);
+    this.current.x = this.game.player.current.x - (this.offset);
   }
 }

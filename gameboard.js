@@ -72,8 +72,8 @@ function initializeScoreBoardLives(lives) {
   for (let i = 0; i < lives; i += 1) {
     addLife(lifeColor[i]);
   }
-  addPowerUp('./img/shield-icon.png');
-  addPowerUp('./img/rapid-bullet.png');
+  // addPowerUp('./img/shield-icon.png');
+  // addPowerUp('./img/rapid-bullet.png');
 }
 
 
@@ -100,10 +100,11 @@ function hideMessage(type) {
 }
 
 // Inventory related functions
-function addPowerUp(src) {
+function addPowerUp(src, type) {
   console.log('Inside the addPowerUp');
   const img = new Image();
   img.src = src;
+  img.className = type;
 
   const container = document.getElementById('inventory');
 

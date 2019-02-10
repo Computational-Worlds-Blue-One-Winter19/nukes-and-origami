@@ -99,7 +99,7 @@ function loadSpriteSheets() {
     },
   };
 
-  sprite.shield = {
+  sprite.shieldIcon = {
     default: {
       image: AM.getAsset('./img/shield-icon.png'),
       dimension: {
@@ -110,6 +110,22 @@ function loadSpriteSheets() {
         frameCount: 1,
         timePerFrame: 30,
         scale: 0.15,
+        flip: false,
+      },
+    },
+  };
+
+  sprite.shield = {
+    default: {
+      image: AM.getAsset('./img/shield.png'),
+      dimension: {
+        originX: 50,
+        originY: 50,
+        frameWidth: 50,
+        frameHeight: 50,
+        frameCount: 1,
+        timePerFrame: 30,
+        scale: 1,
         flip: false,
       },
     },
