@@ -93,6 +93,9 @@ class Shield extends PowerUp {
         powerUp(entity) {
           // Add the power up to the screen inventory
           addPowerUp('./img/shield-icon.png');
+
+          // entity.game.addEn
+
           // this.weapon.cooldown = 0.01;
           // TODO: Add actual functionality
         },
@@ -115,10 +118,10 @@ class RapidFire extends PowerUp {
         },
         speed: 60,
         powerUp(entity) {
-          addPowerUp('./img/rapid-bullet.png');
-          console.log('Inside the rapidFire');
-          // TODO: Add actual functionality to move activation inside player
-          entity.weapon.coolTime = 0.01;
+          if (entity.weapon.coolTime >= 0.05) {
+            entity.weapon.coolTime -= 0.05;
+            addPowerUp('./img/rapid-bullet.png');
+          }
         },
       },
     };
