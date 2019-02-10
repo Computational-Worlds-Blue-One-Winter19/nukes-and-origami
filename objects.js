@@ -505,7 +505,7 @@ function loadTemplates() {
     config: {
       health: 3,
       hitValue: 5,
-      powerUp: new Shield(),
+      powerUp: new RapidFire(),
       radius: 50,
       sprite: sprite.crane,
       snapLine: 150,
@@ -551,7 +551,7 @@ function loadTemplates() {
     config: {
       health: 3,
       hitValue: 5,
-      powerUp: new Shield(),
+      powerUp: new RapidFire(),
       radius: 50,
       sprite: sprite.bat,
       snapLine: 100,
