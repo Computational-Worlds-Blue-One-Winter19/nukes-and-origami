@@ -323,16 +323,15 @@ class ShieldEntity extends Entity {
   constructor(game, point) {
     super(game, point);
     console.log('Inside constructor');
-    this.offset = 0;
-    this.current.y = point.y - this.offset;
-    this.current.x = point.x - this.offset;
+    this.offset = 50;
+    this.current.y = point.y;
+    this.current.x = point.x;
     this.game = game;
     this.spritesheet = new Sprite(sprite.shield.default);
     this.ctx = game.ctx;
     this.config = {
       radius: 50,
     };
-    // this.radius = 40;
   }
 
   draw() {
@@ -341,21 +340,36 @@ class ShieldEntity extends Entity {
       y,
     } = this.current;
 
-    this.ctx.drawImage(this.spritesheet.sheet, x, y);
-    // super.draw();
-    console.log('Inside the draw');
+    this.ctx.drawImage(this.spritesheet.sheet, x - this.offset, y - this.offset);
 
-    if (this.game.showOutlines && this.config.radius) {
-      this.game.ctx.beginPath();
-      this.game.ctx.strokeStyle = 'red';
-      this.game.ctx.arc(this.current.x, this.current.y, this.config.radius, 0, Math.PI * 2, false);
-      this.game.ctx.stroke();
-      this.game.ctx.closePath();
-    }
+    super.draw();
   }
 
   update() {
-    this.current.y = this.game.player.current.y - (this.offset);
-    this.current.x = this.game.player.current.x - (this.offset);
+    this.updateCollisionDetection();
+    this.current.y = this.game.player.current.y;
+    this.current.x = this.game.player.current.x;
+  }
+
+  /**
+   * Collisions: detection checks bounds along canvas, collision with
+   * player and collision with player bullets.
+   * */
+  updateCollisionDetection() {
+    if (this.isOutsideScreen()) {
+      this.removeFromWorld = true;
+      return;
+    }
+
+
+    for (let i = 0; i < this.game.entities.length; i += 1) {
+      const entity = this.game.entities[i];
+
+      // Bug still exists where all the sheilds are removed upon hit, should they be stackable?
+      if (entity instanceof Projectile && !entity.playerShot && this.isCollided(entity) && !entity.payload.powerUp) {
+        entity.removeFromWorld = true;
+        this.removeFromWorld = true;
+      }
+    }// end for loop
   }
 }
