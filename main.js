@@ -203,6 +203,7 @@ class NukesAndOrigami extends GameEngine {
   testScene() {
     // spawn a single enemy to the center
     this.addEntity(new Ship(this, ship.testDove));
+    //this.addEntity(new Ship(this, ship.testCrane));
   }
 
   // establishes a new player Plane

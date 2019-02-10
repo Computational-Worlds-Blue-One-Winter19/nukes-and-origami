@@ -23,7 +23,7 @@ function loadTemplates() {
       
       if (this.config.isHoming) {
         let target = this.owner.weapon.getPlayerLocation(previous);
-        if (target.radius < 200) {
+        if (target.radius < 250) {
           this.config.isHoming = false;
         }
 
@@ -438,7 +438,40 @@ function loadTemplates() {
       viewTurret: true,
       pulse: {
         duration: 1,
-        delay: 5,
+        delay: 3,
+      }
+    },
+  };
+
+  ring.jaredTest2 = {
+    payload: {
+      type: projectile.microBullet,
+      velocity: {
+        radial: 400,
+        angular: 0,
+      },
+      acceleration: {
+        radial: 0,
+        angular: 0,
+      }
+    },
+    rotation: {
+      angle: 0,
+      frequency: 0,
+    },
+    firing: {
+      radius: 80,
+      angle: 90,
+      spread: 20,
+      count: 4,
+      loadTime: .05,
+      cooldownTime: 0.02,
+      rapidReload: true,
+      targetPlayer: true,
+      viewTurret: true,
+      pulse: {
+        duration: 1,
+        delay: 3,
       }
     },
   };
@@ -696,9 +729,27 @@ function loadTemplates() {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
     },
-    weapon: ring.jaredTest1,
+    weapon: ring.jaredTest2,
   };
 
+  ship.testCrane = {
+    config: {
+      hitValue: 5,
+      radius: 50,
+      sprite: sprite.dove,
+      snapLine: 150,
+      snapLineSpeed: 150,
+      snapLineWait: 0,
+      origin: {
+        x: 500, // omit x to get random position
+        y: -50,
+      },
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0,
+      waitOffScreen: 10,
+    },
+    weapon: ring.trackingTest1,
+  };
 
   /** *** ALL PLAYER THINGS **** */
   projectile.player1 = {

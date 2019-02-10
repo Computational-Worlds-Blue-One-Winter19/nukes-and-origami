@@ -602,6 +602,7 @@ class Ring {
       rapidReload: manifest.firing.rapidReload,
       cooldownTime: manifest.firing.cooldownTime || 0.05,
       loadTime: manifest.firing.loadTime || 0.05,
+      targetPlayer: manifest.firing.targetPlayer || false,
     }
 
     // store instance variables
@@ -646,7 +647,11 @@ class Ring {
     } else if (this.sineAmplitude) {
       let delta = game.timer.getWave(this.sineAmplitude, this.sineFrequency);
       this.current.angle = this.config.baseAngle + delta;
-    } 
+    } else if (this.config.targetPlayer) {
+      let target = this.getPlayerLocation(this.current);
+      this.current.angle = target.angle - this.config.spread/2;
+
+    }
 
     // update each turret using the spacing offset from bay[0]
     for (let i = 0; i < this.bay.length; i++) {
