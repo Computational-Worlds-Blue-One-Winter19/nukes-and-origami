@@ -342,9 +342,12 @@ class Plane extends Entity {
     this.ctx = game.ctx;
     this.speed = this.config.speed || 400;
     this.rollDirection = '';
-    this.rollDistance = 200;
+    this.rollDistance = 250;
     this.rollTimer = 0;
     this.rolling = false;
+    this.timeSinceLastRoll = 0;
+    this.rollCooldown = 5; //seconds
+    this.canRoll = true;
     // specific to shooting
     this.timeSinceLastSpacePress = 0;
     this.fireRate = 0.25;
@@ -358,15 +361,6 @@ class Plane extends Entity {
   update() {
     // It might be better to use a changeX and changeY variable
     // This way we apply a sprite depending on how the position has changed
-    // console.log("called");
-    if (this.isOutsideScreen()) {
-      // correct all bounds
-      this.current.x = Math.max(this.current.x, this.config.radius);
-      this.current.x = Math.min(this.current.x, this.game.surfaceWidth - this.config.radius);
-      this.current.y = Math.max(this.current.y, this.config.radius);
-      this.current.y = Math.min(this.current.y, this.game.surfaceHeight - this.config.radius);
-    }
-
     if (this.invincTime != 0 && this.invincTime < this.invincDuration) {
       this.invincTime += this.game.clockTick;
     } else if (this.invincTime > this.invincDuration) {
@@ -377,40 +371,54 @@ class Plane extends Entity {
       this.weapon.update();
     }
 
+    if(!this.canRoll) {
+      this.timeSinceLastRoll += this.game.clockTick;
+      if(this.timeSinceLastRoll > this.rollCooldown)  {
+        this.timeSinceLastRoll = 0;
+        this.canRoll = true;
+      }
+    }
+
     // Check if the plane has been hit by an enemy projectile
     this.updateCollisionDetection();
-
     // This makes me worry about an overflow, or slowing our game down.
     // But it works great for what we need.
     // this.timeSinceLastSpacePress += this.game.clockTick;
-    if (!this.rolling) {
+    if (!this.rolling && !this.isOutsideScreen()) {
       if (this.game.keysDown.ArrowLeft && !this.game.keysDown.ArrowRight) {
-        if (this.game.keysDown.KeyC) {
+        if (this.game.keysDown.KeyC && this.canRoll) {
           this.rollDirection = 'left';
           this.rolling = true;
           this.performManeuver();
-        } else {
+          this.canRoll = false;
+        } else if (this.current.x - ((this.sprite.width * this.sprite.scale) / 2) > 0)  {
           this.current.x -= this.speed * this.game.clockTick;
+          this.sprite = this.left;
+        } else { //This will just apply the left sprite when hugging the wall and not going anywhere
           this.sprite = this.left;
         }
       }
       if (this.game.keysDown.ArrowRight && !this.game.keysDown.ArrowLeft) {
-        if (this.game.keysDown.KeyC) {
+        if (this.game.keysDown.KeyC && this.canRoll) {
           this.rollDirection = 'right';
           this.rolling = true;
           this.performManeuver();
-        } else {
+          this.canRoll = false;
+        } else if (this.current.x + ((this.sprite.width * this.sprite.scale) / 2) < this.game.surfaceWidth) {
           this.current.x += this.speed * this.game.clockTick;
+          this.sprite = this.right;
+        } else {
           this.sprite = this.right;
         }
       }
       if (this.game.keysDown.ArrowLeft && this.game.keysDown.ArrowRight) {
         this.sprite = this.idle;
       }
-      if (this.game.keysDown.ArrowUp) {
+      if (this.game.keysDown.ArrowUp && this.current.y - ((this.sprite.height * this.sprite.scale) / 2) > 0) {
         this.current.y -= this.speed * this.game.clockTick;
       }
-      if (this.game.keysDown.ArrowDown) {
+      if (this.game.keysDown.ArrowDown && this.current.y + ((this.sprite.height * this.sprite.scale) / 2)
+           < this.game.surfaceHeight) {
         this.current.y += this.speed * this.game.clockTick;
       }
     } else {
@@ -483,11 +491,15 @@ class Plane extends Entity {
     if (this.rollDirection === 'left') {
       // Rolling should be faster than just moving, so mult speed by a constant
       // greater than 1
-      this.current.x -= this.speed * this.game.clockTick * 1.5;
+      if(this.current.x - ((this.sprite.width * this.sprite.scale) / 2) > 0 ) {
+        this.current.x -= this.speed * this.game.clockTick * 1.5;
+      }
       this.sprite = this.rollLeft;
     }
     if (this.rollDirection === 'right') {
-      this.current.x += this.speed * this.game.clockTick * 1.5;
+      if(this.current.x + ((this.sprite.width * this.sprite.scale) / 2) < this.game.surfaceWidth)  {
+        this.current.x += this.speed * this.game.clockTick * 1.5;
+      }
       this.sprite = this.rollRight;
     }
     this.rollTimer += this.speed * this.game.clockTick * 1.5;
