@@ -86,15 +86,28 @@ class Shield extends PowerUp {
       angle: Math.PI / 2,
       payload: {
         type: {
-          sprite: sprite.shield,
+          sprite: sprite.shieldIcon,
           radius: 30,
         },
         speed: 60,
         powerUp(entity) {
           // Add the power up to the screen inventory
-          addPowerUp('./img/shield-icon.png');
-          // this.weapon.cooldown = 0.01;
-          // TODO: Add actual functionality
+
+          addPowerUp('./img/shield-icon.png', 'shield');
+
+
+          const currentX = entity.game.player.current.x;
+          const currentY = entity.game.player.current.y;
+
+          const shield = new ShieldEntity(entity.game, {
+            x: currentX,
+            y: currentY,
+          });
+
+          entity.game.player.shield.hasShield = true;
+          entity.game.player.shield.entities.push(shield);
+
+          entity.game.addEntity(shield);
         },
       },
     };
@@ -115,10 +128,10 @@ class RapidFire extends PowerUp {
         },
         speed: 60,
         powerUp(entity) {
-          addPowerUp('./img/rapid-bullet.png');
-          console.log('Inside the rapidFire');
-          // TODO: Add actual functionality to move activation inside player
-          entity.weapon.coolTime = 0.01;
+          if (entity.weapon.coolTime > 0.05) {
+            entity.weapon.coolTime -= 0.1;
+            addPowerUp('./img/rapid-bullet.png', 'rapidFire');
+          }
         },
       },
     };

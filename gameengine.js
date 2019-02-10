@@ -31,25 +31,27 @@ window.requestAnimFrame = (function requestAnimFrame() {
 //   }
 // }
 
-function Timer() {
-  this.gameTime = 0;
-  this.maxStep = 0.05;
-  this.wallLastTimestamp = 0;
-}
+class Timer {
+  constructor() {
+    this.gameTime = 0;
+    this.maxStep = 0.05;
+    this.wallLastTimestamp = 0;
+  }
 
-Timer.prototype.tick = function () {
-  const wallCurrent = Date.now();
-  const wallDelta = (wallCurrent - this.wallLastTimestamp) / 1000;
-  this.wallLastTimestamp = wallCurrent;
+  tick() {
+    const wallCurrent = Date.now();
+    const wallDelta = (wallCurrent - this.wallLastTimestamp) / 1000;
+    this.wallLastTimestamp = wallCurrent;
 
-  const gameDelta = Math.min(wallDelta, this.maxStep);
-  this.gameTime += gameDelta;
-  return gameDelta;
-}
+    const gameDelta = Math.min(wallDelta, this.maxStep);
+    this.gameTime += gameDelta;
+    return gameDelta;
+  }
 
-Timer.prototype.getWave = function (amp, T) {
-  let angle = 2 * Math.PI * this.gameTime / T;
-  return amp * Math.sin(angle);
+  getWave(amp, T) {
+    const angle = 2 * Math.PI / T * this.gameTime;
+    return amp * Math.sin(angle);
+  }
 }
 
 class GameEngine {
@@ -87,9 +89,7 @@ class GameEngine {
   }
 
   startInput() {
-    console.log('Starting input');
     const that = this;
-    console.log(`test: ${this.arrowUpPressed}`);
     this.ctx.canvas.addEventListener('keydown', (e) => {
       if (e.code === 'KeyP') {
         that.pause();
@@ -105,12 +105,10 @@ class GameEngine {
     this.ctx.canvas.addEventListener('keyup', (e) => {
       that.keysDown[e.code] = false;
     }, false);
-
-    console.log('Input started');
   }
 
   addEntity(entity) {
-    //console.log('added entity');
+    // console.log('added entity');
     this.entities.push(entity);
   }
 
@@ -146,7 +144,6 @@ class GameEngine {
       this.clockTick = this.timer.tick();
       this.update();
       this.draw();
-      this.stats.update(); // remove for production
       this.space = null;
       this.arrowUpPressed = null;
       this.arrowDownPressed = null;
@@ -157,12 +154,14 @@ class GameEngine {
       this.arrowRightReleased = null;
       this.arrowUpReleased = null;
       this.arrowDownReleased = null;
+    
+      this.stats.update(); // remove for production
     }
   }
 
   pause() {
     if (this.isPaused) {
-      hideMessage("pause-message");
+      hideMessage('pause-message');
       // remove any stored mouse events and unpause the game.
       this.click = null;
       this.mouse = null;
@@ -170,7 +169,7 @@ class GameEngine {
     } else {
       // set pause flag
       this.isPaused = true;
-      showMessage("pause-message");
+      showMessage('pause-message');
     }
   }
 
@@ -180,7 +179,7 @@ class GameEngine {
   gameOver() {
     // The Pause Flag handles the same function in stopping the game so we'll repurpose it here
     this.isPaused = true;
-    showMessage("game-over-message");
+    showMessage('game-over-message');
   }
 }
 
@@ -206,22 +205,22 @@ class Entity {
   }
 
   isCollided(other) {
+    let hasCollided = false;
     if (this.config.radius && other instanceof Entity && other.config.radius) {
-      const distance_squared = Math.pow(this.current.x - other.current.x, 2) + Math.pow(this.current.y - other.current.y, 2);
-      const radii_squared = Math.pow(this.config.radius + other.config.radius, 2);
-      return distance_squared < radii_squared;
+      const distanceSquared = Math.pow(this.current.x - other.current.x, 2) + Math.pow(this.current.y - other.current.y, 2);
+      const radiiSquared = Math.pow(this.config.radius + other.config.radius, 2);
+      hasCollided = distanceSquared < radiiSquared;
     }
+    return hasCollided;
   }
 
   isOutsideScreen() {
-    // if (this.radius) {
-    //   return (this.x < this.radius || this.x > this.game.surfaceWidth - this.radius ||
-    //     this.y > this.game.surfaceHeight - this.radius || this.y < this.radius);
-    // }
+    let hasLeftScreen = false;
     if (this.config.radius) {
-      return (this.current.x < 0 - this.config.radius || this.current.x > this.game.surfaceWidth + this.config.radius
+      hasLeftScreen = (this.current.x < 0 - this.config.radius || this.current.x > this.game.surfaceWidth + this.config.radius
          || this.current.y < 0 - this.config.radius || this.current.y > this.game.surfaceHeight + this.config.radius);
     }
+    return hasLeftScreen;
   }
 
   static rotateAndCache(image, angle) {
@@ -236,8 +235,6 @@ class Entity {
     offscreenCtx.translate(0, 0);
     offscreenCtx.drawImage(image, -(image.width / 2), -(image.height / 2));
     offscreenCtx.restore();
-    // offscreenCtx.strokeStyle = "red";
-    // offscreenCtx.strokeRect(0,0,size,size);
     return offscreenCanvas;
   }
 }

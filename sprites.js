@@ -12,7 +12,7 @@ function loadSpriteSheets() {
         frameCount: 4,
         timePerFrame: 0.1,
         scale: 0.6,
-        flip: false
+        flip: false,
       }
     }
   }
@@ -29,7 +29,7 @@ function loadSpriteSheets() {
         frameCount: 4,
         timePerFrame: 0.1,
         scale: 0.5,
-        flip: false
+        flip: false,
       }
     }
   }
@@ -45,7 +45,7 @@ function loadSpriteSheets() {
         frameCount: 4,
         timePerFrame: 0.1,
         scale: 0.3,
-        flip: false
+        flip: false,
       }
     }
   }
@@ -61,7 +61,7 @@ function loadSpriteSheets() {
         frameCount: 10,
         timePerFrame: 0.1,
         scale: 0.3,
-        flip: false
+        flip: false,
       }
     }
   }
@@ -77,10 +77,76 @@ function loadSpriteSheets() {
         frameCount: 6,
         timePerFrame: 0.1,
         scale: 0.3,
-        flip: false
+        flip: false,
       }
     }
   }
+
+  // Power up sprites
+  sprite.rainbowBall = {
+    default: {
+      image: AM.getAsset('./img/rainbow_ball.png'),
+      dimension: {
+        originX: 0,
+        originY: 0,
+        // LOL THIS BALL IMAGE IS BIGGER THAN 4K
+        frameWidth: 3035,
+        frameHeight: 2910,
+        frameCount: 1,
+        timePerFrame: 30,
+        scale: 0.02,
+        flip: false,
+      },
+    },
+  };
+
+  sprite.shieldIcon = {
+    default: {
+      image: AM.getAsset('./img/shield-icon.png'),
+      dimension: {
+        originX: 0,
+        originY: 0,
+        frameWidth: 256,
+        frameHeight: 256,
+        frameCount: 1,
+        timePerFrame: 30,
+        scale: 0.15,
+        flip: false,
+      },
+    },
+  };
+
+  sprite.shield = {
+    default: {
+      image: AM.getAsset('./img/shield.png'),
+      dimension: {
+        originX: 50,
+        originY: 50,
+        frameWidth: 50,
+        frameHeight: 50,
+        frameCount: 1,
+        timePerFrame: 30,
+        scale: 1,
+        flip: false,
+      },
+    },
+  };
+
+  sprite.rapidFire = {
+    default: {
+      image: AM.getAsset('./img/rapid-bullet.png'),
+      dimension: {
+        originX: 0,
+        originY: 0,
+        frameWidth: 1280,
+        frameHeight: 360,
+        frameCount: 1,
+        timePerFrame: 30,
+        scale: 0.10,
+        flip: false,
+      },
+    },
+  };
 
   sprite.rainbowBall = {
     default: {
@@ -111,7 +177,7 @@ function loadSpriteSheets() {
         frameCount: 1,
         timePerFrame: 0,
         scale: 1.0,
-        flip: false
+        flip: false,
       }
     },
     right: {
@@ -124,7 +190,7 @@ function loadSpriteSheets() {
         frameCount: 1,
         timePerFrame: 0,
         scale: 1.0,
-        flip: false
+        flip: false,
       }
     },
     left: {
@@ -137,7 +203,7 @@ function loadSpriteSheets() {
         frameCount: 1,
         timePerFrame: 0,
         scale: 1.0,
-        flip: false
+        flip: false,
       }
     },
     rollRight: {
@@ -150,7 +216,7 @@ function loadSpriteSheets() {
         frameCount: 8,
         timePerFrame: 0.07,
         scale: 1.0,
-        flip: false
+        flip: false,
       }
     },
     rollLeft: {
@@ -163,7 +229,7 @@ function loadSpriteSheets() {
         frameCount: 8,
         timePerFrame: 0.07,
         scale: 1.0,
-        flip: false
+        flip: false,
       }
     }
   } //end plane
@@ -179,7 +245,7 @@ function loadSpriteSheets() {
         frameCount: 1,
         timePerFrame: 0,
         scale: 1.0,
-        flip: false
+        flip: false,
       }
     },
     right: {
@@ -192,7 +258,7 @@ function loadSpriteSheets() {
         frameCount: 1,
         timePerFrame: 0,
         scale: 1.0,
-        flip: false
+        flip: false,
       }
     },
     left: {
@@ -205,7 +271,7 @@ function loadSpriteSheets() {
         frameCount: 1,
         timePerFrame: 0,
         scale: 1.0,
-        flip: false
+        flip: false,
       }
     },
     rollRight: {
@@ -218,7 +284,7 @@ function loadSpriteSheets() {
         frameCount: 8,
         timePerFrame: 0.07,
         scale: 1.0,
-        flip: false
+        flip: false,
       }
     },
     rollLeft: {
@@ -231,7 +297,7 @@ function loadSpriteSheets() {
         frameCount: 8,
         timePerFrame: 0.07,
         scale: 1.0,
-        flip: false
+        flip: false,
       }
     }
   } //end purple plane

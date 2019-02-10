@@ -72,8 +72,8 @@ function initializeScoreBoardLives(lives) {
   for (let i = 0; i < lives; i += 1) {
     addLife(lifeColor[i]);
   }
-  addPowerUp('./img/shield-icon.png');
-  addPowerUp('./img/rapid-bullet.png');
+  // addPowerUp('./img/shield-icon.png');
+  // addPowerUp('./img/rapid-bullet.png');
 }
 
 
@@ -100,12 +100,27 @@ function hideMessage(type) {
 }
 
 // Inventory related functions
-function addPowerUp(src) {
+function addPowerUp(src, type) {
   console.log('Inside the addPowerUp');
   const img = new Image();
   img.src = src;
+  img.className = type;
 
   const container = document.getElementById('inventory');
 
   container.appendChild(img);
+}
+
+function removePowerUp(type) {
+  // Need to get the parent element to be able to remove the power up icons
+  const parent = document.getElementById('inventory');
+
+
+  // Find all the images with the respective class type
+  const container = document.getElementsByClassName(type);
+
+  // If we find any go ahead and remove the last one
+  if (container.length) {
+    parent.removeChild(container[container.length - 1]);
+  }
 }

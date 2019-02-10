@@ -109,6 +109,7 @@ class Sprite {
  *     snapLineWait: time to wait on snapLine before initiating path and player interaction
  *     weaponsOnEntrance: if true then weapons will be activated prior to stepLine
  *     weaponsAdvantage: specifies the amount of time before snapLineWait that weapons activate.
+ *     powerUps: A powerup that the ship can drop when destroyed
  *
  * Overriding: consider adding functionality to the Enemy class.
  */
@@ -124,6 +125,8 @@ class Ship extends Entity {
     this.config.radius = this.config.radius || 50;
     this.config.hitValue = this.config.hitValue || 1;  
     this.snapLine = this.config.snapLine;
+    this.hitValue = this.config.hitValue;
+    this.powerUp = this.config.powerUp;
 
     // additional fields
     this.idleTrans = false;
@@ -359,6 +362,11 @@ class Plane extends Entity {
     this.invincCtr = 0;
     this.blinking = false;
     this.idleCount = 0;
+    this.shield = {
+      hasShield: false,
+      entities: [],
+    }
+
   }
 
   update() {
@@ -394,10 +402,10 @@ class Plane extends Entity {
           this.rolling = true;
           this.performManeuver();
           this.canRoll = false;
-        } else if (this.current.x - ((this.sprite.width * this.sprite.scale) / 2) > 0)  {
+        } else if (this.current.x - ((this.sprite.width * this.sprite.scale) / 2) > 0) {
           this.current.x -= this.speed * this.game.clockTick;
           this.sprite = this.left;
-        } else { //This will just apply the left sprite when hugging the wall and not going anywhere
+        } else { // This will just apply the left sprite when hugging the wall and not going anywhere
           this.sprite = this.left;
         }
       }
@@ -427,28 +435,6 @@ class Plane extends Entity {
     } else {
       this.performManeuver();
     }
-
-    if (this.game.keysDown.Space) {
-      // if (this.timeSinceLastSpacePress > this.fireRate) {
-      //   this.timeSinceLastSpacePress = 0;
-      //   // for now, a projectile for the player must have instantFire = true
-      //   const newBullet = new Bullet(this.game, {
-      //     owner: this,
-      //     origin: {
-      //       x: this.current.x,
-      //       y: this.current.y - this.config.radius,
-      //     },
-      //     angle: -Math.PI / 2,
-      //   });
-      //   newBullet.isSpawned = true;
-      //   this.game.addEntity(newBullet);
-      //   // this.game.keysDown['Space'] = false;
-      // }
-
-      // call ring to handle firing
-      this.weapon;
-    }
-
 
     if (!this.game.keysDown.ArrowLeft
       && !this.game.keysDown.ArrowRight
@@ -537,8 +523,11 @@ class Plane extends Entity {
         // handle powerUp grab by player
         if (entity.payload.powerUp && !entity.isPlayer) {
           // TODO: store powerUps for user activation and update the HUD inventory
-          entity.payload.powerUp(); // for now just run the enclosed powerUp
+          console.log('Calling the power up');
+          // console.log(`Lives is ${this.pa}`)
+          entity.payload.powerUp(this); // for now just run the enclosed powerUp
 
+          console.log('Done callign the power up;');
           entity.removeFromWorld = true;
         } else {
           // hit by enemy bullet
