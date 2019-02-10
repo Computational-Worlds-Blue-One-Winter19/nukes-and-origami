@@ -264,10 +264,10 @@ AM.downloadAll(() => {
   game.spawnPlayer();
 
   // view test stage
-  game.testScene();
+  //game.testScene();
 
   // run prototype level
-  //game.spawnEnemies();
+  game.spawnEnemies();
 
   console.log('All Done!');
   canvas.focus();

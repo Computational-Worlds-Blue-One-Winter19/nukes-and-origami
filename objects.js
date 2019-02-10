@@ -466,7 +466,7 @@ function loadTemplates() {
       count: 4,
       loadTime: 0.0,
       cooldownTime: 0.005,
-      rapidReload: true,
+      rapidReload: false,
       targetPlayer: true,
       viewTurret: false,
       pulse: {
@@ -729,7 +729,7 @@ function loadTemplates() {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
     },
-    weapon: ring.jaredTest2,
+    weapon: ring.jaredAlpha1,
   };
 
   ship.testCrane = {

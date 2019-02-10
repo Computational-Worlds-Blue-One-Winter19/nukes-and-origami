@@ -649,6 +649,8 @@ class Ring {
       let delta = game.timer.getWave(this.sineAmplitude, this.sineFrequency);
       this.current.angle = this.config.baseAngle + delta;
     } else if (this.current.isLeadShot) {
+        
+        // moved target logic to here. only updates on lead shot.
         let target = this.getPlayerLocation(this.current);
         this.current.angle = target.angle - this.config.spread/2;
         this.current.isLeadShot = false;
@@ -714,16 +716,6 @@ class Ring {
   }
 
   fireAll() {
-    if (this.config.targetPlayer) {
-      // right now targeting is broken.
-      // TODO: fix targeting
-
-      // TODO: also could have a tracking shot that only aims once at the start of the pulse
-      
-      // get player coordinates relative to this Ship
-      // playerLocation = this.getPlayerLocation(shipLocation);
-    }
-    
     // the projectiles have been updated so just add to game and replace again
     // this previously fired all and then looped back to reload. was that better?
     for (let i = 0; i < this.bay.length; i++) {
@@ -757,11 +749,11 @@ class Ring {
   loadNext(previous) {
     let origin;
 
-    if (false) {
+    if (previous) {
       // we can duplicate the state of the projectile that was just launched
-      // origin = Object.assign({}, previous.current);
-      // origin.velocity = Object.assign({}, previous.current.velocity);
-      // origin.acceleration = Object.assign({}, previous.current.acceleration);
+      origin = Object.assign({}, previous.current);
+      origin.velocity = Object.assign({}, previous.current.velocity);
+      origin.acceleration = Object.assign({}, previous.current.acceleration);
     } else {
       // compute new coordinates assuming we will push to the next ordered bay
       let angle = this.current.angle + this.bay.length * this.config.spacing;
