@@ -401,24 +401,35 @@ function loadTemplates() {
     },
   };
 
-  ring.jaredAlpha2 = {
+  ring.jaredTest1 = {
     payload: {
       type: projectile.microBullet,
-      speed: 50,
-      acceleration: 100,
+      velocity: {
+        radial: 150,
+        angular: 0,
+      },
+      acceleration: {
+        radial: 0,
+        angular: 0,
+      }
     },
     rotation: {
-      speed: 0,
+      angle: 0,
+      frequency: 0,
     },
     firing: {
       radius: 80,
       angle: 90,
       count: 4,
       loadTime: 0.005,
-      cooldownTime: 0.02,
+      cooldownTime: 0.1,
       rapidReload: true,
-      targetPlayer: true,
+      targetPlayer: false,
       viewTurret: true,
+      pulse: {
+        duration: 1,
+        delay: 1,
+      }
     },
   };
 
@@ -675,7 +686,7 @@ function loadTemplates() {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
     },
-    weapon: ring.jaredAlpha2,
+    weapon: ring.jaredTest1,
   };
 
 

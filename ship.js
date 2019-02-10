@@ -629,7 +629,7 @@ class Ring {
     
     // update active time counter; used for the pulse delay
     if (!this.status.isWaiting) {
-      this.status.elapsedActiveTime += this.status.elapsedTime;
+      this.status.elapsedActiveTime += game.clockTick;
     }
 
     // update current ring coordinates before computing the location of each turret
@@ -641,8 +641,8 @@ class Ring {
     // adjust angle for bay[0] if this ring is rotating
     if (this.fixedRotation) {
       let doublePI = 2 * Math.PI;
-      let delta = doublePI * this.fixedRotation * this.status.elapsedTime;
-      this.current.angle = (this.current.angle + delta) % doublePI;
+      let delta = doublePI * this.fixedRotation * game.clockTick;
+      this.current.angle += delta;
     } else if (this.sineAmplitude) {
       let delta = game.timer.getWave(this.sineAmplitude, this.sineFrequency);
       this.current.angle = this.config.baseAngle + delta;
@@ -674,7 +674,7 @@ class Ring {
 
       // Ready state
       // a player only fires on command, all others fire on ready
-      if (!this.owner.isPlayer || this.owner.game.keysDown.Space) {
+      if (!this.owner.isPlayer || game.keysDown.Space) {
         this.fireAll();  
       }
       
@@ -748,11 +748,11 @@ class Ring {
   loadNext(previous) {
     let origin;
 
-    if (previous) {
+    if (false) {
       // we can duplicate the state of the projectile that was just launched
-      origin = Object.assign({}, previous.current);
-      origin.velocity = Object.assign({}, previous.current.velocity);
-      origin.acceleration = Object.assign({}, previous.current.acceleration);
+      // origin = Object.assign({}, previous.current);
+      // origin.velocity = Object.assign({}, previous.current.velocity);
+      // origin.acceleration = Object.assign({}, previous.current.acceleration);
     } else {
       // compute new coordinates assuming we will push to the next ordered bay
       let angle = this.current.angle + this.bay.length * this.config.spacing;
@@ -762,8 +762,14 @@ class Ring {
       let point = getXandY(this.current, {radius: this.config.radius, angle: angle});
       origin = {
         angle,
-        velocity,
-        acceleration,
+        velocity: {
+          radial: velocity.radial,
+          angular: velocity.angular,
+        },
+        acceleration: {
+          radial: acceleration.radial,
+          angular: acceleration.angular,
+        },
         x: point.x,
         y: point.y,
       }
@@ -807,7 +813,7 @@ class Projectile extends Entity {
     super(game, {x: manifest.origin.x, y: manifest.origin.y});
     
     this.owner = manifest.owner;
-    this.current = manifest.origin;
+    this.current = Object.assign({}, manifest.origin);
     this.payload = manifest.payload.type;
     
     this.config = {
@@ -820,6 +826,9 @@ class Projectile extends Entity {
       this.current.velocity = {radial: manifest.payload.speed, angular: 0};
       this.current.acceleration = {radial: 0, angular: 0};
       this.payload.powerUp = manifest.payload.powerUp;
+    } else {
+      this.current.velocity = Object.assign({}, this.current.velocity);
+      this.current.acceleration = Object.assign({}, this.current.acceleration);
     }
 
 
