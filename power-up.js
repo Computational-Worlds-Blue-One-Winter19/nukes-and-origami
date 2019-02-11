@@ -128,8 +128,8 @@ class RapidFire extends PowerUp {
         },
         speed: 60,
         powerUp(entity) {
-          if (entity.weapon.coolTime > 0.05) {
-            entity.weapon.coolTime -= 0.1;
+          if (entity.weapon.config.cooldownTime > 0.05) {
+            entity.weapon.config.cooldownTime -= 0.1;
             addPowerUp('./img/rapid-bullet.png', 'rapidFire');
           }
         },

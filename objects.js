@@ -4,8 +4,9 @@ function loadTemplates() {
    * Access origin.x, origin.y, current.x, current.y, that.initialAngle, that.angle, that.speed,
    * that.acceleration, that.game.clockTick
    */
-  projectile.testBullet = {
+  projectile.homing = {
     radius: 3,
+    isHoming: true,
 
     draw(ctx, x, y) {
       ctx.beginPath();
@@ -15,16 +16,24 @@ function loadTemplates() {
     },
 
     update() {
-      // this will override standard behavior
-      const deltaX = this.current.x - this.origin.x;
-      const deltaY = this.current.y - this.origin.y;
-      let r = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+      let previous = {
+        x: this.current.x,
+        y: this.current.y,
+      }
+      
+      if (this.config.isHoming) {
+        let target = this.owner.weapon.getPlayerLocation(previous);
+        if (target.radius < 250) {
+          this.config.isHoming = false;
+        }
 
-      this.angle += toRadians(1);
-      r = 10 * Math.cos(6 * this.angle);
-
-      this.current.x = this.origin.x + r * Math.cos(this.angle);
-      this.current.y = this.origin.y + r * Math.sin(this.angle);
+        this.current.angle = target.angle;
+      }
+      
+      let deltaRadius = this.current.velocity.radial * this.game.clockTick;
+      let newPoint = getXandY(previous, {angle: this.current.angle, radius: deltaRadius });
+      this.current.x = newPoint.x;
+      this.current.y = newPoint.y;
     },
   };
 
@@ -33,19 +42,19 @@ function loadTemplates() {
     radius: 15,
     rotate: false,
     image: AM.getAsset('./img/paper_ball.png'),
-    scale: 0.008,
+    scale: 0.1,
   };
 
   projectile.rainbowBall = {
     radius: 15,
     rotate: false,
     image: AM.getAsset('./img/rainbow_ball.png'),
-    scale: 0.008,
+    scale: 0.1,
   };
 
   projectile.miniCrane = {
     radius: 15,
-    rotate: false,
+    rotate: true,
     sprite: sprite.miniCrane,
   };
 
@@ -69,12 +78,12 @@ function loadTemplates() {
     },
   };
 
+
   /** *** RING: FIRING PATTERNS **** */
   ring.linearTest = {
     payload: {
-      type: projectile.miniCrane,
-      speed: 300,
-      acceleration: 1,
+      type: projectile.microBullet,
+      speed: 75,
     },
     firing: {
       radius: 5,
@@ -84,6 +93,28 @@ function loadTemplates() {
       cooldownTime: 1,
       rapidReload: true,
       targetPlayer: false,
+      viewTurret: true,
+    },
+  };
+
+  ring.angularTest = {
+    payload: {
+      type: projectile.microBullet,
+      speed: 25,
+      acceleration: {
+        radial: 100,
+        angular: 0,
+      }
+    },
+    firing: {
+      radius: 5,
+      count: 1,
+      angle: 90,
+      loadTime: 0.01,
+      cooldownTime: 1,
+      rapidReload: false,
+      targetPlayer: false,
+      viewTurret: true,
     },
   };
 
@@ -222,7 +253,7 @@ function loadTemplates() {
     payload: {
       type: projectile.microBullet,
       speed: 250,
-      acceleration: 1,
+      acceleration: 0,
     },
     firing: {
       spread: 15,
@@ -379,29 +410,70 @@ function loadTemplates() {
     },
   };
 
-  ring.jaredAlpha2 = {
+  ring.jaredTest1 = {
     payload: {
-      type: projectile.microBullet,
-      speed: 500,
-      acceleration: 1,
+      type: projectile.homing,
+      velocity: {
+        radial: 400,
+        angular: 0,
+      },
+      acceleration: {
+        radial: 0,
+        angular: 0,
+      }
     },
     rotation: {
-      speed: 0.25,
+      angle: 0,
+      frequency: 0,
     },
     firing: {
       radius: 80,
       angle: 90,
+      spread: 20,
       count: 4,
-      loadTime: 0.005,
-      cooldownTime: 0.01,
+      loadTime: .05,
+      cooldownTime: 0.02,
       rapidReload: true,
-      targetPlayer: true,
+      targetPlayer: false,
       viewTurret: true,
       pulse: {
-        duration: 0.75,
-        delay: 0.5,
-      },
+        duration: 1,
+        delay: 3,
+      }
     },
+  };
+
+  ring.jaredTest2 = {
+    payload: {
+      type: projectile.microBullet,
+      velocity: {
+        radial: 400,
+        angular: 0,
+      },
+      acceleration: {
+        radial: 0,
+        angular: 0,
+      }
+    },
+    rotation: {
+      angle: 0,
+      frequency: 0,
+    },
+    firing: {
+      radius: 80,
+      angle: 90,
+      spread: 20,
+      count: 4,
+      loadTime: 0.0,
+      cooldownTime: 0.005,
+      rapidReload: false,
+      targetPlayer: true,
+      viewTurret: false,
+      pulse: {
+        duration: .4,
+        delay: 1.5,
+      },
+    }
   };
 
   ring.jaredBeta1 = {
@@ -518,7 +590,7 @@ function loadTemplates() {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
     },
-    weapon: ring.linearTest,
+    weapon: ring.angularTest,
   };
 
   ship.easyBat = {
@@ -590,7 +662,7 @@ function loadTemplates() {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
 
-      waitOffScreen: 130,
+      waitOffScreen: 60,
     },
     weapon: ring.doubleStraightDownPulse,
   };
@@ -632,7 +704,7 @@ function loadTemplates() {
       },
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
-      waitOffScreen: 110,
+      waitOffScreen: 80,
     },
     weapon: ring.jaredAlpha1,
   };
@@ -658,6 +730,42 @@ function loadTemplates() {
     weapon: ring.gap1,
   };
 
+  ship.testDove = {
+    config: {
+      hitValue: 5,
+      radius: 70,
+      sprite: sprite.dove,
+      snapLine: 200,
+      snapLineSpeed: 300,
+      snapLineWait: 1,
+      origin: {
+        x: 500, // omit x to get random position
+        y: -50,
+      },
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0,
+    },
+    weapon: ring.jaredAlpha1,
+  };
+
+  ship.testCrane = {
+    config: {
+      hitValue: 5,
+      radius: 50,
+      sprite: sprite.dove,
+      snapLine: 150,
+      snapLineSpeed: 150,
+      snapLineWait: 0,
+      origin: {
+        x: 500, // omit x to get random position
+        y: -50,
+      },
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0,
+      waitOffScreen: 10,
+    },
+    weapon: ring.trackingTest1,
+  };
 
   /** *** ALL PLAYER THINGS **** */
   projectile.player1 = {
@@ -675,14 +783,14 @@ function loadTemplates() {
   ring.player = {
     payload: {
       type: projectile.paperBall,
-      speed: 600,
-      acceleration: 1,
+      speed: 500,
     },
     firing: {
       angle: 270,
+      radius: 35,
       count: 1,
       loadTime: 0.01,
-      cooldownTime: 0.25,
+      cooldownTime: 0.25, // changed from 0.25 for testing
       rapidReload: true,
       viewTurret: false,
     },
@@ -691,7 +799,7 @@ function loadTemplates() {
   ship.player = {
     config: {
       radius: 15,
-      sprite: sprite.plane,
+      sprite: sprite.purplePlane,
       speed: 300,
     },
     weapon: ring.player,

@@ -66,6 +66,7 @@ class GameEngine {
     this.surfaceWidth = null;
     this.surfaceHeight = null;
     this.keysDown = [];
+    this.stats = new Stats();
   }
 
   init(ctx) {
@@ -75,6 +76,7 @@ class GameEngine {
     this.startInput();
 
     this.timer = new Timer();
+    document.body.appendChild(this.stats.domElement);
   }
 
   start() {
@@ -152,6 +154,8 @@ class GameEngine {
       this.arrowRightReleased = null;
       this.arrowUpReleased = null;
       this.arrowDownReleased = null;
+    
+      this.stats.update(); // remove for production
     }
   }
 
@@ -231,8 +235,6 @@ class Entity {
     offscreenCtx.translate(0, 0);
     offscreenCtx.drawImage(image, -(image.width / 2), -(image.height / 2));
     offscreenCtx.restore();
-    // offscreenCtx.strokeStyle = "red";
-    // offscreenCtx.strokeRect(0,0,size,size);
     return offscreenCanvas;
   }
 }
