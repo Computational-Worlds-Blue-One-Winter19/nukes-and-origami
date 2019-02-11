@@ -447,7 +447,7 @@ function loadTemplates() {
     payload: {
       type: projectile.microBullet,
       velocity: {
-        radial: 400,
+        radial: 800,
         angular: 0,
       },
       acceleration: {
@@ -460,18 +460,18 @@ function loadTemplates() {
       frequency: 0,
     },
     firing: {
-      radius: 80,
+      radius: 1,
       angle: 90,
-      spread: 20,
-      count: 4,
-      loadTime: 0.0,
-      cooldownTime: 0.005,
-      rapidReload: false,
+      spread: 0,
+      count: 1,
+      loadTime: 0.005,
+      cooldownTime: 0.001,
+      rapidReload: true,
       targetPlayer: true,
       viewTurret: false,
       pulse: {
-        duration: .4,
-        delay: 1.5,
+        duration: 0.4,
+        delay: 0.2,
       },
     }
   };
@@ -499,6 +499,39 @@ function loadTemplates() {
         delay: 0.5,
       },
     },
+  };
+
+  ring.trackingTest1 = {
+    payload: {
+      type: projectile.microBullet,
+      velocity: {
+        radial: 800,
+        angular: 0,
+      },
+      acceleration: {
+        radial: 0,
+        angular: 0,
+      }
+    },
+    rotation: {
+      angle: 0,
+      frequency: 0,
+    },
+    firing: {
+      radius: 1,
+      angle: 90,
+      spread: 0,
+      count: 1,
+      loadTime: 0.005,
+      cooldownTime: 0.001,
+      rapidReload: true,
+      targetPlayer: true,
+      viewTurret: false,
+      pulse: {
+        duration: 0.4,
+        delay: 0.2,
+      },
+    }
   };
 
   ring.slowPulseSpiral = {
@@ -745,7 +778,7 @@ function loadTemplates() {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
     },
-    weapon: ring.jaredAlpha1,
+    weapon: ring.trackingTest1,
   };
 
   ship.testCrane = {
