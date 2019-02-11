@@ -259,7 +259,7 @@ AM.downloadAll(() => {
   game.start();
 
   // add background and player
-  //game.addBackground();
+  game.addBackground();
   game.spawnPlayer();
 
   // view test stage
