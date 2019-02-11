@@ -780,9 +780,31 @@ function loadTemplates() {
   };
 
   /** *** SCENES **** */
-  scene.easyPaper = [
+  scene.easyPaper = {
 
-  ]
+    waves: [
+      // wave 1
+      {
+      isWaveDiverse: false,
+      ships: [ship.bat],
+      numOfEnemies: 21,
+      paths: [[0, 50, 20]],
+      // initialXPoints: [
+      //   400, 500, 600
+      // ],
+      // shipsConfig: {
+      //
+      // }
+      },
+      // {
+      //   isWaveDiverse: false,
+      //   ships: ship.bat,
+      //   initialXPoints: [
+      //     400, 500, 600
+      //   ],
+      // }
+    ]
+  }
 
   /** *** ALL PLAYER THINGS **** */
   projectile.player1 = {

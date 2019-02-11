@@ -234,7 +234,9 @@ class NukesAndOrigami extends GameEngine {
 
   addBackground() {
     // Using object deconstructing to access the canvas property
-    const { canvas } = this.ctx;
+    const {
+      canvas
+    } = this.ctx;
     const point1 = {
       x: 0,
       y: 0,
@@ -261,15 +263,93 @@ class NukesAndOrigami extends GameEngine {
 class SceneManager {
   // The scene manager takes a GameEngine to hold references to what it will
   // need to manipulate.
-  constructor(engine) {
-    this.entities = engine.entities;
+  constructor(game) {
+    this.game = game;
+    this.entities = game.entities;
+    this.player = game.player;
+
+    this.leftSpawnLimit = 100;
+    this.rightSpawnLimit = 700;
+
+    this.waveTimer = 0;
+    this.currentScene = null;
+    this.wave = null;
+    this.waves = null;
 
     this.scenes = [scene.easyPaper, scene.mediumPaper, scene.hardPaper];
   }
 
-  update() {
-    // console.log(this.entities);
+
+  // In the future, handle the changing out of assets here like changing
+  // the background image/assets
+  //
+  // For right now just load the waves.
+  loadScene(scene) {
+    this.currentScene = scene;
+    this.waves = scene.waves;
   }
+
+  // In the future, handle any wave specific activity here. This could be doing
+  // something special for the boss or a special enemy, for example.
+  loadWave(wave) {
+    this.wave = wave;
+
+    // Is this wave made up of unique ships?
+    if (this.wave.isWaveDiverse) {
+      // not implemented
+    } else {
+      let spacing = ((this.rightSpawnLimit - this.leftSpawnLimit) / (wave.numOfEnemies - 1));
+      let locationCounter = this.leftSpawnLimit + 110;
+
+      for (let i = 0; i < wave.numOfEnemies; i++) {
+        let ship = new Ship(this.game, wave.ships[0]);
+
+        // Is ship location specified?
+        if (wave.initialXPoints) {
+          // not yet implemented
+        } else {
+          ship.current.x = locationCounter;
+          locationCounter += spacing;
+        }
+
+        ship.initializePath(wave.paths[i]);
+
+        this.game.addEntity(ship);
+      }
+
+
+
+
+    }
+  }
+
+  // This update can be cleaned up and also made much better with promises or
+  // some sort of blocking call.
+  //
+  // for example one update is wasted on loading a new scene, then another update
+  // is wasted on loading the new wave from that new scene, then on the 3rd update
+  // something actually starts happening.
+  update() {
+    this.waveTimer += this.game.clockTick;
+    // No scene? load the next one
+    if (!this.currentScene) {
+      // Hang here if we have no more scenes
+      if (!this.scenes.length == 0) {
+        this.loadScene(this.scenes.shift());
+      }
+    } else {
+      // No wave? load the next one and initialize them
+      if (!this.wave) {
+        this.loadWave(this.waves.shift());
+      } else {
+
+      }
+
+    }
+
+  }
+
+
 }
 
 /** Call AssetManager to download assets and launch the game. */
@@ -292,7 +372,7 @@ AM.downloadAll(() => {
   //game.testScene();
 
   // run prototype level
-  game.spawnEnemies();
+  // game.spawnEnemies();
 
   console.log('All Done!');
   canvas.focus();
@@ -395,6 +475,6 @@ class ShieldEntity extends Entity {
         shieldHit.removeFromWorld = true;
         removePowerUp('shield');
       }
-    }// end for loop
+    } // end for loop
   }
 }
