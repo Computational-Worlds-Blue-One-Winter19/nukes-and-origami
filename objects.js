@@ -20,7 +20,7 @@ function loadTemplates() {
         x: this.current.x,
         y: this.current.y,
       }
-      
+
       if (this.config.isHoming) {
         let target = this.owner.weapon.getPlayerLocation(previous);
         if (target.radius < 250) {
@@ -29,7 +29,7 @@ function loadTemplates() {
 
         this.current.angle = target.angle;
       }
-      
+
       let deltaRadius = this.current.velocity.radial * this.game.clockTick;
       let newPoint = getXandY(previous, {angle: this.current.angle, radius: deltaRadius });
       this.current.x = newPoint.x;
@@ -725,7 +725,6 @@ function loadTemplates() {
       },
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
-      waitOffScreen: 50,
     },
     weapon: ring.gap1,
   };

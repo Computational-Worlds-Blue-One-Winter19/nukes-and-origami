@@ -119,11 +119,11 @@ class Ship extends Entity {
   constructor(game, manifest) {
     super(game, Ship.getInitPoint(game, manifest));
     this.sprite = new Sprite(manifest.config.sprite.default);
-        
+
     // store class constants in config
     this.config = Object.assign({}, manifest.config);
     this.config.radius = this.config.radius || 50;
-    this.config.hitValue = this.config.hitValue || 1;  
+    this.config.hitValue = this.config.hitValue || 1;
     this.snapLine = this.config.snapLine;
     this.hitValue = this.config.hitValue;
     this.powerUp = this.config.powerUp;
@@ -145,9 +145,7 @@ class Ship extends Entity {
   }
 
   update() {
-    if (this.config.waitOffScreen > 0) {
-      this.config.waitOffScreen -= this.game.clockTick;
-    } else if (this.snapLine) {
+    if (this.snapLine) {
       // we are enroute to the snapLine
       this.updateSnapPath();
     } else {
@@ -329,7 +327,7 @@ class Plane extends Entity {
     super(game, Plane.getInitPoint(game));
     this.config = manifest.config;
     this.isPlayer = true;
-    this.damage = 1; 
+    this.damage = 1;
     // load sprites
     this.idle = new Sprite(manifest.config.sprite.default);
     this.left = new Sprite(manifest.config.sprite.left);
@@ -575,31 +573,31 @@ class Ring {
     } else if (this.rotation && this.rotation.angle) {
       this.sineAmplitude = toRadians(this.rotation.angle);
       this.sineFrequency = this.rotation.frequency || 1;
-    } 
+    }
 
     // compute spacing and adjust base angle
     let baseAngle = toRadians(manifest.firing.angle) || 0;
     let count = manifest.firing.count || 1;
-    let spacing = 0;   
+    let spacing = 0;
     let spread = 0;
-    
+
     if (manifest.firing.spread && count > 1) {
       spread = toRadians(manifest.firing.spread);
       spacing = spread / (count - 1);
     } else if (count > 1) {
       spacing = 2 * Math.PI / count;
-    } 
-        
+    }
+
     baseAngle -= spread/2;
 
-    // set activeTime and waitTime for pulse delay    
+    // set activeTime and waitTime for pulse delay
     let activeTime = Infinity;
     let waitTime = 0;
-    
+
     if (manifest.firing.pulse) {
       activeTime = manifest.firing.pulse.duration;
-      waitTime = manifest.firing.pulse.delay;      
-    } 
+      waitTime = manifest.firing.pulse.delay;
+    }
 
     // convert acceleration and velocity to radians
     if (!this.payload.acceleration) {
@@ -649,13 +647,13 @@ class Ring {
       isCooling: false,
       isWaiting: false,
     }
-    
+
   }
 
   update() {
     let game = this.owner.game;
     this.status.elapsedTime += game.clockTick;
-    
+
     // update active time counter; used for the pulse delay
     if (!this.status.isWaiting) {
       this.status.elapsedActiveTime += game.clockTick;
@@ -676,7 +674,7 @@ class Ring {
       let delta = game.timer.getWave(this.sineAmplitude, this.sineFrequency);
       this.current.angle = this.config.baseAngle + delta;
     } else if (this.current.isLeadShot) {
-        
+
         // moved target logic to here. only updates on lead shot.
         let target = this.getPlayerLocation(this.current);
         this.current.angle = target.angle - this.config.spread/2;
@@ -706,21 +704,21 @@ class Ring {
         this.status.elapsedTime = 0;
       }
     } else if (this.status.isReady) {
-     
+
       // Ready state
       // a player only fires on command, all others fire on ready
       if (!this.owner.isPlayer || game.keysDown.Space) {
-        this.fireAll();  
+        this.fireAll();
       }
-      
+
     } else if (this.status.isCooling && this.status.elapsedTime > this.config.cooldownTime) {
-      
+
       // Cooldown state
       this.status.isCooling = false;
       this.status.isLoading = true;
       this.status.elapsedTime = 0;
     } else if (this.status.isWaiting && this.status.elapsedTime > this.config.waitTime) {
-      
+
       // Waiting state
       // duration is defined by pulse configuration
       this.status.isWaiting = false;
@@ -732,7 +730,7 @@ class Ring {
       this.current.isLeadShot = this.config.targetPlayer;
     }
   }
-  
+
   draw() {
     if (this.config.viewTurret) {
       const ctx = this.owner.game.ctx;
@@ -751,7 +749,7 @@ class Ring {
 
       if (this.config.rapidReload) {
         this.bay[i] = this.loadNext(projectile);
-      } 
+      }
 
     }
 
@@ -771,7 +769,7 @@ class Ring {
     }
   }
 
-  
+
   /** this returns a new Projectile configured for launch. */
   loadNext(previous) {
     let origin;
@@ -786,7 +784,7 @@ class Ring {
       let angle = this.current.angle + this.bay.length * this.config.spacing;
       let velocity = this.payload.velocity || {radial: this.payload.speed, angular: 0 };
       let acceleration = this.payload.acceleration;
-    
+
       let point = getXandY(this.current, {radius: this.config.radius, angle: angle});
       origin = {
         angle,
@@ -813,7 +811,7 @@ class Ring {
     return new Projectile(this.owner.game, manifest);
   }
 
-  /** returns the polar coordinates of the player with respect to the given point */ 
+  /** returns the polar coordinates of the player with respect to the given point */
   getPlayerLocation(point) {
     let player = this.owner.game.player;
     let deltaX = player.current.x - point.x;
@@ -840,11 +838,11 @@ class Ring {
 class Projectile extends Entity {
   constructor(game, manifest) {
     super(game, {x: manifest.origin.x, y: manifest.origin.y});
-    
+
     this.owner = manifest.owner;
     this.current = Object.assign({}, manifest.origin);
     this.payload = manifest.payload.type;
-    
+
     this.config = {
       radius: this.payload.radius,
       isHoming: this.payload.isHoming,
@@ -876,7 +874,7 @@ class Projectile extends Entity {
     }
 
     this.customUpdate = this.payload.update;
-    this.playerShot = (this.owner === game.player);    
+    this.playerShot = (this.owner === game.player);
   }
 
   update() {
@@ -884,7 +882,7 @@ class Projectile extends Entity {
       this.removeFromWorld = true;
       return;
     }
-    
+
     let previous = {
       x: this.current.x,
       y: this.current.y,
@@ -896,21 +894,21 @@ class Projectile extends Entity {
       this.customUpdate(this);
     } else {
       let elapsedTime = this.game.clockTick;
-      
+
       this.current.velocity.radial += this.current.acceleration.radial * elapsedTime;
       deltaRadius = this.current.velocity.radial * elapsedTime;
-      
+
       this.current.velocity.angular += this.current.acceleration.angular * elapsedTime;
-      this.current.angle += this.current.velocity.angular * elapsedTime;      
+      this.current.angle += this.current.velocity.angular * elapsedTime;
 
       let point = getXandY(previous, { angle: this.current.angle, radius: deltaRadius });
       this.current.x = point.x;
       this.current.y = point.y;
     }
 
-    
+
   }
-  
+
   // default draw is used for sprite animations where draw() is not overriden
   draw(ctx) {
     ctx.save();
@@ -948,7 +946,7 @@ class Projectile extends Entity {
 }
 
 
-/** 
+/**
  *  Returns {x,y} position of polar coordinates given the
  *  origin:{x, y} and current:{radius, angle} */
 function getXandY(origin, current) {
@@ -964,5 +962,5 @@ function toRadians(angle) {
 
 /** Convert from radians to degrees */
 function toDegrees(rad) {
-  return rad * 180 / Math.PI; 
+  return rad * 180 / Math.PI;
 }

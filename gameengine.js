@@ -122,19 +122,14 @@ class GameEngine {
   }
 
   update() {
-    const entitiesCount = this.entities.length;
-
-    for (let i = 0; i < entitiesCount; i += 1) {
+    for (let i = 0; i < this.entities.length; i += 1) {
       const entity = this.entities[i];
 
-      if (!entity.removeFromWorld) {
-        entity.update();
-      }
-    }
-
-    for (let i = this.entities.length - 1; i >= 0; i -= 1) {
-      if (this.entities[i].removeFromWorld) {
+      if (entity.removeFromWorld) {
         this.entities.splice(i, 1);
+        i--;
+      } else {
+        entity.update();
       }
     }
   }
@@ -154,7 +149,7 @@ class GameEngine {
       this.arrowRightReleased = null;
       this.arrowUpReleased = null;
       this.arrowDownReleased = null;
-    
+
       this.stats.update(); // remove for production
     }
   }
