@@ -83,9 +83,11 @@ function initializeScoreBoardLives(lives) {
  * Using the above message types, the respective message will be shown in the dom
  * @param {String} type
  */
-function showMessage(type) {
-  const pausedMessage = document.getElementById(`${type}`);
-  pausedMessage.style.display = 'block';
+function showMessage(line1, line2) {
+  const message = document.getElementById("message-overlay");
+  message.style.display = 'block';
+  document.getElementById("message-line1").innerHTML = line1;
+  document.getElementById("message-line2").innerHTML = line2;
 }
 
 /**
@@ -95,8 +97,8 @@ function showMessage(type) {
  * @param {String} type
  */
 function hideMessage(type) {
-  const pausedMessage = document.getElementById(`${type}`);
-  pausedMessage.style.display = 'none';
+  const message = document.getElementById("message-overlay");
+  message.style.display = 'none';
 }
 
 // Inventory related functions
