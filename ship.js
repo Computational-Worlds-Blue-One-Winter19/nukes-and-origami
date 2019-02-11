@@ -109,6 +109,7 @@ class Sprite {
  *     snapLineWait: time to wait on snapLine before initiating path and player interaction
  *     weaponsOnEntrance: if true then weapons will be activated prior to stepLine
  *     weaponsAdvantage: specifies the amount of time before snapLineWait that weapons activate.
+ *     powerUps: A powerup that the ship can drop when destroyed
  *
  * Overriding: consider adding functionality to the Enemy class.
  */
@@ -122,6 +123,8 @@ class Ship extends Entity {
     // set parameters
     this.config = manifest.config;
     this.snapLine = this.config.snapLine;
+    this.hitValue = this.config.hitValue;
+    this.powerUp = this.config.powerUp;
 
     // additional fields
     this.idleTrans = false;
@@ -184,7 +187,7 @@ class Ship extends Entity {
       if (e instanceof Projectile && e.playerShot && this.isCollided(e) && !e.hitTarget) {
         e.hitTarget = true;
         this.health--;
-        if(this.health == 0)  {
+        if (this.health == 0) {
           e.removeFromWorld = true;
           this.disarm();
           this.removeFromWorld = true;
@@ -323,7 +326,7 @@ class Plane extends Entity {
     super(game, Plane.getInitPoint(game));
     this.config = manifest.config;
     this.isPlayer = true;
-    this.damage = 1; 
+    this.damage = 1;
     // load sprites
     this.idle = new Sprite(manifest.config.sprite.default);
     this.left = new Sprite(manifest.config.sprite.left);
@@ -346,7 +349,7 @@ class Plane extends Entity {
     this.rollTimer = 0;
     this.rolling = false;
     this.timeSinceLastRoll = 0;
-    this.rollCooldown = 5; //seconds
+    this.rollCooldown = 5; // seconds
     this.canRoll = true;
     // specific to shooting
     this.timeSinceLastSpacePress = 0;
@@ -356,12 +359,25 @@ class Plane extends Entity {
     this.invincCtr = 0;
     this.blinking = false;
     this.idleCount = 0;
+    this.shield = {
+      hasShield: false,
+      entities: [],
+    };
   }
 
   update() {
     // It might be better to use a changeX and changeY variable
     // This way we apply a sprite depending on how the position has changed
-    if (this.invincTime != 0 && this.invincTime < this.invincDuration) {
+    // console.log("called");
+    if (this.isOutsideScreen()) {
+      // correct all bounds
+      this.current.x = Math.max(this.current.x, this.config.radius);
+      this.current.x = Math.min(this.current.x, this.game.surfaceWidth - this.config.radius);
+      this.current.y = Math.max(this.current.y, this.config.radius);
+      this.current.y = Math.min(this.current.y, this.game.surfaceHeight - this.config.radius);
+    }
+
+    if (this.invincTime !== 0 && this.invincTime < this.invincDuration) {
       this.invincTime += this.game.clockTick;
     } else if (this.invincTime > this.invincDuration) {
       this.invincTime = 0;
@@ -371,9 +387,9 @@ class Plane extends Entity {
       this.weapon.update();
     }
 
-    if(!this.canRoll) {
+    if (!this.canRoll) {
       this.timeSinceLastRoll += this.game.clockTick;
-      if(this.timeSinceLastRoll > this.rollCooldown)  {
+      if (this.timeSinceLastRoll > this.rollCooldown) {
         this.timeSinceLastRoll = 0;
         this.canRoll = true;
       }
@@ -391,10 +407,10 @@ class Plane extends Entity {
           this.rolling = true;
           this.performManeuver();
           this.canRoll = false;
-        } else if (this.current.x - ((this.sprite.width * this.sprite.scale) / 2) > 0)  {
+        } else if (this.current.x - ((this.sprite.width * this.sprite.scale) / 2) > 0) {
           this.current.x -= this.speed * this.game.clockTick;
           this.sprite = this.left;
-        } else { //This will just apply the left sprite when hugging the wall and not going anywhere
+        } else { // This will just apply the left sprite when hugging the wall and not going anywhere
           this.sprite = this.left;
         }
       }
@@ -491,13 +507,13 @@ class Plane extends Entity {
     if (this.rollDirection === 'left') {
       // Rolling should be faster than just moving, so mult speed by a constant
       // greater than 1
-      if(this.current.x - ((this.sprite.width * this.sprite.scale) / 2) > 0 ) {
+      if (this.current.x - ((this.sprite.width * this.sprite.scale) / 2) > 0) {
         this.current.x -= this.speed * this.game.clockTick * 1.5;
       }
       this.sprite = this.rollLeft;
     }
     if (this.rollDirection === 'right') {
-      if(this.current.x + ((this.sprite.width * this.sprite.scale) / 2) < this.game.surfaceWidth)  {
+      if (this.current.x + ((this.sprite.width * this.sprite.scale) / 2) < this.game.surfaceWidth) {
         this.current.x += this.speed * this.game.clockTick * 1.5;
       }
       this.sprite = this.rollRight;
@@ -534,8 +550,11 @@ class Plane extends Entity {
         // handle powerUp grab by player
         if (entity.payload.powerUp && !entity.isPlayer) {
           // TODO: store powerUps for user activation and update the HUD inventory
-          entity.payload.powerUp(); // for now just run the enclosed powerUp
+          console.log('Calling the power up');
+          // console.log(`Lives is ${this.pa}`)
+          entity.payload.powerUp(this); // for now just run the enclosed powerUp
 
+          console.log('Done callign the power up;');
           entity.removeFromWorld = true;
         } else {
           // hit by enemy bullet
@@ -607,18 +626,17 @@ class Projectile extends Entity {
   }
 
   update() {
-
     if (this.customUpdate) {
       this.customUpdate(this);
     } else if (this.isOutsideScreen()) {
-        this.removeFromWorld = true;
+      this.removeFromWorld = true;
     } else { // We can assume the projectile is not outside the game screen
-        this.speed *= this.acceleration;
-        this.speedX = this.speed * Math.cos(this.angle);
-        this.speedY = this.speed * Math.sin(this.angle);
+      this.speed *= this.acceleration;
+      this.speedX = this.speed * Math.cos(this.angle);
+      this.speedY = this.speed * Math.sin(this.angle);
 
-        this.current.x += this.speedX * this.game.clockTick;
-        this.current.y += this.speedY * this.game.clockTick;
+      this.current.x += this.speedX * this.game.clockTick;
+      this.current.y += this.speedY * this.game.clockTick;
     }
   }
 

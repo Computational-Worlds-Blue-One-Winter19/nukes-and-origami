@@ -69,7 +69,6 @@ function loadTemplates() {
     },
   };
 
-
   /** *** RING: FIRING PATTERNS **** */
   ring.linearTest = {
     payload: {
@@ -485,6 +484,7 @@ function loadTemplates() {
     config: {
       health: 3,
       hitValue: 5,
+      powerUp: new Shield(),
       radius: 50,
       sprite: sprite.crane,
       snapLine: 150,
@@ -505,6 +505,7 @@ function loadTemplates() {
     config: {
       health: 3,
       hitValue: 5,
+      powerUp: new RapidFire(),
       radius: 50,
       sprite: sprite.crane,
       snapLine: 150,
@@ -524,6 +525,7 @@ function loadTemplates() {
     config: {
       health: 3,
       hitValue: 5,
+      powerUp: new Shield(),
       radius: 50,
       sprite: sprite.bat,
       snapLine: 100,
@@ -549,6 +551,7 @@ function loadTemplates() {
     config: {
       health: 3,
       hitValue: 5,
+      powerUp: new RapidFire(),
       radius: 50,
       sprite: sprite.bat,
       snapLine: 100,
@@ -574,6 +577,7 @@ function loadTemplates() {
     config: {
       health: 3,
       hitValue: 5,
+      powerUp: new ExtraLife(),
       radius: 30,
       sprite: sprite.bat,
       snapLine: 100,
@@ -595,6 +599,7 @@ function loadTemplates() {
     config: {
       health: 3,
       hitValue: 5,
+      powerUp: new ExtraLife(),
       radius: 50,
       sprite: sprite.crane,
       snapLine: 150,
@@ -615,6 +620,7 @@ function loadTemplates() {
     config: {
       health: 3,
       hitValue: 5,
+      powerUp: new ExtraLife(),
       radius: 70,
       sprite: sprite.owl,
       snapLine: 150,
@@ -635,6 +641,7 @@ function loadTemplates() {
     config: {
       health: 15,
       hitValue: 5,
+      powerUp: new ExtraLife(),
       radius: 70,
       sprite: sprite.dove,
       snapLine: 200,
