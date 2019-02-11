@@ -187,8 +187,8 @@ class Ship extends Entity {
 
     // Check for hit from player bullets
     for (let e of this.game.entities) {
-      if (e instanceof Projectile && e.playerShot && this.isCollided(e)) {
-        e.removeFromWorld = true;
+      if (e instanceof Projectile && e.playerShot && this.isCollided(e) && !e.hitTarget) {
+        e.hitTarget = true;
         this.health--;
 
         if (this.health === 0) {
@@ -844,6 +844,7 @@ class Projectile extends Entity {
     this.owner = manifest.owner;
     this.current = Object.assign({}, manifest.origin);
     this.payload = manifest.payload.type;
+    this.hitTarget = false;
     
     this.config = {
       radius: this.payload.radius,
@@ -913,7 +914,9 @@ class Projectile extends Entity {
   
   // default draw is used for sprite animations where draw() is not overriden
   draw(ctx) {
-    ctx.save();
+    if (!this.hitTarget) {
+
+      ctx.save();
 
       // Using object deconstructing to access the fields withing the current object
       const {
@@ -930,6 +933,7 @@ class Projectile extends Entity {
       this.drawImage(ctx, x, y);
       ctx.restore();
       super.draw();
+    }
   }
 
   drawSpriteFrame(ctx, x, y) {
