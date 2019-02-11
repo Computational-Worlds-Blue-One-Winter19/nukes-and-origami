@@ -662,7 +662,7 @@ function loadTemplates() {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
 
-      waitOffScreen: 130,
+      waitOffScreen: 60,
     },
     weapon: ring.doubleStraightDownPulse,
   };
@@ -704,7 +704,7 @@ function loadTemplates() {
       },
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
-      waitOffScreen: 110,
+      waitOffScreen: 80,
     },
     weapon: ring.jaredAlpha1,
   };
@@ -792,7 +792,7 @@ function loadTemplates() {
       loadTime: 0.01,
       cooldownTime: 0.25, // changed from 0.25 for testing
       rapidReload: true,
-      viewTurret: true,
+      viewTurret: false,
     },
   };
 
