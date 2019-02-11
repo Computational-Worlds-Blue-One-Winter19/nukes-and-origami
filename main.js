@@ -5,6 +5,7 @@ const ring = {};
 const sprite = {};
 const ship = {};
 const projectile = {};
+const scene = {};
 
 /** These are the image assets declared by filename */
 AM.queueDownload('./img/bat-sheet.png');
@@ -38,12 +39,16 @@ class NukesAndOrigami extends GameEngine {
     // Initilize the game board
     initializeScoreBoardLives(this.lives);
 
-    // Initialize scene manager
-    initializeSceneManager();
+    // Initialise the scene manager
+    this.sceneManager = new SceneManager(this);
   }
 
-  initializeSceneManager() {
-    this.sceneManager = new sceneManager();
+  // Override
+  update() {
+    // Let super update every entity
+    super.update();
+    // Let our scenemanager do what it needs to with highest precedence
+    this.sceneManager.update();
   }
 
   increaseLivesCount() {
@@ -250,6 +255,20 @@ class NukesAndOrigami extends GameEngine {
     this.addEntity(new Background(this, AM.getAsset('./img/notebook.png'), canvas.height, point2));
     this.addEntity(new Clouds(this, AM.getAsset('./img/clouds.png'), canvas.height, cloudPoint1));
     this.addEntity(new Clouds(this, AM.getAsset('./img/clouds.png'), canvas.height, cloudPoint2));
+  }
+}
+
+class SceneManager {
+  // The scene manager takes a GameEngine to hold references to what it will
+  // need to manipulate.
+  constructor(engine) {
+    this.entities = engine.entities;
+
+    this.scenes = [scene.easyPaper, scene.mediumPaper, scene.hardPaper];
+  }
+
+  update() {
+    // console.log(this.entities);
   }
 }
 

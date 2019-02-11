@@ -321,10 +321,10 @@ class Ship extends Entity {
  * user events. It also has a Weapon. The player also accepts
  * power-ups.
  */
-/** MANIFEST FOR THE PLAYER PLANE (Not a Ship) */
-class Plane extends Entity {
+/** MANIFEST FOR THE PLAYER PLANE */
+class Plane extends Ship {
   constructor(game, manifest) {
-    super(game, Plane.getInitPoint(game));
+    super(game, manifest);
     this.config = manifest.config;
     this.isPlayer = true;
     this.damage = 1;

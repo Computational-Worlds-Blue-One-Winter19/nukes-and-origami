@@ -593,6 +593,28 @@ function loadTemplates() {
     weapon: ring.angularTest,
   };
 
+
+  // Default versions of enemies for the scene manager to use as a starting
+  // point
+  ship.bat = {
+    config: {
+      health: 3,
+      hitValue: 5,
+      radius: 50,
+      sprite: sprite.bat,
+      snapLine: 100,
+      snapLineSpeed: 200,
+      snapLineWait: 1,
+      origin: {
+        x: 400, // omit x to get random position
+        y: -50,
+      },
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0,
+    },
+    weapon: ring.singleTargetPlayer,
+  }
+
   ship.easyBat = {
     config: {
       health: 3,
@@ -613,8 +635,6 @@ function loadTemplates() {
         duration: 0.5,
         delay: 2,
       },
-
-      waitOffScreen: 4,
     },
     weapon: ring.singleTargetPlayer,
   };
@@ -639,8 +659,6 @@ function loadTemplates() {
         duration: 0.5,
         delay: 2,
       },
-
-      waitOffScreen: 20,
     },
     weapon: ring.spreadBeta2,
   };
@@ -661,8 +679,6 @@ function loadTemplates() {
       },
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
-
-      waitOffScreen: 60,
     },
     weapon: ring.doubleStraightDownPulse,
   };
@@ -683,7 +699,6 @@ function loadTemplates() {
       },
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
-      waitOffScreen: 40,
     },
     weapon: ring.slowPulseSpiral,
   };
@@ -704,7 +719,6 @@ function loadTemplates() {
       },
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
-      waitOffScreen: 80,
     },
     weapon: ring.jaredAlpha1,
   };
@@ -761,10 +775,14 @@ function loadTemplates() {
       },
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
-      waitOffScreen: 10,
     },
     weapon: ring.trackingTest1,
   };
+
+  /** *** SCENES **** */
+  scene.easyPaper = [
+
+  ]
 
   /** *** ALL PLAYER THINGS **** */
   projectile.player1 = {
@@ -800,6 +818,10 @@ function loadTemplates() {
       radius: 15,
       sprite: sprite.purplePlane,
       speed: 300,
+      origin: {
+        x: 500, // omit x to get random position
+        y: 700,
+      },
     },
     weapon: ring.player,
   };
