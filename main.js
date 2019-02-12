@@ -5,6 +5,8 @@ const ring = {};
 const sprite = {};
 const ship = {};
 const projectile = {};
+const path = {};
+const scene = {};
 
 /** These are the image assets declared by filename */
 AM.queueDownload('./img/bat-sheet.png');
@@ -38,6 +40,23 @@ class NukesAndOrigami extends GameEngine {
     this.lives = 5;
     this.hits = 0;
     this.score = 0;
+
+    // Initilize the game board
+    initializeScoreBoardLives(this.lives);
+  }
+
+  initializeSceneManager() {
+    this.sceneManager = new SceneManager(this);
+  }
+
+  // Override
+  update() {
+    // Let super update every entity
+    super.update();
+    // Let our scenemanager do what it needs to with highest precedence
+    if (this.sceneManager) {
+      this.sceneManager.update();
+    }
   }
 
   increaseLivesCount() {
@@ -107,8 +126,8 @@ class NukesAndOrigami extends GameEngine {
 
     // WAVE 1
 
-    const ezBat1 = new Ship(this, ship.easyBat);
-    const ezBat2 = new Ship(this, ship.easyBat);
+    const ezBat1 = new Ship(this, ship.bat);
+    const ezBat2 = new Ship(this, ship.bat);
 
     // Object.assign assigns a copy of the array. (otherwise we get strange
     // concurrent modification issues)
@@ -232,7 +251,9 @@ class NukesAndOrigami extends GameEngine {
 
   addBackground() {
     // Using object deconstructing to access the canvas property
-    const { canvas } = this.ctx;
+    const {
+      canvas
+    } = this.ctx;
     const point1 = {
       x: 0,
       y: 0,
@@ -256,6 +277,108 @@ class NukesAndOrigami extends GameEngine {
   }
 }
 
+class SceneManager {
+  // The scene manager takes a GameEngine to hold references to what it will
+  // need to manipulate.
+  constructor(game) {
+    this.game = game;
+    this.entities = game.entities;
+    this.player = game.player;
+
+    this.leftSpawnLimit = 100;
+    this.rightSpawnLimit = 1024 - 100;
+
+    this.waveTimer = 0;
+    this.currentScene = null;
+    this.wave = null;
+    this.waves = null;
+
+    this.scenes = [scene.easyPaper, scene.mediumPaper, scene.hardPaper];
+  }
+
+
+  // In the future, handle the changing out of assets here like changing
+  // the background image/assets
+  //
+  // For right now just load the waves.
+  loadScene(scene) {
+    this.currentScene = scene;
+    this.waves = scene.waves;
+  }
+
+  // In the future, handle any wave specific activity here. This could be doing
+  // something special for the boss or a special enemy, for example.
+  loadWave(wave) {
+    this.wave = wave;
+
+    // Is this wave made up of unique ships?
+    if (this.wave.isWaveDiverse) {
+      // not implemented
+    } else {
+      let spacing, locationCounter;
+      // More than one enemy?
+      if (wave.numOfEnemies > 1) {
+        // Space evenly
+        spacing = ((this.rightSpawnLimit - this.leftSpawnLimit) / (wave.numOfEnemies - 1));
+        locationCounter = this.leftSpawnLimit;
+      } else {
+        // Put the single enemy in the middle
+        locationCounter = this.leftSpawnLimit + (this.rightSpawnLimit - this.leftSpawnLimit) / 2;
+      }
+
+      // Create the ships.
+      for (let i = 0; i < wave.numOfEnemies; i++) {
+        let ship = new Ship(this.game, Object.assign({}, wave.ships[0]));
+        ship.initializePath(wave.paths[i]);
+
+        // Is ship location specified?
+        if (wave.initialXPoints) {
+          ship.current.x = wave.initialXPoints[i];
+        } else {
+          ship.current.x = locationCounter;
+          locationCounter += spacing;
+        }
+
+        // ship.initializeWeapon(Object.assign({}, wave.weapons[0]))
+
+        this.game.addEntity(ship);
+      }
+
+
+
+
+    }
+  }
+
+  // This update can be cleaned up and also made much better with promises or
+  // some sort of blocking call.
+  //
+  // for example one update is wasted on loading a new scene, then another update
+  // is wasted on loading the new wave from that new scene, then on the 3rd update
+  // something actually starts happening.
+  update() {
+    this.waveTimer += this.game.clockTick;
+    // No scene? load the next one
+    if (!this.currentScene) {
+      // Hang here if we have no more scenes
+      if (!this.scenes.length == 0) {
+        this.loadScene(this.scenes.shift());
+      }
+    } else {
+      // No wave? load the next one and initialize them
+      if (!this.wave) {
+        this.loadWave(this.waves.shift());
+      } else {
+
+      }
+
+    }
+
+  }
+
+
+}
+
 /** Call AssetManager to download assets and launch the game. */
 AM.downloadAll(() => {
   const canvas = document.getElementById('gameWorld');
@@ -276,6 +399,7 @@ AM.downloadAll(() => {
   game.testScene();
 
   // run prototype level
+  // game.spawnEnemies();
 
   //initIntroMessage(game);
 
@@ -366,7 +490,9 @@ class ShieldEntity extends Entity {
    * to reflect the new state
    */
   removeShield() {
-    const { shield } = this.game.player;
+    const {
+      shield
+    } = this.game.player;
 
     const shieldHit = shield.entities.pop();
     shieldHit.removeFromWorld = true;

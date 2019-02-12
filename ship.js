@@ -124,7 +124,8 @@ class Ship extends Entity {
     this.config = Object.assign({}, manifest.config);
     this.config.radius = this.config.radius || 50;
     this.config.hitValue = this.config.hitValue || 1;
-    this.snapLine = this.config.snapLine;
+    this.snapLine = this.config.snapLine || 100;
+    this.snapLineSpeed = this.config.snapLineSpeed || 200;
     this.hitValue = this.config.hitValue;
     this.powerUp = this.config.powerUp;
 
@@ -145,9 +146,7 @@ class Ship extends Entity {
   }
 
   update() {
-    if (this.config.waitOffScreen > 0) {
-      this.config.waitOffScreen -= this.game.clockTick;
-    } else if (this.snapLine) {
+    if (this.snapLine) {
       // we are enroute to the snapLine
       this.updateSnapPath();
     } else {
@@ -204,10 +203,6 @@ class Ship extends Entity {
    * Weapons: manage turret initialization, rotation, firing and cooldown.
    */
   updateWeapons() {
-
-    // for each ring 
-
-
     this.weapon.update();
   }
 
@@ -255,7 +250,7 @@ class Ship extends Entity {
    * SnapPath: manage the transition to the starting point.
    */
   updateSnapPath() {
-    this.current.y += this.config.snapLineSpeed * this.game.clockTick;
+    this.current.y += this.snapLineSpeed * this.game.clockTick;
 
     // check for arrival at snapLine
     if (this.current.y >= this.snapLine) {
@@ -271,11 +266,7 @@ class Ship extends Entity {
   }
 
   initializeWeapon(weaponManifest) {
-    // store array of new rings with given offset. default offset = {x:0, y:0}
-
-
-
-
+    // do stuff here to configure a new weapon system.
     this.weapon = new Ring(this, weaponManifest);
   }
 
@@ -312,11 +303,12 @@ class Ship extends Entity {
     this.weapon.bay = [];
   }
 
+  //
   static getInitPoint(game, manifest) {
-    const width = manifest.config.radius || 50;
-    const range = game.surfaceWidth - 2 * width;
-    const x = manifest.config.origin.x || Math.floor(Math.random() * range) + width;
-    const y = manifest.config.origin.y || -manifest.config.sprite.default.height;
+    // Start in the middle of the board
+    const x = manifest.config.origin.x || 512;
+    // Start just above the board
+    const y = manifest.config.origin.y || -manifest.config.sprite.default.dimension.frameHeight;
 
     return {
       x,
@@ -331,10 +323,10 @@ class Ship extends Entity {
  * user events. It also has a Weapon. The player also accepts
  * power-ups.
  */
-/** MANIFEST FOR THE PLAYER PLANE (Not a Ship) */
-class Plane extends Entity {
+/** MANIFEST FOR THE PLAYER PLANE */
+class Plane extends Ship {
   constructor(game, manifest) {
-    super(game, Plane.getInitPoint(game));
+    super(game, manifest);
     this.config = manifest.config;
     this.isPlayer = true;
     this.damage = 1;
@@ -516,7 +508,6 @@ class Plane extends Entity {
     }
 
     this.weapon.draw();
-    super.draw();
   }
 
   /**
@@ -670,7 +661,6 @@ class Ring {
     // TODO: point to weapon assembly + offset? for spacing-out the ring objects
     this.current.x = this.owner.current.x;
     this.current.y = this.owner.current.y;
-    // MULTI-RING SUPPORT: assume that parent system the weapon system has already updated current x,y position
 
     // adjust angle for bay[0] if this ring is rotating
     if (this.fixedRotation) {
