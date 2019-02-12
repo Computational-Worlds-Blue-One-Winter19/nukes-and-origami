@@ -779,6 +779,31 @@ function loadTemplates() {
     weapon: ring.trackingTest1,
   };
 
+  /** *** PATHS **** */
+  // Slowly strafe right off screen
+  path.strafeRight = [
+    [0, 50, 20],
+  ];
+
+  // Slowly strafe left off screen
+  path.strafeLeft = [
+    [180, 50, 20],
+  ];
+
+  // Advance down, then left, then southeast
+  path.cornerRight = [
+    [90, 50, 2],
+    [180, 50, 2],
+    [45, 50, 30],
+  ];
+
+  // Advance down, then right, then southwest
+  path.cornerLeft = [
+    [90, 50, 2],
+    [0, 50, 2],
+    [135, 50, 30],
+  ];
+
   /** *** SCENES **** */
   scene.easyPaper = {
 
@@ -787,11 +812,14 @@ function loadTemplates() {
       {
       isWaveDiverse: false,
       ships: [ship.bat],
-      numOfEnemies: 21,
-      paths: [[0, 50, 20]],
-      // initialXPoints: [
-      //   400, 500, 600
-      // ],
+      numOfEnemies: 2,
+      paths: [
+        path.cornerLeft,
+        path.cornerRight,
+      ],
+      initialXPoints: [
+        400, 600
+      ],
       // shipsConfig: {
       //
       // }

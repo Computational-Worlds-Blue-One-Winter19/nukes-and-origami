@@ -5,6 +5,7 @@ const ring = {};
 const sprite = {};
 const ship = {};
 const projectile = {};
+const path = {};
 const scene = {};
 
 /** These are the image assets declared by filename */
@@ -114,8 +115,8 @@ class NukesAndOrigami extends GameEngine {
 
     // WAVE 1
 
-    const ezBat1 = new Ship(this, ship.easyBat);
-    const ezBat2 = new Ship(this, ship.easyBat);
+    const ezBat1 = new Ship(this, ship.bat);
+    const ezBat2 = new Ship(this, ship.bat);
 
     // Object.assign assigns a copy of the array. (otherwise we get strange
     // concurrent modification issues)
@@ -269,7 +270,7 @@ class SceneManager {
     this.player = game.player;
 
     this.leftSpawnLimit = 100;
-    this.rightSpawnLimit = 700;
+    this.rightSpawnLimit = 1024 - 100;
 
     this.waveTimer = 0;
     this.currentScene = null;
@@ -298,21 +299,31 @@ class SceneManager {
     if (this.wave.isWaveDiverse) {
       // not implemented
     } else {
-      let spacing = ((this.rightSpawnLimit - this.leftSpawnLimit) / (wave.numOfEnemies - 1));
-      let locationCounter = this.leftSpawnLimit + 110;
+      let spacing, locationCounter;
+      // More than one enemy?
+      if (wave.numOfEnemies > 1) {
+        // Space evenly
+        spacing = ((this.rightSpawnLimit - this.leftSpawnLimit) / (wave.numOfEnemies - 1));
+        locationCounter = this.leftSpawnLimit;
+      } else {
+        // Put the single enemy in the middle
+        locationCounter = this.leftSpawnLimit + (this.rightSpawnLimit - this.leftSpawnLimit)/2;
+      }
 
+      // Create the ships.
       for (let i = 0; i < wave.numOfEnemies; i++) {
-        let ship = new Ship(this.game, wave.ships[0]);
+        let ship = new Ship(this.game, Object.assign({}, wave.ships[0]));
+        ship.initializePath(wave.paths[i]);
 
         // Is ship location specified?
         if (wave.initialXPoints) {
-          // not yet implemented
+          ship.current.x = wave.initialXPoints[i];
         } else {
           ship.current.x = locationCounter;
           locationCounter += spacing;
         }
 
-        ship.initializePath(wave.paths[i]);
+        // ship.initializeWeapon(Object.assign({}, wave.weapons[0]))
 
         this.game.addEntity(ship);
       }
