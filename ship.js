@@ -371,7 +371,7 @@ class Plane extends Entity {
     this.controls = {
       hasInvertedControls: false,
       startTime: 0,
-      duration: 5,
+      duration: 10,
     };
   }
 
@@ -391,6 +391,7 @@ class Plane extends Entity {
       if (this.controls.startTime > this.controls.duration) {
         this.controls.hasInvertedControls = false;
         this.controls.startTime = 0;
+        showTimedMessage('normal-message');
       }
     }
 
@@ -414,6 +415,10 @@ class Plane extends Entity {
     if (!this.rolling && !this.isOutsideScreen()) {
       const leftKeyCheck = this.game.keysDown.ArrowLeft && !this.game.keysDown.ArrowRight;
       const rightKeyCheck = this.game.keysDown.ArrowRight && !this.game.keysDown.ArrowLeft;
+      const upKeyCheck = this.game.keysDown.ArrowUp && this.current.y
+      - ((this.sprite.height * this.sprite.scale) / 2) > 0;
+      const downKeyCheck = this.game.keysDown.ArrowDown && this.current.y
+      + ((this.sprite.height * this.sprite.scale) / 2) < this.game.surfaceHeight;
       if ((this.controls.hasInvertedControls && rightKeyCheck)
       || (!this.controls.hasInvertedControls && leftKeyCheck)) {
         if (this.game.keysDown.KeyC && this.canRoll) {
@@ -447,11 +452,12 @@ class Plane extends Entity {
       if (this.game.keysDown.ArrowLeft && this.game.keysDown.ArrowRight) {
         this.sprite = this.idle;
       }
-      if (this.game.keysDown.ArrowUp && this.current.y - ((this.sprite.height * this.sprite.scale) / 2) > 0) {
+      if ((this.controls.hasInvertedControls && downKeyCheck)
+      || (!this.controls.hasInvertedControls && upKeyCheck)) {
         this.current.y -= this.speed * this.game.clockTick;
       }
-      if (this.game.keysDown.ArrowDown && this.current.y + ((this.sprite.height * this.sprite.scale) / 2)
-           < this.game.surfaceHeight) {
+      if ((this.controls.hasInvertedControls && upKeyCheck)
+      || (!this.controls.hasInvertedControls && downKeyCheck)) {
         this.current.y += this.speed * this.game.clockTick;
       }
     } else {

@@ -153,10 +153,9 @@ class InvertedControls extends PowerUp {
         speed: 60,
         powerUp(entity) {
           entity.game.player.controls.hasInvertedControls = true;
-          // if (entity.weapon.config.cooldownTime > 0.05) {
-          // entity.weapon.config.cooldownTime -= 0.1;
-          // addPowerUp('./img/rapid-bullet.png', 'rapidFire');
-          // }
+          entity.game.player.controls.startTime = 0;
+
+          showTimedMessage('reversed-message');
         },
       },
     };
