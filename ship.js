@@ -124,7 +124,8 @@ class Ship extends Entity {
     this.config = Object.assign({}, manifest.config);
     this.config.radius = this.config.radius || 50;
     this.config.hitValue = this.config.hitValue || 1;
-    this.snapLine = this.config.snapLine;
+    this.snapLine = this.config.snapLine || 100;
+    this.snapLineSpeed = this.config.snapLineSpeed || 200;
     this.hitValue = this.config.hitValue;
     this.powerUp = this.config.powerUp;
 
@@ -249,7 +250,7 @@ class Ship extends Entity {
    * SnapPath: manage the transition to the starting point.
    */
   updateSnapPath() {
-    this.current.y += this.config.snapLineSpeed * this.game.clockTick;
+    this.current.y += this.snapLineSpeed * this.game.clockTick;
 
     // check for arrival at snapLine
     if (this.current.y >= this.snapLine) {
@@ -302,11 +303,12 @@ class Ship extends Entity {
     this.weapon.bay = [];
   }
 
+  //
   static getInitPoint(game, manifest) {
-    const width = manifest.config.radius || 50;
-    const range = game.surfaceWidth - 2 * width;
-    const x = manifest.config.origin.x || Math.floor(Math.random() * range) + width;
-    const y = manifest.config.origin.y || -manifest.config.sprite.default.height;
+    // Start in the middle of the board
+    const x = manifest.config.origin.x || 512;
+    // Start just above the board
+    const y = manifest.config.origin.y || -manifest.config.sprite.default.dimension.frameHeight;
 
     return {
       x,

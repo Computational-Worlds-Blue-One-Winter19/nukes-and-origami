@@ -386,6 +386,7 @@ AM.downloadAll(() => {
   // game.testScene();
 
   // run prototype level
+  // game.spawnEnemies();
 
   initIntroMessage(game);
 

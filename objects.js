@@ -595,25 +595,45 @@ function loadTemplates() {
 
 
   // Default versions of enemies for the scene manager to use as a starting
-  // point
+  // point.
+  //
+  // Mostly useful for radius and sprites.
   ship.bat = {
     config: {
       health: 3,
       hitValue: 5,
-      radius: 50,
+      radius: 45,
       sprite: sprite.bat,
-      snapLine: 100,
-      snapLineSpeed: 200,
-      snapLineWait: 1,
       origin: {
-        x: 400, // omit x to get random position
-        y: -50,
+        // x: 400, // omit x to get random position
+        // y: -45,
       },
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
     },
     weapon: ring.singleTargetPlayer,
-  }
+  };
+
+  ship.crane = {
+    config: {
+      health: 3,
+      hitValue: 5,
+      radius: 50,
+      sprite: sprite.crane,
+      snapLine: 100,
+      snapLineSpeed: 200,
+      snapLineWait: 0,
+      origin: {
+        x: 500, // omit x to get random position
+        y: -50,
+      },
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0,
+    },
+    weapon: ring.slowPulseSpiral,
+  };
+
+
 
   ship.easyBat = {
     config: {
@@ -806,7 +826,6 @@ function loadTemplates() {
 
   /** *** SCENES **** */
   scene.easyPaper = {
-
     waves: [
       // wave 1
       {
@@ -820,12 +839,12 @@ function loadTemplates() {
       initialXPoints: [
         400, 600
       ],
-      // shipsConfig: {
+      // shipManifestOverride: {
       //
       // }
       },
       // {
-      //   isWaveDiverse: false,
+      //   isWaveDiverse: true,
       //   ships: ship.bat,
       //   initialXPoints: [
       //     400, 500, 600
