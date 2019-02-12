@@ -507,7 +507,6 @@ class Plane extends Ship {
     }
 
     this.weapon.draw();
-    super.draw();
   }
 
   /**

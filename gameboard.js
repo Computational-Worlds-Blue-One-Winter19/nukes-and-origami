@@ -77,16 +77,18 @@ function initializeScoreBoardLives(lives) {
 }
 
 /**
- * Message Types: pause-message, game-over-message
- *
- * Using the above message types, the respective message will be shown in the dom
- * @param {String} type
+ * This function shows a 2 line message to the player.
  */
 function showMessage(line1, line2) {
   const message = document.getElementById("message-overlay");
   message.style.display = 'block';
   document.getElementById("message-line1").innerHTML = line1;
   document.getElementById("message-line2").innerHTML = line2;
+}
+
+function showStaticMessage(type) {
+  const pausedMessage = document.getElementById(`${type}`);
+  pausedMessage.style.display = 'block';
 }
 
 /**
@@ -96,7 +98,7 @@ function showMessage(line1, line2) {
  * @param {String} type
  */
 function hideMessage(type) {
-  const message = document.getElementById("message-overlay");
+  const message = document.getElementById(`${type}`);
   message.style.display = 'none';
 }
 
@@ -107,7 +109,7 @@ function hideMessage(type) {
  * @param {NukesAndOrigami} game The game that will be started
  */
 function startGame(game) {
-  game.spawnEnemies();
+  game.initializeSceneManager();
 
   // Initilize the game board
   initializeScoreBoardLives(game.lives);
@@ -128,7 +130,7 @@ function addEvent(element, evnt, funct) {
  * start button
  */
 function initIntroMessage(game) {
-  showMessage('intro-message');
+  showStaticMessage('intro-message');
   addEvent(
     document.getElementById('button'),
     'click',

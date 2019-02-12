@@ -39,8 +39,9 @@ class NukesAndOrigami extends GameEngine {
 
     // Initilize the game board
     initializeScoreBoardLives(this.lives);
+  }
 
-    // Initialise the scene manager
+  initializeSceneManager() {
     this.sceneManager = new SceneManager(this);
   }
 
@@ -49,7 +50,9 @@ class NukesAndOrigami extends GameEngine {
     // Let super update every entity
     super.update();
     // Let our scenemanager do what it needs to with highest precedence
-    this.sceneManager.update();
+    if (this.sceneManager) {
+      this.sceneManager.update();
+    }
   }
 
   increaseLivesCount() {
@@ -307,7 +310,7 @@ class SceneManager {
         locationCounter = this.leftSpawnLimit;
       } else {
         // Put the single enemy in the middle
-        locationCounter = this.leftSpawnLimit + (this.rightSpawnLimit - this.leftSpawnLimit)/2;
+        locationCounter = this.leftSpawnLimit + (this.rightSpawnLimit - this.leftSpawnLimit) / 2;
       }
 
       // Create the ships.
@@ -473,7 +476,9 @@ class ShieldEntity extends Entity {
    * to reflect the new state
    */
   removeShield() {
-    const { shield } = this.game.player;
+    const {
+      shield
+    } = this.game.player;
 
     const shieldHit = shield.entities.pop();
     shieldHit.removeFromWorld = true;
