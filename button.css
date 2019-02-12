@@ -1,0 +1,101 @@
+/* Credit and thanks to: @punitweb for the base css */
+
+  .section {
+    /* width: 100%; */
+    /* height: 400px; */
+    padding: 0;
+    position: absolute;
+    left: 256px;
+    border-top: rgb(67, 67, 67) 2px solid;
+    border-bottom: rgb(67, 67, 67) 2px solid;
+  }
+
+  .one #button {
+    width: 122px;
+    padding: 6px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    color: rgb(67, 67, 67) 2px solid;
+    /* font-family: 'Montserrat', sans-serif; */
+    font-size: 30px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    border: rgb(67, 67, 67) 2px solid;
+    overflow: hidden;
+    -webkit-transition: all 0.6s cubic-bezier(0.55, 0, 0.1, 1);
+    -moz-transition: all 0.6s cubic-bezier(0.55, 0, 0.1, 1);
+    -o-transition: all 0.6s cubic-bezier(0.55, 0, 0.1, 1);
+    transition: all 0.6s cubic-bezier(0.55, 0, 0.1, 1);
+    cursor: pointer;
+    box-shadow: 0px 0px 0px #fff;
+  }
+  .one #button:hover {
+    text-shadow: 0px 8px 6px rgba(0, 0, 0, 0.9);
+    box-shadow: 8px 8px 0px #fff, -8px -8px 0px #fff;
+    color:  #f6f6f6;
+  }
+  .one #button:hover .one {
+    opacity: 1;
+    transform: translate3d(0px, 0px, 0px);
+  }
+  .one #button:hover .two {
+    transform: translate3d(0px, 0px, 0px);
+  }
+  .one #button:hover .three {
+    transform: translate3d(0px, 0px, 0px);
+  }
+  .one #button:hover .four {
+    transform: translate3d(0px, 0px, 0px);
+  }
+  .one #button .ring {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background: transparent;
+    top: 0;
+    left: 0;
+    transform: translate3d(0px, 90px, 0px);
+  }
+  .one #button .one {
+    background-color: #FE6B26;
+    -webkit-transition: all 0.3s cubic-bezier(0.55, 0, 0.1, 1);
+    -moz-transition: all 0.3s cubic-bezier(0.55, 0, 0.1, 1);
+    -o-transition: all 0.3s cubic-bezier(0.55, 0, 0.1, 1);
+    transition: all 0.3s cubic-bezier(0.55, 0, 0.1, 1);
+    z-index: -3;
+    z-index: -4;
+  }
+  .one #button .two {
+    background-color: #FE8EFE;
+    -webkit-transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+    -moz-transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+    -o-transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+    transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+    z-index: -3;
+  }
+  .one #button .three {
+    background-color: rgb(242, 135, 4);
+    z-index: -2;
+    -webkit-transition: all 0.7s cubic-bezier(0.55, 0, 0.1, 1);
+    -moz-transition: all 0.7s cubic-bezier(0.55, 0, 0.1, 1);
+    -o-transition: all 0.7s cubic-bezier(0.55, 0, 0.1, 1);
+    transition: all 0.7s cubic-bezier(0.55, 0, 0.1, 1);
+    z-index: -3;
+  }
+  .one #button .four {
+    background-color: #3E12FD;
+    z-index: -1;
+    -webkit-transition: all 0.9s cubic-bezier(0.55, 0, 0.1, 1);
+    -moz-transition: all 0.9s cubic-bezier(0.55, 0, 0.1, 1);
+    -o-transition: all 0.9s cubic-bezier(0.55, 0, 0.1, 1);
+    transition: all 0.9s cubic-bezier(0.55, 0, 0.1, 1);
+    z-index: -3;
+  }
+
+  

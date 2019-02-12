@@ -34,9 +34,6 @@ class NukesAndOrigami extends GameEngine {
     this.lives = 5;
     this.hits = 0;
     this.score = 0;
-
-    // Initilize the game board
-    initializeScoreBoardLives(this.lives);
   }
 
   increaseLivesCount() {
@@ -266,7 +263,8 @@ AM.downloadAll(() => {
   // game.testScene();
 
   // run prototype level
-  game.spawnEnemies();
+
+  initIntroMessage(game);
 
   console.log('All Done!');
   canvas.focus();
