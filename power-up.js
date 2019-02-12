@@ -137,3 +137,28 @@ class RapidFire extends PowerUp {
     };
   }
 }
+
+class InvertedControls extends PowerUp {
+  constructor() {
+    super(100);
+
+    this.manifest = {
+      owner: null,
+      angle: Math.PI / 2,
+      payload: {
+        type: {
+          sprite: sprite.rapidFire,
+          radius: 30,
+        },
+        speed: 60,
+        powerUp(entity) {
+          entity.game.player.controls.hasInvertedControls = true;
+          // if (entity.weapon.config.cooldownTime > 0.05) {
+          // entity.weapon.config.cooldownTime -= 0.1;
+          // addPowerUp('./img/rapid-bullet.png', 'rapidFire');
+          // }
+        },
+      },
+    };
+  }
+}

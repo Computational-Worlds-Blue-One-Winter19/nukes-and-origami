@@ -362,19 +362,36 @@ class Plane extends Entity {
     this.invincCtr = 0;
     this.blinking = false;
     this.idleCount = 0;
+    // specific to powerups
     this.shield = {
       hasShield: false,
       entities: [],
+    };
+
+    this.controls = {
+      hasInvertedControls: false,
+      startTime: 0,
+      duration: 5,
     };
   }
 
   update() {
     // It might be better to use a changeX and changeY variable
     // This way we apply a sprite depending on how the position has changed
-    if (this.invincTime != 0 && this.invincTime < this.invincDuration) {
+    if (this.invincTime !== 0 && this.invincTime < this.invincDuration) {
       this.invincTime += this.game.clockTick;
     } else if (this.invincTime > this.invincDuration) {
       this.invincTime = 0;
+    }
+
+    if (this.controls.hasInvertedControls) {
+      // Increase the startTime
+      this.controls.startTime += this.game.clockTick;
+
+      if (this.controls.startTime > this.controls.duration) {
+        this.controls.hasInvertedControls = false;
+        this.controls.startTime = 0;
+      }
     }
 
     if (this.weapon) {
@@ -395,7 +412,10 @@ class Plane extends Entity {
     // But it works great for what we need.
     // this.timeSinceLastSpacePress += this.game.clockTick;
     if (!this.rolling && !this.isOutsideScreen()) {
-      if (this.game.keysDown.ArrowLeft && !this.game.keysDown.ArrowRight) {
+      const leftKeyCheck = this.game.keysDown.ArrowLeft && !this.game.keysDown.ArrowRight;
+      const rightKeyCheck = this.game.keysDown.ArrowRight && !this.game.keysDown.ArrowLeft;
+      if ((this.controls.hasInvertedControls && rightKeyCheck)
+      || (!this.controls.hasInvertedControls && leftKeyCheck)) {
         if (this.game.keysDown.KeyC && this.canRoll) {
           this.rollDirection = 'left';
           this.rolling = true;
@@ -408,7 +428,10 @@ class Plane extends Entity {
           this.sprite = this.left;
         }
       }
-      if (this.game.keysDown.ArrowRight && !this.game.keysDown.ArrowLeft) {
+
+
+      if ((this.controls.hasInvertedControls && leftKeyCheck)
+      || (!this.controls.hasInvertedControls && rightKeyCheck)) {
         if (this.game.keysDown.KeyC && this.canRoll) {
           this.rollDirection = 'right';
           this.rolling = true;
