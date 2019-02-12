@@ -215,7 +215,7 @@ class NukesAndOrigami extends GameEngine {
     
     // spawn a single enemy to the center
     this.addEntity(new Ship(this, ship.testDove));
-
+    // this.addEntity(new Ship(this, ship.testCrane));
   }
 
   // establishes a new player Plane
@@ -356,32 +356,25 @@ class ShieldEntity extends Entity {
   }
 
   update() {
-    this.updateCollisionDetection();
     this.current.y = this.game.player.current.y;
     this.current.x = this.game.player.current.x;
   }
 
   /**
-   * Collisions: detection checks bounds along canvas, collision with
-   * player and collision with player bullets.
-   * */
-  updateCollisionDetection() {
-    if (this.isOutsideScreen()) {
-      this.removeFromWorld = true;
-      return;
+   * Removes a shield by removing the shield icon in the players inventory and
+   * removing a shield entities from a players entities array
+   *
+   * If the player has run of out of shield the players hasShield value will be updted
+   * to reflect the new state
+   */
+  removeShield() {
+    const { shield } = this.game.player;
+
+    const shieldHit = shield.entities.pop();
+    shieldHit.removeFromWorld = true;
+    removePowerUp('shield');
+    if (!shield.entities.length) {
+      shield.hasShield = false;
     }
-
-
-    for (let i = 0; i < this.game.entities.length; i += 1) {
-      const entity = this.game.entities[i];
-
-      if (entity instanceof Projectile && !entity.playerShot && this.isCollided(entity) && !entity.payload.powerUp) {
-        entity.removeFromWorld = true;
-
-        const shieldHit = this.game.player.shield.entities.pop();
-        shieldHit.removeFromWorld = true;
-        removePowerUp('shield');
-      }
-    }// end for loop
   }
 }
