@@ -58,6 +58,12 @@ function loadTemplates() {
     sprite: sprite.miniCrane,
   };
 
+  projectile.testLaser = {
+    radius: 5,
+    rotate: true,
+    sprite: sprite.testLaser,
+  }
+
   projectile.circleBullet = {
     radius: 6,
     draw(ctx) {
@@ -504,6 +510,39 @@ function loadTemplates() {
 
   ring.trackingTest1 = {
     payload: {
+      type: projectile.testLaser,
+      velocity: {
+        radial: 700,
+        angular: 0,
+      },
+      acceleration: {
+        radial: 0,
+        angular: 0,
+      }
+    },
+    rotation: {
+      angle: 0,
+      frequency: 0,
+    },
+    firing: {
+      radius: 1,
+      angle: 90,
+      spread: 0,
+      count: 1,
+      loadTime: 0.005,
+      cooldownTime: 0.001,
+      rapidReload: true,
+      targetPlayer: true,
+      viewTurret: false,
+      pulse: {
+        duration: 0.4,
+        delay: 0.2,
+      },
+    }
+  };
+
+  ring.jaredStinger = {
+    payload: {
       type: projectile.microBullet,
       velocity: {
         radial: 800,
@@ -815,7 +854,7 @@ function loadTemplates() {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
     },
-    weapon: ring.jaredTest2,
+    weapon: ring.trackingTest1,
   };
 
   ship.testCrane = {

@@ -23,6 +23,7 @@ AM.queueDownload('./img/shield.png');
 AM.queueDownload('./img/rapid-bullet.png');
 AM.queueDownload('./img/paper_ball.png');
 AM.queueDownload('./img/clouds.png');
+AM.queueDownload('./img/7_shoot_sheet.png')
 
 /**
  * NukesAndOrigami extends GameEngine and adds additional functions
