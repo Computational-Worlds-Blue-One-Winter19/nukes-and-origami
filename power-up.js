@@ -56,8 +56,8 @@ class PowerUp {
 }
 
 class ExtraLife extends PowerUp {
-  constructor() {
-    super(50);
+  constructor(dropRate) {
+    super(dropRate);
 
     this.manifest = {
       owner: null,
@@ -78,8 +78,8 @@ class ExtraLife extends PowerUp {
 }
 
 class Shield extends PowerUp {
-  constructor() {
-    super(100);
+  constructor(dropRate) {
+    super(dropRate);
 
     this.manifest = {
       owner: null,
@@ -115,8 +115,8 @@ class Shield extends PowerUp {
 }
 
 class RapidFire extends PowerUp {
-  constructor() {
-    super(100);
+  constructor(dropRate) {
+    super(dropRate);
 
     this.manifest = {
       owner: null,
@@ -139,8 +139,8 @@ class RapidFire extends PowerUp {
 }
 
 class InvertedControls extends PowerUp {
-  constructor() {
-    super(100);
+  constructor(dropRate) {
+    super(dropRate);
 
     this.manifest = {
       owner: null,
