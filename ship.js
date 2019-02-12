@@ -204,6 +204,10 @@ class Ship extends Entity {
    * Weapons: manage turret initialization, rotation, firing and cooldown.
    */
   updateWeapons() {
+
+    // for each ring 
+
+
     this.weapon.update();
   }
 
@@ -267,7 +271,11 @@ class Ship extends Entity {
   }
 
   initializeWeapon(weaponManifest) {
-    // do stuff here to configure a new weapon system.
+    // store array of new rings with given offset. default offset = {x:0, y:0}
+
+
+
+
     this.weapon = new Ring(this, weaponManifest);
   }
 
@@ -662,6 +670,7 @@ class Ring {
     // TODO: point to weapon assembly + offset? for spacing-out the ring objects
     this.current.x = this.owner.current.x;
     this.current.y = this.owner.current.y;
+    // MULTI-RING SUPPORT: assume that parent system the weapon system has already updated current x,y position
 
     // adjust angle for bay[0] if this ring is rotating
     if (this.fixedRotation) {

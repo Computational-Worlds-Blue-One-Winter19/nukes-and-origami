@@ -276,12 +276,8 @@ AM.downloadAll(() => {
   game.testScene();
 
   // run prototype level
-<<<<<<< HEAD
-  //game.spawnEnemies();
-=======
 
-  initIntroMessage(game);
->>>>>>> master
+  //initIntroMessage(game);
 
   console.log('All Done!');
   canvas.focus();
