@@ -76,7 +76,6 @@ function initializeScoreBoardLives(lives) {
   // addPowerUp('./img/rapid-bullet.png');
 }
 
-
 /**
  * Message Types: pause-message, game-over-message
  *
@@ -97,6 +96,42 @@ function showMessage(type) {
 function hideMessage(type) {
   const pausedMessage = document.getElementById(`${type}`);
   pausedMessage.style.display = 'none';
+}
+
+
+/**
+ * Starts the game by spawning enemies, initializing the scoreboard lives and
+ * setting the focus to the canvas
+ * @param {NukesAndOrigami} game The game that will be started
+ */
+function startGame(game) {
+  game.spawnEnemies();
+
+  // Initilize the game board
+  initializeScoreBoardLives(game.lives);
+
+  hideMessage('intro-message');
+  document.getElementById('gameWorld').focus();
+}
+
+function addEvent(element, evnt, funct) {
+  if (element.attachEvent) { return element.attachEvent(`on${evnt}`, funct); }
+  return element.addEventListener(evnt, funct, false);
+}
+
+
+/**
+ * Completes the initializes of the intro messge
+ * @param {NukesAndOrigami} game The game that will be started after the user clicks on the
+ * start button
+ */
+function initIntroMessage(game) {
+  showMessage('intro-message');
+  addEvent(
+    document.getElementById('button'),
+    'click',
+    () => { startGame(game); },
+  );
 }
 
 // Inventory related functions
