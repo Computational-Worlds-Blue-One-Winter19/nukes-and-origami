@@ -7,7 +7,7 @@ body {
     background-color: transparent;
     position: absolute;
     z-index: 10;
-    pointer-events: none;
+    /* pointer-events: none; */
 }
 
 #gameWorld {
