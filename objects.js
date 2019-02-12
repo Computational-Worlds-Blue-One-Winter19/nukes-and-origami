@@ -52,6 +52,13 @@ function loadTemplates() {
     scale: 0.1,
   };
 
+  projectile.glassBall = {
+    radius: 10,
+    rotate: false,
+    image: AM.getAsset('./img/glass_ball.png'),
+    scale: 1.0,
+  }
+
   projectile.miniCrane = {
     radius: 15,
     rotate: true,
@@ -512,7 +519,7 @@ function loadTemplates() {
     payload: {
       type: projectile.testLaser,
       velocity: {
-        radial: 700,
+        radial: 500,
         angular: 0,
       },
       acceleration: {
