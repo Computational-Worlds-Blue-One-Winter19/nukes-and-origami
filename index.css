@@ -28,7 +28,7 @@ h2 {
 .scoreBoard {
     /* width: 1024; */
     /* height: 768; */
-    margin-left: 24px; 
+    margin-left: 24px;
     font-family: 'VT323', monospace;
     font-size: 1.2em;
     /* float: right; */
@@ -63,7 +63,7 @@ h2 {
     left: 900px;
     top: 740px;
 }
- 
+
 .lives h2 {
     margin: 0px;
 }
@@ -79,7 +79,7 @@ h2 {
     width: 40px;
 }
 
-#pause-message, #game-over-message, #intro-message, #normal-message, #reversed-message {
+#message-overlay, #intro-message, #normal-message, #reversed-message  {
     font-family: 'VT323', monospace;
     font-size: 2em;
     position: absolute;
@@ -110,7 +110,7 @@ h2 {
     font-size: 84px;
 }
 
-#pause-message p, #game-over-message p, #intro-message p {
+#message-overlay p, #intro-message p {
     width: 100%;
     text-align: center;
     color: black;
@@ -138,8 +138,8 @@ div.key {
     margin: 10px 10px 10px 0px;
 }
 
-/* 
-    We need to expand the width of the space-key to make it distinguishable 
+/*
+    We need to expand the width of the space-key to make it distinguishable
 */
 div.space-key, div.space-key.special > span {
     width: 135px;
@@ -194,5 +194,5 @@ div.key.icon > span {
 }
 
 center > h4 {
-     margin-top: 50px; 
+     margin-top: 50px;
 }

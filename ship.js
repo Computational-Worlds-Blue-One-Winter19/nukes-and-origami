@@ -145,9 +145,7 @@ class Ship extends Entity {
   }
 
   update() {
-    if (this.config.waitOffScreen > 0) {
-      this.config.waitOffScreen -= this.game.clockTick;
-    } else if (this.snapLine) {
+    if (this.snapLine) {
       // we are enroute to the snapLine
       this.updateSnapPath();
     } else {
@@ -323,10 +321,10 @@ class Ship extends Entity {
  * user events. It also has a Weapon. The player also accepts
  * power-ups.
  */
-/** MANIFEST FOR THE PLAYER PLANE (Not a Ship) */
-class Plane extends Entity {
+/** MANIFEST FOR THE PLAYER PLANE */
+class Plane extends Ship {
   constructor(game, manifest) {
-    super(game, Plane.getInitPoint(game));
+    super(game, manifest);
     this.config = manifest.config;
     this.isPlayer = true;
     this.damage = 1;
@@ -419,6 +417,7 @@ class Plane extends Entity {
       - ((this.sprite.height * this.sprite.scale) / 2) > 0;
       const downKeyCheck = this.game.keysDown.ArrowDown && this.current.y
       + ((this.sprite.height * this.sprite.scale) / 2) < this.game.surfaceHeight;
+      
       if ((this.controls.hasInvertedControls && rightKeyCheck)
       || (!this.controls.hasInvertedControls && leftKeyCheck)) {
         if (this.game.keysDown.KeyC && this.canRoll) {
@@ -537,7 +536,6 @@ class Plane extends Entity {
     }
 
     this.weapon.draw();
-    super.draw();
   }
 
   /**

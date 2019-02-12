@@ -122,19 +122,14 @@ class GameEngine {
   }
 
   update() {
-    const entitiesCount = this.entities.length;
-
-    for (let i = 0; i < entitiesCount; i += 1) {
+    for (let i = 0; i < this.entities.length; i += 1) {
       const entity = this.entities[i];
 
-      if (!entity.removeFromWorld) {
-        entity.update();
-      }
-    }
-
-    for (let i = this.entities.length - 1; i >= 0; i -= 1) {
-      if (this.entities[i].removeFromWorld) {
+      if (entity.removeFromWorld) {
         this.entities.splice(i, 1);
+        i--;
+      } else {
+        entity.update();
       }
     }
   }
@@ -154,14 +149,14 @@ class GameEngine {
       this.arrowRightReleased = null;
       this.arrowUpReleased = null;
       this.arrowDownReleased = null;
-    
+
       this.stats.update(); // remove for production
     }
   }
 
   pause() {
     if (this.isPaused) {
-      hideMessage('pause-message');
+      hideMessage('message-overlay');
       // remove any stored mouse events and unpause the game.
       this.click = null;
       this.mouse = null;
@@ -169,7 +164,7 @@ class GameEngine {
     } else {
       // set pause flag
       this.isPaused = true;
-      showMessage('pause-message');
+      showMessage('Paused', 'Press P to Resume Game');
     }
   }
 
@@ -179,7 +174,7 @@ class GameEngine {
   gameOver() {
     // The Pause Flag handles the same function in stopping the game so we'll repurpose it here
     this.isPaused = true;
-    showMessage('game-over-message');
+    showMessage('Game Over', 'Better Luck Next Time!');
   }
 }
 
