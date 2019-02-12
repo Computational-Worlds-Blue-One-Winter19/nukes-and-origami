@@ -447,7 +447,7 @@ function loadTemplates() {
     payload: {
       type: projectile.microBullet,
       velocity: {
-        radial: 800,
+        radial: 450,
         angular: 0,
       },
       acceleration: {
@@ -456,22 +456,23 @@ function loadTemplates() {
       }
     },
     rotation: {
-      angle: 0,
-      frequency: 0,
+      angle: 10,
+      frequency: 2.0,
+      //speed: .1,
     },
     firing: {
       radius: 1,
       angle: 90,
-      spread: 0,
-      count: 1,
+      spread: 2,
+      count: 4,
       loadTime: 0.005,
-      cooldownTime: 0.001,
+      cooldownTime: 0.05,
       rapidReload: true,
-      targetPlayer: true,
+      targetPlayer: false,
       viewTurret: false,
       pulse: {
-        duration: 0.4,
-        delay: 0.2,
+        duration: 2.0,
+        delay: 0.5
       },
     }
   };
@@ -533,6 +534,41 @@ function loadTemplates() {
       },
     }
   };
+
+  ring.jaredWavy1 = {
+    payload: {
+      type: projectile.microBullet,
+      velocity: {
+        radial: 350,
+        angular: 0,
+      },
+      acceleration: {
+        radial: 0,
+        angular: 0,
+      }
+    },
+    rotation: {
+      angle: 10,
+      frequency: 1,
+      //speed: .1,
+    },
+    firing: {
+      radius: 1,
+      angle: 90,
+      spread: 2,
+      count: 4,
+      loadTime: 0.005,
+      cooldownTime: 0.005,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: false,
+      pulse: {
+        duration: 2.0,
+        delay: 3.0,
+      },
+    }
+  };
+
 
   ring.slowPulseSpiral = {
     payload: {
@@ -765,6 +801,7 @@ function loadTemplates() {
 
   ship.testDove = {
     config: {
+      health: 20,
       hitValue: 5,
       radius: 70,
       sprite: sprite.dove,
@@ -778,7 +815,7 @@ function loadTemplates() {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
     },
-    weapon: ring.trackingTest1,
+    weapon: ring.jaredTest2,
   };
 
   ship.testCrane = {

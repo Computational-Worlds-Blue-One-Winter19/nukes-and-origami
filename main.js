@@ -61,6 +61,10 @@ class NukesAndOrigami extends GameEngine {
         ...powerUp.manifest,
       }));
     }
+
+    if (next) {
+
+    }
   }
 
   // notification of player destruction.
@@ -200,9 +204,14 @@ class NukesAndOrigami extends GameEngine {
   }
 
   testScene() {
+    // override onEnemyDestruction
+    this.onEnemyDestruction = function () {
+      this.addEntity(new Ship(this, ship.testDove));  
+    }
+    
     // spawn a single enemy to the center
     this.addEntity(new Ship(this, ship.testDove));
-    //this.addEntity(new Ship(this, ship.testCrane));
+
   }
 
   // establishes a new player Plane
