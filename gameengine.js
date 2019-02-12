@@ -156,7 +156,7 @@ class GameEngine {
 
   pause() {
     if (this.isPaused) {
-      hideMessage();
+      hideMessage('message-overlay');
       // remove any stored mouse events and unpause the game.
       this.click = null;
       this.mouse = null;

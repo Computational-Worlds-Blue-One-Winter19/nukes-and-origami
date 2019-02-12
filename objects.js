@@ -869,7 +869,7 @@ function loadTemplates() {
       sprite: sprite.purplePlane,
       speed: 300,
       origin: {
-        x: 500, // omit x to get random position
+        x: 1024 / 2, // omit x to get random position
         y: 700,
       },
     },
