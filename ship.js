@@ -413,11 +413,14 @@ class Plane extends Ship {
     if (!this.rolling && !this.isOutsideScreen()) {
       const leftKeyCheck = this.game.keysDown.ArrowLeft && !this.game.keysDown.ArrowRight;
       const rightKeyCheck = this.game.keysDown.ArrowRight && !this.game.keysDown.ArrowLeft;
-      const upKeyCheck = this.game.keysDown.ArrowUp && this.current.y
-      - ((this.sprite.height * this.sprite.scale) / 2) > 0;
-      const downKeyCheck = this.game.keysDown.ArrowDown && this.current.y
-      + ((this.sprite.height * this.sprite.scale) / 2) < this.game.surfaceHeight;
-      
+
+      const hitCeilCheck = this.current.y - ((this.sprite.height * this.sprite.scale) / 2) > 0;
+      const hitFloorCheck = this.current.y + ((this.sprite.height * this.sprite.scale) / 2) < this.game.surfaceHeight;
+      const upKeyCheck = this.game.keysDown.ArrowUp && hitCeilCheck;
+      const upInvertedKeyCheck = this.game.keysDown.ArrowDown && hitCeilCheck;
+      const downKeyCheck = this.game.keysDown.ArrowDown && hitFloorCheck;
+      const downInvertedKeyCheck = this.game.keysDown.ArrowUp && hitFloorCheck;
+
       if ((this.controls.hasInvertedControls && rightKeyCheck)
       || (!this.controls.hasInvertedControls && leftKeyCheck)) {
         if (this.game.keysDown.KeyC && this.canRoll) {
@@ -451,11 +454,11 @@ class Plane extends Ship {
       if (this.game.keysDown.ArrowLeft && this.game.keysDown.ArrowRight) {
         this.sprite = this.idle;
       }
-      if ((this.controls.hasInvertedControls && downKeyCheck)
+      if ((this.controls.hasInvertedControls && upInvertedKeyCheck)
       || (!this.controls.hasInvertedControls && upKeyCheck)) {
         this.current.y -= this.speed * this.game.clockTick;
       }
-      if ((this.controls.hasInvertedControls && upKeyCheck)
+      if ((this.controls.hasInvertedControls && downInvertedKeyCheck)
       || (!this.controls.hasInvertedControls && downKeyCheck)) {
         this.current.y += this.speed * this.game.clockTick;
       }
