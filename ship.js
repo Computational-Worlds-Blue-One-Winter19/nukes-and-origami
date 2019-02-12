@@ -228,7 +228,6 @@ class Ship extends Entity {
             this.current.speed = newCourse[1];
             this.path.targetTime = newCourse[2];
             this.path.elapsedTime = 0;
-            console.log(newCourse);
           }
         }
       } else if (this.current.speed) {
