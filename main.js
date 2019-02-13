@@ -29,6 +29,7 @@ AM.queueDownload('./img/7_shoot_sheet.png');
 AM.queueDownload('./img/glass_ball.png');
 AM.queueDownload('./img/laser_red.png');
 AM.queueDownload('./img/cut_laser.png');
+AM.queueDownload('./img/swallow-sheet-HIT.png');
 
 /**
  * NukesAndOrigami extends GameEngine and adds additional functions
@@ -40,6 +41,10 @@ class NukesAndOrigami extends GameEngine {
     this.lives = 5;
     this.hits = 0;
     this.score = 0;
+
+    this.defaultBackgroundSpeed = 2;
+    this.warpBackgroundSpeed = 20;
+    this.backgroundSpeed = this.defaultBackgroundSpeed;
 
     // Initilize the game board
     initializeScoreBoardLives(this.lives);
@@ -286,10 +291,21 @@ class SceneManager {
     this.timeBetweenWaves = 1;
 
     this.waveTimer = 0;
+    this.waitTime = 0;
     this.currentScene = null;
     this.wave = null;
     this.waves = null;
     this.entitiesInWave = [];
+    this.accelerationAmount = 6;
+    this.decelerationAmount = 6;
+
+    // Flags for cutscenes/automatic things
+    this.atDefaultSpeed = true;
+    this.acceleratingToWarpSpeed = false;
+    this.atWarpSpeed = false;
+    this.deceleratingFromWarpSpeed = false;
+    this.displayingMessage = false;
+    this.waitUntilAtDefaultSpeed = false;
 
     this.scenes = [scene.easyPaper];
   }
@@ -308,6 +324,16 @@ class SceneManager {
   // something special for the boss or a special enemy, for example.
   loadWave(wave) {
     this.wave = wave;
+    if (wave.warpSpeed) {
+      this.acceleratingToWarpSpeed = true;
+      this.atDefaultSpeed = false;
+      this.waitUntilAtDefaultSpeed = true;
+    }
+
+    if (wave.message) {
+      this.message = wave.message;
+    }
+
     let spacing, locationCounter;
     // More than one enemy?
     if (wave.numOfEnemies > 1) {
@@ -325,10 +351,34 @@ class SceneManager {
       let manifestCopy = Object.assign({}, wave.ships[i]);
       // If path was overridden, put that in the manifestCopy
       manifestCopy.path = wave.paths ? wave.paths[i] : 0;
-      // If Override is provided, override the ships manifest, otherwise do
-      // nothing.
-      let ship = new Ship(this.game, Object.assign({}, manifestCopy,
-        wave.shipManifestOverride ? wave.shipManifestOverride[i] : {}));
+      if (wave.shipManifestOverride) {
+        // do a recursive merge
+        if (wave.shipManifestOverride[i].config) {
+          Object.assign(manifestCopy.config, wave.shipManifestOverride[i].config);
+        }
+        if (wave.shipManifestOverride[i].weapon) {
+          if (wave.shipManifestOverride[i].weapon.firing) {
+            if (!manifestCopy.weapon.firing) {
+              manifestCopy.weapon.firing = {};
+            }
+            Object.assign(manifestCopy.weapon.firing, wave.shipManifestOverride[i].weapon.firing);
+          }
+          if (wave.shipManifestOverride[i].weapon.rotation) {
+            if (!manifestCopy.weapon.rotation) {
+              manifestCopy.weapon.rotation = {};
+            }
+            Object.assign(manifestCopy.weapon.rotation, wave.shipManifestOverride[i].weapon.rotation);
+          }
+          if (wave.shipManifestOverride[i].weapon.payload) {
+            if (!manifestCopy.weapon.payload) {
+              manifestCopy.weapon.payload = {};
+            }
+            Object.assign(manifestCopy.weapon.payload, wave.shipManifestOverride[i].weapon.payload);
+          }
+        }
+      }
+
+      let ship = new Ship(this.game, Object.assign({}, manifestCopy));
 
       // Was the location overriden?
       if (wave.initialXPoints) {
@@ -386,6 +436,8 @@ class SceneManager {
           }
         }
       } else {
+        // We are inside a wave
+
         // Are we waiting for enemies to be killed/go off screen before we
         // continue?
         if (this.wave.waitUntilEnemiesGone) {
@@ -394,13 +446,57 @@ class SceneManager {
             this.waveTimer = 0;
           }
         }
-      }
 
+        // Is there a message to display to the player?
+        if (this.message) {
+          this.showingmessage = true;
+          showMessage(this.message.text[0], this.message.text[1]);
+          this.waveTimer = 0;
+          this.waitTime = this.message.duration;
+          this.message = 0;
+        }
+
+        // Waiting for a period of time (for right now only for messages)
+        if (this.waitTime) {
+          if (this.waveTimer > this.waitTime) {
+            this.waitTime = 0;
+            hideMessage('message-overlay');
+            // For now, decelerate from warp speed here
+            this.deceleratingFromWarpSpeed = true;
+            this.atWarpSpeed = false;
+          }
+        }
+
+        // Are we waiting for a warp speed animation to complete?
+        if (this.waitUntilAtDefaultSpeed) {
+          if (this.atDefaultSpeed) {
+            this.waitUntilAtDefaultSpeed = false;
+            // next wave
+            this.wave = false;
+          }
+        }
+      }
+    }
+    // Handle accelerating to/from warpspeed
+    if (this.acceleratingToWarpSpeed) {
+      this.game.backgroundSpeed += this.accelerationAmount * this.game.clockTick;
+      if (this.game.backgroundSpeed >= this.game.warpBackgroundSpeed) {
+        this.game.backgroundSpeed = this.game.warpBackgroundSpeed;
+        this.acceleratingToWarpSpeed = false;
+        this.atWarpSpeed = true;
+      }
     }
 
+    if (this.deceleratingFromWarpSpeed) {
+      this.game.backgroundSpeed -= this.decelerationAmount * this.game.clockTick;
+      if (this.game.backgroundSpeed <= this.game.defaultBackgroundSpeed) {
+        this.game.backgroundSpeed = this.game.defaultBackgroundSpeed;
+        this.deceleratingFromWarpSpeed = false;
+        this.atWarpSpeed = false;
+        this.atDefaultSpeed = true;
+      }
+    }
   }
-
-
 }
 
 /** Call AssetManager to download assets and launch the game. */
@@ -446,9 +542,10 @@ class Background extends Entity {
   }
 
   update() {
-    this.current.y += 1;
+    this.current.y += this.game.backgroundSpeed;
     if (this.current.y >= this.canvasHeight) {
-      this.current.y = -this.canvasHeight;
+      // Adjust for overshoot
+      this.current.y = -this.canvasHeight + (this.current.y - this.canvasHeight);
     }
   }
 }
@@ -461,6 +558,7 @@ class Clouds extends Entity {
     this.game = game;
     this.ctx = game.ctx;
     this.canvasHeight = canvasHeight;
+    this.speedMultiplier = 0;
   }
 
   draw() {
@@ -468,9 +566,11 @@ class Clouds extends Entity {
   }
 
   update() {
-    this.current.y += 2;
+    // Multiply by 1.25 for parallax effect
+    this.current.y += 1.25 * this.game.backgroundSpeed;
     if (this.current.y >= this.canvasHeight) {
-      this.current.y = -3840;
+      // adjust for overshoot
+      this.current.y = -3840 + (this.current.y - this.canvasHeight);
     }
   }
 }
