@@ -610,7 +610,7 @@ function loadTemplates() {
 
   ring.trackingTest1 = {
     payload: {
-      type: projectile.homing,
+      type: projectile.testLaser,
       velocity: {
         radial: 500,
         angular: 0,
