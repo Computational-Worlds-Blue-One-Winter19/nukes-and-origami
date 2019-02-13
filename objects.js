@@ -16,13 +16,13 @@ function loadTemplates() {
     },
 
     update() {
-      let previous = {
+      const previous = {
         x: this.current.x,
         y: this.current.y,
-      }
+      };
 
       if (this.config.isHoming) {
-        let target = this.owner.weapon.getPlayerLocation(previous);
+        const target = this.owner.weapon.getPlayerLocation(previous);
         if (target.radius < 250) {
           this.config.isHoming = false;
         }
@@ -30,8 +30,8 @@ function loadTemplates() {
         this.current.angle = target.angle;
       }
 
-      let deltaRadius = this.current.velocity.radial * this.game.clockTick;
-      let newPoint = getXandY(previous, {angle: this.current.angle, radius: deltaRadius });
+      const deltaRadius = this.current.velocity.radial * this.game.clockTick;
+      const newPoint = getXandY(previous, { angle: this.current.angle, radius: deltaRadius });
       this.current.x = newPoint.x;
       this.current.y = newPoint.y;
     },
@@ -117,7 +117,7 @@ function loadTemplates() {
       acceleration: {
         radial: 100,
         angular: 0,
-      }
+      },
     },
     firing: {
       radius: 5,
@@ -433,7 +433,7 @@ function loadTemplates() {
       acceleration: {
         radial: 0,
         angular: 0,
-      }
+      },
     },
     rotation: {
       angle: 0,
@@ -444,7 +444,7 @@ function loadTemplates() {
       angle: 90,
       spread: 20,
       count: 4,
-      loadTime: .05,
+      loadTime: 0.05,
       cooldownTime: 0.02,
       rapidReload: true,
       targetPlayer: false,
@@ -452,7 +452,7 @@ function loadTemplates() {
       pulse: {
         duration: 1,
         delay: 3,
-      }
+      },
     },
   };
 
@@ -466,7 +466,7 @@ function loadTemplates() {
       acceleration: {
         radial: 0,
         angular: 0,
-      }
+      },
     },
     rotation: {
       angle: 10,
@@ -484,10 +484,10 @@ function loadTemplates() {
       targetPlayer: false,
       viewTurret: false,
       pulse: {
-        duration: 2.0,
-        delay: 0.5
+        duration: 0.4,
+        delay: 1.5,
       },
-    }
+    },
   };
 
   ring.jaredBeta1 = {
@@ -692,7 +692,7 @@ function loadTemplates() {
     config: {
       health: 3,
       hitValue: 5,
-      powerUp: new RapidFire(),
+      powerUp: new InvertedControls(),
       radius: 50,
       sprite: sprite.crane,
       snapLine: 150,
@@ -717,7 +717,8 @@ function loadTemplates() {
     config: {
       health: 3,
       hitValue: 5,
-      radius: 45,
+      powerUp: new InvertedControls(100),
+      radius: 50,
       sprite: sprite.bat,
       origin: {
         // x: 400, // omit x to get random position
@@ -745,16 +746,14 @@ function loadTemplates() {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
     },
-    weapon: ring.slowPulseSpiral,
+    weapon: ring.singleTargetPlayer,
   };
-
-
 
   ship.easyBat = {
     config: {
       health: 3,
       hitValue: 5,
-      powerUp: new Shield(),
+      powerUp: new InvertedControls(),
       radius: 50,
       sprite: sprite.bat,
       snapLine: 100,
@@ -778,7 +777,7 @@ function loadTemplates() {
     config: {
       health: 3,
       hitValue: 5,
-      powerUp: new RapidFire(),
+      powerUp: new InvertedControls(),
       radius: 50,
       sprite: sprite.bat,
       snapLine: 100,
@@ -945,17 +944,17 @@ function loadTemplates() {
     waves: [
       // wave 1
       {
-      isWaveDiverse: false,
-      ships: [ship.bat],
-      numOfEnemies: 2,
-      paths: [
-        path.cornerLeft,
-        path.cornerRight,
-      ],
-      initialXPoints: [
-        400, 600
-      ],
-      // shipManifestOverride: {
+        isWaveDiverse: false,
+        ships: [ship.bat],
+        numOfEnemies: 2,
+        paths: [
+          path.cornerLeft,
+          path.cornerRight,
+        ],
+        initialXPoints: [
+          400, 600,
+        ],
+      // shipsConfig: {
       //
       // }
       },
@@ -966,8 +965,8 @@ function loadTemplates() {
       //     400, 500, 600
       //   ],
       // }
-    ]
-  }
+    ],
+  };
 
   /** *** ALL PLAYER THINGS **** */
   projectile.player1 = {

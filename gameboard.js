@@ -104,6 +104,33 @@ function hideMessage(type) {
 
 
 /**
+ * For messages shown to represent item feedback, such as the reversed-message for controls
+ * sets all of them to display none.
+ *
+ * This presents overlapping messages from being shown at the same time.
+ */
+function clearMessageBoard() {
+  const messages = document.getElementsByClassName('indicator');
+
+  for (let index = 0; index < messages.length; index += 1) {
+    messages[index].style.display = 'none';
+  }
+}
+
+/**
+ * Shows an indicator message that will disappear after 2000ms
+ * @param {String} type The type of message that will be shown
+ */
+function showTimedMessage(type) {
+  clearMessageBoard();
+  const message = document.getElementById(`${type}`);
+
+  message.style.display = 'block';
+
+  setTimeout(() => { message.style.display = 'none'; }, 2000);
+}
+
+/**
  * Starts the game by spawning enemies, initializing the scoreboard lives and
  * setting the focus to the canvas
  * @param {NukesAndOrigami} game The game that will be started

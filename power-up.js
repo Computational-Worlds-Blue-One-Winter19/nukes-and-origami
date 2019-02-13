@@ -56,8 +56,8 @@ class PowerUp {
 }
 
 class ExtraLife extends PowerUp {
-  constructor() {
-    super(50);
+  constructor(dropRate) {
+    super(dropRate);
 
     this.manifest = {
       owner: null,
@@ -78,8 +78,8 @@ class ExtraLife extends PowerUp {
 }
 
 class Shield extends PowerUp {
-  constructor() {
-    super(100);
+  constructor(dropRate) {
+    super(dropRate);
 
     this.manifest = {
       owner: null,
@@ -115,8 +115,8 @@ class Shield extends PowerUp {
 }
 
 class RapidFire extends PowerUp {
-  constructor() {
-    super(100);
+  constructor(dropRate) {
+    super(dropRate);
 
     this.manifest = {
       owner: null,
@@ -132,6 +132,30 @@ class RapidFire extends PowerUp {
             entity.weapon.config.cooldownTime -= 0.1;
             addPowerUp('./img/rapid-bullet.png', 'rapidFire');
           }
+        },
+      },
+    };
+  }
+}
+
+class InvertedControls extends PowerUp {
+  constructor(dropRate) {
+    super(dropRate);
+
+    this.manifest = {
+      owner: null,
+      angle: Math.PI / 2,
+      payload: {
+        type: {
+          sprite: sprite.rapidFire,
+          radius: 30,
+        },
+        speed: 60,
+        powerUp(entity) {
+          entity.game.player.controls.hasInvertedControls = true;
+          entity.game.player.controls.startTime = 0;
+
+          showTimedMessage('reversed-message');
         },
       },
     };
