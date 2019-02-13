@@ -16,22 +16,22 @@ function loadTemplates() {
     },
 
     update() {
-      let previous = {
+      const previous = {
         x: this.current.x,
         y: this.current.y,
-      }
-      
+      };
+
       if (this.config.isHoming) {
-        let target = this.owner.weapon.getPlayerLocation(previous);
+        const target = this.owner.weapon.getPlayerLocation(previous);
         if (target.radius < 250) {
           this.config.isHoming = false;
         }
 
         this.current.angle = target.angle;
       }
-      
-      let deltaRadius = this.current.velocity.radial * this.game.clockTick;
-      let newPoint = getXandY(previous, {angle: this.current.angle, radius: deltaRadius });
+
+      const deltaRadius = this.current.velocity.radial * this.game.clockTick;
+      const newPoint = getXandY(previous, { angle: this.current.angle, radius: deltaRadius });
       this.current.x = newPoint.x;
       this.current.y = newPoint.y;
     },
@@ -52,11 +52,24 @@ function loadTemplates() {
     scale: 0.1,
   };
 
+  projectile.glassBall = {
+    radius: 10,
+    rotate: false,
+    image: AM.getAsset('./img/glass_ball.png'),
+    scale: 1.0,
+  }
+
   projectile.miniCrane = {
     radius: 15,
     rotate: true,
     sprite: sprite.miniCrane,
   };
+
+  projectile.testLaser = {
+    radius: 5,
+    rotate: true,
+    sprite: sprite.testLaser,
+  }
 
   projectile.circleBullet = {
     radius: 6,
@@ -104,7 +117,7 @@ function loadTemplates() {
       acceleration: {
         radial: 100,
         angular: 0,
-      }
+      },
     },
     firing: {
       radius: 5,
@@ -420,7 +433,7 @@ function loadTemplates() {
       acceleration: {
         radial: 0,
         angular: 0,
-      }
+      },
     },
     rotation: {
       angle: 0,
@@ -431,7 +444,7 @@ function loadTemplates() {
       angle: 90,
       spread: 20,
       count: 4,
-      loadTime: .05,
+      loadTime: 0.05,
       cooldownTime: 0.02,
       rapidReload: true,
       targetPlayer: false,
@@ -439,7 +452,7 @@ function loadTemplates() {
       pulse: {
         duration: 1,
         delay: 3,
-      }
+      },
     },
   };
 
@@ -447,33 +460,34 @@ function loadTemplates() {
     payload: {
       type: projectile.microBullet,
       velocity: {
-        radial: 400,
+        radial: 450,
         angular: 0,
       },
       acceleration: {
         radial: 0,
         angular: 0,
-      }
+      },
     },
     rotation: {
-      angle: 0,
-      frequency: 0,
+      angle: 10,
+      frequency: 2.0,
+      //speed: .1,
     },
     firing: {
-      radius: 80,
+      radius: 1,
       angle: 90,
-      spread: 20,
+      spread: 2,
       count: 4,
-      loadTime: 0.0,
-      cooldownTime: 0.005,
-      rapidReload: false,
-      targetPlayer: true,
+      loadTime: 0.005,
+      cooldownTime: 0.05,
+      rapidReload: true,
+      targetPlayer: false,
       viewTurret: false,
       pulse: {
-        duration: .4,
+        duration: 0.4,
         delay: 1.5,
       },
-    }
+    },
   };
 
   ring.jaredBeta1 = {
@@ -500,6 +514,107 @@ function loadTemplates() {
       },
     },
   };
+
+  ring.trackingTest1 = {
+    payload: {
+      type: projectile.testLaser,
+      velocity: {
+        radial: 500,
+        angular: 0,
+      },
+      acceleration: {
+        radial: 0,
+        angular: 0,
+      }
+    },
+    rotation: {
+      angle: 0,
+      frequency: 0,
+    },
+    firing: {
+      radius: 1,
+      angle: 90,
+      spread: 0,
+      count: 1,
+      loadTime: 0.005,
+      cooldownTime: 0.001,
+      rapidReload: true,
+      targetPlayer: true,
+      viewTurret: false,
+      pulse: {
+        duration: 0.4,
+        delay: 0.2,
+      },
+    }
+  };
+
+  ring.jaredStinger = {
+    payload: {
+      type: projectile.microBullet,
+      velocity: {
+        radial: 800,
+        angular: 0,
+      },
+      acceleration: {
+        radial: 0,
+        angular: 0,
+      }
+    },
+    rotation: {
+      angle: 0,
+      frequency: 0,
+    },
+    firing: {
+      radius: 1,
+      angle: 90,
+      spread: 0,
+      count: 1,
+      loadTime: 0.005,
+      cooldownTime: 0.001,
+      rapidReload: true,
+      targetPlayer: true,
+      viewTurret: false,
+      pulse: {
+        duration: 0.4,
+        delay: 0.2,
+      },
+    }
+  };
+
+  ring.jaredWavy1 = {
+    payload: {
+      type: projectile.microBullet,
+      velocity: {
+        radial: 350,
+        angular: 0,
+      },
+      acceleration: {
+        radial: 0,
+        angular: 0,
+      }
+    },
+    rotation: {
+      angle: 10,
+      frequency: 1,
+      //speed: .1,
+    },
+    firing: {
+      radius: 1,
+      angle: 90,
+      spread: 2,
+      count: 4,
+      loadTime: 0.005,
+      cooldownTime: 0.005,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: false,
+      pulse: {
+        duration: 2.0,
+        delay: 3.0,
+      },
+    }
+  };
+
 
   ring.slowPulseSpiral = {
     payload: {
@@ -577,7 +692,7 @@ function loadTemplates() {
     config: {
       health: 3,
       hitValue: 5,
-      powerUp: new RapidFire(),
+      powerUp: new InvertedControls(),
       radius: 50,
       sprite: sprite.crane,
       snapLine: 150,
@@ -593,11 +708,52 @@ function loadTemplates() {
     weapon: ring.angularTest,
   };
 
+
+  // Default versions of enemies for the scene manager to use as a starting
+  // point.
+  //
+  // Mostly useful for radius and sprites.
+  ship.bat = {
+    config: {
+      health: 3,
+      hitValue: 5,
+      powerUp: new InvertedControls(100),
+      radius: 50,
+      sprite: sprite.bat,
+      origin: {
+        // x: 400, // omit x to get random position
+        // y: -45,
+      },
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0,
+    },
+    weapon: ring.singleTargetPlayer,
+  };
+
+  ship.crane = {
+    config: {
+      health: 3,
+      hitValue: 5,
+      radius: 50,
+      sprite: sprite.crane,
+      snapLine: 100,
+      snapLineSpeed: 200,
+      snapLineWait: 0,
+      origin: {
+        x: 500, // omit x to get random position
+        y: -50,
+      },
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0,
+    },
+    weapon: ring.singleTargetPlayer,
+  };
+
   ship.easyBat = {
     config: {
       health: 3,
       hitValue: 5,
-      powerUp: new Shield(),
+      powerUp: new InvertedControls(),
       radius: 50,
       sprite: sprite.bat,
       snapLine: 100,
@@ -613,8 +769,6 @@ function loadTemplates() {
         duration: 0.5,
         delay: 2,
       },
-
-      waitOffScreen: 4,
     },
     weapon: ring.singleTargetPlayer,
   };
@@ -623,7 +777,7 @@ function loadTemplates() {
     config: {
       health: 3,
       hitValue: 5,
-      powerUp: new RapidFire(),
+      powerUp: new InvertedControls(),
       radius: 50,
       sprite: sprite.bat,
       snapLine: 100,
@@ -639,8 +793,6 @@ function loadTemplates() {
         duration: 0.5,
         delay: 2,
       },
-
-      waitOffScreen: 20,
     },
     weapon: ring.spreadBeta2,
   };
@@ -661,8 +813,6 @@ function loadTemplates() {
       },
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
-
-      waitOffScreen: 60,
     },
     weapon: ring.doubleStraightDownPulse,
   };
@@ -683,7 +833,6 @@ function loadTemplates() {
       },
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
-      waitOffScreen: 40,
     },
     weapon: ring.slowPulseSpiral,
   };
@@ -704,7 +853,6 @@ function loadTemplates() {
       },
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
-      waitOffScreen: 80,
     },
     weapon: ring.jaredAlpha1,
   };
@@ -725,13 +873,13 @@ function loadTemplates() {
       },
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
-      waitOffScreen: 50,
     },
     weapon: ring.gap1,
   };
 
   ship.testDove = {
     config: {
+      health: 20,
       hitValue: 5,
       radius: 70,
       sprite: sprite.dove,
@@ -745,7 +893,7 @@ function loadTemplates() {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
     },
-    weapon: ring.jaredAlpha1,
+    weapon: ring.trackingTest1,
   };
 
   ship.testCrane = {
@@ -762,9 +910,62 @@ function loadTemplates() {
       },
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
-      waitOffScreen: 10,
     },
     weapon: ring.trackingTest1,
+  };
+
+  /** *** PATHS **** */
+  // Slowly strafe right off screen
+  path.strafeRight = [
+    [0, 50, 20],
+  ];
+
+  // Slowly strafe left off screen
+  path.strafeLeft = [
+    [180, 50, 20],
+  ];
+
+  // Advance down, then left, then southeast
+  path.cornerRight = [
+    [90, 50, 2],
+    [180, 50, 2],
+    [45, 50, 30],
+  ];
+
+  // Advance down, then right, then southwest
+  path.cornerLeft = [
+    [90, 50, 2],
+    [0, 50, 2],
+    [135, 50, 30],
+  ];
+
+  /** *** SCENES **** */
+  scene.easyPaper = {
+    waves: [
+      // wave 1
+      {
+        isWaveDiverse: false,
+        ships: [ship.bat],
+        numOfEnemies: 2,
+        paths: [
+          path.cornerLeft,
+          path.cornerRight,
+        ],
+        initialXPoints: [
+          400, 600,
+        ],
+      // shipsConfig: {
+      //
+      // }
+      },
+      // {
+      //   isWaveDiverse: true,
+      //   ships: ship.bat,
+      //   initialXPoints: [
+      //     400, 500, 600
+      //   ],
+      // }
+    ],
   };
 
   /** *** ALL PLAYER THINGS **** */
@@ -801,6 +1002,10 @@ function loadTemplates() {
       radius: 15,
       sprite: sprite.purplePlane,
       speed: 300,
+      origin: {
+        x: 1024 / 2, // omit x to get random position
+        y: 700,
+      },
     },
     weapon: ring.player,
   };

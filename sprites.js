@@ -148,6 +148,56 @@ function loadSpriteSheets() {
     },
   };
 
+  /** Laser sprite */
+  // sprite.testLaser = {
+  //   default: {
+  //     image: AM.getAsset('./img/7_shoot_sheet.png'),
+  //     dimension: {
+  //       originX: 176,
+  //       originY: 176,
+  //       frameWidth: 12,
+  //       frameHeight: 60,
+  //       frameCount: 5,
+  //       timePerFrame: 20,
+  //       scale: 1.0,
+  //       flip: false,
+  //     }
+  //   }
+  // }
+
+  sprite.testLaser = {
+    default: {
+      image: AM.getAsset('./img/laser_red.png'),
+      dimension: {
+        originX: 0,
+        originY: 0,
+        frameWidth: 32,
+        frameHeight: 128,
+        frameCount: 11,
+        timePerFrame: 20,
+        scale: 0.5,
+        flip: false,
+      }
+    }
+  }
+
+  sprite.cutLaser = {
+    default: {
+      image: AM.getAsset('./img/cut_laser.png'),
+      dimension: {
+        originX: 0,
+        originY: 0,
+        frameWidth: 128,
+        frameHeight: 46,
+        frameCount: 1,
+        timePerFrame: 20,
+        scale: 0.3,
+        flip: false,
+      }
+    }
+  }
+
+
   /** The Player Plane SpriteSheet */
   sprite.plane = {
     default: {
