@@ -64,7 +64,7 @@ class ExtraLife extends PowerUp {
       angle: Math.PI / 2,
       payload: {
         type: {
-          sprite: sprite.rainbowBall,
+          sprite: sprite.rainbowBall.default,
           radius: 30,
         },
         speed: 60,
@@ -86,7 +86,7 @@ class Shield extends PowerUp {
       angle: Math.PI / 2,
       payload: {
         type: {
-          sprite: sprite.shieldIcon,
+          sprite: sprite.shieldIcon.default,
           radius: 30,
         },
         speed: 60,
@@ -123,7 +123,7 @@ class RapidFire extends PowerUp {
       angle: Math.PI / 2,
       payload: {
         type: {
-          sprite: sprite.rapidFire,
+          sprite: sprite.rapidFire.default,
           radius: 30,
         },
         speed: 60,
@@ -147,7 +147,7 @@ class InvertedControls extends PowerUp {
       angle: Math.PI / 2,
       payload: {
         type: {
-          sprite: sprite.rapidFire,
+          sprite: sprite.rapidFire.default,
           radius: 30,
         },
         speed: 60,
