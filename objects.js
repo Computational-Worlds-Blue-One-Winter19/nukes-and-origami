@@ -671,8 +671,8 @@ function loadTemplates() {
       }
     },
     rotation: {
-      angle: 10,
-      frequency: 1,
+      //angle: 10,
+      //frequency: 1,
       //speed: .1,
     },
     firing: {
@@ -680,15 +680,15 @@ function loadTemplates() {
       angle: 90,
       spread: 2,
       count: 4,
-      loadTime: 0.005,
-      cooldownTime: 0.005,
+      loadTime: 0,
+      cooldownTime: 0.05,
       rapidReload: true,
       targetPlayer: false,
       viewTurret: false,
-      pulse: {
-        duration: 2.0,
-        delay: 0,
-      },
+      // pulse: {
+      //   duration: 2.0,
+      //   delay: 0,
+      // },
     }
   };
 

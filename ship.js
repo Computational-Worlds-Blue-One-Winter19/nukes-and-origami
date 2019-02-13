@@ -152,7 +152,7 @@ class Ship extends Entity {
     } else {
       // check all systems
       this.updateHelm();
-      //this.updateCollisionDetection();
+      this.updateCollisionDetection();
       this.updateWeapons();
     }
     super.update();
@@ -685,8 +685,8 @@ class Ring {
       radius: manifest.firing.radius || this.owner.config.radius,
       viewTurret: manifest.firing.viewTurret,
       rapidReload: manifest.firing.rapidReload,
-      cooldownTime: manifest.firing.cooldownTime || 0.05,
-      loadTime: manifest.firing.loadTime || 0.05,
+      cooldownTime: manifest.firing.cooldownTime || 0,
+      loadTime: manifest.firing.loadTime || 0,
       targetPlayer: manifest.firing.targetPlayer || false,
       targetLeadShot: manifest.firing.targetLeadShot || false,
     };
@@ -707,16 +707,20 @@ class Ring {
       isReady: false,
       isCooling: false,
       isWaiting: false,
+      count: 0,
     };
   }
 
   update() {
     const game = this.owner.game;
+    //this.status.elapsedTime += game.clockTick;
     this.status.elapsedTime += game.clockTick;
 
     // update active time counter; used for the pulse delay
     this.status.elapsedActiveTime += game.clockTick;
+    console.log("update=" + ++this.status.count + " interval=" + game.clockTick + " elapsed=" + this.status.elapsedTime);
     
+
     // ring center position is updated by the Ship before calling Ring.update()
 
     // adjust angle for bay[0] if this ring is rotating
@@ -738,12 +742,11 @@ class Ring {
       const projectile = this.bay[i];
       projectile.current.angle = this.current.angle + i * this.config.spacing;
       
-      // TEST: only update x,y if turret is visible
-      if (this.config.viewTurret) {
-        const currentPosition = getXandY(this.current, { radius: this.config.radius, angle: projectile.current.angle });
-        projectile.current.x = currentPosition.x;
-        projectile.current.y = currentPosition.y;
-      }
+      // TEST: only update x,y if turret is visible THIS WON'T WORK UNLESS WE CHECK AGAIN AT fireAll() :(
+      const currentPosition = getXandY(this.current, { radius: this.config.radius, angle: projectile.current.angle });
+      projectile.current.x = currentPosition.x;
+      projectile.current.y = currentPosition.y;
+      
     }
 
     // now that all projectiles have been updated we can evaluate the next
@@ -764,17 +767,25 @@ class Ring {
       // a player only fires on command, all others fire on ready
       if (!this.owner.isPlayer || game.keysDown.Space) {
         this.fireAll();
-        // update state inside of fireAll()
+        // update state
+        this.status.isReady = false;
+        this.status.isCooling = true;
+        this.status.elapsedTime = 0;
       }
     } else if (this.status.isCooling && this.status.elapsedTime > this.config.cooldownTime) {
       // Cooldown state
       this.status.isCooling = false;
-      this.status.isLoading = !this.config.rapidReload;
-      this.status.isReady = this.config.rapidReload;
       this.status.elapsedTime = 0;
+
+      if (this.status.elapsedActiveTime > this.config.activeTime) {
+        this.status.isWaiting = true;
+      } else {
+        this.status.isLoading = !this.config.rapidReload;
+        this.status.isReady = this.config.rapidReload;
+        this.current.isLeadShot = this.config.targetLeadShot;
+      }    
     } else if (this.status.isWaiting && this.status.elapsedTime > this.config.waitTime) {
       // Waiting state
-      // duration is defined by pulse configuration
       this.status.isWaiting = false;
       this.status.isLoading = !this.config.rapidReload;
       this.status.isReady = this.config.rapidReload;
@@ -798,6 +809,8 @@ class Ring {
   fireAll() {
     // the projectiles have been updated so just add to game and replace again
     // this previously fired all and then looped back to reload. was that better?
+    console.log("fire");
+    
     for (let i = 0; i < this.bay.length; i++) {
       const projectile = this.bay[i];
       this.owner.game.addEntity(projectile);
@@ -810,16 +823,6 @@ class Ring {
     // if we did not reload then clear-out the bay
     if (!this.config.rapidReload) {
       this.bay = [];
-    }
-
-    this.status.isReady = false;
-    this.status.elapsedTime = 0;
-
-    // set next state to cooldown unless the pulse period is over then begin waiting
-    if (this.status.elapsedActiveTime > this.config.activeTime) {
-      this.status.isWaiting = true;
-    } else {
-      this.status.isCooling = true;
     }
   }
 
