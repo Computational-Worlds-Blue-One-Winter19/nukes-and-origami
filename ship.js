@@ -719,11 +719,7 @@ class Ring {
       this.status.elapsedActiveTime += game.clockTick;
     }
 
-    // update current ring coordinates before computing the location of each turret
-    // right now this uses the Ship position.
-    // TODO: point to weapon assembly + offset? for spacing-out the ring objects
-    //this.current.x = this.owner.current.x;
-    //this.current.y = this.owner.current.y;
+    // ring center position is updated by the Ship before calling Ring.update()
 
     // adjust angle for bay[0] if this ring is rotating
     if (this.fixedRotation) {

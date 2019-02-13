@@ -22,7 +22,7 @@ function loadTemplates() {
       };
 
       if (this.config.isHoming) {
-        const target = this.owner.weapon.getPlayerLocation(previous);
+        const target = this.owner.weapon[0].ring.getPlayerLocation(previous);
         if (target.radius < 250) {
           this.config.isHoming = false;
         }
@@ -246,24 +246,49 @@ function loadTemplates() {
   ring.fixedSpeed = {
     payload: {
       type: projectile.microBullet,
-      speed: 250,
+      speed: 350,
       acceleration: 1,
     },
     rotation: {
-      speed: 0.25,
+      speed: 0.15,
     },
     firing: {
-      radius: 80,
+      radius: 1,
       angle: 90,
-      count: 1,
+      count: 4,
       loadTime: 0.005,
-      cooldownTime: 0.1,
+      cooldownTime: 0.05,
       rapidReload: true,
       targetPlayer: false,
-      viewTurret: true,
+      viewTurret: false,
       pulse: {
         duration: 3,
-        delay: 0.5,
+        delay: 0.0,
+      },
+    },
+  };
+
+  ring.fixedSpeedReverse = {
+    payload: {
+      type: projectile.microBullet,
+      speed: 350,
+      acceleration: 1,
+    },
+    rotation: {
+      speed: -0.1,
+    },
+    firing: {
+      radius: 1,
+      angle: 90,
+      count: 4,
+      loadTime: 0.005,
+      cooldownTime: 0.05,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: false,
+      pulse: {
+        duration: 3,
+        delay: 0.0,
       },
     },
   };
@@ -390,7 +415,7 @@ function loadTemplates() {
     firing: {
       angle: 90,
       count: 1,
-      loadTime: 0.05,
+      loadTime: 0.001,
       cooldownTime: 2,
       rapidReload: true,
       targetPlayer: true,
@@ -544,7 +569,7 @@ function loadTemplates() {
 
   ring.trackingTest1 = {
     payload: {
-      type: projectile.testLaser,
+      type: projectile.homing,
       velocity: {
         radial: 500,
         angular: 0,
@@ -566,11 +591,11 @@ function loadTemplates() {
       loadTime: 0.005,
       cooldownTime: 0.001,
       rapidReload: true,
-      targetLeadShot: true,
-      viewTurret: false,
+      targetLeadShot: false,
+      viewTurret: true,
       pulse: {
         duration: 0.4,
-        delay: 0.2,
+        delay: 0.25,
       },
     }
   };
@@ -922,10 +947,13 @@ function loadTemplates() {
     },
     weapon: [
       {
-        ring: ring.angularTest,
+        ring: ring.trackingTest1,
+        offset: {x:-30,y:23},
       },
+
       {
-        ring: ring.spiralAlphaReverse,
+        ring: ring.trackingTest1,
+        offset: {x:30,y:23},
       },
     ],
   };
