@@ -125,7 +125,7 @@ class Ship extends Entity {
     this.config.radius = this.config.radius || 50;
     this.config.hitValue = this.config.hitValue || 1;
     this.snapLine = this.config.snapLine || 100;
-    this.snapLineSpeed = this.config.snapLineSpeed || 200;
+    this.snapLineSpeed = this.config.snapLineSpeed || 300;
     this.hitValue = this.config.hitValue;
     this.powerUp = this.config.powerUp;
 
@@ -339,10 +339,17 @@ class Ship extends Entity {
 
   //
   static getInitPoint(game, manifest) {
-    // Start in the middle of the board
-    const x = manifest.config.origin.x || 512;
-    // Start just above the board
-    const y = manifest.config.origin.y || -manifest.config.sprite.default.dimension.frameHeight;
+    let x, y;
+    // Is origin specified?
+    if (manifest.config.origin) {
+      // Use one or both parameters specified
+      x = manifest.config.origin.x || 512;
+      y = manifest.config.origin.y || -manifest.config.sprite.default.dimension.frameHeight / 2;
+    } else {
+      // Start it above screen in the middle
+      x = 512;
+      y = -manifest.config.sprite.default.dimension.frameHeight / 2;
+    }
 
     return {
       x,
@@ -497,11 +504,11 @@ class Plane extends Ship {
       this.performManeuver();
     }
 
-    if (!this.game.keysDown.ArrowLeft
-      && !this.game.keysDown.ArrowRight
-      && !this.game.keysDown.ArrowUp
-      && !this.game.keysDown.ArrowDown
-      && !this.performingManeuver) {
+    if (!this.game.keysDown.ArrowLeft &&
+      !this.game.keysDown.ArrowRight &&
+      !this.game.keysDown.ArrowUp &&
+      !this.game.keysDown.ArrowDown &&
+      !this.performingManeuver) {
       this.sprite = this.idle;
       if (this.idleTrans) {
         this.idleCount += 1;
@@ -593,7 +600,7 @@ class Plane extends Ship {
         }
         entity.removeFromWorld = true;
       }
-    }// end for loop
+    } // end for loop
   }
 
   returnToInitPoint(coordinate) {
@@ -661,15 +668,24 @@ class Ring {
 
     // convert acceleration and velocity to radians
     if (!this.payload.acceleration) {
-      this.payload.acceleration = { radial: 0, angular: 0 };
+      this.payload.acceleration = { 
+        radial: 0, 
+        angular: 0,
+      };
     } else if (!(this.payload.acceleration instanceof Object)) {
-      this.payload.acceleration = { radial: this.payload.acceleration, angular: 0 };
+      this.payload.acceleration = {
+        radial: this.payload.acceleration,
+        angular: 0,
+      };
     } else {
       this.payload.acceleration.angular = toRadians(this.payload.acceleration.angular);
     }
 
     if (!this.payload.velocity) {
-      this.payload.velocity = { radial: this.payload.speed, angular: 0 };
+      this.payload.velocity = { 
+        radial: this.payload.speed,
+        angular: 0,
+      };
     } else {
       this.payload.velocity.angular = toRadians(this.payload.velocity.angular);
     }
@@ -718,7 +734,7 @@ class Ring {
 
     // update active time counter; used for the pulse delay
     this.status.elapsedActiveTime += game.clockTick;
-    console.log("update=" + ++this.status.count + " interval=" + game.clockTick + " elapsed=" + this.status.elapsedTime);
+    //console.log("update=" + ++this.status.count + " interval=" + game.clockTick + " elapsed=" + this.status.elapsedTime);
     
 
     // ring center position is updated by the Ship before calling Ring.update()
@@ -743,7 +759,10 @@ class Ring {
       projectile.current.angle = this.current.angle + i * this.config.spacing;
       
       // TEST: only update x,y if turret is visible THIS WON'T WORK UNLESS WE CHECK AGAIN AT fireAll() :(
-      const currentPosition = getXandY(this.current, { radius: this.config.radius, angle: projectile.current.angle });
+      const currentPosition = getXandY(this.current, {
+        radius: this.config.radius, 
+        angle: projectile.current.angle,
+      });
       projectile.current.x = currentPosition.x;
       projectile.current.y = currentPosition.y;
       
@@ -839,10 +858,16 @@ class Ring {
     } else {
       // compute new coordinates assuming we will push to the next ordered bay
       const angle = this.current.angle + this.bay.length * this.config.spacing;
-      const velocity = this.payload.velocity || { radial: this.payload.speed, angular: 0 };
+      const velocity = this.payload.velocity || {
+        radial: this.payload.speed,
+        angular: 0,
+      };
       const acceleration = this.payload.acceleration;
 
-      const point = getXandY(this.current, { radius: this.config.radius, angle });
+      const point = getXandY(this.current, { 
+        radius: this.config.radius, 
+        angle,
+      });
       origin = {
         angle,
         velocity: {
@@ -892,7 +917,10 @@ class Ring {
  */
 class Projectile extends Entity {
   constructor(game, manifest) {
-    super(game, { x: manifest.origin.x, y: manifest.origin.y });
+    super(game, { 
+      x: manifest.origin.x,
+      y: manifest.origin.y,
+    });
 
     this.owner = manifest.owner;
     this.current = Object.assign({}, manifest.origin);
@@ -908,8 +936,14 @@ class Projectile extends Entity {
     // support for origin format
     if (!this.current.angle) {
       this.current.angle = manifest.angle;
-      this.current.velocity = { radial: manifest.payload.speed, angular: 0 };
-      this.current.acceleration = { radial: 0, angular: 0 };
+      this.current.velocity = { 
+        radial: manifest.payload.speed, 
+        angular: 0,
+      };
+      this.current.acceleration = { 
+        radial: 0, 
+        angular: 0,
+      };
       this.payload.powerUp = manifest.payload.powerUp;
     } else {
       this.current.velocity = Object.assign({}, this.current.velocity);
@@ -1008,7 +1042,10 @@ class Projectile extends Entity {
 function getXandY(origin, current) {
   const x = origin.x + current.radius * Math.cos(current.angle);
   const y = origin.y + current.radius * Math.sin(current.angle);
-  return { x, y };
+  return { 
+    x, 
+    y,
+  };
 }
 
 /** Convert from degrees to radians */
