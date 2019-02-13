@@ -354,7 +354,7 @@ function loadTemplates() {
     },
   };
 
-  ring.singleTargetPlayer = {
+  ring.singleDown = {
     payload: {
       type: projectile.circleBullet,
       speed: 100,
@@ -364,13 +364,9 @@ function loadTemplates() {
       angle: 90,
       count: 1,
       loadTime: 0.05,
-      cooldownTime: 2,
+      cooldownTime: 0.5,
       rapidReload: true,
       targetPlayer: true,
-      pulse: {
-        duration: 0.5,
-        delay: 0.5,
-      },
     },
   };
 
@@ -684,7 +680,13 @@ function loadTemplates() {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
     },
-    path: [[180, 100, 5], [0, 100, 5], [180, 100, 5], [0, 100, 5], [90, 100, 60]],
+    path: [
+      [180, 100, 5],
+      [0, 100, 5],
+      [180, 100, 5],
+      [0, 100, 5],
+      [90, 100, 60]
+    ],
     weapon: ring.spiralAlpha4,
   };
 
@@ -709,8 +711,8 @@ function loadTemplates() {
   };
 
 
-  // Default versions of enemies for the scene manager to use as a starting
-  // point.
+  // Default trimmed down versions of enemies for the scene manager to use as
+  // a starting point.
   //
   // Mostly useful for radius and sprites.
   ship.bat = {
@@ -720,14 +722,8 @@ function loadTemplates() {
       powerUp: new InvertedControls(100),
       radius: 50,
       sprite: sprite.bat,
-      origin: {
-        // x: 400, // omit x to get random position
-        // y: -45,
-      },
-      weaponsOnEntrance: false,
-      weaponsAdvantage: 0,
     },
-    weapon: ring.singleTargetPlayer,
+    weapon: ring.singleDown,
   };
 
   ship.crane = {
@@ -736,9 +732,30 @@ function loadTemplates() {
       hitValue: 5,
       radius: 50,
       sprite: sprite.crane,
-      snapLine: 100,
-      snapLineSpeed: 200,
-      snapLineWait: 0,
+    },
+    weapon: ring.singleDown,
+  };
+
+  ship.owl = {
+    config: {
+      health: 5,
+      hitValue: 5,
+      radius: 70,
+      sprite: sprite.owl,
+    },
+    weapon: ring.jaredAlpha1,
+  };
+
+  ship.dodgeOwl = {
+    config: {
+      health: 3,
+      hitValue: 5,
+      powerUp: new ExtraLife(),
+      radius: 70,
+      sprite: sprite.owl,
+      snapLine: 150,
+      snapLineSpeed: 300,
+      snapLineWait: 0.5,
       origin: {
         x: 500, // omit x to get random position
         y: -50,
@@ -770,7 +787,7 @@ function loadTemplates() {
         delay: 2,
       },
     },
-    weapon: ring.singleTargetPlayer,
+    weapon: ring.singleDown,
   };
 
   ship.openingBat = {
@@ -952,11 +969,11 @@ function loadTemplates() {
           path.cornerRight,
         ],
         initialXPoints: [
-          400, 600,
+          400, 600
         ],
-      // shipsConfig: {
-      //
-      // }
+        // shipManifestOverride: {
+        //
+        // }
       },
       // {
       //   isWaveDiverse: true,
