@@ -2,14 +2,14 @@
 // IO talk in 2011
 
 window.requestAnimFrame = (function requestAnimFrame() {
-  return window.requestAnimationFrame
-            || window.webkitRequestAnimationFrame
-            || window.mozRequestAnimationFrame
-            || window.oRequestAnimationFrame
-            || window.msRequestAnimationFrame
-            || function animFrame(/* function */ callback) {
-              window.setTimeout(callback, 1000 / 60);
-            };
+  return window.requestAnimationFrame ||
+    window.webkitRequestAnimationFrame ||
+    window.mozRequestAnimationFrame ||
+    window.oRequestAnimationFrame ||
+    window.msRequestAnimationFrame ||
+    function animFrame( /* function */ callback) {
+      window.setTimeout(callback, 1000 / 60);
+    };
 }());
 
 
@@ -93,7 +93,8 @@ class GameEngine {
     this.ctx.canvas.addEventListener('keydown', (e) => {
       if (e.code === 'KeyP') {
         that.pause();
-      } if (e.code === 'KeyD') {
+      }
+      if (e.code === 'KeyD') {
         // toggle outlines for debugging
         that.showOutlines = !that.showOutlines;
       } else {
@@ -128,6 +129,12 @@ class GameEngine {
       if (entity.removeFromWorld) {
         this.entities.splice(i, 1);
         i--;
+        // If it was a ship, scene manager would like to know for scene management purposes
+        if (this.sceneManager) {
+          if (entity instanceof Ship) {
+            this.sceneManager.shipRemoved(entity);
+          }
+        }
       } else {
         entity.update();
       }
@@ -186,8 +193,7 @@ class Entity {
     this.removeFromWorld = false;
   }
 
-  update() {
-  }
+  update() {}
 
   draw() {
     if (this.game.showOutlines && this.config.radius) {
@@ -212,8 +218,8 @@ class Entity {
   isOutsideScreen() {
     let hasLeftScreen = false;
     if (this.config.radius) {
-      hasLeftScreen = (this.current.x < 0 - this.config.radius || this.current.x > this.game.surfaceWidth + this.config.radius
-         || this.current.y < 0 - this.config.radius || this.current.y > this.game.surfaceHeight + this.config.radius);
+      hasLeftScreen = (this.current.x < 0 - this.config.radius || this.current.x > this.game.surfaceWidth + this.config.radius ||
+        this.current.y < 0 - this.config.radius || this.current.y > this.game.surfaceHeight + this.config.radius);
     }
     return hasLeftScreen;
   }
