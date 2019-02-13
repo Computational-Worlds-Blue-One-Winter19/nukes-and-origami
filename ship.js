@@ -894,6 +894,7 @@ class Projectile extends Entity {
     this.config = {
       radius: this.payload.radius,
       isHoming: this.payload.isHoming,
+      baseAngle: this.current.angle || manifest.angle || 0,
     };
 
     // support for origin format

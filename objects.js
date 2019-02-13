@@ -1,8 +1,8 @@
 function loadTemplates() {
   /**
    * A custom projectile overrides the update method. This is called after the projectile has spawned.
-   * Access origin.x, origin.y, current.x, current.y, that.initialAngle, that.angle, that.speed,
-   * that.acceleration, that.game.clockTick
+   * Access current.x, current.y, current.velocity, current.acceleration, this.game.clockTick
+   * to update x,y.
    */
   projectile.homing = {
     radius: 3,
@@ -30,6 +30,31 @@ function loadTemplates() {
         this.current.angle = target.angle;
       }
 
+      const deltaRadius = this.current.velocity.radial * this.game.clockTick;
+      const newPoint = getXandY(previous, { angle: this.current.angle, radius: deltaRadius });
+      this.current.x = newPoint.x;
+      this.current.y = newPoint.y;
+    },
+  };
+
+  projectile.sine = {
+    radius: 3,
+    
+    draw(ctx, x, y) {
+      ctx.beginPath();
+      ctx.arc(x, y, this.config.radius, 0 * Math.PI, 2 * Math.PI);
+      ctx.stroke();
+      ctx.fill();
+    },
+
+    update() {
+      const previous = {
+        x: this.current.x,
+        y: this.current.y,
+      };
+
+      const deltaAngle = this.game.timer.getWave(180, 1) * this.game.clockTick;
+      this.current.angle = this.config.baseAngle + deltaAngle;
       const deltaRadius = this.current.velocity.radial * this.game.clockTick;
       const newPoint = getXandY(previous, { angle: this.current.angle, radius: deltaRadius });
       this.current.x = newPoint.x;
@@ -96,14 +121,14 @@ function loadTemplates() {
   ring.linearTest = {
     payload: {
       type: projectile.microBullet,
-      speed: 75,
+      speed: 100,
     },
     firing: {
       radius: 5,
       count: 1,
       angle: 90,
-      loadTime: 0.01,
-      cooldownTime: 1,
+      loadTime: 0,
+      cooldownTime: 0.005,
       rapidReload: true,
       targetPlayer: false,
       viewTurret: true,
@@ -718,6 +743,386 @@ function loadTemplates() {
     },
   };
 
+  /** 
+   *  Uni Bullet Hell patterns
+   *  https://www.youtube.com/watch?v=xbQ9e0zYuj4
+   */
+  ring.uniLinear = {
+    payload: {
+      type: projectile.microBullet,
+      speed: 180,
+      acceleration: 0,
+    },
+    rotation: {
+      angle: 0,
+      frequency: 0,
+    },
+    firing: {
+      radius: 1,
+      angle: 90,
+      count: 1,
+      loadTime: 0,
+      cooldownTime: 0.2,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: true,
+      pulse: {
+        duration: 2,
+        delay: 1
+      }
+    },
+  };
+
+  ring.uniLinearLockOn = {
+    payload: {
+      type: projectile.microBullet,
+      speed: 180,
+      acceleration: 0,
+    },
+    rotation: {
+      angle: 0,
+      frequency: 0,
+    },
+    firing: {
+      radius: 1,
+      angle: 90,
+      count: 1,
+      loadTime: 0,
+      cooldownTime: 0.2,
+      rapidReload: true,
+      targetPlayer: false,
+      targetLeadShot: true,
+      viewTurret: true,
+      pulse: {
+        duration: 2,
+        delay: 1
+      }
+    },
+  };
+
+  ring.uniLinearAccel = {
+    payload: {
+      type: projectile.microBullet,
+      speed: 180,
+      acceleration: 200,
+    },
+    rotation: {
+      angle: 0,
+      frequency: 0,
+    },
+    firing: {
+      radius: 1,
+      angle: 90,
+      count: 1,
+      loadTime: 0,
+      cooldownTime: 0.2,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: true,
+      pulse: {
+        duration: 2,
+        delay: 1
+      }
+    },
+  };
+
+  ring.uniLinearDecel = {
+    payload: {
+      type: projectile.microBullet,
+      speed: 500,
+      acceleration: -200,
+    },
+    rotation: {
+      angle: 0,
+      frequency: 0,
+    },
+    firing: {
+      radius: 1,
+      angle: 90,
+      count: 1,
+      loadTime: 0,
+      cooldownTime: 0.2,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: true,
+      pulse: {
+        duration: 2,
+        delay: 1
+      }
+    },
+  };
+
+  ring.uniLinearAccelAiming = {
+    payload: {
+      type: projectile.microBullet,
+      speed: 180,
+      acceleration: 200,
+    },
+    rotation: {
+      angle: 0,
+      frequency: 0,
+    },
+    firing: {
+      radius: 1,
+      angle: 90,
+      count: 1,
+      loadTime: 0,
+      cooldownTime: 0.2,
+      rapidReload: true,
+      targetPlayer: true,
+      viewTurret: true,
+      pulse: {
+        duration: 2,
+        delay: 1
+      }
+    },
+  };
+
+  ring.uniLinearSpiralRight = {
+    payload: {
+      type: projectile.microBullet,
+      speed: 80,
+      acceleration: 0,
+    },
+    rotation: {
+      speed: .4,
+    },
+    firing: {
+      radius: 1,
+      angle: 90,
+      count: 3,
+      loadTime: 0,
+      cooldownTime: 0.01,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: true,
+      pulse: {
+        duration: 4,
+        delay: 1
+      }
+    },
+  };
+
+  ring.uniLinearSpiralLeft = {
+    payload: {
+      type: projectile.microBullet,
+      speed: 80,
+      acceleration: 0,
+    },
+    rotation: {
+      speed: -.4,
+    },
+    firing: {
+      radius: 1,
+      angle: 90,
+      count: 3,
+      loadTime: 0,
+      cooldownTime: 0.01,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: true,
+      pulse: {
+        duration: 4,
+        delay: 1
+      }
+    },
+  };
+
+  ring.uniLinearSpiralRightTurn = {
+    payload: {
+      type: projectile.microBullet,
+      velocity: {
+        radial: 80,
+        angular: 20,
+      },
+      acceleration: {
+        radial: 0,
+        angular: 0,
+      }
+
+    },
+    rotation: {
+      speed: .4,
+    },
+    firing: {
+      radius: 1,
+      angle: 90,
+      count: 3,
+      loadTime: 0,
+      cooldownTime: 0.01,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: true,
+      pulse: {
+        duration: 4,
+        delay: 1
+      }
+    },
+  };
+
+  ring.uniLinearSpiralRightTurnAccel = {
+    payload: {
+      type: projectile.microBullet,
+      velocity: {
+        radial: 80,
+        angular: 20,
+      },
+      acceleration: {
+        radial: 200,
+        angular: 0,
+      }
+
+    },
+    rotation: {
+      speed: .4,
+    },
+    firing: {
+      radius: 1,
+      angle: 90,
+      count: 3,
+      loadTime: 0,
+      cooldownTime: 0.01,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: true,
+      pulse: {
+        duration: 4,
+        delay: 1
+      }
+    },
+  };
+
+  ring.uniFiveWay = {
+    payload: {
+      type: projectile.microBullet,
+      velocity: {
+        radial: 400,
+        angular: 0,
+      },
+      acceleration: {
+        radial: 0,
+        angular: 0,
+      }
+
+    },
+    rotation: {
+      speed: 0,
+    },
+    firing: {
+      radius: 5,
+      angle: 90,
+      spread: 20,
+      count: 5,
+      loadTime: 0,
+      cooldownTime: 0.01,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: true,
+      pulse: {
+        duration: 2,
+        delay: 1
+      }
+    },
+  };
+
+  ring.uniTwentyWayTurn = {
+    payload: {
+      type: projectile.microBullet,
+      velocity: {
+        radial: 400,
+        angular: 50,
+      },
+      acceleration: {
+        radial: 0,
+        angular: 0,
+      }
+
+    },
+    rotation: {
+      speed: 0,
+    },
+    firing: {
+      radius: 5,
+      angle: 0,
+      count: 20,
+      loadTime: 0.001,
+      cooldownTime: 0.01,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: true,
+      pulse: {
+        duration: 2,
+        delay: 1
+      }
+    },
+  };
+
+  ring.uniSpiralFourWay = {
+    payload: {
+      type: projectile.microBullet,
+      velocity: {
+        radial: 400,
+        angular: 0,
+      },
+      acceleration: {
+        radial: 0,
+        angular: 0,
+      }
+
+    },
+    rotation: {
+      speed: .2,
+    },
+    firing: {
+      radius: 5,
+      angle: 0,
+      count: 4,
+      spread: 40,
+      loadTime: 0.001,
+      cooldownTime: 0.01,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: true,
+      pulse: {
+        duration: 2,
+        delay: 1
+      }
+    },
+  };
+
+  ring.uniSpiralFourWay180 = {
+    payload: {
+      type: projectile.microBullet,
+      velocity: {
+        radial: 400,
+        angular: 0,
+      },
+      acceleration: {
+        radial: 0,
+        angular: 0,
+      }
+
+    },
+    rotation: {
+      speed: .2,
+    },
+    firing: {
+      radius: 5,
+      angle: 180,
+      count: 4,
+      spread: 40,
+      loadTime: 0.001,
+      cooldownTime: 0.01,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: true,
+      pulse: {
+        duration: 2,
+        delay: 1
+      }
+    },
+  };
+
   /** *** ENEMY SHIPS **** */
   ship.demoCrane = {
     config: {
@@ -936,7 +1341,7 @@ function loadTemplates() {
       radius: 70,
       sprite: sprite.dove,
       snapLine: 200,
-      snapLineSpeed: 300,
+      snapLineSpeed: 400,
       snapLineWait: 1,
       origin: {
         x: 500, // omit x to get random position
@@ -947,14 +1352,14 @@ function loadTemplates() {
     },
     weapon: [
       {
-        ring: ring.trackingTest1,
-        offset: {x:-30,y:23},
+        ring: ring.linearTest,
+        //offset: {x:-30,y:23},
       },
 
-      {
-        ring: ring.trackingTest1,
-        offset: {x:30,y:23},
-      },
+      // {
+      //   ring: ring.uniSpiralFourWay180,
+      //   //offset: {x:30,y:23},
+      // },
     ],
   };
 
