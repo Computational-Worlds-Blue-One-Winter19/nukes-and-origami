@@ -151,9 +151,9 @@ class Ship extends Entity {
       this.updateSnapPath();
     } else {
       // check all systems
+      this.updateHelm();
       this.updateCollisionDetection();
       this.updateWeapons();
-      this.updateHelm();
     }
     super.update();
   }
@@ -368,17 +368,13 @@ class Plane extends Ship {
     };
   }
 
-  update() {
+  updateHelm() {
     // It might be better to use a changeX and changeY variable
     // This way we apply a sprite depending on how the position has changed
     if (this.invincTime != 0 && this.invincTime < this.invincDuration) {
       this.invincTime += this.game.clockTick;
     } else if (this.invincTime > this.invincDuration) {
       this.invincTime = 0;
-    }
-
-    if (this.weapon) {
-      this.weapon.update();
     }
 
     if (!this.canRoll) {
@@ -388,9 +384,7 @@ class Plane extends Ship {
         this.canRoll = true;
       }
     }
-
-    // Check if the plane has been hit by an enemy projectile
-    this.updateCollisionDetection();
+    
     // This makes me worry about an overflow, or slowing our game down.
     // But it works great for what we need.
     // this.timeSinceLastSpacePress += this.game.clockTick;
