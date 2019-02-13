@@ -221,10 +221,10 @@ class NukesAndOrigami extends GameEngine {
 
   testScene() {
     // override onEnemyDestruction
-    this.onEnemyDestruction = function () {
-      this.addEntity(new Ship(this, ship.testDove));  
+    this.onEnemyDestruction = function() {
+      this.addEntity(new Ship(this, ship.testDove));
     }
-    
+
     // spawn a single enemy to the center
     this.addEntity(new Ship(this, ship.testDove));
     // this.addEntity(new Ship(this, ship.testCrane));
@@ -283,13 +283,15 @@ class SceneManager {
 
     this.leftSpawnLimit = 100;
     this.rightSpawnLimit = 1024 - 100;
+    this.timeBetweenWaves = 1;
 
     this.waveTimer = 0;
     this.currentScene = null;
     this.wave = null;
     this.waves = null;
+    this.entitiesInWave = [];
 
-    this.scenes = [scene.easyPaper, scene.mediumPaper, scene.hardPaper];
+    this.scenes = [scene.easyPaper];
   }
 
 
@@ -306,43 +308,51 @@ class SceneManager {
   // something special for the boss or a special enemy, for example.
   loadWave(wave) {
     this.wave = wave;
-
-    // Is this wave made up of unique ships?
-    if (this.wave.isWaveDiverse) {
-      // not implemented
+    let spacing, locationCounter;
+    // More than one enemy?
+    if (wave.numOfEnemies > 1) {
+      // Space evenly
+      spacing = ((this.rightSpawnLimit - this.leftSpawnLimit) / (wave.numOfEnemies - 1));
+      locationCounter = this.leftSpawnLimit;
     } else {
-      let spacing, locationCounter;
-      // More than one enemy?
-      if (wave.numOfEnemies > 1) {
-        // Space evenly
-        spacing = ((this.rightSpawnLimit - this.leftSpawnLimit) / (wave.numOfEnemies - 1));
-        locationCounter = this.leftSpawnLimit;
+      // Put the single enemy in the middle
+      locationCounter = this.leftSpawnLimit + (this.rightSpawnLimit - this.leftSpawnLimit) / 2;
+    }
+
+    // Create the ships.
+    for (let i = 0; i < wave.numOfEnemies; i++) {
+      // Make shallow copies to not modify the objects.js defaults
+      let manifestCopy = Object.assign({}, wave.ships[i]);
+      // If path was overridden, put that in the manifestCopy
+      manifestCopy.path = wave.paths ? wave.paths[i] : 0;
+      // If Override is provided, override the ships manifest, otherwise do
+      // nothing.
+      let ship = new Ship(this.game, Object.assign({}, manifestCopy,
+        wave.shipManifestOverride ? wave.shipManifestOverride[i] : {}));
+
+      // Was the location overriden?
+      if (wave.initialXPoints) {
+        ship.current.x = wave.initialXPoints[i];
       } else {
-        // Put the single enemy in the middle
-        locationCounter = this.leftSpawnLimit + (this.rightSpawnLimit - this.leftSpawnLimit) / 2;
+        ship.current.x = locationCounter;
+        locationCounter += spacing;
       }
 
-      // Create the ships.
-      for (let i = 0; i < wave.numOfEnemies; i++) {
-        let ship = new Ship(this.game, Object.assign({}, wave.ships[0]));
-        ship.initializePath(wave.paths[i]);
-
-        // Is ship location specified?
-        if (wave.initialXPoints) {
-          ship.current.x = wave.initialXPoints[i];
-        } else {
-          ship.current.x = locationCounter;
-          locationCounter += spacing;
-        }
-
-        // ship.initializeWeapon(Object.assign({}, wave.weapons[0]))
-
-        this.game.addEntity(ship);
+      this.game.addEntity(ship);
+      if (wave.waitUntilEnemiesGone) {
+        this.entitiesInWave.push(ship);
       }
+    }
+  }
 
-
-
-
+  // Called when anything other than a projectile is removed from the gameengine.
+  // Used for keeping track of if waves
+  shipRemoved(entity) {
+    for (let i = 0; i < this.entitiesInWave.length; i++) {
+      if (entity == this.entitiesInWave[i]) {
+        this.entitiesInWave.splice(i, 1);
+        i--;
+      }
     }
   }
 
@@ -353,19 +363,37 @@ class SceneManager {
   // is wasted on loading the new wave from that new scene, then on the 3rd update
   // something actually starts happening.
   update() {
+    // Theres at most one thing we could be waiting for time-wise, so just use
+    // one wavetimer for multiple purposes.
     this.waveTimer += this.game.clockTick;
     // No scene? load the next one
     if (!this.currentScene) {
       // Hang here if we have no more scenes
-      if (!this.scenes.length == 0) {
+      if (!(this.scenes.length == 0)) {
         this.loadScene(this.scenes.shift());
       }
     } else {
       // No wave? load the next one and initialize them
       if (!this.wave) {
-        this.loadWave(this.waves.shift());
+        // Wait some time to give player time between waves.
+        if (this.waveTimer > this.timeBetweenWaves) {
+          // Is this scene out of waves?
+          if (this.waves.length == 0) {
+            this.currentScene = 0;
+          } else {
+            this.loadWave(this.waves.shift());
+            this.waveTimer = 0;
+          }
+        }
       } else {
-
+        // Are we waiting for enemies to be killed/go off screen before we
+        // continue?
+        if (this.wave.waitUntilEnemiesGone) {
+          if (this.entitiesInWave.length == 0) {
+            this.wave = false;
+            this.waveTimer = 0;
+          }
+        }
       }
 
     }

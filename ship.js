@@ -125,7 +125,7 @@ class Ship extends Entity {
     this.config.radius = this.config.radius || 50;
     this.config.hitValue = this.config.hitValue || 1;
     this.snapLine = this.config.snapLine || 100;
-    this.snapLineSpeed = this.config.snapLineSpeed || 200;
+    this.snapLineSpeed = this.config.snapLineSpeed || 300;
     this.hitValue = this.config.hitValue;
     this.powerUp = this.config.powerUp;
 

@@ -241,6 +241,27 @@ function loadTemplates() {
     },
   };
 
+  ring.fourFixedSpeedCircle = {
+    payload: {
+      type: projectile.circleBullet,
+      speed: 100,
+      acceleration: 1,
+    },
+    rotation: {
+      speed: 0.05,
+    },
+    firing: {
+      radius: 80,
+      angle: 90,
+      count: 4,
+      loadTime: 0.005,
+      cooldownTime: 0.5,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: true,
+    },
+  };
+
   ring.spreadBeta1 = {
     payload: {
       type: projectile.paperBall,
@@ -366,7 +387,6 @@ function loadTemplates() {
       loadTime: 0.05,
       cooldownTime: 0.5,
       rapidReload: true,
-      targetPlayer: true,
     },
   };
 
@@ -538,8 +558,8 @@ function loadTemplates() {
       targetPlayer: true,
       viewTurret: false,
       pulse: {
-        duration: 0.4,
-        delay: 0.2,
+        duration: 0.1,
+        delay: 1,
       },
     }
   };
@@ -733,7 +753,7 @@ function loadTemplates() {
       radius: 50,
       sprite: sprite.crane,
     },
-    weapon: ring.singleDown,
+    weapon: ring.fourFixedSpeedCircle,
   };
 
   ship.owl = {
@@ -744,6 +764,16 @@ function loadTemplates() {
       sprite: sprite.owl,
     },
     weapon: ring.jaredAlpha1,
+  };
+
+  ship.dove = {
+    config: {
+      health: 5,
+      hitValue: 5,
+      radius: 70,
+      sprite: sprite.dove,
+    },
+    weapon: ring.trackingTest1,
   };
 
   ship.dodgeOwl = {
@@ -932,6 +962,9 @@ function loadTemplates() {
   };
 
   /** *** PATHS **** */
+  // I wonder what this does
+  path.doNothing = []
+
   // Slowly strafe right off screen
   path.strafeRight = [
     [0, 50, 20],
@@ -960,28 +993,57 @@ function loadTemplates() {
   scene.easyPaper = {
     waves: [
       // wave 1
+      // {
+      //   numOfEnemies: 2,
+      //   ships: new Array(2).fill(ship.bat),
+      //   paths: [
+      //     path.strafeRight,
+      //     path.strafeLeft,
+      //   ],
+      //   waitUntilEnemiesGone: true,
+      // },
+      // {
+      //   numOfEnemies: 3,
+      //   ships: new Array(3).fill(ship.crane),
+      // },
       {
-        isWaveDiverse: false,
-        ships: [ship.bat],
-        numOfEnemies: 2,
+        numOfEnemies: 3,
+        ships: [ship.bat, ship.dove, ship.bat],
         paths: [
+          // first bat cornerleft
           path.cornerLeft,
+          // dove do nothing
+          path.doNothing,
+          // second bat cornerright
           path.cornerRight,
         ],
-        initialXPoints: [
-          400, 600
+        shipManifestOverride: [
+          // change first bat to tracking test
+          {
+            weapon: ring.trackingTest1,
+          },
+          // don't do anything to dove
+          {},
+          // change second bat to tracking test
+          {
+            weapon: ring.trackingTest1,
+          },
         ],
-        // shipManifestOverride: {
-        //
-        // }
+        initialXPoints: [
+          400, 500, 600,
+        ],
+        waitUntilEnemiesGone: true,
       },
-      // {
-      //   isWaveDiverse: true,
-      //   ships: ship.bat,
-      //   initialXPoints: [
-      //     400, 500, 600
-      //   ],
-      // }
+      {
+        warpSpeed: true,
+        messages: [
+          {
+            type: warning,
+            text: 'Warning',
+            duration: 3,
+          }
+        ]
+      }
     ],
   };
 
