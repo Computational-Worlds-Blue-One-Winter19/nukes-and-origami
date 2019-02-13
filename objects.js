@@ -144,9 +144,36 @@ function loadTemplates() {
     firing: {
       count: 3,
       loadTime: 0.01,
-      cooldownTime: 0.1,
+      cooldownTime: 0.01,
       rapidReload: true,
       targetPlayer: false,
+      pulse: {
+        duration: 0.4,
+        delay: 3.0,
+      }
+    },
+  };
+  
+  ring.spiralAlphaReverse = {
+    payload: {
+      type: projectile.circleBullet,
+      speed: 500,
+      acceleration: 1,
+    },
+    rotation: {
+      angle: -720,
+      frequency: 4,
+    },
+    firing: {
+      count: 3,
+      loadTime: 0.01,
+      cooldownTime: 0.01,
+      rapidReload: true,
+      targetPlayer: false,
+      pulse: {
+        duration: 0.4,
+        delay: 2.0,
+      }
     },
   };
 
@@ -482,9 +509,9 @@ function loadTemplates() {
       cooldownTime: 0.05,
       rapidReload: true,
       targetPlayer: false,
-      viewTurret: false,
+      viewTurret: true,
       pulse: {
-        duration: 0.4,
+        duration: 4.5,
         delay: 1.5,
       },
     },
@@ -539,7 +566,7 @@ function loadTemplates() {
       loadTime: 0.005,
       cooldownTime: 0.001,
       rapidReload: true,
-      targetPlayer: true,
+      targetLeadShot: true,
       viewTurret: false,
       pulse: {
         duration: 0.4,
@@ -893,7 +920,14 @@ function loadTemplates() {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
     },
-    weapon: ring.trackingTest1,
+    weapon: [
+      {
+        ring: ring.angularTest,
+      },
+      {
+        ring: ring.spiralAlphaReverse,
+      },
+    ],
   };
 
   ship.testCrane = {

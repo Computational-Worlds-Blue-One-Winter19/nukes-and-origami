@@ -160,8 +160,14 @@ class Ship extends Entity {
 
   draw() {
     this.sprite.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
-    this.weapon.draw();
+    this.drawWeapon();   
     super.draw();
+  }
+
+  drawWeapon() {
+    for (let i = 0; i < this.weapon.length; i++) {
+      this.weapon[i].ring.draw();
+    }
   }
 
   /**
@@ -203,7 +209,15 @@ class Ship extends Entity {
    * Weapons: manage turret initialization, rotation, firing and cooldown.
    */
   updateWeapons() {
-    this.weapon.update();
+    // assume that this.current has been updated to Ship's x,y postion
+    for (let i = 0; i < this.weapon.length; i++) {
+      let weapon = this.weapon[i];
+
+      weapon.ring.current.x = this.current.x + weapon.offset.x;
+      weapon.ring.current.y = this.current.y + weapon.offset.y;
+
+      weapon.ring.update();
+    }
   }
 
   /** Helm: manage path sequence. */
@@ -266,8 +280,28 @@ class Ship extends Entity {
   }
 
   initializeWeapon(weaponManifest) {
-    // do stuff here to configure a new weapon system.
-    this.weapon = new Ring(this, weaponManifest);
+    this.weapon = new Array();
+    
+    if (weaponManifest instanceof Array) {
+      // process the multi-ring format
+      for (let i = 0; i < weaponManifest.length; i++) {
+        var r = new Ring(this, weaponManifest[i].ring);
+        var offset = weaponManifest[i].offset || { x: 0, y: 0 };
+
+        this.weapon.push({
+          ring: r,
+          offset: offset,
+        });
+      }
+    } else {
+      // process the single-ring format  
+      var r = new Ring(this, weaponManifest);
+      
+      this.weapon.push({
+        ring: r,
+        offset: { x: 0, y: 0 },
+      });
+    }
   }
 
   /** Helpers for repeated work. */
@@ -338,9 +372,7 @@ class Plane extends Ship {
     this.rollRight = new Sprite(manifest.config.sprite.rollRight);
 
     // load weapon
-    if (manifest.weapon) {
-      this.weapon = new Ring(this, manifest.weapon);
-    }
+    // handled in Ship constructor
 
     // initial parameters
     this.sprite = this.idle;
@@ -537,7 +569,7 @@ class Plane extends Ship {
       this.sprite.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
     }
 
-    this.weapon.draw();
+    this.drawWeapon();
   }
 
   /**
@@ -690,8 +722,8 @@ class Ring {
     // update current ring coordinates before computing the location of each turret
     // right now this uses the Ship position.
     // TODO: point to weapon assembly + offset? for spacing-out the ring objects
-    this.current.x = this.owner.current.x;
-    this.current.y = this.owner.current.y;
+    //this.current.x = this.owner.current.x;
+    //this.current.y = this.owner.current.y;
 
     // adjust angle for bay[0] if this ring is rotating
     if (this.fixedRotation) {
