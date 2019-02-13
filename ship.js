@@ -146,7 +146,9 @@ class Ship extends Entity {
   }
 
   update() {
-    if (this.snapLine) {
+    if (this.config.waitOffScreen > 0) {	    
+      this.config.waitOffScreen -= this.game.clockTick;	
+    } else if (this.snapLine) {
       // we are enroute to the snapLine
       this.updateSnapPath();
     } else {
@@ -362,19 +364,40 @@ class Plane extends Ship {
     this.invincCtr = 0;
     this.blinking = false;
     this.idleCount = 0;
+    // specific to powerups
     this.shield = {
       hasShield: false,
       entities: [],
     };
-  }
 
+    this.controls = {
+      hasInvertedControls: false,
+      startTime: 0,
+      duration: 10,
+    };
+  }
+  
+  /** @override
+   *  The Ship calls this method first on every update cycle.
+   */
   updateHelm() {
     // It might be better to use a changeX and changeY variable
     // This way we apply a sprite depending on how the position has changed
-    if (this.invincTime != 0 && this.invincTime < this.invincDuration) {
+    if (this.invincTime !== 0 && this.invincTime < this.invincDuration) {
       this.invincTime += this.game.clockTick;
     } else if (this.invincTime > this.invincDuration) {
       this.invincTime = 0;
+    }
+
+    if (this.controls.hasInvertedControls) {
+      // Increase the startTime
+      this.controls.startTime += this.game.clockTick;
+
+      if (this.controls.startTime > this.controls.duration) {
+        this.controls.hasInvertedControls = false;
+        this.controls.startTime = 0;
+        showTimedMessage('normal-message');
+      }
     }
 
     if (!this.canRoll) {
@@ -384,12 +407,23 @@ class Plane extends Ship {
         this.canRoll = true;
       }
     }
-    
+        
     // This makes me worry about an overflow, or slowing our game down.
     // But it works great for what we need.
     // this.timeSinceLastSpacePress += this.game.clockTick;
     if (!this.rolling && !this.isOutsideScreen()) {
-      if (this.game.keysDown.ArrowLeft && !this.game.keysDown.ArrowRight) {
+      const leftKeyCheck = this.game.keysDown.ArrowLeft && !this.game.keysDown.ArrowRight;
+      const rightKeyCheck = this.game.keysDown.ArrowRight && !this.game.keysDown.ArrowLeft;
+
+      const hitCeilCheck = this.current.y - ((this.sprite.height * this.sprite.scale) / 2) > 0;
+      const hitFloorCheck = this.current.y + ((this.sprite.height * this.sprite.scale) / 2) < this.game.surfaceHeight;
+      const upKeyCheck = this.game.keysDown.ArrowUp && hitCeilCheck;
+      const upInvertedKeyCheck = this.game.keysDown.ArrowDown && hitCeilCheck;
+      const downKeyCheck = this.game.keysDown.ArrowDown && hitFloorCheck;
+      const downInvertedKeyCheck = this.game.keysDown.ArrowUp && hitFloorCheck;
+
+      if ((this.controls.hasInvertedControls && rightKeyCheck)
+      || (!this.controls.hasInvertedControls && leftKeyCheck)) {
         if (this.game.keysDown.KeyC && this.canRoll) {
           this.rollDirection = 'left';
           this.rolling = true;
@@ -402,7 +436,10 @@ class Plane extends Ship {
           this.sprite = this.left;
         }
       }
-      if (this.game.keysDown.ArrowRight && !this.game.keysDown.ArrowLeft) {
+
+
+      if ((this.controls.hasInvertedControls && leftKeyCheck)
+      || (!this.controls.hasInvertedControls && rightKeyCheck)) {
         if (this.game.keysDown.KeyC && this.canRoll) {
           this.rollDirection = 'right';
           this.rolling = true;
@@ -418,11 +455,12 @@ class Plane extends Ship {
       if (this.game.keysDown.ArrowLeft && this.game.keysDown.ArrowRight) {
         this.sprite = this.idle;
       }
-      if (this.game.keysDown.ArrowUp && this.current.y - ((this.sprite.height * this.sprite.scale) / 2) > 0) {
+      if ((this.controls.hasInvertedControls && upInvertedKeyCheck)
+      || (!this.controls.hasInvertedControls && upKeyCheck)) {
         this.current.y -= this.speed * this.game.clockTick;
       }
-      if (this.game.keysDown.ArrowDown && this.current.y + ((this.sprite.height * this.sprite.scale) / 2)
-           < this.game.surfaceHeight) {
+      if ((this.controls.hasInvertedControls && downInvertedKeyCheck)
+      || (!this.controls.hasInvertedControls && downKeyCheck)) {
         this.current.y += this.speed * this.game.clockTick;
       }
     } else {

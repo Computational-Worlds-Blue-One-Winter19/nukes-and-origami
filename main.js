@@ -392,14 +392,14 @@ AM.downloadAll(() => {
   game.start();
 
   // add background and player
-  //game.addBackground();
+  game.addBackground();
   game.spawnPlayer();
 
   // view test stage
-  game.testScene();
+  //game.testScene();
 
   // run prototype level
-  // game.spawnEnemies();
+  game.spawnEnemies();
 
   //initIntroMessage(game);
 
