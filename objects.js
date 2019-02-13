@@ -128,7 +128,7 @@ function loadTemplates() {
       count: 1,
       angle: 90,
       loadTime: 0,
-      cooldownTime: 0.005,
+      cooldownTime: 0.25,
       rapidReload: true,
       targetPlayer: false,
       viewTurret: true,
@@ -676,7 +676,7 @@ function loadTemplates() {
       //speed: .1,
     },
     firing: {
-      radius: 1,
+      radius: 0,
       angle: 90,
       spread: 2,
       count: 4,
@@ -687,7 +687,7 @@ function loadTemplates() {
       viewTurret: false,
       pulse: {
         duration: 2.0,
-        delay: 3.0,
+        delay: 0,
       },
     }
   };
@@ -1352,7 +1352,7 @@ function loadTemplates() {
     },
     weapon: [
       {
-        ring: ring.linearTest,
+        ring: ring.jaredWavy1,
         //offset: {x:-30,y:23},
       },
 

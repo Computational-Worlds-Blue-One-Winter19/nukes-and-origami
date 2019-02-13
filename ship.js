@@ -152,7 +152,7 @@ class Ship extends Entity {
     } else {
       // check all systems
       this.updateHelm();
-      this.updateCollisionDetection();
+      //this.updateCollisionDetection();
       this.updateWeapons();
     }
     super.update();
@@ -715,10 +715,8 @@ class Ring {
     this.status.elapsedTime += game.clockTick;
 
     // update active time counter; used for the pulse delay
-    if (!this.status.isWaiting) {
-      this.status.elapsedActiveTime += game.clockTick;
-    }
-
+    this.status.elapsedActiveTime += game.clockTick;
+    
     // ring center position is updated by the Ship before calling Ring.update()
 
     // adjust angle for bay[0] if this ring is rotating
@@ -739,9 +737,13 @@ class Ring {
     for (let i = 0; i < this.bay.length; i++) {
       const projectile = this.bay[i];
       projectile.current.angle = this.current.angle + i * this.config.spacing;
-      const currentPosition = getXandY(this.current, { radius: this.config.radius, angle: projectile.current.angle });
-      projectile.current.x = currentPosition.x;
-      projectile.current.y = currentPosition.y;
+      
+      // TEST: only update x,y if turret is visible
+      if (this.config.viewTurret) {
+        const currentPosition = getXandY(this.current, { radius: this.config.radius, angle: projectile.current.angle });
+        projectile.current.x = currentPosition.x;
+        projectile.current.y = currentPosition.y;
+      }
     }
 
     // now that all projectiles have been updated we can evaluate the next
@@ -762,17 +764,20 @@ class Ring {
       // a player only fires on command, all others fire on ready
       if (!this.owner.isPlayer || game.keysDown.Space) {
         this.fireAll();
+        // update state inside of fireAll()
       }
     } else if (this.status.isCooling && this.status.elapsedTime > this.config.cooldownTime) {
       // Cooldown state
       this.status.isCooling = false;
-      this.status.isLoading = true;
+      this.status.isLoading = !this.config.rapidReload;
+      this.status.isReady = this.config.rapidReload;
       this.status.elapsedTime = 0;
     } else if (this.status.isWaiting && this.status.elapsedTime > this.config.waitTime) {
       // Waiting state
       // duration is defined by pulse configuration
       this.status.isWaiting = false;
-      this.status.isLoading = true;
+      this.status.isLoading = !this.config.rapidReload;
+      this.status.isReady = this.config.rapidReload;
       this.status.elapsedActiveTime = 0;
       this.status.elapsedTime = 0;
 
