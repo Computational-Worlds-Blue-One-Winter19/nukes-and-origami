@@ -81,10 +81,6 @@ class NukesAndOrigami extends GameEngine {
         ...powerUp.manifest,
       }));
     }
-
-    if (next) {
-
-    }
   }
 
   // notification of player destruction.
@@ -399,9 +395,9 @@ AM.downloadAll(() => {
   //game.testScene();
 
   // run prototype level
-  game.spawnEnemies();
+  //game.spawnEnemies();
 
-  //initIntroMessage(game);
+  initIntroMessage(game);
 
   console.log('All Done!');
   canvas.focus();
