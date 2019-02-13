@@ -656,6 +656,7 @@ class Ring {
       cooldownTime: manifest.firing.cooldownTime || 0.05,
       loadTime: manifest.firing.loadTime || 0.05,
       targetPlayer: manifest.firing.targetPlayer || false,
+      targetLeadShot: manifest.firing.targetLeadShot || false,
     };
 
     // store instance variables
@@ -663,7 +664,7 @@ class Ring {
       x: this.owner.current.x,
       y: this.owner.current.y,
       angle: baseAngle,
-      isLeadShot: this.config.targetPalyer,
+      isLeadShot: this.config.targetLeadShot,
     };
 
     // set firing conditionals
@@ -700,8 +701,8 @@ class Ring {
     } else if (this.sineAmplitude) {
       const delta = game.timer.getWave(this.sineAmplitude, this.sineFrequency);
       this.current.angle = this.config.baseAngle + delta;
-    } else if (this.current.isLeadShot) {
-      // moved target logic to here. only updates on lead shot.
+    } else if (this.current.isLeadShot || this.config.targetPlayer) {
+      // moved target logic to here. this will aim the 
       const target = this.getPlayerLocation(this.current);
       this.current.angle = target.angle - this.config.spread / 2;
       this.current.isLeadShot = false;
@@ -748,7 +749,7 @@ class Ring {
       this.status.elapsedTime = 0;
 
       // if tracking then set flag to track next shot
-      this.current.isLeadShot = this.config.targetPlayer;
+      this.current.isLeadShot = this.config.targetLeadShot;
     }
   }
 
