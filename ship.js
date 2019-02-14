@@ -730,8 +730,8 @@ class Ring {
     };
 
     if (pattern) {
-      this.status.round = -1,
-      this.status.lastRound = pattern.sequence.length;
+      this.status.roundLength = pattern.sequence.length;
+      this.status.round = this.status.roundLength;
       this.config.waitTime = pattern.delay;
     }
   }
@@ -794,12 +794,15 @@ class Ring {
       // Ready state
       // a player only fires on command, all others fire on ready
       if (!this.owner.isPlayer || game.keysDown.Space) {
-        if (this.config.pattern && ++this.status.round < this.status.lastRound) {
+        if (this.config.pattern && --this.status.round > -1) {
           this.fireLine(this.status.round);
+          this.status.isReady = false;
+          this.status.isCooling = true;
+          this.status.elapsedTime = 0;
         } else if (this.config.pattern) {
           // end pattern proceed to wait
-          this.status.round = -1;
-          this.isReady = false;
+          this.status.round = this.status.roundLength;
+          this.status.isReady = false;
           this.status.isWaiting = true;
           this.status.elapsedTime = 0;
         } else {
@@ -866,11 +869,11 @@ class Ring {
 
   fireLine(line) {
     let row = this.config.pattern.sequence[line];
-
+    
     for (let i = 0; i < this.bay.length; i++) {
       const projectile = this.bay[i];
       
-      if (row[i] === '1') {
+      if (row[i] === 1) {
         this.owner.game.addEntity(projectile);
       
         if (this.config.rapidReload) {

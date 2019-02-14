@@ -133,7 +133,7 @@ function loadTemplates() {
                 [ 0, 0, 1, 0, 0, 0, 0, 0],
                 [ 0, 1, 0, 0, 0, 0, 0, 0],
                 [ 1, 0, 0, 0, 0, 0, 0, 0] ],
-    delay: 1,
+    delay: 2, // seconds between rounds
   }
 
   pattern.j = {
@@ -143,9 +143,9 @@ function loadTemplates() {
                 [ 0, 0, 1, 0 ],
                 [ 0, 0, 1, 0 ],
                 [ 1, 0, 1, 0 ],
-                [ 1, 0, 1, 0 ],
+                [ 1, 1, 1, 0 ],
                 [ 0, 1, 0, 0 ] ],
-    delay: 1,
+    delay: 2, // seconds between rounds
   }
   
   /** *** RING: FIRING PATTERNS **** */
@@ -155,14 +155,15 @@ function loadTemplates() {
       speed: 100,
     },
     firing: {
-      radius: 5,
-      count: 1,
+      pattern: pattern.j,
+      radius: 1,
       angle: 90,
+      spread: 15,
       loadTime: 0,
-      cooldownTime: 0.25,
+      cooldownTime: 0.1,
       rapidReload: true,
       targetPlayer: false,
-      viewTurret: true,
+      viewTurret: false,
     },
   };
   
@@ -1455,7 +1456,7 @@ function loadTemplates() {
     },
     weapon: [
       {
-        ring: ring.jaredWavy1,
+        ring: ring.patternTest,
         //offset: {x:-30,y:23},
       },
 
