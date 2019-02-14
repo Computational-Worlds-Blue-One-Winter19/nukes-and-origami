@@ -520,7 +520,7 @@ AM.downloadAll(() => {
 
   // view test stage
   //game.testScene();
-  
+
   // run prototype level
   //game.spawnEnemies();
 
