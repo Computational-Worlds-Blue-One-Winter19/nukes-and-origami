@@ -733,6 +733,7 @@ class Ring {
       this.status.roundLength = pattern.sequence.length;
       this.status.round = this.status.roundLength;
       this.config.waitTime = pattern.delay;
+      this.config.rapidReload = true;
     }
   }
 
@@ -974,9 +975,10 @@ class Projectile extends Entity {
 
     this.config = {
       radius: this.payload.radius,
-      isHoming: this.payload.isHoming,
       baseAngle: this.current.angle || manifest.angle || 0,
     };
+    
+    this.status = Object.assign({}, this.payload.status)
 
     // support for origin format
     if (!this.current.angle) {
@@ -1013,6 +1015,10 @@ class Projectile extends Entity {
     this.playerShot = (this.owner === game.player);
   }
 
+  /** Computes new position in polar coordinates using current velocity and acceleration.
+   *  A projectile that overrides update() agrees to use current.x and current.y for origin,
+   *  and store new polar coordinates in current.r and current.angle.
+   */
   update() {
     if (this.isOutsideScreen(this)) {
       this.removeFromWorld = true;
@@ -1024,23 +1030,25 @@ class Projectile extends Entity {
       y: this.current.y,
     };
 
-    let deltaRadius = 0;
+    this.current.elapsedTime = this.game.clockTick;
 
     if (this.customUpdate) {
       this.customUpdate(this);
     } else {
-      const elapsedTime = this.game.clockTick;
+      const elapsedTime = this.current.elapsedTime;
 
       this.current.velocity.radial += this.current.acceleration.radial * elapsedTime;
-      deltaRadius = this.current.velocity.radial * elapsedTime;
+      this.current.r = this.current.velocity.radial * elapsedTime;
 
       this.current.velocity.angular += this.current.acceleration.angular * elapsedTime;
       this.current.angle += this.current.velocity.angular * elapsedTime;
-
-      const point = getXandY(previous, { angle: this.current.angle, radius: deltaRadius });
-      this.current.x = point.x;
-      this.current.y = point.y;
     }
+
+    // update x,y coordinates for game engine.
+    const point = getXandY(previous, { angle: this.current.angle, radius: this.current.r });
+    this.current.x = point.x;
+    this.current.y = point.y;
+    this.current.r = 0;
   }
 
   // default draw is used for sprite animations where draw() is not overriden

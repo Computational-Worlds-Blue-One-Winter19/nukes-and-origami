@@ -6,7 +6,10 @@ function loadTemplates() {
    */
   projectile.homing = {
     radius: 3,
-    isHoming: true,
+    status: {
+      isHoming: true,
+      limit: 250,
+    },    
 
     draw(ctx, x, y) {
       ctx.beginPath();
@@ -16,27 +19,19 @@ function loadTemplates() {
     },
 
     update() {
-      const previous = {
-        x: this.current.x,
-        y: this.current.y,
-      };
-
-      if (this.config.isHoming) {
-        const target = this.owner.weapon[0].ring.getPlayerLocation(previous);
-        if (target.radius < 250) {
-          this.config.isHoming = false;
+      // update angle if beyond the limit
+      if (this.status.isHoming) {
+        const target = this.owner.weapon[0].ring.getPlayerLocation(this.current);
+        if (target.radius < this.status.limit) {
+          this.status.isHoming = false;
         }
 
         this.current.angle = target.angle;
       }
 
-      const deltaRadius = this.current.velocity.radial * this.game.clockTick;
-      const newPoint = getXandY(previous, {
-        angle: this.current.angle,
-        radius: deltaRadius
-      });
-      this.current.x = newPoint.x;
-      this.current.y = newPoint.y;
+      // update r
+      this.current.velocity.radial += this.current.acceleration.radial * this.game.clockTick;
+      this.current.r = this.current.velocity.radial * this.game.clockTick
     },
   };
 
@@ -51,17 +46,12 @@ function loadTemplates() {
     },
 
     update() {
-      const previous = {
-        x: this.current.x,
-        y: this.current.y,
-      };
-
-      const deltaAngle = this.game.timer.getWave(180, 1) * this.game.clockTick;
+      const time = this.game.clockTick;
+      
+      const deltaAngle = this.game.timer.getWave(180, 1) * time;
       this.current.angle = this.config.baseAngle + deltaAngle;
-      const deltaRadius = this.current.velocity.radial * this.game.clockTick;
-      const newPoint = getXandY(previous, { angle: this.current.angle, radius: deltaRadius });
-      this.current.x = newPoint.x;
-      this.current.y = newPoint.y;
+      
+      this.current.r = this.current.velocity.radial * time;      
     },
   };
 
@@ -119,11 +109,12 @@ function loadTemplates() {
     },
   };
 
-  /** Trying to spice-up bullet patterns? Make a pattern to load into a ring.
-   *  Instead of the usual count/spread, a pattern will fire rows/columns of a 2D array.
-   *  Other settings for ring remain intact; for rotation set angleOnlyOnLeadShot: 
+   /** Trying to spice-up bullet patterns? Make a pattern to load into a ring.
+   *  Instead of the usual fireAll() behavior, a pattern tells the Ring to
+   *  only fire specific turrets on each round. Use spread and cooldownTime to
+   *  control the width and line-spacing. Other settings for ring remain intact.
+   *  overrides:count,pulse,rapidReload //don't use rotation//
    */
-
   pattern.simple = {
     sequence: [ [ 1, 1, 1, 0, 0, 0, 1, 1, 1],
                 [ 0, 1, 1, 1, 0, 1, 1, 1, 0],
@@ -154,21 +145,20 @@ function loadTemplates() {
     },
     firing: {
       pattern: pattern.simple,
-      radius: 1,
+      radius: 20,
       angle: 90,
       spread: 35,
-      loadTime: 0,
-      cooldownTime: 0.1,
-      rapidReload: true,
+      loadTime: 0.2,
+      cooldownTime: 0.05,
       targetPlayer: false,
-      viewTurret: false,
+      viewTurret: true,
     },
   };
   
   
   ring.linearTest = {
     payload: {
-      type: projectile.microBullet,
+      type: projectile.homing,
       speed: 100,
     },
     firing: {
@@ -1454,7 +1444,7 @@ function loadTemplates() {
     },
     weapon: [
       {
-        ring: ring.patternTest,
+        ring: ring.jaredTest1,
         //offset: {x:-30,y:23},
       },
 
