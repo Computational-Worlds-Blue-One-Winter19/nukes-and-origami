@@ -1698,34 +1698,35 @@ function loadTemplates() {
     waves: [
       // wave 1
       {
-        numOfEnemies: 3,
-        ships: new Array(3).fill(ship.jaredTestDove),
+        numOfEnemies: 10,
+        ships: new Array(10).fill(ship.jaredTestDove),
         paths: [
+          path.straightDown,
+          path.straightDown,
+          path.straightDown,
+          path.straightDown,
+          path.straightDown,
+          path.straightDown,
+          path.straightDown,
           path.straightDown,
           path.straightDown,
           path.straightDown,
         ],
         initialXPoints: [ // omit to evenly space enemies.
-          600, 400, 700,
+          600, 400, 700, 250, 400, 850, 450, 380, 770, 650
         ],
         shipManifestOverride: [
-          {
-            config: {
-              waitOffScreen: 0
-            }
-          },
-          {
-            config: {
-              waitOffScreen: 2
-            }
-          },
-          {
-            config: {
-              waitOffScreen: 3
-            }
-          },
+          { config: { waitOffScreen: 0 } },
+          { config: { waitOffScreen: 2 } }, 
+          { config: { waitOffScreen: 3 } },
+          { config: { waitOffScreen: 5 } },
+          { config: { waitOffScreen: 8 } },
+          { config: { waitOffScreen: 9 } },
+          { config: { waitOffScreen: 11 } },
+          { config: { waitOffScreen: 15 } },
+          { config: { waitOffScreen: 18 } },
+          { config: { waitOffScreen: 19 } },
         ],
-        
         waitUntilEnemiesGone: true,
       },
       // {
