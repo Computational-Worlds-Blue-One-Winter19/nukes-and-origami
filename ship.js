@@ -868,12 +868,13 @@ class Ring {
   }
 
   fireLine(line) {
-    let row = this.config.pattern.sequence[line];
-    
+    const row = this.config.pattern.sequence[line];
+    const last = this.bay.length - 1;
+
     for (let i = 0; i < this.bay.length; i++) {
       const projectile = this.bay[i];
       
-      if (row[i] === 1) {
+      if (row[last - i] === 1) {
         this.owner.game.addEntity(projectile);
       
         if (this.config.rapidReload) {
