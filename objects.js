@@ -1511,6 +1511,11 @@ function loadTemplates() {
     [135, 50, 30],
   ];
 
+  // Advanced straight to bottom
+  path.straightDown = [
+    [90, 250, 30]
+  ];
+
   /** *** SCENES **** */
   scene.easyPaper = {
     waves: [
@@ -1647,42 +1652,157 @@ function loadTemplates() {
   ring.gammaOne = {
     payload: {
       type: projectile.glassBall,
-      speed: 450,
+      speed: 500,
     },
     firing: {
       radius: 5,
       count: 1,
       angle: 90,
       loadTime: 0,
-      cooldownTime: 0.25,
+      cooldownTime: 0.15,
       rapidReload: true,
       targetPlayer: false,
-      viewTurret: true,
+      viewTurret: false,
+      pulse: {
+        duration: 0.5,
+        delay: 1.5,
+      }
     },
   };
 
   ship.jaredTestDove = {
     config: {
-      health: 20,
-      hitValue: 5,
+      health: 2,
+      hitValue: 3,
       radius: 70,
       sprite: sprite.dove.default,
-      snapLine: 20,
-      snapLineSpeed: 400,
-      snapLineWait: 1,
-      origin: {
-        x: 500, // omit x to get random position
-        y: -50,
-      },
+      snapLine: 40,
+      snapLineSpeed: 250,
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
     },
-    path: [ [90,250,30]],
+    path: [ [90,175,30]],
     weapon: [
       {
         ring: ring.gammaOne,
+        offset: { x: -30, y: 20}
       },
+      {
+        ring: ring.gammaOne,
+        offset: { x: 30, y: 20}
+      }
     ],
   };
+  
+  scene.jaredLevel = {
+    waves: [
+      // wave 1
+      {
+        numOfEnemies: 3,
+        ships: new Array(3).fill(ship.jaredTestDove),
+        paths: [
+          path.straightDown,
+          path.straightDown,
+          path.straightDown,
+        ],
+        initialXPoints: [ // omit to evenly space enemies.
+          600, 400, 700,
+        ],
+        shipManifestOverride: [
+          {
+            config: {
+              waitOffScreen: 0
+            }
+          },
+          {
+            config: {
+              waitOffScreen: 2
+            }
+          },
+          {
+            config: {
+              waitOffScreen: 3
+            }
+          },
+        ],
+        
+        waitUntilEnemiesGone: true,
+      },
+      // {
+      //   numOfEnemies: 3,
+      //   ships: new Array(3).fill(ship.crane),
+      //   waitUntilEnemiesGone: true,
+      // },
+      // {
+      //   numOfEnemies: 3,
+      //   ships: [ship.bat, ship.dove, ship.bat],
+      //   paths: [
+      //     // first bat cornerleft
+      //     path.cornerLeft,
+      //     // dove do nothing
+      //     path.doNothing,
+      //     // second bat cornerright
+      //     path.cornerRight,
+      //   ],
+      //   shipManifestOverride: [
+      //     // change first bat to tracking test
+      //     {
+      //       weapon: ring.trackingTest1,
+      //     },
+      //     // don't do anything to dove
+      //     {},
+      //     // change second bat to tracking test
+      //     {
+      //       weapon: ring.trackingTest1,
+      //     },
+      //   ],
+      //   initialXPoints: [ // omit to evenly space enemies.
+      //     400, 500, 600,
+      //   ],
+      //   waitUntilEnemiesGone: true,
+      // },
+      {
+        warpSpeed: true,
+        message: {
+          type: 'warning',
+          text: ['First Wave Complete','--Game Over--'],
+          duration: 6,
+        }
+      },
+      // BOSS SWALLOW!!
+      // {
+      //   numOfEnemies: 1,
+      //   ships: [ship.swallow],
+      //   paths: [
+      //     path.doNothing
+      //   ],
+      //   shipManifestOverride: [
+      //     {
+      //       config: {
+      //         sprite: sprite.swallow.boss,
+      //         health: 100,
+      //         snapLineSpeed: 50,
+      //         hitValue: 2000,
+      //         snapLine: 250,
+      //         radius: 200,
+      //       },
+      //       weapon: {
+      //         rotation: {
+      //           angle: 20,
+      //           frequency: 6
+      //         },
+      //         firing: {
+      //           count: 100,
+      //           radius: 250,
+      //           loadTime: 0.005,
+      //         }
+      //       }
+      //     },
+      //   ],
+      //   waitUntilEnemiesGone: true,
+      // },
+    ],
+  };
+
 
 } // end of objects file

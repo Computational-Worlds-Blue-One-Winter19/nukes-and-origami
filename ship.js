@@ -146,7 +146,9 @@ class Ship extends Entity {
   }
 
   update() {
-    if (this.snapLine) {
+    if (this.config.waitOffScreen > 0) {
+      this.config.waitOffScreen -= this.game.clockTick;
+    } else if (this.snapLine) {
       // we are enroute to the snapLine
       this.updateSnapPath();
     } else {
