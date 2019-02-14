@@ -228,12 +228,12 @@ class NukesAndOrigami extends GameEngine {
   testScene() {
     // override onEnemyDestruction
     this.onEnemyDestruction = function() {
-      this.addEntity(new Ship(this, ship.testDove));
+      this.addEntity(new Ship(this, ship.jaredTestDove));
     }
 
     // spawn a single enemy to the center
-    this.addEntity(new Ship(this, ship.testDove));
-    // this.addEntity(new Ship(this, ship.testCrane));
+    this.addEntity(new Ship(this, ship.jaredTestDove));
+    //this.addEntity(new Ship(this, ship.testCrane));
   }
 
   // establishes a new player Plane

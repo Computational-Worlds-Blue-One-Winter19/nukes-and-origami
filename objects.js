@@ -149,14 +149,14 @@ function loadTemplates() {
   /** *** RING: FIRING PATTERNS **** */
   ring.patternTest = {
     payload: {
-      type: projectile.microBullet,
-      speed: 150,
+      type: projectile.glassBall,
+      speed: 350,
     },
     firing: {
       pattern: pattern.simple,
       radius: 1,
       angle: 90,
-      spread: 35,
+      spread: 60,
       loadTime: 0,
       cooldownTime: 0.1,
       rapidReload: true,
@@ -1641,4 +1641,48 @@ function loadTemplates() {
     },
     weapon: ring.player,
   };
+
+
+  /** JaredLevel: Templates for a Level */
+  ring.gammaOne = {
+    payload: {
+      type: projectile.glassBall,
+      speed: 450,
+    },
+    firing: {
+      radius: 5,
+      count: 1,
+      angle: 90,
+      loadTime: 0,
+      cooldownTime: 0.25,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: true,
+    },
+  };
+
+  ship.jaredTestDove = {
+    config: {
+      health: 20,
+      hitValue: 5,
+      radius: 70,
+      sprite: sprite.dove.default,
+      snapLine: 20,
+      snapLineSpeed: 400,
+      snapLineWait: 1,
+      origin: {
+        x: 500, // omit x to get random position
+        y: -50,
+      },
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0,
+    },
+    path: [ [90,250,30]],
+    weapon: [
+      {
+        ring: ring.gammaOne,
+      },
+    ],
+  };
+
 } // end of objects file
