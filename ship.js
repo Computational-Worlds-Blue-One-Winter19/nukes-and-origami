@@ -642,9 +642,12 @@ class Ring {
       this.sineFrequency = this.rotation.frequency || 1;
     }
 
+    // check for pattern
+    const pattern = manifest.firing.pattern;
+    const count = pattern ? pattern.sequence[0].length : manifest.firing.count || 1;
+    
     // compute spacing and adjust base angle
     let baseAngle = toRadians(manifest.firing.angle) || 0;
-    const count = manifest.firing.count || 1;
     let spacing = 0;
     let spread = 0;
 
@@ -695,6 +698,7 @@ class Ring {
       activeTime,
       baseAngle,
       count,
+      pattern,
       spread,
       spacing,
       waitTime,
@@ -723,8 +727,13 @@ class Ring {
       isReady: false,
       isCooling: false,
       isWaiting: false,
-      count: 0,
     };
+
+    if (pattern) {
+      this.status.round = -1,
+      this.status.lastRound = pattern.sequence.length;
+      this.config.waitTime = pattern.delay;
+    }
   }
 
   update() {
@@ -785,11 +794,21 @@ class Ring {
       // Ready state
       // a player only fires on command, all others fire on ready
       if (!this.owner.isPlayer || game.keysDown.Space) {
-        this.fireAll();
-        // update state
-        this.status.isReady = false;
-        this.status.isCooling = true;
-        this.status.elapsedTime = 0;
+        if (this.config.pattern && ++this.status.round < this.status.lastRound) {
+          this.fireLine(this.status.round);
+        } else if (this.config.pattern) {
+          // end pattern proceed to wait
+          this.status.round = -1;
+          this.isReady = false;
+          this.status.isWaiting = true;
+          this.status.elapsedTime = 0;
+        } else {
+          this.fireAll();
+          // update state
+          this.status.isReady = false;
+          this.status.isCooling = true;
+          this.status.elapsedTime = 0;
+        }
       }
     } else if (this.status.isCooling && this.status.elapsedTime > this.config.cooldownTime) {
       // Cooldown state
@@ -828,7 +847,7 @@ class Ring {
   fireAll() {
     // the projectiles have been updated so just add to game and replace again
     // this previously fired all and then looped back to reload. was that better?
-    console.log("fire");
+    // console.log("fire");
     
     for (let i = 0; i < this.bay.length; i++) {
       const projectile = this.bay[i];
@@ -836,6 +855,28 @@ class Ring {
 
       if (this.config.rapidReload) {
         this.bay[i] = this.loadNext(projectile);
+      }
+    }
+
+    // if we did not reload then clear-out the bay
+    if (!this.config.rapidReload) {
+      this.bay = [];
+    }
+  }
+
+  fireLine(line) {
+    let row = this.config.pattern.sequence[line];
+
+    for (let i = 0; i < this.bay.length; i++) {
+      const projectile = this.bay[i];
+      
+      if (row[i] === '1') {
+        this.owner.game.addEntity(projectile);
+      
+        if (this.config.rapidReload) {
+          this.bay[i] = this.loadNext(projectile);
+        }
+      
       }
     }
 

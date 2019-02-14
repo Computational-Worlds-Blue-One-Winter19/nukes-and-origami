@@ -119,8 +119,54 @@ function loadTemplates() {
     },
   };
 
+  /** Trying to spice-up bullet patterns? Make a pattern to load into a ring.
+   *  Instead of the usual count/spread, a pattern will fire rows/columns of a 2D array.
+   *  Other settings for ring remain intact; for rotation set angleOnlyOnLeadShot: 
+   */
 
+  pattern.simple = {
+    sequence: [ [ 1, 0, 0, 0, 0, 0, 0, 0],
+                [ 0, 1, 0, 0, 0, 0, 0, 0],
+                [ 0, 0, 1, 0, 0, 0, 0, 0],
+                [ 0, 0, 0, 1, 0, 0, 0, 0],
+                [ 0, 0, 0, 1, 0, 0, 0, 0],
+                [ 0, 0, 1, 0, 0, 0, 0, 0],
+                [ 0, 1, 0, 0, 0, 0, 0, 0],
+                [ 1, 0, 0, 0, 0, 0, 0, 0] ],
+    delay: 1,
+  }
+
+  pattern.j = {
+    sequence: [ [ 1, 1, 1, 1 ],
+                [ 0, 0, 1, 0 ],
+                [ 0, 0, 1, 0 ],
+                [ 0, 0, 1, 0 ],
+                [ 0, 0, 1, 0 ],
+                [ 1, 0, 1, 0 ],
+                [ 1, 0, 1, 0 ],
+                [ 0, 1, 0, 0 ] ],
+    delay: 1,
+  }
+  
   /** *** RING: FIRING PATTERNS **** */
+  ring.patternTest = {
+    payload: {
+      type: projectile.microBullet,
+      speed: 100,
+    },
+    firing: {
+      radius: 5,
+      count: 1,
+      angle: 90,
+      loadTime: 0,
+      cooldownTime: 0.25,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: true,
+    },
+  };
+  
+  
   ring.linearTest = {
     payload: {
       type: projectile.microBullet,

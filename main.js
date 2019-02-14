@@ -4,6 +4,7 @@ const AM = new AssetManager();
 const ring = {};
 const sprite = {};
 const ship = {};
+const pattern = {};
 const projectile = {};
 const path = {};
 const scene = {};
