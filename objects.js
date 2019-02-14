@@ -125,14 +125,12 @@ function loadTemplates() {
    */
 
   pattern.simple = {
-    sequence: [ [ 1, 0, 0, 0, 0, 0, 0, 0],
-                [ 0, 1, 0, 0, 0, 0, 0, 0],
-                [ 0, 0, 1, 0, 0, 0, 0, 0],
-                [ 0, 0, 0, 1, 0, 0, 0, 0],
-                [ 0, 0, 0, 1, 0, 0, 0, 0],
-                [ 0, 0, 1, 0, 0, 0, 0, 0],
-                [ 0, 1, 0, 0, 0, 0, 0, 0],
-                [ 1, 0, 0, 0, 0, 0, 0, 0] ],
+    sequence: [ [ 1, 1, 1, 0, 0, 0, 1, 1, 1],
+                [ 0, 1, 1, 1, 0, 1, 1, 1, 0],
+                [ 0, 0, 1, 1, 1, 1, 1, 0, 0],
+                [ 0, 0, 0, 1, 1, 1, 0, 0, 0],
+                [ 0, 0, 0, 0, 1, 0, 0, 0, 0],
+              ],
     delay: 2, // seconds between rounds
   }
 
@@ -152,13 +150,13 @@ function loadTemplates() {
   ring.patternTest = {
     payload: {
       type: projectile.microBullet,
-      speed: 100,
+      speed: 150,
     },
     firing: {
-      pattern: pattern.j,
+      pattern: pattern.simple,
       radius: 1,
       angle: 90,
-      spread: 15,
+      spread: 35,
       loadTime: 0,
       cooldownTime: 0.1,
       rapidReload: true,
