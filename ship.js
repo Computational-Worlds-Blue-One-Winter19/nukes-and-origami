@@ -194,8 +194,8 @@ class Ship extends Entity {
 
     // Check for hit from player bullets
     for (const e of this.game.entities) {
-      if (e instanceof Projectile && e.playerShot && this.isCollided(e) && !e.hitTarget) {
-        e.hitTarget = true;
+      if (e instanceof Projectile && e.playerShot && this.isCollided(e)) {
+        e.removeFromWorld = true;
         this.health--;
 
         if (this.health === 0) {
@@ -1079,25 +1079,23 @@ class Projectile extends Entity {
 
   // default draw is used for sprite animations where draw() is not overriden
   draw(ctx) {
-    if (!this.hitTarget) {
-      ctx.save();
+    ctx.save();
 
-      // Using object deconstructing to access the fields withing the current object
-      const {
-        x,
-        y,
-        angle,
-      } = this.current;
+    // Using object deconstructing to access the fields withing the current object
+    const {
+      x,
+      y,
+      angle,
+    } = this.current;
 
-      if (this.config.rotate) {
-        ctx.translate(x, y);
-        ctx.rotate(angle + Math.PI / 2);
-        ctx.translate(-x, -y);
-      }
-      this.drawImage(ctx, x, y);
-      ctx.restore();
-      super.draw();
+    if (this.config.rotate) {
+      ctx.translate(x, y);
+      ctx.rotate(angle + Math.PI / 2);
+      ctx.translate(-x, -y);
     }
+    this.drawImage(ctx, x, y);
+    ctx.restore();
+    super.draw();
   }
 
   drawSpriteFrame(ctx, x, y) {
