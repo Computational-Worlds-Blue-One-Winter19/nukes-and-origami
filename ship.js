@@ -127,7 +127,7 @@ class Ship extends Entity {
     this.snapLine = this.config.snapLine || 100;
     this.snapLineSpeed = this.config.snapLineSpeed || 300;
     this.hitValue = this.config.hitValue;
-    this.powerUp = this.config.powerUp;
+    this.powerUp = getRandomPowerUp();
 
     // additional fields
     this.idleTrans = false;
@@ -305,7 +305,8 @@ class Ship extends Entity {
 
   //
   static getInitPoint(game, manifest) {
-    let x, y;
+    let x; let
+      y;
     // Is origin specified?
     if (manifest.config.origin) {
       // Use one or both parameters specified
@@ -401,7 +402,7 @@ class Plane extends Ship {
       if (this.controls.startTime > this.controls.duration) {
         this.controls.hasInvertedControls = false;
         this.controls.startTime = 0;
-        showTimedMessage('normal-message');
+        hideControlMessage();
       }
     }
 
@@ -472,11 +473,11 @@ class Plane extends Ship {
       this.performManeuver();
     }
 
-    if (!this.game.keysDown.ArrowLeft &&
-      !this.game.keysDown.ArrowRight &&
-      !this.game.keysDown.ArrowUp &&
-      !this.game.keysDown.ArrowDown &&
-      !this.performingManeuver) {
+    if (!this.game.keysDown.ArrowLeft
+      && !this.game.keysDown.ArrowRight
+      && !this.game.keysDown.ArrowUp
+      && !this.game.keysDown.ArrowDown
+      && !this.performingManeuver) {
       this.sprite = this.idle;
       if (this.idleTrans) {
         this.idleCount += 1;
@@ -638,12 +639,12 @@ class Ring {
     if (!this.payload.acceleration) {
       this.payload.acceleration = {
         radial: 0,
-        angular: 0
+        angular: 0,
       };
     } else if (!(this.payload.acceleration instanceof Object)) {
       this.payload.acceleration = {
         radial: this.payload.acceleration,
-        angular: 0
+        angular: 0,
       };
     } else {
       this.payload.acceleration.angular = toRadians(this.payload.acceleration.angular);
@@ -652,7 +653,7 @@ class Ring {
     if (!this.payload.velocity) {
       this.payload.velocity = {
         radial: this.payload.speed,
-        angular: 0
+        angular: 0,
       };
     } else {
       this.payload.velocity.angular = toRadians(this.payload.velocity.angular);
@@ -728,7 +729,7 @@ class Ring {
       projectile.current.angle = this.current.angle + i * this.config.spacing;
       const currentPosition = getXandY(this.current, {
         radius: this.config.radius,
-        angle: projectile.current.angle
+        angle: projectile.current.angle,
       });
       projectile.current.x = currentPosition.x;
       projectile.current.y = currentPosition.y;
@@ -823,13 +824,13 @@ class Ring {
       const angle = this.current.angle + this.bay.length * this.config.spacing;
       const velocity = this.payload.velocity || {
         radial: this.payload.speed,
-        angular: 0
+        angular: 0,
       };
       const acceleration = this.payload.acceleration;
 
       const point = getXandY(this.current, {
         radius: this.config.radius,
-        angle
+        angle,
       });
       origin = {
         angle,
@@ -882,7 +883,7 @@ class Projectile extends Entity {
   constructor(game, manifest) {
     super(game, {
       x: manifest.origin.x,
-      y: manifest.origin.y
+      y: manifest.origin.y,
     });
 
     this.owner = manifest.owner;
@@ -900,11 +901,11 @@ class Projectile extends Entity {
       this.current.angle = manifest.angle;
       this.current.velocity = {
         radial: manifest.payload.speed,
-        angular: 0
+        angular: 0,
       };
       this.current.acceleration = {
         radial: 0,
-        angular: 0
+        angular: 0,
       };
       this.payload.powerUp = manifest.payload.powerUp;
     } else {
@@ -956,7 +957,7 @@ class Projectile extends Entity {
 
       const point = getXandY(previous, {
         angle: this.current.angle,
-        radius: deltaRadius
+        radius: deltaRadius,
       });
       this.current.x = point.x;
       this.current.y = point.y;
@@ -1009,7 +1010,7 @@ function getXandY(origin, current) {
   const y = origin.y + current.radius * Math.sin(current.angle);
   return {
     x,
-    y
+    y,
   };
 }
 
