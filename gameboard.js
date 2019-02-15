@@ -80,10 +80,10 @@ function initializeScoreBoardLives(lives) {
  * This function shows a 2 line message to the player.
  */
 function showMessage(line1, line2) {
-  const message = document.getElementById("message-overlay");
+  const message = document.getElementById('message-overlay');
   message.style.display = 'block';
-  document.getElementById("message-line1").innerHTML = line1;
-  document.getElementById("message-line2").innerHTML = line2;
+  document.getElementById('message-line1').innerHTML = line1;
+  document.getElementById('message-line2').innerHTML = line2;
 }
 
 function showStaticMessage(type) {
@@ -118,16 +118,26 @@ function clearMessageBoard() {
 }
 
 /**
- * Shows an indicator message that will disappear after 2000ms
- * @param {String} type The type of message that will be shown
+ * Shows a control message with the given text as the content
+ * A control message is shown at the center bottom of the screen
+ * @param {String} content The message that will be shown to the user
  */
-function showTimedMessage(type) {
+function showControlMessage(content) {
   clearMessageBoard();
-  const message = document.getElementById(`${type}`);
+  const message = document.getElementById('control-message');
+  message.innerHTML = content;
 
   message.style.display = 'block';
 
-  setTimeout(() => { message.style.display = 'none'; }, 2000);
+  // setTimeout(() => { message.style.display = 'none'; }, 2000);
+}
+
+/**
+ * Hides a control messages from the players view
+ */
+function hideControlMessage() {
+  const message = document.getElementById('control-message');
+  message.style.display = 'none';
 }
 
 /**

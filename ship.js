@@ -127,7 +127,7 @@ class Ship extends Entity {
     this.snapLine = this.config.snapLine || 100;
     this.snapLineSpeed = this.config.snapLineSpeed || 300;
     this.hitValue = this.config.hitValue;
-    this.powerUp = this.config.powerUp;
+    this.powerUp = getRandomPowerUp();
 
     // additional fields
     this.idleTrans = false;
@@ -341,7 +341,8 @@ class Ship extends Entity {
 
   //
   static getInitPoint(game, manifest) {
-    let x, y;
+    let x;
+    let y;
     // Is origin specified?
     if (manifest.config.origin) {
       // Use one or both parameters specified
@@ -435,7 +436,7 @@ class Plane extends Ship {
       if (this.controls.startTime > this.controls.duration) {
         this.controls.hasInvertedControls = false;
         this.controls.startTime = 0;
-        showTimedMessage('normal-message');
+        hideControlMessage();
       }
     }
 
@@ -506,11 +507,11 @@ class Plane extends Ship {
       this.performManeuver();
     }
 
-    if (!this.game.keysDown.ArrowLeft &&
-      !this.game.keysDown.ArrowRight &&
-      !this.game.keysDown.ArrowUp &&
-      !this.game.keysDown.ArrowDown &&
-      !this.performingManeuver) {
+    if (!this.game.keysDown.ArrowLeft 
+      && !this.game.keysDown.ArrowRight
+      && !this.game.keysDown.ArrowUp
+      && !this.game.keysDown.ArrowDown
+      && !this.performingManeuver) {
       this.sprite = this.idle;
       if (this.idleTrans) {
         this.idleCount += 1;
@@ -626,7 +627,7 @@ class Plane extends Ship {
 
 
 /**
- * This weapon spawns a circle of bullets around the enemy and then fires them all at once at the player
+ * The ring holds a collection of bullets and updates/maintains their position prior to launch.
  */
 class Ring {
   constructor(owner, manifest) {
@@ -826,7 +827,6 @@ class Ring {
       } else {
         this.status.isLoading = !this.config.rapidReload;
         this.status.isReady = this.config.rapidReload;
-        this.current.isLeadShot = this.config.targetLeadShot;
       }    
     } else if (this.status.isWaiting && this.status.elapsedTime > this.config.waitTime) {
       // Waiting state

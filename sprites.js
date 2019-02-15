@@ -1,5 +1,4 @@
 function loadSpriteSheets() {
-
   /** The Crane spritesheet configuration */
   sprite.crane = {
     default: {
@@ -14,10 +13,10 @@ function loadSpriteSheets() {
           timePerFrame: 0.1,
           scale: 0.6,
           flip: false,
-        }
-      }
-    }
-  }
+        },
+      },
+    },
+  };
 
   /** Experiment: mini-sized Crane projectiles */
   sprite.miniCrane = {
@@ -33,10 +32,10 @@ function loadSpriteSheets() {
           timePerFrame: 0.1,
           scale: 0.5,
           flip: false,
-        }
-      }
-    }
-  }
+        },
+      },
+    },
+  };
 
   sprite.bat = {
     default: {
@@ -51,10 +50,10 @@ function loadSpriteSheets() {
           timePerFrame: 0.1,
           scale: 0.3,
           flip: false,
-        }
-      }
-    }
-  }
+        },
+      },
+    },
+  };
 
   sprite.swallow = {
     default: {
@@ -84,10 +83,10 @@ function loadSpriteSheets() {
           timePerFrame: 0.1,
           scale: 1,
           flip: false,
-        }
-      }
+        },
+      },
     },
-  }
+  };
 
   sprite.owl = {
     default: {
@@ -117,10 +116,10 @@ function loadSpriteSheets() {
           timePerFrame: 0.1,
           scale: 1,
           flip: false,
-        }
-      }
+        },
+      },
     },
-  }
+  };
 
   sprite.dove = {
     default: {
@@ -135,10 +134,10 @@ function loadSpriteSheets() {
           timePerFrame: 0.1,
           scale: 0.3,
           flip: false,
-        }
-      }
-    }
-  }
+        },
+      },
+    },
+  };
 
   // Power up sprites
   sprite.rainbowBall = {
@@ -157,7 +156,7 @@ function loadSpriteSheets() {
           flip: false,
         },
       },
-    }
+    },
   };
 
   sprite.shieldIcon = {
@@ -175,25 +174,23 @@ function loadSpriteSheets() {
           flip: false,
         },
       },
-    }
+    },
   };
 
   sprite.shield = {
     default: {
-      default: {
-        image: AM.getAsset('./img/shield.png'),
-        dimension: {
-          originX: 50,
-          originY: 50,
-          frameWidth: 50,
-          frameHeight: 50,
-          frameCount: 1,
-          timePerFrame: 30,
-          scale: 1,
-          flip: false,
-        },
+      image: AM.getAsset('./img/shield.png'),
+      dimension: {
+        originX: 50,
+        originY: 50,
+        frameWidth: 50,
+        frameHeight: 50,
+        frameCount: 1,
+        timePerFrame: 30,
+        scale: 1,
+        flip: false,
       },
-    }
+    },
   };
 
   sprite.rapidFire = {
@@ -211,7 +208,7 @@ function loadSpriteSheets() {
           flip: false,
         },
       },
-    }
+    },
   };
 
   /** Laser sprite */
@@ -244,10 +241,10 @@ function loadSpriteSheets() {
           timePerFrame: 20,
           scale: 0.5,
           flip: false,
-        }
-      }
-    }
-  }
+        },
+      },
+    },
+  };
 
   sprite.cutLaser = {
     default: {
@@ -262,10 +259,10 @@ function loadSpriteSheets() {
           timePerFrame: 20,
           scale: 0.3,
           flip: false,
-        }
-      }
-    }
-  }
+        },
+      },
+    },
+  };
 
   sprite.plane = {
     purple: {
@@ -293,7 +290,7 @@ function loadSpriteSheets() {
           timePerFrame: 0,
           scale: 1.0,
           flip: false,
-        }
+        },
       },
       left: {
         image: AM.getAsset('./img/purple-plane-small.png'),
@@ -306,7 +303,7 @@ function loadSpriteSheets() {
           timePerFrame: 0,
           scale: 1.0,
           flip: false,
-        }
+        },
       },
       rollRight: {
         image: AM.getAsset('./img/purple-plane-small.png'),
@@ -319,7 +316,7 @@ function loadSpriteSheets() {
           timePerFrame: 0.07,
           scale: 1.0,
           flip: false,
-        }
+        },
       },
       rollLeft: {
         image: AM.getAsset('./img/purple-plane-small.png'),
@@ -332,8 +329,8 @@ function loadSpriteSheets() {
           timePerFrame: 0.07,
           scale: 1.0,
           flip: false,
-        }
-      }
+        },
+      },
     },
     red: {
       default: {
@@ -347,7 +344,7 @@ function loadSpriteSheets() {
           timePerFrame: 0,
           scale: 1.0,
           flip: false,
-        }
+        },
       },
       right: {
         image: AM.getAsset('./img/plane-small.png'),
@@ -360,7 +357,7 @@ function loadSpriteSheets() {
           timePerFrame: 0,
           scale: 1.0,
           flip: false,
-        }
+        },
       },
       left: {
         image: AM.getAsset('./img/plane-small.png'),
@@ -373,7 +370,7 @@ function loadSpriteSheets() {
           timePerFrame: 0,
           scale: 1.0,
           flip: false,
-        }
+        },
       },
       rollRight: {
         image: AM.getAsset('./img/plane-small.png'),
@@ -386,7 +383,7 @@ function loadSpriteSheets() {
           timePerFrame: 0.07,
           scale: 1.0,
           flip: false,
-        }
+        },
       },
       rollLeft: {
         image: AM.getAsset('./img/plane-small.png'),
@@ -399,9 +396,8 @@ function loadSpriteSheets() {
           timePerFrame: 0.07,
           scale: 1.0,
           flip: false,
-        }
-      }
-    }
-  } //end purple plane
-
+        },
+      },
+    },
+  }; // end purple plane
 }

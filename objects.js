@@ -111,7 +111,7 @@ function loadTemplates() {
     rotate: false,
     image: AM.getAsset('./img/glass_ball.png'),
     scale: 1.0,
-  }
+  };
 
   projectile.miniCrane = {
     radius: 15,
@@ -123,7 +123,7 @@ function loadTemplates() {
     radius: 5,
     rotate: true,
     sprite: sprite.testLaser.default,
-  }
+  };
 
   projectile.circleBullet = {
     radius: 6,
@@ -669,7 +669,7 @@ function loadTemplates() {
     rotation: {
       angle: 10,
       frequency: 2.0,
-      //speed: .1,
+      // speed: .1,
     },
     firing: {
       radius: 1,
@@ -723,7 +723,7 @@ function loadTemplates() {
       acceleration: {
         radial: 0,
         angular: 0,
-      }
+      },
     },
     rotation: {
       angle: 0,
@@ -737,13 +737,14 @@ function loadTemplates() {
       loadTime: 0.005,
       cooldownTime: 0.001,
       rapidReload: true,
-      targetLeadShot: false,
-      viewTurret: true,
+      targetPlayer: false,
+      targetLeadShot: true,
+      viewTurret: false,
       pulse: {
         duration: 0.1,
         delay: 1,
       },
-    }
+    },
   };
 
   ring.jaredStinger = {
@@ -756,7 +757,7 @@ function loadTemplates() {
       acceleration: {
         radial: 0,
         angular: 0,
-      }
+      },
     },
     rotation: {
       angle: 0,
@@ -776,7 +777,7 @@ function loadTemplates() {
         duration: 0.4,
         delay: 0.2,
       },
-    }
+    },
   };
 
   ring.jaredWavy1 = {
@@ -789,12 +790,12 @@ function loadTemplates() {
       acceleration: {
         radial: 0,
         angular: 0,
-      }
+      },
     },
     rotation: {
-      //angle: 10,
-      //frequency: 1,
-      //speed: .1,
+      angle: 10,
+      frequency: 1,
+      // speed: .1,
     },
     firing: {
       radius: 0,
@@ -806,11 +807,11 @@ function loadTemplates() {
       rapidReload: true,
       targetPlayer: false,
       viewTurret: false,
-      // pulse: {
-      //   duration: 2.0,
-      //   delay: 0,
-      // },
-    }
+      pulse: {
+        duration: 2.0,
+        delay: 3.0,
+      },
+    },
   };
 
 
@@ -1249,7 +1250,6 @@ function loadTemplates() {
     config: {
       health: 3,
       hitValue: 5,
-      powerUp: new Shield(),
       radius: 50,
       sprite: sprite.crane.default,
       snapLine: 150,
@@ -1267,7 +1267,7 @@ function loadTemplates() {
       [0, 100, 5],
       [180, 100, 5],
       [0, 100, 5],
-      [90, 100, 60]
+      [90, 100, 60],
     ],
     weapon: ring.spiralAlpha4,
   };
@@ -1276,7 +1276,6 @@ function loadTemplates() {
     config: {
       health: 3,
       hitValue: 5,
-      powerUp: new InvertedControls(),
       radius: 50,
       sprite: sprite.crane.default,
       snapLine: 150,
@@ -1301,7 +1300,6 @@ function loadTemplates() {
     config: {
       health: 3,
       hitValue: 5,
-      powerUp: new InvertedControls(100),
       radius: 50,
       sprite: sprite.bat.default,
     },
@@ -1346,13 +1344,12 @@ function loadTemplates() {
       sprite: sprite.swallow.default,
     },
     weapon: ring.gap1,
-  }
+  };
 
   ship.dodgeOwl = {
     config: {
       health: 3,
       hitValue: 5,
-      powerUp: new ExtraLife(),
       radius: 70,
       sprite: sprite.owl.default,
       snapLine: 150,
@@ -1372,7 +1369,6 @@ function loadTemplates() {
     config: {
       health: 3,
       hitValue: 5,
-      powerUp: new InvertedControls(),
       radius: 50,
       sprite: sprite.bat.default,
       snapLine: 100,
@@ -1396,7 +1392,6 @@ function loadTemplates() {
     config: {
       health: 3,
       hitValue: 5,
-      powerUp: new InvertedControls(),
       radius: 50,
       sprite: sprite.bat.default,
       snapLine: 100,
@@ -1420,7 +1415,6 @@ function loadTemplates() {
     config: {
       health: 3,
       hitValue: 5,
-      powerUp: new ExtraLife(),
       radius: 30,
       sprite: sprite.bat.default,
       snapLine: 100,
@@ -1440,7 +1434,6 @@ function loadTemplates() {
     config: {
       health: 3,
       hitValue: 5,
-      powerUp: new ExtraLife(),
       radius: 50,
       sprite: sprite.crane.default,
       snapLine: 150,
@@ -1460,7 +1453,6 @@ function loadTemplates() {
     config: {
       health: 3,
       hitValue: 5,
-      powerUp: new ExtraLife(),
       radius: 70,
       sprite: sprite.owl.default,
       snapLine: 150,
@@ -1480,7 +1472,6 @@ function loadTemplates() {
     config: {
       health: 15,
       hitValue: 5,
-      powerUp: new ExtraLife(),
       radius: 70,
       sprite: sprite.dove.default,
       snapLine: 200,
@@ -1545,7 +1536,7 @@ function loadTemplates() {
 
   /** *** PATHS **** */
   // I wonder what this does
-  path.doNothing = []
+  path.doNothing = [];
 
   // Slowly strafe right off screen
   path.strafeRight = [
@@ -1628,14 +1619,14 @@ function loadTemplates() {
           type: 'warning',
           text: ['Waves complete!', 'Get Ready...'],
           duration: 6,
-        }
+        },
       },
       // BOSS SWALLOW!!
       {
         numOfEnemies: 1,
         ships: [ship.swallow],
         paths: [
-          path.doNothing
+          path.doNothing,
         ],
         shipManifestOverride: [
           {
@@ -1650,14 +1641,14 @@ function loadTemplates() {
             weapon: {
               rotation: {
                 angle: 20,
-                frequency: 6
+                frequency: 6,
               },
               firing: {
                 count: 100,
                 radius: 250,
                 loadTime: 0.005,
-              }
-            }
+              },
+            },
           },
         ],
         waitUntilEnemiesGone: true,
