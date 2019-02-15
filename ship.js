@@ -140,9 +140,7 @@ class Ship extends Entity {
       this.initializePath(manifest.path);
     }
 
-    if (manifest.weapon) {
-      this.initializeWeapon(manifest.weapon);
-    }
+    this.initializeWeapon(manifest.weapon);
   }
 
   update() {
@@ -295,7 +293,7 @@ class Ship extends Entity {
           offset: offset,
         });
       }
-    } else {
+    } else if (weaponManifest) {
       // process the single-ring format  
       var r = new Ring(this, weaponManifest);
       
@@ -1032,11 +1030,11 @@ class Projectile extends Entity {
     } else if (this.payload.sprite) {
       this.sprite = new Sprite(this.payload.sprite.default);
       this.drawImage = this.drawSpriteFrame;
-      this.config.rotate = this.payload.rotate || false;
     } else {
       this.drawImage = this.payload.draw;
     }
 
+    this.config.rotate = this.payload.rotate || false;
     this.customUpdate = this.payload.update;
     this.playerShot = (this.owner === game.player);
   }

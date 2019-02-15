@@ -37,40 +37,37 @@ function loadTemplates() {
 
   projectile.homingOnEnemy = {
     radius: 3,
+    rotate: true,
+    image: AM.getAsset('./img/bullet.png'),
+    scale: .04,
+    
     status: {
       isHoming: false,
       range: 300,
     },    
 
-    draw(ctx, x, y) {
-      ctx.beginPath();
-      ctx.arc(x, y, this.config.radius, 0 * Math.PI, 2 * Math.PI);
-      ctx.stroke();
-      ctx.fill();
-    },
-
     update() {
       // locate closest enemy -- if within range then set target
-
+      const hitList = this.game.getEnemiesInRange(this.current, this.status.range);
       
-      // what if an enemy exits world while tracking?
-      // should we always check proximity?
+      if (hitList.length > 0) {
 
-      // if target then continue homing
-      if (this.status.isHoming) {
-        const target = this.owner.weapon[0].ring.getPlayerLocation(this.current);
-        if (target.radius < this.status.limit) {
-          this.status.isHoming = false;
+        const {
+          x,
+          y,
+        } = hitList[0].ship.current;
+        
+        // get angle
+        const deltaX = x - this.current.x;
+        const deltaY = y - this.current.y;
+        this.current.angle = Math.atan2(deltaY, deltaX);
         }
-
-        this.current.angle = target.angle;
-      }
-
+    
       // update r
       this.current.velocity.radial += this.current.acceleration.radial * this.game.clockTick;
       this.current.r = this.current.velocity.radial * this.game.clockTick
     },
-  };
+  }
 
   projectile.sine = {
     radius: 3,
@@ -1489,9 +1486,9 @@ function loadTemplates() {
 
   ship.testDove = {
     config: {
-      health: 20,
+      health: 1,
       hitValue: 5,
-      radius: 70,
+      radius: 60,
       sprite: sprite.dove.default,
       snapLine: 200,
       snapLineSpeed: 400,
@@ -1503,17 +1500,17 @@ function loadTemplates() {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
     },
-    weapon: [
-      {
-        ring: ring.jaredTest3,
-        //offset: {x:-30,y:23},
-      },
+    // weapon: [
+    //   {
+    //     ring: ring.jaredTest3,
+    //     //offset: {x:-30,y:23},
+    //   },
 
-      // {
-      //   ring: ring.uniSpiralFourWay180,
-      //   //offset: {x:30,y:23},
-      // },
-    ],
+    //   // {
+    //   //   ring: ring.uniSpiralFourWay180,
+    //   //   //offset: {x:30,y:23},
+    //   // },
+    // ],
   };
 
   ship.testCrane = {
@@ -1671,8 +1668,9 @@ function loadTemplates() {
   /** A simple ring for the player only shoots up */
   ring.player = {
     payload: {
-      type: projectile.paperBall,
+      type: projectile.homingOnEnemy,
       speed: 500,
+      rotate: true,
     },
     firing: {
       angle: 270,
