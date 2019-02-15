@@ -955,8 +955,32 @@ class Ring {
     };
   }
 
+  getShipsInRange(point, range) {
+    const result = new Array();
+
+    for (const e of this.game.entities) {
+      if (e instanceof Ship && !e.isPlayer) {
+        
+        // check distance
+        const distanceSquared = Math.pow(this.current.x - other.current.x, 2) + Math.pow(this.current.y - other.current.y, 2);
+        const radiiSquared = Math.pow(this.config.radius + other.config.radius, 2);
+          hasCollided = distanceSquared < radiiSquared;
+        }
+        
+        e.hitTarget = true;
+        this.health--;
+
+        if (this.health === 0) {
+          this.disarm();
+          this.removeFromWorld = true;
+          this.game.onEnemyDestruction(this);
+        }
+      }
+      
+    }
+  }
+
   /** we can put other helpers here to help with guidance for homing missles. */
-}
 
 
 /**

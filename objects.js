@@ -35,9 +35,13 @@ function loadTemplates() {
     },
   };
 
-  projectile.sine = {
+  projectile.homingOnEnemy = {
     radius: 3,
-    
+    status: {
+      isHoming: false,
+      range: 300,
+    },    
+
     draw(ctx, x, y) {
       ctx.beginPath();
       ctx.arc(x, y, this.config.radius, 0 * Math.PI, 2 * Math.PI);
@@ -46,12 +50,44 @@ function loadTemplates() {
     },
 
     update() {
-      const time = this.game.clockTick;
+      // locate closest enemy -- if within range then set target
+
       
-      const deltaAngle = this.game.timer.getWave(180, 1) * time;
+      // what if an enemy exits world while tracking?
+      // should we always check proximity?
+
+      // if target then continue homing
+      if (this.status.isHoming) {
+        const target = this.owner.weapon[0].ring.getPlayerLocation(this.current);
+        if (target.radius < this.status.limit) {
+          this.status.isHoming = false;
+        }
+
+        this.current.angle = target.angle;
+      }
+
+      // update r
+      this.current.velocity.radial += this.current.acceleration.radial * this.game.clockTick;
+      this.current.r = this.current.velocity.radial * this.game.clockTick
+    },
+  };
+
+  projectile.sine = {
+    radius: 3,
+    status: {
+      time: 0,
+      amp: 3 * 2 * Math.PI
+    },
+    
+    image: AM.getAsset('./img/glass_ball.png'),
+    scale: 1.0,
+
+    update() {
+      this.status.time += this.game.clockTick;
+      this.current.r = this.current.velocity.radial * this.game.clockTick;
+
+      const deltaAngle = Math.cos(this.status.amp * this.status.time);
       this.current.angle = this.config.baseAngle + deltaAngle;
-      
-      this.current.r = this.current.velocity.radial * time;      
     },
   };
 
@@ -576,6 +612,40 @@ function loadTemplates() {
       cooldownTime: 0.02,
       rapidReload: true,
       targetPlayer: false,
+      viewTurret: true,
+      pulse: {
+        duration: 1,
+        delay: 3,
+      },
+    },
+  };
+
+  ring.jaredTest3 = {
+    payload: {
+      type: projectile.sine,
+      velocity: {
+        radial: 300,
+        angular: 0,
+      },
+      acceleration: {
+        radial: 0,
+        angular: 0,
+      },
+    },
+    rotation: {
+      angle: 0,
+      frequency: 0,
+    },
+    firing: {
+      radius: 80,
+      angle: 90,
+      spread: 20,
+      count: 4,
+      loadTime: 0.05,
+      cooldownTime: 0.1,
+      rapidReload: true,
+      targetPlayer: false,
+      targetLeadShot: false,
       viewTurret: true,
       pulse: {
         duration: 1,
@@ -1444,7 +1514,7 @@ function loadTemplates() {
     },
     weapon: [
       {
-        ring: ring.jaredTest1,
+        ring: ring.jaredTest3,
         //offset: {x:-30,y:23},
       },
 
