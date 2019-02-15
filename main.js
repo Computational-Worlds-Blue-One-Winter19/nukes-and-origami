@@ -341,7 +341,7 @@ class SceneManager {
     this.displayingMessage = false;
     this.waitUntilAtDefaultSpeed = false;
 
-    this.scenes = [scene.jaredLevel];
+    this.scenes = [scene.easyPaper];
   }
 
 
@@ -548,16 +548,16 @@ AM.downloadAll(() => {
   game.start();
 
   // add background and player
-  //game.addBackground();
+  game.addBackground();
   game.spawnPlayer();
 
   // view test stage
-  game.testScene();
+  //game.testScene();
 
   // run prototype level
   //game.spawnEnemies();
 
-  //initIntroMessage(game);
+  initIntroMessage(game);
 
   console.log('All Done!');
   canvas.focus();

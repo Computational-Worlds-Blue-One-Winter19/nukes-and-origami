@@ -42,8 +42,7 @@ function loadTemplates() {
     scale: .04,
     
     status: {
-      isHoming: false,
-      range: 300,
+      range: 400,
     },    
 
     update() {
@@ -61,7 +60,7 @@ function loadTemplates() {
         const deltaX = x - this.current.x;
         const deltaY = y - this.current.y;
         this.current.angle = Math.atan2(deltaY, deltaX);
-        }
+      }
     
       // update r
       this.current.velocity.radial += this.current.acceleration.radial * this.game.clockTick;
