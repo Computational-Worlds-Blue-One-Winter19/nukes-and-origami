@@ -6,7 +6,7 @@ function loadTemplates() {
    */
   projectile.homing = {
     radius: 3,
-    status: {
+    local: {
       isHoming: true,
       limit: 250,
     },    
@@ -20,10 +20,10 @@ function loadTemplates() {
 
     update() {
       // update angle if beyond the limit
-      if (this.status.isHoming) {
+      if (this.local.isHoming) {
         const target = this.owner.weapon[0].ring.getPlayerLocation(this.current);
-        if (target.radius < this.status.limit) {
-          this.status.isHoming = false;
+        if (target.radius < this.local.limit) {
+          this.local.isHoming = false;
         }
 
         this.current.angle = target.angle;
@@ -41,13 +41,13 @@ function loadTemplates() {
     image: AM.getAsset('./img/bullet.png'),
     scale: .04,
     
-    status: {
+    local: {
       range: 400,
     },    
 
     update() {
       // locate closest enemy -- if within range then set target
-      const hitList = this.game.getEnemiesInRange(this.current, this.status.range);
+      const hitList = this.game.getEnemiesInRange(this.current, this.local.range);
       
       if (hitList.length > 0) {
 
@@ -70,7 +70,7 @@ function loadTemplates() {
 
   projectile.sine = {
     radius: 3,
-    status: {
+    local: {
       time: 0,
       amp: 3 * 2 * Math.PI
     },
@@ -79,20 +79,24 @@ function loadTemplates() {
     scale: 1.0,
 
     update() {
-      this.status.time += this.game.clockTick;
+      this.local.time += this.game.clockTick;
       this.current.r = this.current.velocity.radial * this.game.clockTick;
 
-      const deltaAngle = Math.cos(this.status.amp * this.status.time);
+      const deltaAngle = Math.cos(this.local.amp * this.local.time);
       this.current.angle = this.config.baseAngle + deltaAngle;
     },
   };
-
+  
   /** *** PROJECTILES: SHAPES AND SPRITES **** */
   projectile.paperBall = {
     radius: 15,
     rotate: false,
     image: AM.getAsset('./img/paper_ball.png'),
     scale: 0.1,
+
+    init() {
+      this.current.angle = Math.PI;
+    },
   };
 
   projectile.rainbowBall = {
@@ -139,6 +143,16 @@ function loadTemplates() {
       ctx.stroke();
       ctx.fill();
     },
+
+    init() {
+      this.current.angle = toRadians(270);
+    },
+
+    update() {
+      this.current.velocity.radial += this.current.acceleration.radial * this.game.clockTick;
+      this.current.r = this.current.velocity.radial * this.game.clockTick;
+    }
+
   };
 
    /** Trying to spice-up bullet patterns? Make a pattern to load into a ring.
@@ -1667,18 +1681,36 @@ function loadTemplates() {
   /** A simple ring for the player only shoots up */
   ring.player = {
     payload: {
+      type: projectile.microBullet,
+      speed: 500,
+      rotate: true,
+    },
+    firing: {
+      angle: 270,
+      radius: 30,
+      spread: 10,
+      count: 2,
+      loadTime: 0.01,
+      cooldownTime: 0.25, // changed from 0.25 for testing
+      rapidReload: true,
+      viewTurret: false,
+    },
+  };
+
+  ring.enemyHoming = {
+    payload: {
       type: projectile.homingOnEnemy,
       speed: 500,
       rotate: true,
     },
     firing: {
       angle: 270,
-      radius: 35,
+      radius: 0,
       count: 1,
-      loadTime: 0.01,
-      cooldownTime: 0.25, // changed from 0.25 for testing
-      rapidReload: true,
-      viewTurret: false,
+      loadTime: 2,
+      cooldownTime: 2, // changed from 0.25 for testing
+      rapidReload: false,
+      viewTurret: true,
     },
   };
 
@@ -1692,7 +1724,15 @@ function loadTemplates() {
         y: 700,
       },
     },
-    weapon: ring.player,
+    weapon: [
+      {
+        ring: ring.player,
+      },
+      {
+        ring: ring.enemyHoming,
+        offset: { x: -12, y: 30}
+      }
+    ],
   };
 
 

@@ -193,7 +193,7 @@ class Ship extends Entity {
     // Check for hit from player bullets
     for (const e of this.game.entities) {
       if (e instanceof Projectile && e.playerShot && this.isCollided(e)) {
-        e.removeFromWorld = true;
+        e.onHit(this); //notify projectile
         this.health--;
 
         if (this.health === 0) {
@@ -599,7 +599,7 @@ class Plane extends Ship {
         } else { // hit by enemy bullet
           this.game.onPlayerHit(this);
         }
-        entity.removeFromWorld = true;
+        entity.onHit(this); // notify projectile
       }
     } // end for loop
   }
@@ -855,6 +855,7 @@ class Ring {
     
     for (let i = 0; i < this.bay.length; i++) {
       const projectile = this.bay[i];
+      projectile.init();
       this.owner.game.addEntity(projectile);
 
       if (this.config.rapidReload) {
@@ -876,6 +877,7 @@ class Ring {
       const projectile = this.bay[i];
       
       if (row[last - i] === 1) {
+        projectile.init();
         this.owner.game.addEntity(projectile);
       
         if (this.config.rapidReload) {
@@ -1002,7 +1004,7 @@ class Projectile extends Entity {
       baseAngle: this.current.angle || manifest.angle || 0,
     };
     
-    this.status = Object.assign({}, this.payload.status)
+    this.local = Object.assign({}, this.payload.local);
 
     // support for origin format
     if (!this.current.angle) {
@@ -1021,6 +1023,13 @@ class Projectile extends Entity {
       this.current.acceleration = Object.assign({}, this.current.acceleration);
     }
 
+    if (this.payload.init) {
+      this.init = this.payload.init;
+    }
+    
+    if (this.payload.onHit) {
+      this.onHit = this.payload.onHit;
+    }
 
     // check for sprite or image and set desired function
     if (this.payload.image) {
@@ -1075,7 +1084,16 @@ class Projectile extends Entity {
     this.current.r = 0;
   }
 
-  // default draw is used for sprite animations where draw() is not overriden
+  // default behavior: set removeFromWorld flag
+  onHit() {
+    this.removeFromWorld = true;
+  }
+
+  init() {
+    // not used by default; may be used for custom projectiles to init before launch.
+  }
+
+  // used by projectiles for image/sprite support. custom shapes can override draw().
   draw(ctx) {
     ctx.save();
 
