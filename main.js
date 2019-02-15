@@ -4,6 +4,7 @@ const AM = new AssetManager();
 const ring = {};
 const sprite = {};
 const ship = {};
+const pattern = {};
 const projectile = {};
 const path = {};
 const scene = {};
@@ -378,7 +379,9 @@ class SceneManager {
         }
       }
 
-      let ship = new Ship(this.game, Object.assign({}, manifestCopy));
+      // The ship constructor **should** copy data; try without Object.assign() here
+      // let ship = new Ship(this.game, Object.assign({}, manifestCopy));
+      let ship = new Ship(this.game, manifestCopy);
 
       // Was the location overriden?
       if (wave.initialXPoints) {
