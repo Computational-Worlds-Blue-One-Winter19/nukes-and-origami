@@ -89,6 +89,51 @@ class NukesAndOrigami extends GameEngine {
     }
   }
 
+  /** returns the polar coordinates of the player with respect to the given point */
+  getPlayerLocation(point) {
+    const deltaX = this.player.current.x - point.x;
+    const deltaY = this.player.current.y - point.y;
+    const angle = Math.atan2(deltaY, deltaX);
+    const radius = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+
+    return {
+      radius,
+      angle,
+    };
+  }
+
+  // get a list of enemies within the specified range or the coordinates
+  // no range returns all
+  getEnemiesInRange(point, range) {
+    const maxRangeSquared = Math.pow(range, 2) || Infinity;
+    const result = new Array();
+
+    for (let e of this.entities) {
+      if (e instanceof Ship && !e.isPlayer) {
+        
+        let distance = Math.pow(point.x - e.current.x, 2) + Math.pow(point.y - e.current.y, 2);
+        
+        if (distance < maxRangeSquared) {
+          result.push({
+            ship: e,
+            distance: Math.sqrt(distance),
+          });
+        } 
+      }
+    }
+
+    // return list in sorted order
+    return result.sort(function (a, b) {
+      if (a.distance < b.distance) {
+        return -1;
+      } else if (a.distance > b.distance) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+  }
+
   // notification of player destruction.
   onPlayerHit(player) {
     if (player.invincTime === 0 && !player.rolling) {
@@ -227,13 +272,15 @@ class NukesAndOrigami extends GameEngine {
 
   testScene() {
     // override onEnemyDestruction
-    this.onEnemyDestruction = function() {
-      this.addEntity(new Ship(this, ship.testDove));
-    }
+    // this.onEnemyDestruction = function() {
+    //   this.addEntity(new Ship(this, ship.testDove));
+    // }
 
     // spawn a single enemy to the center
+    ship.testDove.config.origin = {x: 750, y: -50};
     this.addEntity(new Ship(this, ship.testDove));
-    // this.addEntity(new Ship(this, ship.testCrane));
+    ship.testDove.config.origin = {x: 250, y: -50};
+    this.addEntity(new Ship(this, ship.testDove));
   }
 
   // establishes a new player Plane

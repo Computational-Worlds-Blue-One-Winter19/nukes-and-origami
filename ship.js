@@ -140,13 +140,13 @@ class Ship extends Entity {
       this.initializePath(manifest.path);
     }
 
-    if (manifest.weapon) {
-      this.initializeWeapon(manifest.weapon);
-    }
+    this.initializeWeapon(manifest.weapon);
   }
 
   update() {
-    if (this.snapLine) {
+    if (this.config.waitOffScreen > 0) {
+      this.config.waitOffScreen -= this.game.clockTick;
+    } else if (this.snapLine) {
       // we are enroute to the snapLine
       this.updateSnapPath();
     } else {
@@ -193,10 +193,10 @@ class Ship extends Entity {
     // Check for hit from player bullets
     for (const e of this.game.entities) {
       if (e instanceof Projectile && e.playerShot && this.isCollided(e)) {
-        e.removeFromWorld = true;
-        this.health--;
+        e.onHit(this); //notify projectile
+        this.health -= e.config.hitValue;
 
-        if (this.health === 0) {
+        if (this.health <= 0) {
           this.disarm();
           this.removeFromWorld = true;
           this.game.onEnemyDestruction(this);
@@ -293,7 +293,7 @@ class Ship extends Entity {
           offset: offset,
         });
       }
-    } else {
+    } else if (weaponManifest) {
       // process the single-ring format  
       var r = new Ring(this, weaponManifest);
       
@@ -599,7 +599,7 @@ class Plane extends Ship {
         } else { // hit by enemy bullet
           this.game.onPlayerHit(this);
         }
-        entity.removeFromWorld = true;
+        entity.onHit(this); // notify projectile
       }
     } // end for loop
   }
@@ -760,7 +760,7 @@ class Ring {
       this.current.angle = this.config.baseAngle + delta;
     } else if (this.current.isLeadShot || this.config.targetPlayer) {
       // moved target logic to here. this will aim the 
-      const target = this.getPlayerLocation(this.current);
+      const target = game.getPlayerLocation(this.current);
       this.current.angle = target.angle - this.config.spread / 2;
       this.current.isLeadShot = false;
     }
@@ -855,6 +855,7 @@ class Ring {
     
     for (let i = 0; i < this.bay.length; i++) {
       const projectile = this.bay[i];
+      projectile.init();
       this.owner.game.addEntity(projectile);
 
       if (this.config.rapidReload) {
@@ -876,6 +877,7 @@ class Ring {
       const projectile = this.bay[i];
       
       if (row[last - i] === 1) {
+        projectile.init();
         this.owner.game.addEntity(projectile);
       
         if (this.config.rapidReload) {
@@ -890,7 +892,6 @@ class Ring {
       this.bay = [];
     }
   }
-
 
   /** this returns a new Projectile configured for launch. */
   loadNext(previous) {
@@ -937,25 +938,8 @@ class Ring {
 
     // return a configured projectile
     return new Projectile(this.owner.game, manifest);
-  }
-
-  /** returns the polar coordinates of the player with respect to the given point */
-  getPlayerLocation(point) {
-    const player = this.owner.game.player;
-    const deltaX = player.current.x - point.x;
-    const deltaY = player.current.y - point.y;
-    const angle = Math.atan2(deltaY, deltaX);
-    const radius = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
-
-    return {
-      radius,
-      angle,
-    };
-  }
-
-  /** we can put other helpers here to help with guidance for homing missles. */
-}
-
+  }  
+} //end of Ring class
 
 /**
  * The projectile class manages its own path given a velocity and acceleration.
@@ -971,14 +955,14 @@ class Projectile extends Entity {
     this.owner = manifest.owner;
     this.current = Object.assign({}, manifest.origin);
     this.payload = manifest.payload.type;
-    this.hitTarget = false;
-
+    
     this.config = {
       radius: this.payload.radius,
       baseAngle: this.current.angle || manifest.angle || 0,
+      hitValue: this.payload.hitValue || 1,
     };
     
-    this.status = Object.assign({}, this.payload.status)
+    this.local = Object.assign({}, this.payload.local);
 
     // support for origin format
     if (!this.current.angle) {
@@ -997,20 +981,28 @@ class Projectile extends Entity {
       this.current.acceleration = Object.assign({}, this.current.acceleration);
     }
 
+    // override default methods
+    if (this.payload.init) {
+      this.init = this.payload.init;
+    }
+    
+    if (this.payload.onHit) {
+      this.onHit = this.payload.onHit;
+    }
 
     // check for sprite or image and set desired function
     if (this.payload.image) {
       this.image = this.payload.image;
-      this.scale = this.payload.scale;
+      this.scale = this.payload.scale || 1;
       this.drawImage = this.drawStillImage;
     } else if (this.payload.sprite) {
       this.sprite = new Sprite(this.payload.sprite.default);
       this.drawImage = this.drawSpriteFrame;
-      this.config.rotate = this.payload.rotate || false;
     } else {
-      this.drawImage = this.payload.draw;
+      this.drawImage = this.drawCircle;
     }
 
+    this.config.rotate = this.payload.rotate || false;
     this.customUpdate = this.payload.update;
     this.playerShot = (this.owner === game.player);
   }
@@ -1051,7 +1043,16 @@ class Projectile extends Entity {
     this.current.r = 0;
   }
 
-  // default draw is used for sprite animations where draw() is not overriden
+  // default behavior: set removeFromWorld flag
+  onHit() {
+    this.removeFromWorld = true;
+  }
+
+  init() {
+    // not used by default; may be used for custom projectiles to init before launch.
+  }
+
+  // used by projectiles for image/sprite support. custom shapes can override draw().
   draw(ctx) {
     ctx.save();
 
@@ -1083,6 +1084,13 @@ class Projectile extends Entity {
     const locX = x - width / 2;
     const locY = y - height / 2;
     ctx.drawImage(this.image, locX, locY, width, height);
+  }
+
+  drawCircle(ctx, x, y) {
+    ctx.beginPath();
+    ctx.arc(x, y, this.config.radius, 0 * Math.PI, 2 * Math.PI);
+    ctx.stroke();
+    ctx.fill();
   }
 }
 

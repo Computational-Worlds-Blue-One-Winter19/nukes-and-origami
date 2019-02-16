@@ -1,29 +1,48 @@
 function loadTemplates() {
   /**
-   * A custom projectile overrides the update method. This is called after the projectile has spawned.
-   * Access current.x, current.y, current.velocity, current.acceleration, this.game.clockTick
-   * to update x,y.
+   * Standard projectile values are:
+   *   radius: the hitbox for this Projectile
+   *   hitValue: the amount of destruction (default=1)
+   *   rotate: if true then image/sprite will be adjusted to the current angle
+   *   
+   *   image: use an image directly from the Asset Manager
+   *   scale: used to scale down an image only (sprites do this on their own)
+   *     --OR--  
+   *   sprite: use to show a sprite instead of an image
+   *     --OR--
+   *   if no image or sprite is given then a solid circle is drawn
+   * 
+   * A custom projectile can use the following methods to produce unique behavior.
+   *   init() is called one time immediately prior to launch
+   *   update() to customize the trajectory/behavior\
+   *   onHit(ship) is called when struck by an opposing Ship
+   * 
+   *   {local} values stored here are accessible in this.local and can be used
+   *           to manage state for custom trajectory/behavior.
+   * 
+   * pre-conditions:
+   *   1. the projectile has a valid this.current.{ x, y, angle }
+   *   2. init() has been called
+   *   3. this.local is private to this instance
+   * post-conditions:
+   *   1. this.current.{r, angle} reflect the new polar position of the projectile.
    */
+
+  /** This tracks the player. So only load it on an Enemy! */
   projectile.homing = {
     radius: 3,
-    status: {
+    
+    local: {
       isHoming: true,
-      limit: 250,
+      limit: 250, // minimum distance to stop tracking
     },    
 
-    draw(ctx, x, y) {
-      ctx.beginPath();
-      ctx.arc(x, y, this.config.radius, 0 * Math.PI, 2 * Math.PI);
-      ctx.stroke();
-      ctx.fill();
-    },
-
     update() {
-      // update angle if beyond the limit
-      if (this.status.isHoming) {
-        const target = this.owner.weapon[0].ring.getPlayerLocation(this.current);
-        if (target.radius < this.status.limit) {
-          this.status.isHoming = false;
+      // update angle if projectile is beyond the limit
+      if (this.local.isHoming) {
+        const target = this.game.getPlayerLocation(this.current);
+        if (target.radius < this.local.limit) {
+          this.local.isHoming = false;
         }
 
         this.current.angle = target.angle;
@@ -35,27 +54,76 @@ function loadTemplates() {
     },
   };
 
-  projectile.sine = {
+  /** This tracks an enemy. */
+  projectile.homingOnEnemy = {
     radius: 3,
+    hitValue: 3,
+    rotate: true,
+    image: AM.getAsset('./img/bullet.png'),
+    scale: .04,
     
-    draw(ctx, x, y) {
-      ctx.beginPath();
-      ctx.arc(x, y, this.config.radius, 0 * Math.PI, 2 * Math.PI);
-      ctx.stroke();
-      ctx.fill();
-    },
+    local: {
+      range: 400, // maximum
+    },    
 
     update() {
-      const time = this.game.clockTick;
+      const hitList = this.game.getEnemiesInRange(this.current, this.local.range);
       
-      const deltaAngle = this.game.timer.getWave(180, 1) * time;
+      // sorted list; closest enemy at index 0
+      if (hitList.length > 0) {
+        const {
+          x,
+          y,
+        } = hitList[0].ship.current;
+        
+        // set target angle
+        const deltaX = x - this.current.x;
+        const deltaY = y - this.current.y;
+        this.current.angle = Math.atan2(deltaY, deltaX);
+      }
+    
+      // update r
+      this.current.velocity.radial += this.current.acceleration.radial * this.game.clockTick;
+      this.current.r = this.current.velocity.radial * this.game.clockTick
+    },
+  }
+
+  /** Prototype for sine wave */
+  projectile.sine = {
+    radius: 3,
+    image: AM.getAsset('./img/glass_ball.png'),
+    scale: 1.0,
+
+    local: {
+      time: 0,
+      amp: 3 * 2 * Math.PI
+    },
+    
+    update() {
+      this.local.time += this.game.clockTick;
+      this.current.r = this.current.velocity.radial * this.game.clockTick;
+
+      const deltaAngle = Math.cos(this.local.amp * this.local.time);
       this.current.angle = this.config.baseAngle + deltaAngle;
-      
-      this.current.r = this.current.velocity.radial * time;      
     },
   };
-
+  
   /** *** PROJECTILES: SHAPES AND SPRITES **** */
+  projectile.circleBullet = {
+    radius: 6,
+    // a circle is now drawn by default if you don't include an image or sprite
+  };
+  
+  projectile.microBullet = {
+    radius: 3,
+    
+    // use init() for any pre-processing immediately prior to launch.
+    // for player bullets we can easily say "only travel up"
+    init() {
+      this.current.angle = toRadians(270);
+    }
+  };
+    
   projectile.paperBall = {
     radius: 15,
     rotate: false,
@@ -89,27 +157,9 @@ function loadTemplates() {
     sprite: sprite.testLaser.default,
   };
 
-  projectile.circleBullet = {
-    radius: 6,
-    draw(ctx) {
-      ctx.beginPath();
-      ctx.arc(this.current.x, this.current.y, this.config.radius, 0 * Math.PI, 2 * Math.PI);
-      ctx.stroke();
-      ctx.fill();
-    },
-  };
 
-  projectile.microBullet = {
-    radius: 3,
-    draw(ctx) {
-      ctx.beginPath();
-      ctx.arc(this.current.x, this.current.y, this.config.radius, 0 * Math.PI, 2 * Math.PI);
-      ctx.stroke();
-      ctx.fill();
-    },
-  };
-
-   /** Trying to spice-up bullet patterns? Make a pattern to load into a ring.
+  /** *** PATTERNS ***
+   *  Trying to spice-up bullet patterns? Make a pattern to load into a ring.
    *  Instead of the usual fireAll() behavior, a pattern tells the Ring to
    *  only fire specific turrets on each round. Use spread and cooldownTime to
    *  control the width and line-spacing. Other settings for ring remain intact.
@@ -134,14 +184,14 @@ function loadTemplates() {
                 [ 1, 0, 1, 0 ],
                 [ 1, 1, 1, 0 ],
                 [ 0, 1, 0, 0 ] ],
-    delay: 2, // seconds between rounds
+    delay: 2,
   }
   
   /** *** RING: FIRING PATTERNS **** */
   ring.patternTest = {
     payload: {
-      type: projectile.microBullet,
-      speed: 150,
+      type: projectile.glassBall,
+      speed: 350,
     },
     firing: {
       pattern: pattern.simple,
@@ -154,8 +204,7 @@ function loadTemplates() {
       viewTurret: true,
     },
   };
-  
-  
+    
   ring.linearTest = {
     payload: {
       type: projectile.homing,
@@ -576,6 +625,40 @@ function loadTemplates() {
       cooldownTime: 0.02,
       rapidReload: true,
       targetPlayer: false,
+      viewTurret: true,
+      pulse: {
+        duration: 1,
+        delay: 3,
+      },
+    },
+  };
+
+  ring.jaredTest3 = {
+    payload: {
+      type: projectile.sine,
+      velocity: {
+        radial: 300,
+        angular: 0,
+      },
+      acceleration: {
+        radial: 0,
+        angular: 0,
+      },
+    },
+    rotation: {
+      angle: 0,
+      frequency: 0,
+    },
+    firing: {
+      radius: 80,
+      angle: 90,
+      spread: 20,
+      count: 4,
+      loadTime: 0.05,
+      cooldownTime: 0.1,
+      rapidReload: true,
+      targetPlayer: false,
+      targetLeadShot: false,
       viewTurret: true,
       pulse: {
         duration: 1,
@@ -1419,9 +1502,9 @@ function loadTemplates() {
 
   ship.testDove = {
     config: {
-      health: 20,
+      health: 1,
       hitValue: 5,
-      radius: 70,
+      radius: 60,
       sprite: sprite.dove.default,
       snapLine: 200,
       snapLineSpeed: 400,
@@ -1433,17 +1516,17 @@ function loadTemplates() {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
     },
-    weapon: [
-      {
-        ring: ring.trackingTest1,
-        //offset: {x:-30,y:23},
-      },
+    // weapon: [
+    //   {
+    //     ring: ring.jaredTest3,
+    //     //offset: {x:-30,y:23},
+    //   },
 
-      // {
-      //   ring: ring.uniSpiralFourWay180,
-      //   //offset: {x:30,y:23},
-      // },
-    ],
+    //   // {
+    //   //   ring: ring.uniSpiralFourWay180,
+    //   //   //offset: {x:30,y:23},
+    //   // },
+    // ],
   };
 
   ship.testCrane = {
@@ -1490,6 +1573,11 @@ function loadTemplates() {
     [90, 50, 2],
     [0, 50, 2],
     [135, 50, 30],
+  ];
+
+  // Advanced straight to bottom
+  path.straightDown = [
+    [90, 250, 30]
   ];
 
   /** *** SCENES **** */
@@ -1596,17 +1684,36 @@ function loadTemplates() {
   /** A simple ring for the player only shoots up */
   ring.player = {
     payload: {
-      type: projectile.paperBall,
+      type: projectile.microBullet,
       speed: 500,
+      rotate: true,
     },
     firing: {
       angle: 270,
-      radius: 35,
-      count: 1,
+      radius: 30,
+      spread: 10,
+      count: 2,
       loadTime: 0.01,
       cooldownTime: 0.25, // changed from 0.25 for testing
       rapidReload: true,
       viewTurret: false,
+    },
+  };
+
+  ring.enemyHoming = {
+    payload: {
+      type: projectile.homingOnEnemy,
+      speed: 500,
+      rotate: true,
+    },
+    firing: {
+      angle: 270,
+      radius: 0,
+      count: 1,
+      loadTime: 2,
+      cooldownTime: 2, // changed from 0.25 for testing
+      rapidReload: false,
+      viewTurret: true,
     },
   };
 
@@ -1620,6 +1727,174 @@ function loadTemplates() {
         y: 700,
       },
     },
-    weapon: ring.player,
+    weapon: [
+      {
+        ring: ring.player,
+      },
+      {
+        ring: ring.enemyHoming,
+        offset: { x: -12, y: 30}
+      }
+    ],
   };
+
+
+  /** JaredLevel: Templates for a Level */
+  ring.gammaOne = {
+    payload: {
+      type: projectile.glassBall,
+      speed: 500,
+    },
+    firing: {
+      radius: 5,
+      count: 1,
+      angle: 90,
+      loadTime: 0,
+      cooldownTime: 0.15,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: false,
+      pulse: {
+        duration: 0.5,
+        delay: 1.5,
+      }
+    },
+  };
+
+  ship.jaredTestDove = {
+    config: {
+      health: 2,
+      hitValue: 3,
+      radius: 70,
+      sprite: sprite.dove.default,
+      snapLine: 40,
+      snapLineSpeed: 250,
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0,
+    },
+    path: [ [90,175,30]],
+    weapon: [
+      {
+        ring: ring.gammaOne,
+        offset: { x: -30, y: 20}
+      },
+      {
+        ring: ring.gammaOne,
+        offset: { x: 30, y: 20}
+      }
+    ],
+  };
+  
+  scene.jaredLevel = {
+    waves: [
+      // wave 1
+      {
+        numOfEnemies: 10,
+        ships: new Array(10).fill(ship.jaredTestDove),
+        paths: [
+          path.straightDown,
+          path.straightDown,
+          path.straightDown,
+          path.straightDown,
+          path.straightDown,
+          path.straightDown,
+          path.straightDown,
+          path.straightDown,
+          path.straightDown,
+          path.straightDown,
+        ],
+        initialXPoints: [ // omit to evenly space enemies.
+          600, 400, 700, 250, 400, 850, 450, 380, 770, 650
+        ],
+        shipManifestOverride: [
+          { config: { waitOffScreen: 0 } },
+          { config: { waitOffScreen: 2 } }, 
+          { config: { waitOffScreen: 3 } },
+          { config: { waitOffScreen: 5 } },
+          { config: { waitOffScreen: 8 } },
+          { config: { waitOffScreen: 9 } },
+          { config: { waitOffScreen: 11 } },
+          { config: { waitOffScreen: 15 } },
+          { config: { waitOffScreen: 18 } },
+          { config: { waitOffScreen: 19 } },
+        ],
+        waitUntilEnemiesGone: true,
+      },
+      // {
+      //   numOfEnemies: 3,
+      //   ships: new Array(3).fill(ship.crane),
+      //   waitUntilEnemiesGone: true,
+      // },
+      // {
+      //   numOfEnemies: 3,
+      //   ships: [ship.bat, ship.dove, ship.bat],
+      //   paths: [
+      //     // first bat cornerleft
+      //     path.cornerLeft,
+      //     // dove do nothing
+      //     path.doNothing,
+      //     // second bat cornerright
+      //     path.cornerRight,
+      //   ],
+      //   shipManifestOverride: [
+      //     // change first bat to tracking test
+      //     {
+      //       weapon: ring.trackingTest1,
+      //     },
+      //     // don't do anything to dove
+      //     {},
+      //     // change second bat to tracking test
+      //     {
+      //       weapon: ring.trackingTest1,
+      //     },
+      //   ],
+      //   initialXPoints: [ // omit to evenly space enemies.
+      //     400, 500, 600,
+      //   ],
+      //   waitUntilEnemiesGone: true,
+      // },
+      {
+        warpSpeed: true,
+        message: {
+          type: 'warning',
+          text: ['First Wave Complete','--Game Over--'],
+          duration: 6,
+        }
+      },
+      // BOSS SWALLOW!!
+      // {
+      //   numOfEnemies: 1,
+      //   ships: [ship.swallow],
+      //   paths: [
+      //     path.doNothing
+      //   ],
+      //   shipManifestOverride: [
+      //     {
+      //       config: {
+      //         sprite: sprite.swallow.boss,
+      //         health: 100,
+      //         snapLineSpeed: 50,
+      //         hitValue: 2000,
+      //         snapLine: 250,
+      //         radius: 200,
+      //       },
+      //       weapon: {
+      //         rotation: {
+      //           angle: 20,
+      //           frequency: 6
+      //         },
+      //         firing: {
+      //           count: 100,
+      //           radius: 250,
+      //           loadTime: 0.005,
+      //         }
+      //       }
+      //     },
+      //   ],
+      //   waitUntilEnemiesGone: true,
+      // },
+    ],
+  };
+
+
 } // end of objects file
