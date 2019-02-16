@@ -257,7 +257,7 @@ function loadSpriteSheets() {
           frameHeight: 54,
           frameCount: 5,
           timePerFrame: 20,
-          scale: 0.5,
+          scale: 0.6,
           flip: false,
         },
       },

@@ -51,10 +51,13 @@ class NukesAndOrigami extends GameEngine {
 
     // Initilize the game board
     initializeScoreBoardLives(this.lives);
+    this.sceneManager = new SceneManager(this);
   }
 
   initializeSceneManager() {
-    this.sceneManager = new SceneManager(this);
+    // this.sceneManager = new SceneManager(this);
+    // load completed levels
+    this.sceneManager.scenes.push(scene.easyPaper);
   }
 
   // Override
@@ -272,28 +275,6 @@ class NukesAndOrigami extends GameEngine {
     // }));
   }
 
-  testScene() {
-    // override onEnemyDestruction
-    // this.onEnemyDestruction = function() {
-    //   this.addEntity(new Ship(this, ship.testDove));
-    // }
-
-    // spawn a single enemy to the center
-    ship.testDove.config.origin = {x: 200, y: -50};
-    this.addEntity(new Ship(this, ship.testDove));
-    ship.testDove.config.origin = {x: 500, y: -50};
-    this.addEntity(new Ship(this, ship.testDove));
-    ship.testDove.config.origin = {x: 800, y: -50};
-    ship.testDove.config.snapLine = 380
-    this.addEntity(new Ship(this, ship.testDove));
-  }
-
-  // establishes a new player Plane
-  spawnPlayer() {
-    this.player = new Plane(this, ship.player);
-    this.addEntity(this.player);
-  }
-
   /**
    * Increases the current player's score by the given value
    * @param {Int} value
@@ -302,6 +283,13 @@ class NukesAndOrigami extends GameEngine {
     this.score += value;
     updateScoreBoard(this.score);
   }
+
+  // establishes a new Plane for standard gameplay
+  spawnPlayer() {
+    this.player = new Plane(this, ship.player);
+    this.addEntity(this.player);
+  }
+
 
   addBackground() {
     // Using object deconstructing to access the canvas property
@@ -314,7 +302,7 @@ class NukesAndOrigami extends GameEngine {
     };
     const point2 = {
       x: 0,
-      y: -2 * canvas.height,
+      y: -canvas.height,
     };
     const cloudPoint1 = {
       x: 0,
@@ -324,12 +312,85 @@ class NukesAndOrigami extends GameEngine {
       x: 0,
       y: -2304 * 2,
     };
-    //this.addEntity(new Background(this, AM.getAsset('./img/grass.png'), canvas.height, point1));
-    this.addEntity(new Background(this, AM.getAsset('./img/space1024x3072.png'), canvas.height, point2));
-    //this.addEntity(new Clouds(this, AM.getAsset('./img/clouds.png'), canvas.height, cloudPoint1));
-    //this.addEntity(new Clouds(this, AM.getAsset('./img/clouds.png'), canvas.height, cloudPoint2));
+    this.addEntity(new Background(this, AM.getAsset('./img/notebook.png'), canvas.height, point1));
+    this.addEntity(new Background(this, AM.getAsset('./img/notebook.png'), canvas.height, point2));
+    this.addEntity(new Clouds(this, AM.getAsset('./img/clouds.png'), canvas.height, cloudPoint1));
+    this.addEntity(new Clouds(this, AM.getAsset('./img/clouds.png'), canvas.height, cloudPoint2));
   }
+
+
+  /** Test scene: place something quick and dirty. I have switched to my own test scene
+   *  using the SceneManager, but this still works if you want.
+   */
+  testScene() {
+    // initialize test environment
+    if (this.player) {
+      this.player.removeFromWorld = true;
+    }
+    let count = 0;
+    spawn(this);
+
+    // override onEnemyDestruction() to respawn scene
+    this.onEnemyDestruction = function() {
+      count--;
+      if (count === 0) {
+        spawn(this);
+      }
+    }
+
+    // introduce test player
+    this.player = new Plane(this, ship.jaredTestPlane);
+    this.addEntity(this.player);
+
+    // introduce test enemies
+    function spawn(that) {
+      count = 3;
+
+      ship.testDove.config.origin = {x: 200, y: -50};
+      that.addEntity(new Ship(that, ship.testDove));
+      ship.testDove.config.origin = {x: 500, y: -50};
+      that.addEntity(new Ship(that, ship.testDove));
+      ship.testDove.config.origin = {x: 800, y: -50};
+      ship.testDove.config.snapLine = 380
+      that.addEntity(new Ship(that, ship.testDove));
+    
+    }
+  } // end test scene
 }
+
+
+/** Call AssetManager to download assets and launch the game. */
+AM.downloadAll(() => {
+  const canvas = document.getElementById('gameWorld');
+  const ctx = canvas.getContext('2d');
+  loadSpriteSheets();
+  loadTemplates();
+  const game = new NukesAndOrigami();
+  game.init(ctx);
+  game.start();
+
+  // add background
+  game.addBackground();
+
+  // spawn standard ship.player
+  game.spawnPlayer();
+
+  // run standard gameplay
+  initIntroMessage(game);
+
+  // view simple test scene; defined above
+  //game.testScene();
+  
+  // view single scene with SceneManager
+  //game.sceneManager.scenes.push(scene.jaredTestScene);
+  
+  // run prototype level
+  //game.spawnEnemies();
+
+  console.log('All Done!');
+  canvas.focus();
+});
+
 
 class SceneManager {
   // The scene manager takes a GameEngine to hold references to what it will
@@ -360,9 +421,8 @@ class SceneManager {
     this.displayingMessage = false;
     this.waitUntilAtDefaultSpeed = false;
 
-    this.scenes = [scene.jaredLevel];
+    this.scenes = new Array();
   }
-
 
   // In the future, handle the changing out of assets here like changing
   // the background image/assets
@@ -371,6 +431,16 @@ class SceneManager {
   loadScene(scene) {
     this.currentScene = scene;
     this.waves = scene.waves;
+
+    //replace current player if a new one is provided
+    if (scene.player) {
+      if (this.game.player) {
+        this.game.player.removeFromWorld = true;
+      }
+
+      this.game.player = new Plane(this.game, scene.player);
+      this.game.addEntity(this.game.player);
+    }
   }
 
   // In the future, handle any wave specific activity here. This could be doing
@@ -554,33 +624,6 @@ class SceneManager {
   }
 }
 
-/** Call AssetManager to download assets and launch the game. */
-AM.downloadAll(() => {
-  const canvas = document.getElementById('gameWorld');
-  const ctx = canvas.getContext('2d');
-
-  loadSpriteSheets();
-  loadTemplates();
-
-  const game = new NukesAndOrigami();
-  game.init(ctx);
-  game.start();
-
-  // add background and player
-  //game.addBackground();
-  game.spawnPlayer();
-
-  // view test stage
-  game.testScene();
-
-  // run prototype level
-  //game.spawnEnemies();
-
-  //initIntroMessage(game);
-
-  console.log('All Done!');
-  canvas.focus();
-});
 
 class Background extends Entity {
   constructor(game, spritesheet, canvasHeight, point) {
@@ -598,13 +641,14 @@ class Background extends Entity {
 
   update() {
     this.current.y += this.game.backgroundSpeed;
-    if (this.current.y >= 0) {
+    if (this.current.y >= this.canvasHeight) {
       // Adjust for overshoot
-      this.current.y = -2 * this.canvasHeight;
+      this.current.y = -this.canvasHeight + (this.current.y - this.canvasHeight);
       console.log(this.current.y);
     }
   }
 }
+
 
 class Clouds extends Entity {
   constructor(game, spritesheet, canvasHeight, point) {
@@ -630,6 +674,7 @@ class Clouds extends Entity {
     }
   }
 }
+
 
 class ShieldEntity extends Entity {
   constructor(game, point) {
