@@ -279,9 +279,11 @@ class NukesAndOrigami extends GameEngine {
     // }
 
     // spawn a single enemy to the center
-    ship.testDove.config.origin = {x: 750, y: -50};
+    ship.testDove.config.origin = {x: 200, y: -50};
     this.addEntity(new Ship(this, ship.testDove));
-    ship.testDove.config.origin = {x: 250, y: -50};
+    ship.testDove.config.origin = {x: 500, y: -50};
+    this.addEntity(new Ship(this, ship.testDove));
+    ship.testDove.config.origin = {x: 800, y: -50};
     this.addEntity(new Ship(this, ship.testDove));
   }
 
@@ -564,16 +566,16 @@ AM.downloadAll(() => {
   game.start();
 
   // add background and player
-  game.addBackground();
+  //game.addBackground();
   game.spawnPlayer();
 
   // view test stage
-  //game.testScene();
+  game.testScene();
 
   // run prototype level
   //game.spawnEnemies();
 
-  initIntroMessage(game);
+  //initIntroMessage(game);
 
   console.log('All Done!');
   canvas.focus();

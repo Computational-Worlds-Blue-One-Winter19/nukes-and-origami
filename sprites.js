@@ -306,7 +306,22 @@ function loadSpriteSheets() {
           flip: false,
         },
       },
-    }
+    },
+    bigOrange: {
+      default: {
+        image: AM.getAsset('./img/7_shoot_sheet.png'),
+        dimension: {
+          originX: 0,
+          originY: 0,
+          frameWidth: 52,
+          frameHeight: 140,
+          frameCount: 5,
+          timePerFrame: 20,
+          scale: 0.5,
+          flip: false,
+        },
+      },
+    },
   };
 
   sprite.cutLaser = {

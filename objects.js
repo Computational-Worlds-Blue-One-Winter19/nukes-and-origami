@@ -109,6 +109,52 @@ function loadTemplates() {
     },
   };
   
+  /** This tracks an enemy. */
+  projectile.chainGun = {
+    radius: 3,
+    hitValue: 3,
+    rotate: true,
+    // image: AM.getAsset('./img/bullet.png'),
+    // scale: .04,
+    sprite: sprite.laser.bigOrange,
+    
+    local: {
+      count: 0,
+      range: 600, // maximum
+    },    
+
+    onHit() {
+      this.local.count += 1;
+      this.current.velocity.radial *= 1.4;
+      // stay alive
+    },
+
+    update() {
+      
+      // only track after the first hit
+      if (this.local.count > 0) {
+        const hitList = this.game.getEnemiesInRange(this.current, this.local.range);
+      
+        // sorted list; closest enemy at index 0
+        if (hitList.length > 0) {
+          const {
+            x,
+            y,
+          } = hitList[0].ship.current;
+          
+          // set target angle
+          const deltaX = x - this.current.x;
+          const deltaY = y - this.current.y;
+          this.current.angle = Math.atan2(deltaY, deltaX);
+        }
+      }
+
+      // update r
+      this.current.velocity.radial += this.current.acceleration.radial * this.game.clockTick;
+      this.current.r = this.current.velocity.radial * this.game.clockTick
+    },
+  };
+
   /** *** PROJECTILES: SHAPES AND SPRITES **** */
   projectile.circleBullet = {
     radius: 6,
@@ -1726,7 +1772,7 @@ function loadTemplates() {
 
   ring.enemyHoming = {
     payload: {
-      type: projectile.homingOnEnemy,
+      type: projectile.chainGun,
       speed: 500,
       rotate: true,
     },
@@ -1752,9 +1798,9 @@ function loadTemplates() {
       },
     },
     weapon: [
-      {
-        ring: ring.player,
-      },
+      // {
+      //   ring: ring.player,
+      // },
       {
         ring: ring.enemyHoming,
         offset: { x: -12, y: 30}
