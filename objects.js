@@ -40,7 +40,7 @@ function loadTemplates() {
     update() {
       // update angle if projectile is beyond the limit
       if (this.local.isHoming) {
-        const target = this.owner.weapon[0].ring.getPlayerLocation(this.current);
+        const target = this.game.getPlayerLocation(this.current);
         if (target.radius < this.local.limit) {
           this.local.isHoming = false;
         }

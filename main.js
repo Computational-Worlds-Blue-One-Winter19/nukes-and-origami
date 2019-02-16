@@ -89,26 +89,40 @@ class NukesAndOrigami extends GameEngine {
     }
   }
 
+  /** returns the polar coordinates of the player with respect to the given point */
+  getPlayerLocation(point) {
+    const deltaX = this.player.current.x - point.x;
+    const deltaY = this.player.current.y - point.y;
+    const angle = Math.atan2(deltaY, deltaX);
+    const radius = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+
+    return {
+      radius,
+      angle,
+    };
+  }
+
   // get a list of enemies within the specified range or the coordinates
   // no range returns all
   getEnemiesInRange(point, range) {
-    const maxRange = range || Infinity;
+    const maxRangeSquared = Math.pow(range, 2) || Infinity;
     const result = new Array();
 
     for (let e of this.entities) {
       if (e instanceof Ship && !e.isPlayer) {
         
         let distance = Math.pow(point.x - e.current.x, 2) + Math.pow(point.y - e.current.y, 2);
-        distance = Math.sqrt(distance);
-
-        if (distance < maxRange) {
+        
+        if (distance < maxRangeSquared) {
           result.push({
             ship: e,
-            distance: distance,
+            distance: Math.sqrt(distance),
           });
         } 
       }
     }
+
+    // return list in sorted order
     return result.sort(function (a, b) {
       if (a.distance < b.distance) {
         return -1;

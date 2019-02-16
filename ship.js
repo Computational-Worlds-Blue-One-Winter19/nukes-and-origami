@@ -760,7 +760,7 @@ class Ring {
       this.current.angle = this.config.baseAngle + delta;
     } else if (this.current.isLeadShot || this.config.targetPlayer) {
       // moved target logic to here. this will aim the 
-      const target = this.getPlayerLocation(this.current);
+      const target = game.getPlayerLocation(this.current);
       this.current.angle = target.angle - this.config.spread / 2;
       this.current.isLeadShot = false;
     }
@@ -893,7 +893,6 @@ class Ring {
     }
   }
 
-
   /** this returns a new Projectile configured for launch. */
   loadNext(previous) {
     let origin;
@@ -939,49 +938,8 @@ class Ring {
 
     // return a configured projectile
     return new Projectile(this.owner.game, manifest);
-  }
-
-  /** returns the polar coordinates of the player with respect to the given point */
-  getPlayerLocation(point) {
-    const player = this.owner.game.player;
-    const deltaX = player.current.x - point.x;
-    const deltaY = player.current.y - point.y;
-    const angle = Math.atan2(deltaY, deltaX);
-    const radius = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
-
-    return {
-      radius,
-      angle,
-    };
-  }
-
-  getShipsInRange(point, range) {
-    const result = new Array();
-
-    for (const e of this.game.entities) {
-      if (e instanceof Ship && !e.isPlayer) {
-        
-        // check distance
-        const distanceSquared = Math.pow(this.current.x - other.current.x, 2) + Math.pow(this.current.y - other.current.y, 2);
-        const radiiSquared = Math.pow(this.config.radius + other.config.radius, 2);
-          hasCollided = distanceSquared < radiiSquared;
-        }
-        
-        e.hitTarget = true;
-        this.health--;
-
-        if (this.health === 0) {
-          this.disarm();
-          this.removeFromWorld = true;
-          this.game.onEnemyDestruction(this);
-        }
-      }
-      
-    }
-  }
-
-  /** we can put other helpers here to help with guidance for homing missles. */
-
+  }  
+} //end of Ring class
 
 /**
  * The projectile class manages its own path given a velocity and acceleration.
