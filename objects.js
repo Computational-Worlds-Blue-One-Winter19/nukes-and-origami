@@ -1599,6 +1599,11 @@ function loadTemplates() {
     [90, 250, 30]
   ];
 
+  path.backAndForth = [
+    [0, 25, 5],
+    [180, 25, 5]
+  ]
+
   /** *** SCENES **** */
   scene.easyPaper = {
     waves: [
@@ -1780,9 +1785,31 @@ function loadTemplates() {
     },
   };
 
+  ring.gammaTwo = {
+    payload: {
+      type: projectile.glassBall,
+      speed: 500,
+    },
+    firing: {
+      radius: 5,
+      count: 6,
+      angle: 90,
+      spread: 80,
+      loadTime: 0,
+      cooldownTime: 0.005,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: true,
+      pulse: {
+        duration: 1.0,
+        delay: 2.5,
+      }
+    },
+  };
+
   ship.jaredTestDove = {
     config: {
-      health: 2,
+      health: 3,
       hitValue: 3,
       radius: 70,
       sprite: sprite.dove.default,
@@ -1803,25 +1830,31 @@ function loadTemplates() {
       }
     ],
   };
+
+  ship.jaredTestCrane = {
+    config: {
+      health: 12,
+      hitValue: 3,
+      radius: 70,
+      sprite: sprite.crane.default,
+      snapLine: 200,
+      snapLineSpeed: 250,
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0,
+    },
+    weapon: [
+      {
+        ring: ring.gammaTwo,
+      }
+    ],
+  };
   
   scene.jaredLevel = {
     waves: [
-      // wave 1
       {
         numOfEnemies: 10,
         ships: new Array(10).fill(ship.jaredTestDove),
-        paths: [
-          path.straightDown,
-          path.straightDown,
-          path.straightDown,
-          path.straightDown,
-          path.straightDown,
-          path.straightDown,
-          path.straightDown,
-          path.straightDown,
-          path.straightDown,
-          path.straightDown,
-        ],
+        paths: new Array(10).fill(path.straightDown),
         initialXPoints: [ // omit to evenly space enemies.
           600, 400, 700, 250, 400, 850, 450, 380, 770, 650
         ],
@@ -1839,6 +1872,25 @@ function loadTemplates() {
         ],
         waitUntilEnemiesGone: true,
       },
+      {
+        numOfEnemies: 6,
+        ships: new Array(10).fill(ship.jaredTestCrane),
+        paths: new Array(10).fill(path.backAndForth),
+        initialXPoints: [ // omit to evenly space enemies.
+          100, 300, 600, 120, 700, 550
+        ],
+        shipManifestOverride: [
+          { config: { waitOffScreen: 5 } },
+          { config: { waitOffScreen: 9 } }, 
+          { config: { waitOffScreen: 11 } },
+          { config: { waitOffScreen: 13 } },
+          { config: { waitOffScreen: 17 } },
+          { config: { waitOffScreen: 20} },
+        ],
+        waitUntilEnemiesGone: true,
+      },
+
+
       // {
       //   numOfEnemies: 3,
       //   ships: new Array(3).fill(ship.crane),
