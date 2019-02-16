@@ -59,8 +59,9 @@ function loadTemplates() {
     radius: 3,
     hitValue: 3,
     rotate: true,
-    image: AM.getAsset('./img/bullet.png'),
-    scale: .04,
+    // image: AM.getAsset('./img/bullet.png'),
+    // scale: .04,
+    sprite: sprite.laser.bigOrange,
     
     local: {
       range: 400, // maximum
@@ -108,6 +109,52 @@ function loadTemplates() {
     },
   };
   
+  /** This tracks an enemy. */
+  projectile.chainGun = {
+    radius: 3,
+    hitValue: 3,
+    rotate: true,
+    // image: AM.getAsset('./img/bullet.png'),
+    // scale: .04,
+    sprite: sprite.laser.bigOrange,
+    
+    local: {
+      count: 0,
+      range: 400, // maximum
+    },    
+
+    onHit() {
+      this.local.count += 1;
+      this.current.velocity.radial *= 1.4;
+      // stay alive
+    },
+
+    update() {
+      
+      // only track after the first hit
+      if (this.local.count > 0) {
+        const hitList = this.game.getEnemiesInRange(this.current, this.local.range);
+      
+        // sorted list; closest enemy at index 0
+        if (hitList.length > 0) {
+          const {
+            x,
+            y,
+          } = hitList[0].ship.current;
+          
+          // set target angle
+          const deltaX = x - this.current.x;
+          const deltaY = y - this.current.y;
+          this.current.angle = Math.atan2(deltaY, deltaX);
+        }
+      }
+
+      // update r
+      this.current.velocity.radial += this.current.acceleration.radial * this.game.clockTick;
+      this.current.r = this.current.velocity.radial * this.game.clockTick
+    },
+  };
+
   /** *** PROJECTILES: SHAPES AND SPRITES **** */
   projectile.circleBullet = {
     radius: 6,
@@ -143,6 +190,24 @@ function loadTemplates() {
     rotate: false,
     image: AM.getAsset('./img/glass_ball.png'),
     scale: 1.0,
+  };
+
+  projectile.yellowLaser = {
+    radius: 10,
+    rotate: false,
+    sprite: sprite.laser.yellow,
+  };
+
+  projectile.orangeLaser = {
+    radius: 10,
+    rotate: false,
+    sprite: sprite.laser.orange,
+  };
+
+  projectile.bigGreenLaser = {
+    radius: 10,
+    rotate: false,
+    sprite: sprite.laser.bigGreen,
   };
 
   projectile.miniCrane = {
@@ -667,40 +732,6 @@ function loadTemplates() {
     },
   };
 
-  ring.jaredTest2 = {
-    payload: {
-      type: projectile.microBullet,
-      velocity: {
-        radial: 450,
-        angular: 0,
-      },
-      acceleration: {
-        radial: 0,
-        angular: 0,
-      },
-    },
-    rotation: {
-      angle: 10,
-      frequency: 2.0,
-      // speed: .1,
-    },
-    firing: {
-      radius: 1,
-      angle: 90,
-      spread: 2,
-      count: 4,
-      loadTime: 0.005,
-      cooldownTime: 0.05,
-      rapidReload: true,
-      targetPlayer: false,
-      viewTurret: true,
-      pulse: {
-        duration: 4.5,
-        delay: 1.5,
-      },
-    },
-  };
-
   ring.jaredBeta1 = {
     payload: {
       type: projectile.microBullet,
@@ -759,74 +790,6 @@ function loadTemplates() {
       },
     },
   };
-
-  ring.jaredStinger = {
-    payload: {
-      type: projectile.microBullet,
-      velocity: {
-        radial: 800,
-        angular: 0,
-      },
-      acceleration: {
-        radial: 0,
-        angular: 0,
-      },
-    },
-    rotation: {
-      angle: 0,
-      frequency: 0,
-    },
-    firing: {
-      radius: 1,
-      angle: 90,
-      spread: 0,
-      count: 1,
-      loadTime: 0.005,
-      cooldownTime: 0.001,
-      rapidReload: true,
-      targetPlayer: true,
-      viewTurret: false,
-      pulse: {
-        duration: 0.4,
-        delay: 0.2,
-      },
-    },
-  };
-
-  ring.jaredWavy1 = {
-    payload: {
-      type: projectile.microBullet,
-      velocity: {
-        radial: 350,
-        angular: 0,
-      },
-      acceleration: {
-        radial: 0,
-        angular: 0,
-      },
-    },
-    rotation: {
-      angle: 10,
-      frequency: 1,
-      // speed: .1,
-    },
-    firing: {
-      radius: 0,
-      angle: 90,
-      spread: 2,
-      count: 4,
-      loadTime: 0,
-      cooldownTime: 0.05,
-      rapidReload: true,
-      targetPlayer: false,
-      viewTurret: false,
-      pulse: {
-        duration: 2.0,
-        delay: 3.0,
-      },
-    },
-  };
-
 
   ring.slowPulseSpiral = {
     payload: {
@@ -1580,6 +1543,11 @@ function loadTemplates() {
     [90, 250, 30]
   ];
 
+  path.backAndForth = [
+    [0, 25, 5],
+    [180, 25, 5]
+  ]
+
   /** *** SCENES **** */
   scene.easyPaper = {
     waves: [
@@ -1669,32 +1637,31 @@ function loadTemplates() {
     ],
   };
 
+
+
   /** *** ALL PLAYER THINGS **** */
   projectile.player1 = {
     radius: 8,
-    draw(ctx) {
-      ctx.strokeStyle = 'orange';
-      ctx.beginPath();
-      ctx.arc(this.current.x, this.current.y, this.config.radius, 0 * Math.PI, 2 * Math.PI);
-      ctx.stroke();
-      ctx.fill();
-    },
+    
+    init() {
+      this.current.angle = toRadians(270);
+    }
+
   };
 
-  /** A simple ring for the player only shoots up */
   ring.player = {
     payload: {
-      type: projectile.microBullet,
+      type: projectile.paperBall,
       speed: 500,
       rotate: true,
     },
     firing: {
       angle: 270,
       radius: 30,
-      spread: 10,
-      count: 2,
+      spread: 0,
+      count: 1,
       loadTime: 0.01,
-      cooldownTime: 0.25, // changed from 0.25 for testing
+      cooldownTime: 0.25, 
       rapidReload: true,
       viewTurret: false,
     },
@@ -1710,8 +1677,8 @@ function loadTemplates() {
       angle: 270,
       radius: 0,
       count: 1,
-      loadTime: 2,
-      cooldownTime: 2, // changed from 0.25 for testing
+      loadTime: 0,
+      cooldownTime: 5, 
       rapidReload: false,
       viewTurret: true,
     },
@@ -1733,13 +1700,271 @@ function loadTemplates() {
       },
       {
         ring: ring.enemyHoming,
-        offset: { x: -12, y: 30}
+        offset: { x: -12, y: 44}
+      }
+    ],
+  };
+  /** End of PLAYER configuration */
+
+
+
+  /** Jared Test Scene --IN PROGRESS-- */
+  ring.jaredOldTest2 = {
+    payload: {
+      type: projectile.microBullet,
+      velocity: {
+        radial: 450,
+        angular: 0,
+      },
+      acceleration: {
+        radial: 0,
+        angular: 0,
+      },
+    },
+    rotation: {
+      angle: 10,
+      frequency: 2.0,
+      // speed: .1,
+    },
+    firing: {
+      radius: 1,
+      angle: 90,
+      spread: 2,
+      count: 4,
+      loadTime: 0.005,
+      cooldownTime: 0.05,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: true,
+      pulse: {
+        duration: 4.5,
+        delay: 1.5,
+      },
+    },
+  };
+
+  ring.jaredStinger = {
+    payload: {
+      type: projectile.microBullet,
+      velocity: {
+        radial: 800,
+        angular: 0,
+      },
+      acceleration: {
+        radial: 0,
+        angular: 0,
+      },
+    },
+    rotation: {
+      angle: 0,
+      frequency: 0,
+    },
+    firing: {
+      radius: 1,
+      angle: 90,
+      spread: 0,
+      count: 1,
+      loadTime: 0.005,
+      cooldownTime: 0.001,
+      rapidReload: true,
+      targetPlayer: true,
+      viewTurret: false,
+      pulse: {
+        duration: 0.4,
+        delay: 0.2,
+      },
+    },
+  };
+
+  ring.jaredWavy1 = {
+    payload: {
+      type: projectile.microBullet,
+      velocity: {
+        radial: 350,
+        angular: 0,
+      },
+      acceleration: {
+        radial: 0,
+        angular: 0,
+      },
+    },
+    rotation: {
+      angle: 10,
+      frequency: 1,
+      // speed: .1,
+    },
+    firing: {
+      radius: 0,
+      angle: 90,
+      spread: 2,
+      count: 4,
+      loadTime: 0,
+      cooldownTime: 0.05,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: false,
+      pulse: {
+        duration: 2.0,
+        delay: 3.0,
+      },
+    },
+  };
+
+  ship.jaredTestDove = {
+    config: {
+      health: 1,
+      hitValue: 5,
+      radius: 60,
+      sprite: sprite.dove.default,
+      snapLine: 200,
+      snapLineSpeed: 400,
+      snapLineWait: 1,
+      origin: {
+        x: 500, // omit x to get random position
+        y: -50,
+      },
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0,
+    },
+    // weapon: [
+    //   {
+    //     ring: ring.jaredTest3,
+    //     //offset: {x:-30,y:23},
+    //   },
+
+    //   // {
+    //   //   ring: ring.uniSpiralFourWay180,
+    //   //   //offset: {x:30,y:23},
+    //   // },
+    // ],
+  };
+
+  ship.jaredTestCrane = {
+    config: {
+      hitValue: 5,
+      radius: 50,
+      sprite: sprite.dove.default,
+      snapLine: 150,
+      snapLineSpeed: 150,
+      snapLineWait: 0,
+      origin: {
+        x: 500, // omit x to get random position
+        y: -50,
+      },
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0,
+    },
+    weapon: ring.trackingTest1,
+  };
+
+  ship.jaredTestDove2 = {
+    config: {
+      health: 3,
+      hitValue: 3,
+      radius: 70,
+      sprite: sprite.dove.default,
+      snapLine: 40,
+      snapLineSpeed: 250,
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0,
+    },
+    path: [ [90,175,30]],
+    weapon: [
+      {
+        ring: ring.gammaOne,
+        offset: { x: -30, y: 20}
+      },
+      {
+        ring: ring.gammaOne,
+        offset: { x: 30, y: 20}
       }
     ],
   };
 
+  ship.jaredTestCrane2 = {
+    config: {
+      health: 12,
+      hitValue: 3,
+      radius: 70,
+      sprite: sprite.crane.default,
+      snapLine: 200,
+      snapLineSpeed: 250,
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0,
+    },
+    weapon: [
+      {
+        ring: ring.gammaTwo,
+      }
+    ],
+  };
 
-  /** JaredLevel: Templates for a Level */
+  ship.jaredTestPlane = {
+    config: {
+      radius: 15,
+      sprite: sprite.plane.lightBlue,
+      speed: 300,
+      origin: {
+        x: 1024 / 2, // omit x to get random position
+        y: 700,
+      },
+    },
+    weapon: [
+      // {
+      //   ring: ring.player,
+      // },
+      {
+        ring: ring.enemyHoming,
+        offset: { x: -12, y: 30}
+      }
+    ],
+  };
+  
+  // ship.testDove.config.origin = {x: 200, y: -50};
+  // this.addEntity(new Ship(this, ship.testDove));
+  // ship.testDove.config.origin = {x: 500, y: -50};
+  // this.addEntity(new Ship(this, ship.testDove));
+  // ship.testDove.config.origin = {x: 800, y: -50};
+  // ship.testDove.config.snapLine = 380
+  // this.addEntity(new Ship(this, ship.testDove));
+
+  scene.jaredTestScene = {
+    player: ship.jaredTestPlane,
+
+    waves: [
+      {
+        numOfEnemies: 3,
+        ships: new Array(3).fill(ship.jaredTestDove),
+        paths: new Array(10).fill(path.straightDown),
+        initialXPoints: [ // omit to evenly space enemies.
+          600, 400, 700, 250, 400, 850, 450, 380, 770, 650
+        ],
+        shipManifestOverride: [
+          { config: { waitOffScreen: 0 } },
+          { config: { waitOffScreen: 2 } }, 
+          { config: { waitOffScreen: 3 } },
+          { config: { waitOffScreen: 5 } },
+          { config: { waitOffScreen: 8 } },
+          { config: { waitOffScreen: 9 } },
+          { config: { waitOffScreen: 11 } },
+          { config: { waitOffScreen: 15 } },
+          { config: { waitOffScreen: 18 } },
+          { config: { waitOffScreen: 19 } },
+        ],
+        waitUntilEnemiesGone: true,
+      },
+      {
+        warpSpeed: true,
+        message: {
+          type: 'warning',
+          text: ['Jared Test Scene','--CUT--'],
+          duration: 6,
+        }
+      },
+    ],
+  };
+  
+  /** JaredLevel: Templates for a Level --IN PLACE ASSETS-- */
   ring.gammaOne = {
     payload: {
       type: projectile.glassBall,
@@ -1761,9 +1986,31 @@ function loadTemplates() {
     },
   };
 
-  ship.jaredTestDove = {
+  ring.gammaTwo = {
+    payload: {
+      type: projectile.glassBall,
+      speed: 500,
+    },
+    firing: {
+      radius: 5,
+      count: 6,
+      angle: 90,
+      spread: 80,
+      loadTime: 0,
+      cooldownTime: 0.005,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: true,
+      pulse: {
+        duration: 1.0,
+        delay: 2.5,
+      }
+    },
+  };
+
+  ship.gammaDove = {
     config: {
-      health: 2,
+      health: 3,
       hitValue: 3,
       radius: 70,
       sprite: sprite.dove.default,
@@ -1784,25 +2031,31 @@ function loadTemplates() {
       }
     ],
   };
+
+  ship.gammaCrane = {
+    config: {
+      health: 12,
+      hitValue: 3,
+      radius: 70,
+      sprite: sprite.crane.default,
+      snapLine: 200,
+      snapLineSpeed: 250,
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0,
+    },
+    weapon: [
+      {
+        ring: ring.gammaTwo,
+      }
+    ],
+  };
   
-  scene.jaredLevel = {
+  scene.gamma = {
     waves: [
-      // wave 1
       {
         numOfEnemies: 10,
         ships: new Array(10).fill(ship.jaredTestDove),
-        paths: [
-          path.straightDown,
-          path.straightDown,
-          path.straightDown,
-          path.straightDown,
-          path.straightDown,
-          path.straightDown,
-          path.straightDown,
-          path.straightDown,
-          path.straightDown,
-          path.straightDown,
-        ],
+        paths: new Array(10).fill(path.straightDown),
         initialXPoints: [ // omit to evenly space enemies.
           600, 400, 700, 250, 400, 850, 450, 380, 770, 650
         ],
@@ -1820,44 +2073,28 @@ function loadTemplates() {
         ],
         waitUntilEnemiesGone: true,
       },
-      // {
-      //   numOfEnemies: 3,
-      //   ships: new Array(3).fill(ship.crane),
-      //   waitUntilEnemiesGone: true,
-      // },
-      // {
-      //   numOfEnemies: 3,
-      //   ships: [ship.bat, ship.dove, ship.bat],
-      //   paths: [
-      //     // first bat cornerleft
-      //     path.cornerLeft,
-      //     // dove do nothing
-      //     path.doNothing,
-      //     // second bat cornerright
-      //     path.cornerRight,
-      //   ],
-      //   shipManifestOverride: [
-      //     // change first bat to tracking test
-      //     {
-      //       weapon: ring.trackingTest1,
-      //     },
-      //     // don't do anything to dove
-      //     {},
-      //     // change second bat to tracking test
-      //     {
-      //       weapon: ring.trackingTest1,
-      //     },
-      //   ],
-      //   initialXPoints: [ // omit to evenly space enemies.
-      //     400, 500, 600,
-      //   ],
-      //   waitUntilEnemiesGone: true,
-      // },
+      {
+        numOfEnemies: 6,
+        ships: new Array(10).fill(ship.jaredTestCrane),
+        paths: new Array(10).fill(path.backAndForth),
+        initialXPoints: [ // omit to evenly space enemies.
+          100, 300, 600, 120, 700, 550
+        ],
+        shipManifestOverride: [
+          { config: { waitOffScreen: 5 } },
+          { config: { waitOffScreen: 9 } }, 
+          { config: { waitOffScreen: 11 } },
+          { config: { waitOffScreen: 13 } },
+          { config: { waitOffScreen: 17 } },
+          { config: { waitOffScreen: 20} },
+        ],
+        waitUntilEnemiesGone: true,
+      },
       {
         warpSpeed: true,
         message: {
           type: 'warning',
-          text: ['First Wave Complete','--Game Over--'],
+          text: ['First Wave Complete','--CUT--'],
           duration: 6,
         }
       },
@@ -1895,6 +2132,10 @@ function loadTemplates() {
       // },
     ],
   };
+  /** end of jared level */
+  
 
 
-} // end of objects file
+
+
+} // end of objects.js
