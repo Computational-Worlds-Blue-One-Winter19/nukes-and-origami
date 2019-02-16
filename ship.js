@@ -194,9 +194,9 @@ class Ship extends Entity {
     for (const e of this.game.entities) {
       if (e instanceof Projectile && e.playerShot && this.isCollided(e)) {
         e.onHit(this); //notify projectile
-        this.health--;
+        this.health -= e.config.hitValue;
 
-        if (this.health === 0) {
+        if (this.health <= 0) {
           this.disarm();
           this.removeFromWorld = true;
           this.game.onEnemyDestruction(this);
@@ -997,11 +997,11 @@ class Projectile extends Entity {
     this.owner = manifest.owner;
     this.current = Object.assign({}, manifest.origin);
     this.payload = manifest.payload.type;
-    this.hitTarget = false;
-
+    
     this.config = {
       radius: this.payload.radius,
       baseAngle: this.current.angle || manifest.angle || 0,
+      hitValue: this.payload.hitValue || 1,
     };
     
     this.local = Object.assign({}, this.payload.local);
@@ -1023,6 +1023,7 @@ class Projectile extends Entity {
       this.current.acceleration = Object.assign({}, this.current.acceleration);
     }
 
+    // override default methods
     if (this.payload.init) {
       this.init = this.payload.init;
     }
@@ -1034,13 +1035,13 @@ class Projectile extends Entity {
     // check for sprite or image and set desired function
     if (this.payload.image) {
       this.image = this.payload.image;
-      this.scale = this.payload.scale;
+      this.scale = this.payload.scale || 1;
       this.drawImage = this.drawStillImage;
     } else if (this.payload.sprite) {
       this.sprite = new Sprite(this.payload.sprite.default);
       this.drawImage = this.drawSpriteFrame;
     } else {
-      this.drawImage = this.payload.draw;
+      this.drawImage = this.drawCircle;
     }
 
     this.config.rotate = this.payload.rotate || false;
@@ -1125,6 +1126,13 @@ class Projectile extends Entity {
     const locX = x - width / 2;
     const locY = y - height / 2;
     ctx.drawImage(this.image, locX, locY, width, height);
+  }
+
+  drawCircle(ctx, x, y) {
+    ctx.beginPath();
+    ctx.arc(x, y, this.config.radius, 0 * Math.PI, 2 * Math.PI);
+    ctx.stroke();
+    ctx.fill();
   }
 }
 

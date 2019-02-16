@@ -1,25 +1,44 @@
 function loadTemplates() {
   /**
-   * A custom projectile overrides the update method. This is called after the projectile has spawned.
-   * Access current.x, current.y, current.velocity, current.acceleration, this.game.clockTick
-   * to current.r and current.angle in polar coordinates.
+   * Standard projectile values are:
+   *   radius: the hitbox for this Projectile
+   *   hitValue: the amount of destruction (default=1)
+   *   rotate: if true then image/sprite will be adjusted to the current angle
+   *   
+   *   image: use an image directly from the Asset Manager
+   *   scale: used to scale down an image only (sprites do this on their own)
+   *     --OR--  
+   *   sprite: use to show a sprite instead of an image
+   *     --OR--
+   *   if no image or sprite is given then a solid circle is drawn
+   * 
+   * A custom projectile can use the following methods to produce unique behavior.
+   *   init() is called one time immediately prior to launch
+   *   update() to customize the trajectory/behavior\
+   *   onHit(ship) is called when struck by an opposing Ship
+   * 
+   *   {local} values stored here are accessible in this.local and can be used
+   *           to manage state for custom trajectory/behavior.
+   * 
+   * pre-conditions:
+   *   1. the projectile has a valid this.current.{ x, y, angle }
+   *   2. init() has been called
+   *   3. this.local is private to this instance
+   * post-conditions:
+   *   1. this.current.{r, angle} reflect the new polar position of the projectile.
    */
+
+  /** This tracks the player. So only load it on an Enemy! */
   projectile.homing = {
     radius: 3,
+    
     local: {
       isHoming: true,
-      limit: 250,
+      limit: 250, // minimum distance to stop tracking
     },    
 
-    draw(ctx, x, y) {
-      ctx.beginPath();
-      ctx.arc(x, y, this.config.radius, 0 * Math.PI, 2 * Math.PI);
-      ctx.stroke();
-      ctx.fill();
-    },
-
     update() {
-      // update angle if beyond the limit
+      // update angle if projectile is beyond the limit
       if (this.local.isHoming) {
         const target = this.owner.weapon[0].ring.getPlayerLocation(this.current);
         if (target.radius < this.local.limit) {
@@ -35,28 +54,29 @@ function loadTemplates() {
     },
   };
 
+  /** This tracks an enemy. */
   projectile.homingOnEnemy = {
     radius: 3,
+    hitValue: 3,
     rotate: true,
     image: AM.getAsset('./img/bullet.png'),
     scale: .04,
     
     local: {
-      range: 400,
+      range: 400, // maximum
     },    
 
     update() {
-      // locate closest enemy -- if within range then set target
       const hitList = this.game.getEnemiesInRange(this.current, this.local.range);
       
+      // sorted list; closest enemy at index 0
       if (hitList.length > 0) {
-
         const {
           x,
           y,
         } = hitList[0].ship.current;
         
-        // get angle
+        // set target angle
         const deltaX = x - this.current.x;
         const deltaY = y - this.current.y;
         this.current.angle = Math.atan2(deltaY, deltaX);
@@ -68,16 +88,17 @@ function loadTemplates() {
     },
   }
 
+  /** Prototype for sine wave */
   projectile.sine = {
     radius: 3,
+    image: AM.getAsset('./img/glass_ball.png'),
+    scale: 1.0,
+
     local: {
       time: 0,
       amp: 3 * 2 * Math.PI
     },
     
-    image: AM.getAsset('./img/glass_ball.png'),
-    scale: 1.0,
-
     update() {
       this.local.time += this.game.clockTick;
       this.current.r = this.current.velocity.radial * this.game.clockTick;
@@ -88,15 +109,26 @@ function loadTemplates() {
   };
   
   /** *** PROJECTILES: SHAPES AND SPRITES **** */
+  projectile.circleBullet = {
+    radius: 6,
+    // a circle is now drawn by default if you don't include an image or sprite
+  };
+  
+  projectile.microBullet = {
+    radius: 3,
+    
+    // use init() for any pre-processing immediately prior to launch.
+    // for player bullets we can easily say "only travel up"
+    init() {
+      this.current.angle = toRadians(270);
+    }
+  };
+    
   projectile.paperBall = {
     radius: 15,
     rotate: false,
     image: AM.getAsset('./img/paper_ball.png'),
     scale: 0.1,
-
-    init() {
-      this.current.angle = Math.PI;
-    },
   };
 
   projectile.rainbowBall = {
@@ -125,37 +157,9 @@ function loadTemplates() {
     sprite: sprite.testLaser.default,
   };
 
-  projectile.circleBullet = {
-    radius: 6,
-    draw(ctx) {
-      ctx.beginPath();
-      ctx.arc(this.current.x, this.current.y, this.config.radius, 0 * Math.PI, 2 * Math.PI);
-      ctx.stroke();
-      ctx.fill();
-    },
-  };
 
-  projectile.microBullet = {
-    radius: 3,
-    draw(ctx) {
-      ctx.beginPath();
-      ctx.arc(this.current.x, this.current.y, this.config.radius, 0 * Math.PI, 2 * Math.PI);
-      ctx.stroke();
-      ctx.fill();
-    },
-
-    init() {
-      this.current.angle = toRadians(270);
-    },
-
-    update() {
-      this.current.velocity.radial += this.current.acceleration.radial * this.game.clockTick;
-      this.current.r = this.current.velocity.radial * this.game.clockTick;
-    }
-
-  };
-
-   /** Trying to spice-up bullet patterns? Make a pattern to load into a ring.
+  /** *** PATTERNS ***
+   *  Trying to spice-up bullet patterns? Make a pattern to load into a ring.
    *  Instead of the usual fireAll() behavior, a pattern tells the Ring to
    *  only fire specific turrets on each round. Use spread and cooldownTime to
    *  control the width and line-spacing. Other settings for ring remain intact.
@@ -180,7 +184,7 @@ function loadTemplates() {
                 [ 1, 0, 1, 0 ],
                 [ 1, 1, 1, 0 ],
                 [ 0, 1, 0, 0 ] ],
-    delay: 2, // seconds between rounds
+    delay: 2,
   }
   
   /** *** RING: FIRING PATTERNS **** */
@@ -200,8 +204,7 @@ function loadTemplates() {
       viewTurret: true,
     },
   };
-  
-  
+    
   ring.linearTest = {
     payload: {
       type: projectile.homing,
