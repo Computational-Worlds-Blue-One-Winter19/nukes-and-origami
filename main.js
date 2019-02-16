@@ -284,6 +284,7 @@ class NukesAndOrigami extends GameEngine {
     ship.testDove.config.origin = {x: 500, y: -50};
     this.addEntity(new Ship(this, ship.testDove));
     ship.testDove.config.origin = {x: 800, y: -50};
+    ship.testDove.config.snapLine = 380
     this.addEntity(new Ship(this, ship.testDove));
   }
 

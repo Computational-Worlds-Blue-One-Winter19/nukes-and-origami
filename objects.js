@@ -120,7 +120,7 @@ function loadTemplates() {
     
     local: {
       count: 0,
-      range: 600, // maximum
+      range: 400, // maximum
     },    
 
     onHit() {
