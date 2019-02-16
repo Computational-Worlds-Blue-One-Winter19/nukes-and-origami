@@ -31,6 +31,8 @@ AM.queueDownload('./img/glass_ball.png');
 AM.queueDownload('./img/laser_red.png');
 AM.queueDownload('./img/cut_laser.png');
 AM.queueDownload('./img/swallow-sheet-HIT.png');
+AM.queueDownload('./img/space1024x3072.png');
+AM.queueDownload('./img/light_blue_plane.png');
 
 /**
  * NukesAndOrigami extends GameEngine and adds additional functions
@@ -309,7 +311,7 @@ class NukesAndOrigami extends GameEngine {
     };
     const point2 = {
       x: 0,
-      y: -canvas.height,
+      y: -2 * canvas.height,
     };
     const cloudPoint1 = {
       x: 0,
@@ -319,10 +321,10 @@ class NukesAndOrigami extends GameEngine {
       x: 0,
       y: -2304 * 2,
     };
-    this.addEntity(new Background(this, AM.getAsset('./img/notebook.png'), canvas.height, point1));
-    this.addEntity(new Background(this, AM.getAsset('./img/notebook.png'), canvas.height, point2));
-    this.addEntity(new Clouds(this, AM.getAsset('./img/clouds.png'), canvas.height, cloudPoint1));
-    this.addEntity(new Clouds(this, AM.getAsset('./img/clouds.png'), canvas.height, cloudPoint2));
+    //this.addEntity(new Background(this, AM.getAsset('./img/grass.png'), canvas.height, point1));
+    this.addEntity(new Background(this, AM.getAsset('./img/space1024x3072.png'), canvas.height, point2));
+    //this.addEntity(new Clouds(this, AM.getAsset('./img/clouds.png'), canvas.height, cloudPoint1));
+    //this.addEntity(new Clouds(this, AM.getAsset('./img/clouds.png'), canvas.height, cloudPoint2));
   }
 }
 
@@ -355,7 +357,7 @@ class SceneManager {
     this.displayingMessage = false;
     this.waitUntilAtDefaultSpeed = false;
 
-    this.scenes = [scene.easyPaper];
+    this.scenes = [scene.jaredLevel];
   }
 
 
@@ -593,9 +595,10 @@ class Background extends Entity {
 
   update() {
     this.current.y += this.game.backgroundSpeed;
-    if (this.current.y >= this.canvasHeight) {
+    if (this.current.y >= 0) {
       // Adjust for overshoot
-      this.current.y = -this.canvasHeight + (this.current.y - this.canvasHeight);
+      this.current.y = -2 * this.canvasHeight;
+      console.log(this.current.y);
     }
   }
 }

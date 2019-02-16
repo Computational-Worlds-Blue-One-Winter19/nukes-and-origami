@@ -59,8 +59,9 @@ function loadTemplates() {
     radius: 3,
     hitValue: 3,
     rotate: true,
-    image: AM.getAsset('./img/bullet.png'),
-    scale: .04,
+    // image: AM.getAsset('./img/bullet.png'),
+    // scale: .04,
+    sprite: sprite.laser.bigGreen,
     
     local: {
       range: 400, // maximum
@@ -143,6 +144,24 @@ function loadTemplates() {
     rotate: false,
     image: AM.getAsset('./img/glass_ball.png'),
     scale: 1.0,
+  };
+
+  projectile.yellowLaser = {
+    radius: 10,
+    rotate: false,
+    sprite: sprite.laser.yellow,
+  };
+
+  projectile.orangeLaser = {
+    radius: 10,
+    rotate: false,
+    sprite: sprite.laser.orange,
+  };
+
+  projectile.bigGreenLaser = {
+    radius: 10,
+    rotate: false,
+    sprite: sprite.laser.bigGreen,
   };
 
   projectile.miniCrane = {
@@ -1684,15 +1703,15 @@ function loadTemplates() {
   /** A simple ring for the player only shoots up */
   ring.player = {
     payload: {
-      type: projectile.microBullet,
+      type: projectile.orangeLaser,
       speed: 500,
       rotate: true,
     },
     firing: {
       angle: 270,
       radius: 30,
-      spread: 10,
-      count: 2,
+      spread: 2,
+      count: 3,
       loadTime: 0.01,
       cooldownTime: 0.25, // changed from 0.25 for testing
       rapidReload: true,
@@ -1720,7 +1739,7 @@ function loadTemplates() {
   ship.player = {
     config: {
       radius: 15,
-      sprite: sprite.plane.purple,
+      sprite: sprite.plane.lightBlue,
       speed: 300,
       origin: {
         x: 1024 / 2, // omit x to get random position
