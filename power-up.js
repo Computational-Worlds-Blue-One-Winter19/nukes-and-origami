@@ -129,7 +129,7 @@ class RapidFire extends PowerUp {
         speed: 60,
         powerUp(entity) {
           // quick fix for change to weapon array. assuming that player only has one!
-          const ring = entity.weapon[0].ring;
+          const ring = entity.weapon.slot[0].ring;
           if (ring.config.cooldownTime > 0.05) {
             ring.config.cooldownTime -= 0.1;
             addPowerUp('./img/rapid-bullet.png', 'rapidFire');
