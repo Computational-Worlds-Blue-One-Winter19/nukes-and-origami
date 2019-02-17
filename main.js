@@ -30,6 +30,9 @@ AM.queueDownload('./img/glass_ball.png');
 AM.queueDownload('./img/laser_red.png');
 AM.queueDownload('./img/cut_laser.png');
 AM.queueDownload('./img/swallow-sheet-HIT.png');
+AM.queueDownload('./img/heart.png');
+AM.queueDownload('./img/reverse.png');
+AM.queueDownload('./img/fire-rate.png');
 
 /**
  * NukesAndOrigami extends GameEngine and adds additional functions
@@ -226,9 +229,9 @@ class NukesAndOrigami extends GameEngine {
 
   testScene() {
     // override onEnemyDestruction
-    this.onEnemyDestruction = function() {
+    this.onEnemyDestruction = function () {
       this.addEntity(new Ship(this, ship.testDove));
-    }
+    };
 
     // spawn a single enemy to the center
     this.addEntity(new Ship(this, ship.testDove));
@@ -253,7 +256,7 @@ class NukesAndOrigami extends GameEngine {
   addBackground() {
     // Using object deconstructing to access the canvas property
     const {
-      canvas
+      canvas,
     } = this.ctx;
     const point1 = {
       x: 0,
@@ -334,7 +337,8 @@ class SceneManager {
       this.message = wave.message;
     }
 
-    let spacing, locationCounter;
+    let spacing; let
+      locationCounter;
     // More than one enemy?
     if (wave.numOfEnemies > 1) {
       // Space evenly
@@ -348,7 +352,7 @@ class SceneManager {
     // Create the ships.
     for (let i = 0; i < wave.numOfEnemies; i++) {
       // Make shallow copies to not modify the objects.js defaults
-      let manifestCopy = Object.assign({}, wave.ships[i]);
+      const manifestCopy = Object.assign({}, wave.ships[i]);
       // If path was overridden, put that in the manifestCopy
       manifestCopy.path = wave.paths ? wave.paths[i] : 0;
       if (wave.shipManifestOverride) {
@@ -378,7 +382,7 @@ class SceneManager {
         }
       }
 
-      let ship = new Ship(this.game, Object.assign({}, manifestCopy));
+      const ship = new Ship(this.game, Object.assign({}, manifestCopy));
 
       // Was the location overriden?
       if (wave.initialXPoints) {
@@ -516,10 +520,10 @@ AM.downloadAll(() => {
   game.spawnPlayer();
 
   // view test stage
-  //game.testScene();
+  // game.testScene();
 
   // run prototype level
-  //game.spawnEnemies();
+  // game.spawnEnemies();
 
   initIntroMessage(game);
 
@@ -615,7 +619,7 @@ class ShieldEntity extends Entity {
    */
   removeShield() {
     const {
-      shield
+      shield,
     } = this.game.player;
 
     const shieldHit = shield.entities.pop();

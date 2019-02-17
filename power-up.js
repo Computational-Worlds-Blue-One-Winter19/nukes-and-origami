@@ -64,7 +64,7 @@ class ExtraLife extends PowerUp {
       angle: Math.PI / 2,
       payload: {
         type: {
-          sprite: sprite.rainbowBall.default,
+          sprite: sprite.heartIcon.default,
           radius: 30,
         },
         speed: 60,
@@ -130,7 +130,7 @@ class RapidFire extends PowerUp {
         powerUp(entity) {
           if (entity.weapon.config.cooldownTime > 0.05) {
             entity.weapon.config.cooldownTime -= 0.1;
-            addPowerUp('./img/rapid-bullet.png', 'rapidFire');
+            addPowerUp('./img/fire-rate.png', 'rapidFire');
           }
         },
       },
@@ -147,7 +147,7 @@ class InvertedControls extends PowerUp {
       angle: Math.PI / 2,
       payload: {
         type: {
-          sprite: sprite.rapidFire.default,
+          sprite: sprite.reverseControls.default,
           radius: 30,
         },
         speed: 60,
@@ -165,7 +165,7 @@ class InvertedControls extends PowerUp {
 
 // From the collection of implemented powerups, retrieves and return a random one
 function getRandomPowerUp() {
-  const POWERUPS = [new ExtraLife(100), new RapidFire(100), new InvertedControls(100), new Shield(100)];
+  const POWERUPS = [new InvertedControls(), new Shield(100), new ExtraLife(100), new RapidFire(100)];
 
   return POWERUPS[Math.floor(Math.random() * POWERUPS.length)];
 }
