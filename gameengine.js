@@ -56,6 +56,7 @@ class Timer {
 
 class GameEngine {
   constructor() {
+    this.currentBackground = [];
     this.entities = [];
     this.showOutlines = false;
     this.isPaused = false;
