@@ -140,7 +140,7 @@ class Ship extends Entity {
       this.initializePath(manifest.path);
     }
 
-    this.weapon = new Weapon(this, manifest.weapon);
+    this.initializeWeapon(manifest.weapon);
   }
 
   update() {
@@ -258,7 +258,14 @@ class Ship extends Entity {
     this.path.currentStep = -1;
   }
 
-  /** Helpers for repeated work. */
+  initializeWeapon(weaponManifest) {
+    this.weapon = new Weapon(this, weaponManifest);
+  }
+
+  disarm() {
+    this.weapon = new Weapon(this);
+  }
+
   // Idle hover effect
   idle() {
     if (this.idleTrans) {
@@ -283,15 +290,6 @@ class Ship extends Entity {
     }
   }
 
-  disarm() {
-    // for (const projectile of this.weapon.bay) {
-    //   projectile.removeFromWorld = true;
-    // }
-    // bullets are not added to world until after launch, so just remove bays.
-    this.weapon.bay = [];
-  }
-
-  //
   static getInitPoint(game, manifest) {
     let x;
     let y;
@@ -311,7 +309,7 @@ class Ship extends Entity {
       y,
     };
   }
-}
+} // end of Ship class
 
 /**
  * The Player is an entity. Some of the configuration is similar

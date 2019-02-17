@@ -49,8 +49,8 @@ function loadTemplates() {
       }
 
       // update r
-      this.current.velocity.radial += this.current.acceleration.radial * this.game.clockTick;
-      this.current.r = this.current.velocity.radial * this.game.clockTick
+      this.current.velocity.radial += this.current.acceleration.radial * this.current.elapsedTime;
+      this.current.r = this.current.velocity.radial * this.current.elapsedTime;
     },
   };
 
@@ -84,8 +84,8 @@ function loadTemplates() {
       }
     
       // update r
-      this.current.velocity.radial += this.current.acceleration.radial * this.game.clockTick;
-      this.current.r = this.current.velocity.radial * this.game.clockTick
+      this.current.velocity.radial += this.current.acceleration.radial * this.current.elapsedTime;
+      this.current.r = this.current.velocity.radial * this.current.elapsedTime;
     },
   }
 
@@ -101,8 +101,8 @@ function loadTemplates() {
     },
     
     update() {
-      this.local.time += this.game.clockTick;
-      this.current.r = this.current.velocity.radial * this.game.clockTick;
+      this.local.time += this.current.elapsedTime;
+      this.current.r = this.current.velocity.radial * this.current.elapsedTime;
 
       const deltaAngle = Math.cos(this.local.amp * this.local.time);
       this.current.angle = this.config.baseAngle + deltaAngle;
@@ -150,8 +150,8 @@ function loadTemplates() {
       }
 
       // update r
-      this.current.velocity.radial += this.current.acceleration.radial * this.game.clockTick;
-      this.current.r = this.current.velocity.radial * this.game.clockTick
+      this.current.velocity.radial += this.current.acceleration.radial * this.current.elapsedTime;
+      this.current.r = this.current.velocity.radial * this.current.elapsedTime;
     },
   };
 
