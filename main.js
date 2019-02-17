@@ -8,6 +8,7 @@ const pattern = {};
 const projectile = {};
 const path = {};
 const scene = {};
+const background = {};
 
 /** These are the image assets declared by filename */
 AM.queueDownload('./img/bat-sheet.png');
@@ -33,6 +34,9 @@ AM.queueDownload('./img/cut_laser.png');
 AM.queueDownload('./img/swallow-sheet-HIT.png');
 AM.queueDownload('./img/space1024x3072.png');
 AM.queueDownload('./img/light_blue_plane.png');
+AM.queueDownload('./img/verticalscrollingbeach.png');
+AM.queueDownload('./img/seamless_pattern.png');
+
 
 /**
  * NukesAndOrigami extends GameEngine and adds additional functions
@@ -55,7 +59,6 @@ class NukesAndOrigami extends GameEngine {
   }
 
   initializeSceneManager() {
-    // this.sceneManager = new SceneManager(this);
     // load completed levels
     this.sceneManager.scenes.push(scene.easyPaper);
   }
@@ -115,15 +118,15 @@ class NukesAndOrigami extends GameEngine {
 
     for (let e of this.entities) {
       if (e instanceof Ship && !e.isPlayer) {
-        
+
         let distance = Math.pow(point.x - e.current.x, 2) + Math.pow(point.y - e.current.y, 2);
-        
+
         if (distance < maxRangeSquared) {
           result.push({
             ship: e,
             distance: Math.sqrt(distance),
           });
-        } 
+        }
       }
     }
 
@@ -292,30 +295,10 @@ class NukesAndOrigami extends GameEngine {
 
 
   addBackground() {
-    // Using object deconstructing to access the canvas property
-    const {
-      canvas
-    } = this.ctx;
-    const point1 = {
-      x: 0,
-      y: 0,
-    };
-    const point2 = {
-      x: 0,
-      y: -canvas.height,
-    };
-    const cloudPoint1 = {
-      x: 0,
-      y: -2304,
-    };
-    const cloudPoint2 = {
-      x: 0,
-      y: -2304 * 2,
-    };
-    this.addEntity(new Background(this, AM.getAsset('./img/notebook.png'), canvas.height, point1));
-    this.addEntity(new Background(this, AM.getAsset('./img/notebook.png'), canvas.height, point2));
-    this.addEntity(new Clouds(this, AM.getAsset('./img/clouds.png'), canvas.height, cloudPoint1));
-    this.addEntity(new Clouds(this, AM.getAsset('./img/clouds.png'), canvas.height, cloudPoint2));
+    this.addEntity(new Background(this, AM.getAsset('./img/notebook.png'), point1));
+    this.addEntity(new Background(this, AM.getAsset('./img/notebook.png'), point2));
+    this.addEntity(new Clouds(this, AM.getAsset('./img/clouds.png'), cloudPoint1));
+    this.addEntity(new Clouds(this, AM.getAsset('./img/clouds.png'), cloudPoint2));
   }
 
 
@@ -353,7 +336,7 @@ class NukesAndOrigami extends GameEngine {
       ship.testDove.config.origin = {x: 800, y: -50};
       ship.testDove.config.snapLine = 380
       that.addEntity(new Ship(that, ship.testDove));
-    
+
     }
   } // end test scene
 }
@@ -370,7 +353,7 @@ AM.downloadAll(() => {
   game.start();
 
   // add background
-  game.addBackground();
+  // game.addBackground();
 
   // spawn standard ship.player
   game.spawnPlayer();
@@ -380,10 +363,10 @@ AM.downloadAll(() => {
 
   // view simple test scene; defined above
   //game.testScene();
-  
+
   // view single scene with SceneManager
   //game.sceneManager.scenes.push(scene.jaredTestScene);
-  
+
   // run prototype level
   //game.spawnEnemies();
 
@@ -431,6 +414,13 @@ class SceneManager {
   loadScene(scene) {
     this.currentScene = scene;
     this.waves = scene.waves;
+
+    // Load new background
+    if (scene.background) {
+      for (let bg of scene.background.layers) {
+        this.game.entities.unshift(new Background(this.game, bg.layer, bg.verticalPixels, bg.parallaxMult, bg.offset));
+      }
+    }
 
     //replace current player if a new one is provided
     if (scene.player) {
@@ -626,12 +616,13 @@ class SceneManager {
 
 
 class Background extends Entity {
-  constructor(game, spritesheet, canvasHeight, point) {
-    super(game, point);
+  constructor(game, spritesheet, verticalPixels, parallaxMult, initOffset) {
+    super(game, {x:0, y:initOffset});
     this.spritesheet = spritesheet;
     this.game = game;
     this.ctx = game.ctx;
-    this.canvasHeight = canvasHeight;
+    this.parallaxMult = parallaxMult ? parallaxMult : 1;
+    this.verticalPixels = verticalPixels;
   }
 
   draw() {
@@ -640,41 +631,13 @@ class Background extends Entity {
   }
 
   update() {
-    this.current.y += this.game.backgroundSpeed;
-    if (this.current.y >= this.canvasHeight) {
+    this.current.y += this.parallaxMult * this.game.backgroundSpeed;
+    if (this.current.y >= this.game.surfaceHeight) {
       // Adjust for overshoot
-      this.current.y = -this.canvasHeight + (this.current.y - this.canvasHeight);
-      console.log(this.current.y);
+      this.current.y = -this.verticalPixels * 2 + this.game.surfaceHeight + (this.current.y - this.game.surfaceHeight);
     }
   }
 }
-
-
-class Clouds extends Entity {
-  constructor(game, spritesheet, canvasHeight, point) {
-    super(game, point);
-    this.startY = point.y;
-    this.spritesheet = spritesheet;
-    this.game = game;
-    this.ctx = game.ctx;
-    this.canvasHeight = canvasHeight;
-    this.speedMultiplier = 0;
-  }
-
-  draw() {
-    this.ctx.drawImage(this.spritesheet, this.current.x, this.current.y);
-  }
-
-  update() {
-    // Multiply by 1.25 for parallax effect
-    this.current.y += 1.25 * this.game.backgroundSpeed;
-    if (this.current.y >= this.canvasHeight) {
-      // adjust for overshoot
-      this.current.y = -3840 + (this.current.y - this.canvasHeight);
-    }
-  }
-}
-
 
 class ShieldEntity extends Entity {
   constructor(game, point) {
