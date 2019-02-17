@@ -1698,10 +1698,10 @@ function loadTemplates() {
       {
         ring: ring.player,
       },
-      {
-        ring: ring.enemyHoming,
-        offset: { x: -12, y: 44}
-      }
+      // {
+      //   ring: ring.enemyHoming,
+      //   offset: { x: -12, y: 44}
+      // }
     ],
   };
   /** End of PLAYER configuration */

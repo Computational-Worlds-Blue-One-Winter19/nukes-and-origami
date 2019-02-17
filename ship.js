@@ -639,11 +639,22 @@ class Weapon {
 
   }
 
-  loadHomingMissile() {
+  loadHomingMissile(callback) {
     // we can load this and keep count of how many times it has been fired
     const maxUse = 1;
  
+    if (this.slot.length === 1) {
+      //mount the homing missle
+      var r = new Ring(this.owner, ring.enemyHoming);
+      var offset = { x: -12, y: 44 };
 
+      this.slot.push({
+        ring: r,
+        offset: offset,
+      });
+
+      callback();
+    }
   }
 
   decreaseCoolDown() {
