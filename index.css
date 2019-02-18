@@ -69,6 +69,10 @@ h2 {
 }
 
 /* Iventory CSS Styles */
+.inventory-container {
+    height: 100px;
+}
+
 #inventory {
     /* Some items/pngs aren't square or don't have any height so we need to center align all items vertically */
     display: flex;

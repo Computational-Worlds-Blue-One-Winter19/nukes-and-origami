@@ -335,15 +335,16 @@ class NukesAndOrigami extends GameEngine {
     spawn(this);
 
     // override onEnemyDestruction() to respawn scene
-    this.onEnemyDestruction = function () {
-      count--;
-      if (count === 0) {
-        spawn(this);
-      }
-    };
+    // this.onEnemyDestruction = function () {
+    //   count--;
+    //   if (count === 0) {
+    //     spawn(this);
+    //   }
+    // };
 
     // introduce test player
-    this.player = new Plane(this, ship.jaredTestPlane);
+    // this.player = new Plane(this, ship.jaredTestPlane);
+    this.spawnPlayer();
     this.addEntity(this.player);
 
     // introduce test enemies
@@ -379,10 +380,10 @@ AM.downloadAll(() => {
   game.spawnPlayer();
 
   // run standard gameplay
-  initIntroMessage(game);
+  // initIntroMessage(game);
 
   // view simple test scene; defined above
-  // game.testScene();
+  game.testScene();
 
   // view single scene with SceneManager
   // game.sceneManager.scenes.push(scene.jaredTestScene);
@@ -436,21 +437,21 @@ class SceneManager {
     this.waves = scene.waves;
 
     // Load new background
-    if (scene.background) {
-      for (const bg of scene.background.layers) {
-        this.game.entities.unshift(new Background(this.game, bg.layer, bg.verticalPixels, bg.parallaxMult, bg.offset));
-      }
-    }
+    // if (scene.background) {
+    //   for (const bg of scene.background.layers) {
+    //     this.game.entities.unshift(new Background(this.game, bg.layer, bg.verticalPixels, bg.parallaxMult, bg.offset));
+    //   }
+    // }
 
     // replace current player if a new one is provided
-    if (scene.player) {
-      if (this.game.player) {
-        this.game.player.removeFromWorld = true;
-      }
+    // if (scene.player) {
+    //   if (this.game.player) {
+    //     this.game.player.removeFromWorld = true;
+    //   }
 
-      this.game.player = new Plane(this.game, scene.player);
-      this.game.addEntity(this.game.player);
-    }
+    //   this.game.player = new Plane(this.game, scene.player);
+    //   this.game.addEntity(this.game.player);
+    // }
   }
 
   // In the future, handle any wave specific activity here. This could be doing
@@ -635,34 +636,6 @@ class SceneManager {
   }
 }
 
-/** Call AssetManager to download assets and launch the game. */
-AM.downloadAll(() => {
-  const canvas = document.getElementById('gameWorld');
-  const ctx = canvas.getContext('2d');
-
-  loadSpriteSheets();
-  loadTemplates();
-
-  const game = new NukesAndOrigami();
-  game.init(ctx);
-  game.start();
-
-  // add background and player
-  game.addBackground();
-  game.spawnPlayer();
-
-  // view test stage
-  // game.testScene();
-
-  // run prototype level
-  // game.spawnEnemies();
-
-  initIntroMessage(game);
-
-  console.log('All Done!');
-  canvas.focus();
-});
-
 class Background extends Entity {
   constructor(game, spritesheet, verticalPixels, parallaxMult, initOffset) {
     super(game, { x: 0, y: initOffset });
@@ -686,6 +659,32 @@ class Background extends Entity {
     }
   }
 }
+
+class Clouds extends Entity {
+  constructor(game, spritesheet, canvasHeight, point) {
+    super(game, point);
+    this.startY = point.y;
+    this.spritesheet = spritesheet;
+    this.game = game;
+    this.ctx = game.ctx;
+    this.canvasHeight = canvasHeight;
+    this.speedMultiplier = 0;
+  }
+
+  draw() {
+    this.ctx.drawImage(this.spritesheet, this.current.x, this.current.y);
+  }
+
+  update() {
+    // Multiply by 1.25 for parallax effect
+    this.current.y += 1.25 * this.game.backgroundSpeed;
+    if (this.current.y >= this.canvasHeight) {
+      // adjust for overshoot
+      this.current.y = -3840 + (this.current.y - this.canvasHeight);
+    }
+  }
+}
+
 
 class ShieldEntity extends Entity {
   constructor(game, point) {
@@ -732,7 +731,7 @@ class ShieldEntity extends Entity {
 
     const shieldHit = shield.entities.pop();
     shieldHit.removeFromWorld = true;
-    removePowerUp('shield');
+    removeItem('shield', 'powerUp');
     if (!shield.entities.length) {
       shield.hasShield = false;
     }

@@ -247,6 +247,60 @@ function loadSpriteSheets() {
     },
   };
 
+  sprite.homingMissile = {
+    default: {
+      default: {
+        image: AM.getAsset('./img/missile.png'),
+        dimension: {
+          originX: 0,
+          originY: 0,
+          frameWidth: 320,
+          frameHeight: 170,
+          frameCount: 1,
+          timePerFrame: 30,
+          scale: 0.5,
+          flip: false,
+        },
+      },
+    },
+  };
+
+  sprite.gunUp = {
+    default: {
+      default: {
+        image: AM.getAsset('./img/gunup.png'),
+        dimension: {
+          originX: 0,
+          originY: 0,
+          frameWidth: 100,
+          frameHeight: 46,
+          frameCount: 1,
+          timePerFrame: 30,
+          scale: 1,
+          flip: false,
+        },
+      },
+    },
+  };
+
+  sprite.chainGun = {
+    default: {
+      default: {
+        image: AM.getAsset('./img/chaingun.png'),
+        dimension: {
+          originX: 0,
+          originY: 0,
+          frameWidth: 100,
+          frameHeight: 100,
+          frameCount: 1,
+          timePerFrame: 30,
+          scale: 1,
+          flip: false,
+        },
+      },
+    },
+  };
+
   /** Laser sprite */
   // sprite.testLaser = {
   //   default: {

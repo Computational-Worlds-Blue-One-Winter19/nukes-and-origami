@@ -93,7 +93,7 @@ class Shield extends PowerUp {
         powerUp(entity) {
           // Add the power up to the screen inventory
 
-          addPowerUp('./img/shield-icon.png', 'shield');
+          addItem('./img/shield-icon.png', 'shield', 'powerUp');
 
 
           const currentX = entity.game.player.current.x;
@@ -135,11 +135,16 @@ class RapidFire extends PowerUp {
           //   addPowerUp('./img/rapid-bullet.png', 'rapidFire');
           // }
 
-          // temp override to see if homing missle will work
-          entity.weapon.loadHomingMissile(() => {
-            // send a callback to run this function if loadHomingMissle() is successful
-            addPowerUp('./img/rapid-bullet.png', 'rapidFire');
-          });
+          // // temp override to see if homing missle will work
+          // entity.weapon.loadHomingMissile(() => {
+          //   // send a callback to run this function if loadHomingMissle() is successful
+          //   addPowerUp('./img/rapid-bullet.png', 'rapidFire');
+          // });
+          const ring = entity.weapon.slot[0].ring;
+          if (ring.config.cooldownTime > 0.05) {
+            ring.config.cooldownTime -= 0.1;
+            addItem('./img/fire-rate.png', 'rapidFire', 'powerUp');
+          }
         },
       },
     };
@@ -173,7 +178,8 @@ class InvertedControls extends PowerUp {
 
 // From the collection of implemented powerups, retrieves and return a random one
 function getRandomPowerUp() {
-  const POWERUPS = [new InvertedControls(), new Shield(100), new ExtraLife(100), new RapidFire(100)];
+  // const POWERUPS = [new InvertedControls(100), new Shield(100), new ExtraLife(100), new RapidFire(100)];
+  const POWERUPS = [new RapidFire(100)];
 
   return POWERUPS[Math.floor(Math.random() * POWERUPS.length)];
 }
