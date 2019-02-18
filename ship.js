@@ -10,7 +10,8 @@ class Sprite {
     this.height = config.dimension.frameHeight; // Pixel height of each frame
     this.len = config.dimension.frameCount; // # of frames in this sprite (to let user pick
     // certain frames from a sheet containing multiple animations)
-    this.time = config.dimension.timePerFrame; // time each frame should be displayed. If time = 0, don't loop
+    this.time = config.dimension.timePerFrame; // time each frame should be displayed.
+    this.loop = config.dimension.loop;
     this.scale = config.dimension.scale; // Size scale
     this.flip = config.dimension.flip; // BOOLEAN. Flip image over Y axis?
     this.totalTime = config.dimension.timePerFrame * config.dimension.frameCount; // Not set by user
@@ -21,11 +22,15 @@ class Sprite {
   drawFrame(tick, ctx, x, y) {
     this.elapsedTime += tick;
     if (this.time !== 0) {
-      if (this.elapsedTime >= this.totalTime) { // The isDone() function does exactly this. Use either.
+      if (this.elapsedTime >= this.totalTimes && this.loop) { // The isDone() function does exactly this. Use either.
         // All frames used. Start over to loop.
         this.elapsedTime = 0;
       }
-      this.currentFrame = (Math.floor(this.elapsedTime / this.time)) % this.len;
+      if(this.loop) {
+        this.currentFrame = (Math.floor(this.elapsedTime / this.time)) % this.len;
+      } else {
+        this.currentFrame = Math.floor(this.elapsedTime / this.time);
+      }
       // console.log(this.currentFrame);
     }
 
@@ -42,9 +47,9 @@ class Sprite {
       this.width * this.scale,
       this.height * this.scale);
     // }
-    if (this.time !== 0) {
-      this.currentFrame += 1;
-    }
+    // if (this.time !== 0) {
+    //   this.currentFrame += 1;
+    // }
   }
 
   isDone() {
@@ -121,6 +126,7 @@ class Ship extends Entity {
     this.sprite = new Sprite(manifest.config.sprite.default);
     this.defaultSprite = new Sprite(manifest.config.sprite.default);
     this.hitSprite = new Sprite(manifest.config.sprite.hit);
+    this.deathAnimation = new Sprite(sprite.explosion.default);
     // store class constants in config
     this.config = Object.assign({}, manifest.config);
     this.config.radius = this.config.radius || 50;
@@ -165,14 +171,25 @@ class Ship extends Entity {
       this.sprite = this.defaultSprite;
       this.timeSinceHit = 0;
     }
+    if(this.health <= 0 && this.deathAnimation.isDone())  {
+      this.disarm();
+      this.game.onEnemyDestruction(this);
+      this.removeFromWorld = true;
+    }
     super.update();
   }
 
   draw() {
-    this.sprite.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
+    if(this.health > 0) { //alive
+      this.sprite.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
+    }
+    if(this.health <= 0)  { //dead, draw my explosion
+      this.deathAnimation.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
+    }
     this.weapon.draw();
     super.draw();
   }
+
   
   /**
    * Collisions: detection checks bounds along canvas, collision with
@@ -200,12 +217,15 @@ class Ship extends Entity {
         e.onHit(this); //notify projectile
         this.health -= e.config.hitValue;
         this.sprite = this.hitSprite;
+        console.log("HP: " + this.health);
         this.timeSinceHit += this.game.clockTick;
-        if (this.health <= 0) {
-          this.disarm();
-          this.removeFromWorld = true;
-          this.game.onEnemyDestruction(this);
-        }
+        ///if (this.health <= 0) {
+          //this.disarm();
+          // if(this.deathAnimation.isDone())  {
+          //   //this.removeFromWorld = true;
+          //   this.game.onEnemyDestruction(this);
+          // }
+        //}
       }
     }
   }

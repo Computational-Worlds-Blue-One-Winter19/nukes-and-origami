@@ -36,7 +36,7 @@ AM.queueDownload('./img/space1024x3072.png');
 AM.queueDownload('./img/light_blue_plane.png');
 AM.queueDownload('./img/verticalscrollingbeach.png');
 AM.queueDownload('./img/seamless_pattern.png');
-
+AM.queueDownload('./img/explosion-sheet.png');
 
 /**
  * NukesAndOrigami extends GameEngine and adds additional functions
@@ -85,7 +85,6 @@ class NukesAndOrigami extends GameEngine {
       powerUp,
     } = enemy;
     this.increaseScoreBy(hitValue);
-
     if (powerUp && powerUp.shouldDrop()) {
       this.addEntity(new Projectile(this, {
         origin: {

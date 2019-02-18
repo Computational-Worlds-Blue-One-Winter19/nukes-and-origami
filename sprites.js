@@ -13,6 +13,7 @@ function loadSpriteSheets() {
           timePerFrame: 0.1,
           scale: 0.6,
           flip: false,
+          loop: true
         }
       },
       hit:  {
@@ -26,6 +27,7 @@ function loadSpriteSheets() {
           timePerFrame: 0.1,
           scale: 0.6,
           flip: false,
+          loop: true
         }
       }
     }
@@ -45,6 +47,7 @@ function loadSpriteSheets() {
           timePerFrame: 0.1,
           scale: 0.5,
           flip: false,
+          loop: true
         },
       },
     },
@@ -63,6 +66,7 @@ function loadSpriteSheets() {
           timePerFrame: 0.1,
           scale: 0.3,
           flip: false,
+          loop: true
         }
       },
       hit:  {
@@ -76,6 +80,7 @@ function loadSpriteSheets() {
           timePerFrame: 0.1,
           scale: 0.3,
           flip: false,
+          loop: true
         }
       }
     }
@@ -94,6 +99,7 @@ function loadSpriteSheets() {
           timePerFrame: 0.1,
           scale: 0.3,
           flip: false,
+          loop: true
         },
       },
       hit:  {
@@ -107,6 +113,7 @@ function loadSpriteSheets() {
           timePerFrame: 0.1,
           scale: 0.3,
           flip: false,
+          loop: true
         }
       }
     },
@@ -122,6 +129,7 @@ function loadSpriteSheets() {
           timePerFrame: 0.1,
           scale: 1,
           flip: false,
+          loop: true
         }
       },
       hit:  {
@@ -135,6 +143,7 @@ function loadSpriteSheets() {
           timePerFrame: 0.1,
           scale: 1,
           flip: false,
+          loop: true
         }
       }
     },
@@ -153,6 +162,7 @@ function loadSpriteSheets() {
           timePerFrame: 0.1,
           scale: 0.3,
           flip: false,
+          loop: true
         },
       },
       hit:  {
@@ -166,6 +176,7 @@ function loadSpriteSheets() {
           timePerFrame: 0.1,
           scale: 0.3,
           flip: false,
+          loop: true
         },
       }
     },
@@ -181,6 +192,7 @@ function loadSpriteSheets() {
           timePerFrame: 0.1,
           scale: 1,
           flip: false,
+          loop: true
         }
       },
       hit:  {
@@ -194,6 +206,7 @@ function loadSpriteSheets() {
           timePerFrame: 0.1,
           scale: 0.3,
           flip: false,
+          loop: true
         },
       }
     }
@@ -212,6 +225,7 @@ function loadSpriteSheets() {
           timePerFrame: 0.1,
           scale: 0.3,
           flip: false,
+          loop: true
         }
       },
       hit:  {
@@ -222,9 +236,10 @@ function loadSpriteSheets() {
           frameWidth: 617,
           frameHeight: 330,
           frameCount: 1,
-          timePerFrame: 0.1,
+          timePerFrame: 0.2,
           scale: 0.3,
           flip: false,
+          loop: true
         }
       }
     }
@@ -242,9 +257,10 @@ function loadSpriteSheets() {
           frameWidth: 300,
           frameHeight: 288,
           frameCount: 1,
-          timePerFrame: 30,
+          timePerFrame: 0,
           scale: 0.2,
           flip: false,
+          loop: false
         },
       },
     },
@@ -260,9 +276,10 @@ function loadSpriteSheets() {
           frameWidth: 256,
           frameHeight: 256,
           frameCount: 1,
-          timePerFrame: 30,
+          timePerFrame: 0,
           scale: 0.15,
           flip: false,
+          loop: false
         },
       },
     },
@@ -277,9 +294,10 @@ function loadSpriteSheets() {
         frameWidth: 50,
         frameHeight: 50,
         frameCount: 1,
-        timePerFrame: 30,
+        timePerFrame: 0,
         scale: 1,
         flip: false,
+        loop: false
       },
     },
   };
@@ -294,9 +312,10 @@ function loadSpriteSheets() {
           frameWidth: 1280,
           frameHeight: 360,
           frameCount: 1,
-          timePerFrame: 30,
+          timePerFrame: 0,
           scale: 0.10,
           flip: false,
+          loop: false
         },
       },
     },
@@ -332,6 +351,7 @@ function loadSpriteSheets() {
           timePerFrame: 20,
           scale: 0.5,
           flip: false,
+          loop: true
         },
       },
     },
@@ -350,6 +370,7 @@ function loadSpriteSheets() {
           timePerFrame: 20,
           scale: 0.6,
           flip: false,
+          loop: true
         },
       },
     },
@@ -365,6 +386,7 @@ function loadSpriteSheets() {
           timePerFrame: 20,
           scale: 0.5,
           flip: false,
+          loop: true
         },
       },
     },
@@ -380,6 +402,7 @@ function loadSpriteSheets() {
           timePerFrame: 20,
           scale: 0.5,
           flip: false,
+          loop: true
         },
       },
     },
@@ -395,6 +418,7 @@ function loadSpriteSheets() {
           timePerFrame: 20,
           scale: 0.5,
           flip: false,
+          loop: true
         },
       },
     },
@@ -410,6 +434,7 @@ function loadSpriteSheets() {
           timePerFrame: 20,
           scale: 0.5,
           flip: false,
+          loop: true
         },
       },
     },
@@ -428,6 +453,7 @@ function loadSpriteSheets() {
           timePerFrame: 20,
           scale: 0.3,
           flip: false,
+          loop: false
         },
       },
     },
@@ -446,6 +472,7 @@ function loadSpriteSheets() {
           timePerFrame: 0,
           scale: 1.0,
           flip: false,
+          loop: false
         }
       },
       right: {
@@ -459,6 +486,7 @@ function loadSpriteSheets() {
           timePerFrame: 0,
           scale: 1.0,
           flip: false,
+          loop: false
         },
       },
       left: {
@@ -472,6 +500,7 @@ function loadSpriteSheets() {
           timePerFrame: 0,
           scale: 1.0,
           flip: false,
+          loop: false
         },
       },
       rollRight: {
@@ -485,6 +514,7 @@ function loadSpriteSheets() {
           timePerFrame: 0.07,
           scale: 1.0,
           flip: false,
+          loop: true
         },
       },
       rollLeft: {
@@ -498,6 +528,7 @@ function loadSpriteSheets() {
           timePerFrame: 0.07,
           scale: 1.0,
           flip: false,
+          loop: true
         }
       },
       hit:  {
@@ -511,6 +542,7 @@ function loadSpriteSheets() {
           timePerFrame: 0,
           scale: 1.0,
           flip: false,
+          loop: false
         }
       }
     },
@@ -526,6 +558,7 @@ function loadSpriteSheets() {
           timePerFrame: 0,
           scale: 1.0,
           flip: false,
+          loop: false
         },
       },
       right: {
@@ -539,6 +572,7 @@ function loadSpriteSheets() {
           timePerFrame: 0,
           scale: 1.0,
           flip: false,
+          loop: false
         },
       },
       left: {
@@ -552,6 +586,7 @@ function loadSpriteSheets() {
           timePerFrame: 0,
           scale: 1.0,
           flip: false,
+          loop: false
         },
       },
       rollRight: {
@@ -565,6 +600,7 @@ function loadSpriteSheets() {
           timePerFrame: 0.07,
           scale: 1.0,
           flip: false,
+          loop: true
         },
       },
       rollLeft: {
@@ -578,6 +614,7 @@ function loadSpriteSheets() {
           timePerFrame: 0.07,
           scale: 1.0,
           flip: false,
+          loop: true
         }
       },
       hit:  {
@@ -591,6 +628,7 @@ function loadSpriteSheets() {
           timePerFrame: 0,
           scale: 1.0,
           flip: false,
+          loop: false
         },
       },
       right: {
@@ -604,6 +642,7 @@ function loadSpriteSheets() {
           timePerFrame: 0,
           scale: 1.0,
           flip: false,
+          loop: false
         },
       },
       left: {
@@ -617,6 +656,7 @@ function loadSpriteSheets() {
           timePerFrame: 0,
           scale: 1.0,
           flip: false,
+          loop: false
         },
       },
       rollRight: {
@@ -630,6 +670,7 @@ function loadSpriteSheets() {
           timePerFrame: 0.07,
           scale: 1.0,
           flip: false,
+          loop: true
         },
       },
       rollLeft: {
@@ -643,8 +684,26 @@ function loadSpriteSheets() {
           timePerFrame: 0.07,
           scale: 1.0,
           flip: false,
+          loop: true
         },
       },
     },
   }; // end purple plane
+
+  sprite.explosion = {
+    default:  {
+        image: AM.getAsset('./img/explosion-sheet.png'),
+        dimension:  {
+          originX: 0,
+          originY: 0,
+          frameWidth: 483,
+          frameHeight: 383,
+          frameCount: 3,
+          timePerFrame: 0.1,
+          scale: 1.0,
+          flip: false,
+          loop: false
+      },
+    },
+  }; //end explosion
 }
