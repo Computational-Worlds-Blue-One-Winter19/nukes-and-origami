@@ -4,13 +4,26 @@ function loadSpriteSheets() {
   sprite.crane = {
     default: {
       default: {
-        image: AM.getAsset('./img/crane-sheet.png'),
+        image: AM.getAsset('./img/crane-sheet-HIT.png'),
         dimension: {
           originX: 0,
           originY: 0,
-          frameWidth: 220,
-          frameHeight: 165,
+          frameWidth: 440,
+          frameHeight: 330,
           frameCount: 4,
+          timePerFrame: 0.1,
+          scale: 0.6,
+          flip: false,
+        }
+      },
+      hit:  {
+        image: AM.getAsset('./img/crane-sheet-HIT.png'),
+        dimension: {
+          originX: 1760,
+          originY: 0,
+          frameWidth: 440,
+          frameHeight: 330,
+          frameCount: 1,
           timePerFrame: 0.1,
           scale: 0.6,
           flip: false,
@@ -41,13 +54,26 @@ function loadSpriteSheets() {
   sprite.bat = {
     default: {
       default: {
-        image: AM.getAsset('./img/bat-sheet.png'),
+        image: AM.getAsset('./img/bat-sheet-HIT.png'),
         dimension: {
           originX: 0,
           originY: 0,
           frameWidth: 330,
           frameHeight: 190,
           frameCount: 4,
+          timePerFrame: 0.1,
+          scale: 0.3,
+          flip: false,
+        }
+      },
+      hit:  {
+        image: AM.getAsset('./img/bat-sheet-HIT.png'),
+        dimension: {
+          originX: 1320,
+          originY: 0,
+          frameWidth: 330,
+          frameHeight: 190,
+          frameCount: 1,
           timePerFrame: 0.1,
           scale: 0.3,
           flip: false,
@@ -71,6 +97,19 @@ function loadSpriteSheets() {
           flip: false,
         },
       },
+      hit:  {
+        image: AM.getAsset('./img/swallow-sheet-HIT.png'),
+        dimension: {
+          originX: 7389,
+          originY: 0,
+          frameWidth: 616,
+          frameHeight: 330,
+          frameCount: 1,
+          timePerFrame: 0.1,
+          scale: 0.3,
+          flip: false,
+        }
+      }
     },
     boss: {
       default: {
@@ -85,6 +124,19 @@ function loadSpriteSheets() {
           scale: 1,
           flip: false,
         }
+      },
+      hit:  {
+        image: AM.getAsset('./img/swallow-sheet-HIT.png'),
+        dimension: {
+          originX: 7389,
+          originY: 0,
+          frameWidth: 616,
+          frameHeight: 330,
+          frameCount: 1,
+          timePerFrame: 0.1,
+          scale: 0.3,
+          flip: false,
+        }
       }
     },
   }
@@ -92,7 +144,7 @@ function loadSpriteSheets() {
   sprite.owl = {
     default: {
       default: {
-        image: AM.getAsset('./img/owl.png'),
+        image: AM.getAsset('./img/owl-sheet-HIT.png'),
         dimension: {
           originX: 0,
           originY: 0,
@@ -104,10 +156,23 @@ function loadSpriteSheets() {
           flip: false,
         },
       },
+      hit:  {
+        image: AM.getAsset('./img/owl-sheet-HIT.png'),
+        dimension: {
+          originX: 6196,
+          originY: 0,
+          frameWidth: 620,
+          frameHeight: 330,
+          frameCount: 1,
+          timePerFrame: 0.1,
+          scale: 0.3,
+          flip: false,
+        },
+      }
     },
     boss: {
       default: {
-        image: AM.getAsset('./img/owl.png'),
+        image: AM.getAsset('./img/owl-sheet-HIT.png'),
         dimension: {
           originX: 0,
           originY: 0,
@@ -118,20 +183,46 @@ function loadSpriteSheets() {
           scale: 1,
           flip: false,
         }
+      },
+      hit:  {
+        image: AM.getAsset('./img/owl-sheet-HIT.png'),
+        dimension: {
+          originX: 6196,
+          originY: 0,
+          frameWidth: 620,
+          frameHeight: 330,
+          frameCount: 1,
+          timePerFrame: 0.1,
+          scale: 0.3,
+          flip: false,
+        },
       }
-    },
+    }
   }
 
   sprite.dove = {
     default: {
       default: {
-        image: AM.getAsset('./img/dove.png'),
+        image: AM.getAsset('./img/dove-sheet-HIT.png'),
         dimension: {
           originX: 0,
           originY: 0,
           frameWidth: 617,
           frameHeight: 330,
           frameCount: 6,
+          timePerFrame: 0.1,
+          scale: 0.3,
+          flip: false,
+        }
+      },
+      hit:  {
+        image: AM.getAsset('./img/dove-sheet-HIT.png'),
+        dimension: {
+          originX: 3705,
+          originY: 0,
+          frameWidth: 617,
+          frameHeight: 330,
+          frameCount: 1,
           timePerFrame: 0.1,
           scale: 0.3,
           flip: false,
@@ -280,7 +371,7 @@ function loadSpriteSheets() {
           timePerFrame: 0,
           scale: 1.0,
           flip: false,
-        },
+        }
       },
       right: {
         image: AM.getAsset('./img/purple-plane-small.png'),
@@ -330,6 +421,19 @@ function loadSpriteSheets() {
           frameHeight: 66,
           frameCount: 8,
           timePerFrame: 0.07,
+          scale: 1.0,
+          flip: false,
+        }
+      },
+      hit:  {
+        image: AM.getAsset('./img/purple-plane-small.png'),
+        dimension: {
+          originX: 0,
+          originY: 0,
+          frameWidth: 60,
+          frameHeight: 66,
+          frameCount: 1,
+          timePerFrame: 0,
           scale: 1.0,
           flip: false,
         }
@@ -397,6 +501,19 @@ function loadSpriteSheets() {
           frameHeight: 66,
           frameCount: 8,
           timePerFrame: 0.07,
+          scale: 1.0,
+          flip: false,
+        }
+      },
+      hit:  {
+        image: AM.getAsset('./img/plane-small.png'),
+        dimension: {
+          originX: 0,
+          originY: 0,
+          frameWidth: 60,
+          frameHeight: 66,
+          frameCount: 1,
+          timePerFrame: 0,
           scale: 1.0,
           flip: false,
         }
