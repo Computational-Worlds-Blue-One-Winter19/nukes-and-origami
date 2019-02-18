@@ -210,6 +210,12 @@ function removePowerUp(type) {
   }
 }
 
+/**
+ * Removes an item from the dom.
+ *
+ * @param {String} type The type of item that will be removed from the dom.
+ * @param {String} container The container holding the item that will be removed.
+ */
 function removeItem(type, container) {
   // Need to get the parent element to be able to remove the power up icons
   const parent = document.getElementById(container);
@@ -225,7 +231,9 @@ function removeItem(type, container) {
 }
 
 /**
- * Starts a timer that will last the given time
+ * Starts a timer that will last the given time, once the timer has finished
+ * the callBack will be called
+ * A reference of the given weapon will be passed to the callback
  * @param {} time
  * @param {*} callBack
  * @param {*} weapon

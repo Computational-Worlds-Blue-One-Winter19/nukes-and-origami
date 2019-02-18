@@ -180,7 +180,7 @@ class HomingMissile extends PowerUp {
                 removeItem('hommingMissle', 'weapon');
 
                 // Start the timer
-                startTimer(5, entity.weapon.removeHomingMissile, entity.weapon);
+                startTimer(20, entity.weapon.removeHomingMissile, entity.weapon);
               });
             });
           }

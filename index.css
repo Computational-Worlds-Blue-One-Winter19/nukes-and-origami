@@ -258,9 +258,9 @@ center > h4 {
     stroke-width: 2px;
     stroke: black;
     fill: none;
-    animation: countdown 5s linear infinite forwards;
+    animation: countdown 20s linear infinite forwards;
   }
-  
+
   @keyframes countdown {
     from {
       stroke-dashoffset: 0px;
