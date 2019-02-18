@@ -151,6 +151,43 @@ class RapidFire extends PowerUp {
   }
 }
 
+class HomingMissile extends PowerUp {
+  constructor(dropRate) {
+    super(dropRate);
+
+    this.manifest = {
+      owner: null,
+      angle: Math.PI / 2,
+      payload: {
+        type: {
+          sprite: sprite.homingMissile.default,
+          radius: 30,
+        },
+        speed: 60,
+        powerUp(entity) {
+          // quick fix for change to weapon array. assuming that player only has one!
+          // const ring = entity.weapon.slot[0].ring;
+          // if (ring.config.cooldownTime > 0.05) {
+          //   ring.config.cooldownTime -= 0.1;
+          //   addPowerUp('./img/rapid-bullet.png', 'rapidFire');
+          // }
+
+          // // temp override to see if homing missle will work
+          entity.weapon.loadHomingMissile(() => {
+            // send a callback to run this function if loadHomingMissle() is successful
+            addItem('./img/missile.png', 'hommingMissle', 'weapon');
+          });
+          // const ring = entity.weapon.slot[0].ring;
+          // if (ring.config.cooldownTime > 0.05) {
+          //   ring.config.cooldownTime -= 0.1;
+          //   addItem('./img/fire-rate.png', 'rapidFire', 'powerUp');
+          // }
+        },
+      },
+    };
+  }
+}
+
 class InvertedControls extends PowerUp {
   constructor(dropRate) {
     super(dropRate);
@@ -179,7 +216,7 @@ class InvertedControls extends PowerUp {
 // From the collection of implemented powerups, retrieves and return a random one
 function getRandomPowerUp() {
   // const POWERUPS = [new InvertedControls(100), new Shield(100), new ExtraLife(100), new RapidFire(100)];
-  const POWERUPS = [new RapidFire(100)];
+  const POWERUPS = [new HomingMissile(100)];
 
   return POWERUPS[Math.floor(Math.random() * POWERUPS.length)];
 }

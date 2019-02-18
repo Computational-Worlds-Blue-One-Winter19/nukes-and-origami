@@ -79,7 +79,7 @@ h2 {
     align-items: center;
 }
 
-#inventory img {
+.inventory-container img {
     width: 40px;
 }
 

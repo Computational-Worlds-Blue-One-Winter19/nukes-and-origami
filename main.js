@@ -39,6 +39,9 @@ AM.queueDownload('./img/space1024x3072.png');
 AM.queueDownload('./img/light_blue_plane.png');
 AM.queueDownload('./img/verticalscrollingbeach.png');
 AM.queueDownload('./img/seamless_pattern.png');
+AM.queueDownload('./img/missile.png');
+AM.queueDownload('./img/gunup.png');
+AM.queueDownload('./img/chaingun.png');
 
 
 /**
