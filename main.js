@@ -11,16 +11,16 @@ const scene = {};
 const background = {};
 
 /** These are the image assets declared by filename */
-AM.queueDownload('./img/bat-sheet.png');
-AM.queueDownload('./img/crane-sheet.png');
+AM.queueDownload('./img/bat-sheet-HIT.png');
+AM.queueDownload('./img/crane-sheet-HIT.png');
 AM.queueDownload('./img/mini-crane-sheet.png');
 AM.queueDownload('./img/plane-small.png');
 AM.queueDownload('./img/purple-plane-small.png');
 AM.queueDownload('./img/notebook.png');
 AM.queueDownload('./img/bullet.png');
 AM.queueDownload('./img/nuke_single.png');
-AM.queueDownload('./img/owl.png');
-AM.queueDownload('./img/dove.png');
+AM.queueDownload('./img/owl-sheet-HIT.png');
+AM.queueDownload('./img/dove-sheet-HIT.png');
 AM.queueDownload('./img/rainbow_ball.png');
 AM.queueDownload('./img/shield-icon.png');
 AM.queueDownload('./img/shield.png');
@@ -39,7 +39,7 @@ AM.queueDownload('./img/space1024x3072.png');
 AM.queueDownload('./img/light_blue_plane.png');
 AM.queueDownload('./img/verticalscrollingbeach.png');
 AM.queueDownload('./img/seamless_pattern.png');
-
+AM.queueDownload('./img/explosion-sheet.png');
 
 /**
  * NukesAndOrigami extends GameEngine and adds additional functions
@@ -88,7 +88,6 @@ class NukesAndOrigami extends GameEngine {
       powerUp,
     } = enemy;
     this.increaseScoreBy(hitValue);
-
     if (powerUp && powerUp.shouldDrop()) {
       this.addEntity(new Projectile(this, {
         origin: {
