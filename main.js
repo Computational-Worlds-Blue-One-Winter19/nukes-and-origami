@@ -384,7 +384,7 @@ AM.downloadAll(() => {
   game.spawnPlayer();
 
   // run standard gameplay
-  // initIntroMessage(game);
+  initIntroMessage(game);
 
   // view simple test scene; defined above
   game.testScene();

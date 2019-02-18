@@ -223,7 +223,7 @@ function getRandomPowerUp(weapon) {
   // No need to drop more missiles if the player already has one loaded, easy to modify if we decide to drop them
   // down the road
   if (!weapon.hasMissile) {
-    POWERUPS.push(new HomingMissile(100));
+    POWERUPS.push(new InvertedControls(100));
   }
 
   return POWERUPS[Math.floor(Math.random() * POWERUPS.length)];
