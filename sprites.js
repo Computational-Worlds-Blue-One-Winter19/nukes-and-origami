@@ -1,5 +1,4 @@
 function loadSpriteSheets() {
-
   /** The Crane spritesheet configuration */
   sprite.crane = {
     default: {
@@ -46,10 +45,10 @@ function loadSpriteSheets() {
           timePerFrame: 0.1,
           scale: 0.5,
           flip: false,
-        }
-      }
-    }
-  }
+        },
+      },
+    },
+  };
 
   sprite.bat = {
     default: {
@@ -139,7 +138,7 @@ function loadSpriteSheets() {
         }
       }
     },
-  }
+  };
 
   sprite.owl = {
     default: {
@@ -248,7 +247,7 @@ function loadSpriteSheets() {
           flip: false,
         },
       },
-    }
+    },
   };
 
   sprite.shieldIcon = {
@@ -266,25 +265,23 @@ function loadSpriteSheets() {
           flip: false,
         },
       },
-    }
+    },
   };
 
   sprite.shield = {
     default: {
-      default: {
-        image: AM.getAsset('./img/shield.png'),
-        dimension: {
-          originX: 50,
-          originY: 50,
-          frameWidth: 50,
-          frameHeight: 50,
-          frameCount: 1,
-          timePerFrame: 30,
-          scale: 1,
-          flip: false,
-        },
+      image: AM.getAsset('./img/shield.png'),
+      dimension: {
+        originX: 50,
+        originY: 50,
+        frameWidth: 50,
+        frameHeight: 50,
+        frameCount: 1,
+        timePerFrame: 30,
+        scale: 1,
+        flip: false,
       },
-    }
+    },
   };
 
   sprite.rapidFire = {
@@ -302,7 +299,7 @@ function loadSpriteSheets() {
           flip: false,
         },
       },
-    }
+    },
   };
 
   /** Laser sprite */
@@ -335,10 +332,88 @@ function loadSpriteSheets() {
           timePerFrame: 20,
           scale: 0.5,
           flip: false,
-        }
-      }
-    }
-  }
+        },
+      },
+    },
+  };
+
+  sprite.laser = {
+    orange: {
+      default: {
+        image: AM.getAsset('./img/7_shoot_sheet.png'),
+        dimension: {
+          originX: 176,
+          originY: 177,
+          frameWidth: 12,
+          frameHeight: 54,
+          frameCount: 5,
+          timePerFrame: 20,
+          scale: 0.6,
+          flip: false,
+        },
+      },
+    },
+    yellow: {
+      default: {
+        image: AM.getAsset('./img/7_shoot_sheet.png'),
+        dimension: {
+          originX: 176,
+          originY: 283,
+          frameWidth: 12,
+          frameHeight: 54,
+          frameCount: 5,
+          timePerFrame: 20,
+          scale: 0.5,
+          flip: false,
+        },
+      },
+    },
+    white: {
+      default: {
+        image: AM.getAsset('./img/7_shoot_sheet.png'),
+        dimension: {
+          originX: 176,
+          originY: 389,
+          frameWidth: 12,
+          frameHeight: 54,
+          frameCount: 5,
+          timePerFrame: 20,
+          scale: 0.5,
+          flip: false,
+        },
+      },
+    },
+    bigGreen: {
+      default: {
+        image: AM.getAsset('./img/7_shoot_sheet.png'),
+        dimension: {
+          originX: 8,
+          originY: 282,
+          frameWidth: 26,
+          frameHeight: 78,
+          frameCount: 5,
+          timePerFrame: 20,
+          scale: 0.5,
+          flip: false,
+        },
+      },
+    },
+    bigOrange: {
+      default: {
+        image: AM.getAsset('./img/7_shoot_sheet.png'),
+        dimension: {
+          originX: 0,
+          originY: 0,
+          frameWidth: 52,
+          frameHeight: 140,
+          frameCount: 5,
+          timePerFrame: 20,
+          scale: 0.5,
+          flip: false,
+        },
+      },
+    },
+  };
 
   sprite.cutLaser = {
     default: {
@@ -353,10 +428,10 @@ function loadSpriteSheets() {
           timePerFrame: 20,
           scale: 0.3,
           flip: false,
-        }
-      }
-    }
-  }
+        },
+      },
+    },
+  };
 
   sprite.plane = {
     purple: {
@@ -384,7 +459,7 @@ function loadSpriteSheets() {
           timePerFrame: 0,
           scale: 1.0,
           flip: false,
-        }
+        },
       },
       left: {
         image: AM.getAsset('./img/purple-plane-small.png'),
@@ -397,7 +472,7 @@ function loadSpriteSheets() {
           timePerFrame: 0,
           scale: 1.0,
           flip: false,
-        }
+        },
       },
       rollRight: {
         image: AM.getAsset('./img/purple-plane-small.png'),
@@ -410,7 +485,7 @@ function loadSpriteSheets() {
           timePerFrame: 0.07,
           scale: 1.0,
           flip: false,
-        }
+        },
       },
       rollLeft: {
         image: AM.getAsset('./img/purple-plane-small.png'),
@@ -451,7 +526,7 @@ function loadSpriteSheets() {
           timePerFrame: 0,
           scale: 1.0,
           flip: false,
-        }
+        },
       },
       right: {
         image: AM.getAsset('./img/plane-small.png'),
@@ -464,7 +539,7 @@ function loadSpriteSheets() {
           timePerFrame: 0,
           scale: 1.0,
           flip: false,
-        }
+        },
       },
       left: {
         image: AM.getAsset('./img/plane-small.png'),
@@ -477,7 +552,7 @@ function loadSpriteSheets() {
           timePerFrame: 0,
           scale: 1.0,
           flip: false,
-        }
+        },
       },
       rollRight: {
         image: AM.getAsset('./img/plane-small.png'),
@@ -490,7 +565,7 @@ function loadSpriteSheets() {
           timePerFrame: 0.07,
           scale: 1.0,
           flip: false,
-        }
+        },
       },
       rollLeft: {
         image: AM.getAsset('./img/plane-small.png'),
@@ -516,9 +591,60 @@ function loadSpriteSheets() {
           timePerFrame: 0,
           scale: 1.0,
           flip: false,
-        }
-      }
-    }
-  } //end purple plane
-
+        },
+      },
+      right: {
+        image: AM.getAsset('./img/light_blue_plane.png'),
+        dimension: {
+          originX: 60,
+          originY: 0,
+          frameWidth: 60,
+          frameHeight: 66,
+          frameCount: 1,
+          timePerFrame: 0,
+          scale: 1.0,
+          flip: false,
+        },
+      },
+      left: {
+        image: AM.getAsset('./img/light_blue_plane.png'),
+        dimension: {
+          originX: 120,
+          originY: 0,
+          frameWidth: 60,
+          frameHeight: 66,
+          frameCount: 1,
+          timePerFrame: 0,
+          scale: 1.0,
+          flip: false,
+        },
+      },
+      rollRight: {
+        image: AM.getAsset('./img/light_blue_plane.png'),
+        dimension: {
+          originX: 0,
+          originY: 66,
+          frameWidth: 60,
+          frameHeight: 66,
+          frameCount: 8,
+          timePerFrame: 0.07,
+          scale: 1.0,
+          flip: false,
+        },
+      },
+      rollLeft: {
+        image: AM.getAsset('./img/light_blue_plane.png'),
+        dimension: {
+          originX: 0,
+          originY: 132,
+          frameWidth: 60,
+          frameHeight: 66,
+          frameCount: 8,
+          timePerFrame: 0.07,
+          scale: 1.0,
+          flip: false,
+        },
+      },
+    },
+  }; // end purple plane
 }

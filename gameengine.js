@@ -34,7 +34,7 @@ window.requestAnimFrame = (function requestAnimFrame() {
 class Timer {
   constructor() {
     this.gameTime = 0;
-    this.maxStep = 0.05;
+    this.maxStep = 0.02;
     this.wallLastTimestamp = 0;
   }
 
@@ -56,6 +56,7 @@ class Timer {
 
 class GameEngine {
   constructor() {
+    this.currentBackground = [];
     this.entities = [];
     this.showOutlines = false;
     this.isPaused = false;

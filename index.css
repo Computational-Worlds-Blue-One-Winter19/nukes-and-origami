@@ -79,7 +79,7 @@ h2 {
     width: 40px;
 }
 
-#message-overlay, #intro-message, #normal-message, #reversed-message  {
+#message-overlay, #intro-message, #normal-message, #control-message  {
     font-family: 'VT323', monospace;
     font-size: 2em;
     position: absolute;
@@ -96,7 +96,7 @@ h2 {
     top: 180px;
 }
 
-#normal-message, #reversed-message {
+#normal-message, #control-message {
     /* left: 265px; */
     top: 650px;
 }
@@ -132,6 +132,19 @@ div.key {
 	padding: 1px;
     margin: 10px 10px 10px 0px;
 }
+
+/* Blinking text */
+.blinking{
+    animation:blinkingText 0.8s infinite;
+}
+@keyframes blinkingText{
+    0%{     color: red;    }
+    49%{    color: transparent; }
+    50%{    color: transparent; }
+    99%{    color:transparent;  }
+    100%{   color: #000;    }
+}
+
 
 /*
     We need to expand the width of the space-key to make it distinguishable
