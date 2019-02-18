@@ -88,11 +88,12 @@ class NukesAndOrigami extends GameEngine {
     const {
       current,
       hitValue,
-      powerUp,
     } = enemy;
     this.increaseScoreBy(hitValue);
 
-    if (powerUp && powerUp.shouldDrop()) {
+    // Generate a powerUp
+    const powerUp = getRandomPowerUp(this.player.weapon);
+    if (powerUp.shouldDrop()) {
       this.addEntity(new Projectile(this, {
         origin: {
           x: current.x,
@@ -383,10 +384,10 @@ AM.downloadAll(() => {
   game.spawnPlayer();
 
   // run standard gameplay
-  initIntroMessage(game);
+  // initIntroMessage(game);
 
   // view simple test scene; defined above
-  // game.testScene();
+  game.testScene();
 
   // view single scene with SceneManager
   // game.sceneManager.scenes.push(scene.jaredTestScene);

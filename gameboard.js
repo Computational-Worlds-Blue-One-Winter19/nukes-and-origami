@@ -221,6 +221,6 @@ function removeItem(type, container) {
 
   // If we find any go ahead and remove the last one
   if (containerElement.length) {
-    parent.removeChild(container[container.length - 1]);
+    parent.removeChild(containerElement[containerElement.length - 1]);
   }
 }

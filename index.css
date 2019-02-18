@@ -83,6 +83,14 @@ h2 {
     width: 40px;
 }
 
+/* Add a blue border to the first weapon in the players inventory class */
+#weapon img:first-child {
+    box-shadow: 0 4px 5px -3px rgba(81, 203, 238, 1);
+    padding: 3px 0px 3px 3px;
+    margin: 5px 1px 3px 0px;
+    border-bottom: 1px solid rgba(81, 203, 238, 1);
+}
+
 #message-overlay, #intro-message, #normal-message, #control-message  {
     font-family: 'VT323', monospace;
     font-size: 2em;

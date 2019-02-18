@@ -127,7 +127,6 @@ class Ship extends Entity {
     this.snapLine = this.config.snapLine || 100;
     this.snapLineSpeed = this.config.snapLineSpeed || 300;
     this.hitValue = this.config.hitValue;
-    this.powerUp = getRandomPowerUp();
 
     // additional fields
     this.idleTrans = false;
@@ -163,7 +162,7 @@ class Ship extends Entity {
     this.weapon.draw();
     super.draw();
   }
-  
+
   /**
    * Collisions: detection checks bounds along canvas, collision with
    * player and collision with player bullets.
@@ -187,7 +186,7 @@ class Ship extends Entity {
     // Check for hit from player bullets
     for (const e of this.game.entities) {
       if (e instanceof Projectile && e.playerShot && this.isCollided(e)) {
-        e.onHit(this); //notify projectile
+        e.onHit(this); // notify projectile
         this.health -= e.config.hitValue;
 
         if (this.health <= 0) {
@@ -366,7 +365,7 @@ class Plane extends Ship {
       duration: 10,
     };
   }
-  
+
   /** @override
    *  The Ship calls this method first on every update cycle.
    */
@@ -397,7 +396,7 @@ class Plane extends Ship {
         this.canRoll = true;
       }
     }
-        
+
     // This makes me worry about an overflow, or slowing our game down.
     // But it works great for what we need.
     // this.timeSinceLastSpacePress += this.game.clockTick;
@@ -457,7 +456,7 @@ class Plane extends Ship {
       this.performManeuver();
     }
 
-    if (!this.game.keysDown.ArrowLeft 
+    if (!this.game.keysDown.ArrowLeft
       && !this.game.keysDown.ArrowRight
       && !this.game.keysDown.ArrowUp
       && !this.game.keysDown.ArrowDown
@@ -584,22 +583,30 @@ class Weapon {
     this.owner = owner;
     this.slot = new Array();
 
+    // Used to keep track of any weapons that the player may have picked up, for now
+    // the first one is activated
+    this.inventory = [];
+
+    // This is to prevent duplicate homing missile weapons from being added to the inventory
+    // We can decide how to handle this later
+    this.hasMissile = false;
+
     // construct and mount the rings
     if (manifest instanceof Array) {
       // process the multi-ring format
       for (let i = 0; i < manifest.length; i++) {
         var r = new Ring(owner, manifest[i].ring);
-        var offset = manifest[i].offset || { x: 0, y: 0 };
+        const offset = manifest[i].offset || { x: 0, y: 0 };
 
         this.slot.push({
           ring: r,
-          offset: offset,
+          offset,
         });
       }
     } else if (manifest) {
-      // process the single-ring format  
+      // process the single-ring format
       var r = new Ring(owner, manifest);
-      
+
       this.slot.push({
         ring: r,
         offset: { x: 0, y: 0 },
@@ -617,38 +624,47 @@ class Weapon {
     // assume that this.current has been updated to Ship's x,y postion
     const {
       x,
-      y
+      y,
     } = this.owner.current;
-    
+
     for (let i = 0; i < this.slot.length; i++) {
-      let weapon = this.slot[i];
+      const weapon = this.slot[i];
 
       weapon.ring.current.x = x + weapon.offset.x;
       weapon.ring.current.y = y + weapon.offset.y;
 
       weapon.ring.update();
     }
-  
+
+    // Check if the player is activating a weapon from their inventory
+    if (this.owner.game.keysDown.KeyA) {
+      console.log('Activating weapon');
+      // Get the first item in the inventory
+      const weaponActivation = this.inventory.pop();
+      if (weaponActivation) {
+        weaponActivation();
+      }
+    }
+
     // evaluate firing decision?
     // an enemy fires any ring that is ready
 
     // a player fires based on key press
-    // we can map different keys for the special weapons    
-
+    // we can map different keys for the special weapons
   }
 
   loadHomingMissile(callback) {
     // we can load this and keep count of how many times it has been fired
     const maxUse = 1;
- 
+
     if (this.slot.length === 1) {
-      //mount the homing missle
-      var r = new Ring(this.owner, ring.enemyHoming);
-      var offset = { x: -12, y: 44 };
+      // mount the homing missle
+      const r = new Ring(this.owner, ring.enemyHoming);
+      const offset = { x: -12, y: 44 };
 
       this.slot.push({
         ring: r,
-        offset: offset,
+        offset,
       });
 
       callback();
@@ -673,6 +689,10 @@ class Weapon {
     // out and call update again. or just build a new one?
 
     // for now this can use the ship's hit box. maybe in the future use the ring's?
+
+  }
+
+  activateWeapon() {
 
   }
 
@@ -706,7 +726,7 @@ class Ring {
     // check for pattern
     const pattern = manifest.firing.pattern;
     const count = pattern ? pattern.sequence[0].length : manifest.firing.count || 1;
-    
+
     // compute spacing and adjust base angle
     let baseAngle = toRadians(manifest.firing.angle) || 0;
     let spacing = 0;
@@ -732,8 +752,8 @@ class Ring {
 
     // convert acceleration and velocity to radians
     if (!this.payload.acceleration) {
-      this.payload.acceleration = { 
-        radial: 0, 
+      this.payload.acceleration = {
+        radial: 0,
         angular: 0,
       };
     } else if (!(this.payload.acceleration instanceof Object)) {
@@ -746,7 +766,7 @@ class Ring {
     }
 
     if (!this.payload.velocity) {
-      this.payload.velocity = { 
+      this.payload.velocity = {
         radial: this.payload.speed,
         angular: 0,
       };
@@ -804,7 +824,7 @@ class Ring {
 
     // update active time counter; used for the pulse delay
     this.status.elapsedActiveTime += game.clockTick;
-    
+
     // ring center position is updated by the Ship before calling this method.
     // we only need to adjust the angle for bay[0] if this ring is rotating.
     if (this.fixedRotation) {
@@ -815,7 +835,7 @@ class Ring {
       const delta = game.timer.getWave(this.sineAmplitude, this.sineFrequency);
       this.current.angle = this.config.baseAngle + delta;
     } else if (this.current.isLeadShot || this.config.targetPlayer) {
-      // moved target logic to here. this will aim the 
+      // moved target logic to here. this will aim the
       const target = game.getPlayerLocation(this.current);
       this.current.angle = target.angle - this.config.spread / 2;
       this.current.isLeadShot = false;
@@ -824,10 +844,10 @@ class Ring {
     for (let i = 0; i < this.bay.length; i++) {
       const projectile = this.bay[i];
       projectile.current.angle = this.current.angle + i * this.config.spacing;
-      
+
       // TEST: only update x,y if turret is visible THIS WON'T WORK UNLESS WE CHECK AGAIN AT fireAll() :(
       const currentPosition = getXandY(this.current, {
-        radius: this.config.radius, 
+        radius: this.config.radius,
         angle: projectile.current.angle,
       });
       projectile.current.x = currentPosition.x;
@@ -880,7 +900,7 @@ class Ring {
       } else {
         this.status.isLoading = !this.config.rapidReload;
         this.status.isReady = this.config.rapidReload;
-      }    
+      }
     } else if (this.status.isWaiting && this.status.elapsedTime > this.config.waitTime) {
       // Waiting state
       this.status.isWaiting = false;
@@ -907,7 +927,7 @@ class Ring {
     // the projectiles have been updated so just add to game and replace again
     // this previously fired all and then looped back to reload. was that better?
     // console.log("fire");
-    
+
     for (let i = 0; i < this.bay.length; i++) {
       const projectile = this.bay[i];
       projectile.init();
@@ -930,15 +950,14 @@ class Ring {
 
     for (let i = 0; i < this.bay.length; i++) {
       const projectile = this.bay[i];
-      
+
       if (row[last - i] === 1) {
         projectile.init();
         this.owner.game.addEntity(projectile);
-      
+
         if (this.config.rapidReload) {
           this.bay[i] = this.loadNext(projectile);
         }
-      
       }
     }
 
@@ -966,8 +985,8 @@ class Ring {
       };
       const acceleration = this.payload.acceleration;
 
-      const point = getXandY(this.current, { 
-        radius: this.config.radius, 
+      const point = getXandY(this.current, {
+        radius: this.config.radius,
         angle,
       });
       origin = {
@@ -993,8 +1012,8 @@ class Ring {
 
     // return a configured projectile
     return new Projectile(this.owner.game, manifest);
-  }  
-} //end of Ring class
+  }
+} // end of Ring class
 
 /**
  * The projectile class manages its own path given a velocity and acceleration.
@@ -1002,7 +1021,7 @@ class Ring {
  */
 class Projectile extends Entity {
   constructor(game, manifest) {
-    super(game, { 
+    super(game, {
       x: manifest.origin.x,
       y: manifest.origin.y,
     });
@@ -1010,24 +1029,24 @@ class Projectile extends Entity {
     this.owner = manifest.owner;
     this.current = Object.assign({}, manifest.origin);
     this.payload = manifest.payload.type;
-    
+
     this.config = {
       radius: this.payload.radius,
       baseAngle: this.current.angle || manifest.angle || 0,
       hitValue: this.payload.hitValue || 1,
     };
-    
+
     this.local = Object.assign({}, this.payload.local);
 
     // support for origin format
     if (!this.current.angle) {
       this.current.angle = manifest.angle;
-      this.current.velocity = { 
-        radial: manifest.payload.speed, 
+      this.current.velocity = {
+        radial: manifest.payload.speed,
         angular: 0,
       };
-      this.current.acceleration = { 
-        radial: 0, 
+      this.current.acceleration = {
+        radial: 0,
         angular: 0,
       };
       this.payload.powerUp = manifest.payload.powerUp;
@@ -1040,7 +1059,7 @@ class Projectile extends Entity {
     if (this.payload.init) {
       this.init = this.payload.init;
     }
-    
+
     if (this.payload.onHit) {
       this.onHit = this.payload.onHit;
     }
@@ -1156,8 +1175,8 @@ class Projectile extends Entity {
 function getXandY(origin, current) {
   const x = origin.x + current.radius * Math.cos(current.angle);
   const y = origin.y + current.radius * Math.sin(current.angle);
-  return { 
-    x, 
+  return {
+    x,
     y,
   };
 }

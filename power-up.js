@@ -168,12 +168,19 @@ class HomingMissile extends PowerUp {
         },
         speed: 60,
         powerUp(entity) {
-          this.entity = entity;
-          // Not adding the missile to the inventory just activate it
-          this.entity.weapon.loadHomingMissile(() => {
-            // send a callback to run this function if loadHomingMissle() is successful
-            // addItem('./img/missile.png', 'hommingMissle', 'weapon');
-          });
+          // this.entity = entity;
+          // this.activate();
+          if (!entity.weapon.hasMissile) {
+            addItem('./img/missile.png', 'hommingMissle', 'weapon');
+            entity.weapon.hasMissile = true;
+            entity.weapon.inventory.push(() => {
+              // Pushing the function that will be used to activate the powerUp by the player
+              entity.weapon.loadHomingMissile(() => {
+                // send a callback to run this function if loadHomingMissle() is successful
+                removeItem('hommingMissle', 'weapon');
+              });
+            });
+          }
         },
       },
     };
@@ -206,8 +213,15 @@ class InvertedControls extends PowerUp {
 
 
 // From the collection of implemented powerups, retrieves and return a random one
-function getRandomPowerUp() {
-  const POWERUPS = [new InvertedControls(100), new Shield(100), new ExtraLife(100), new RapidFire(100), new HomingMissile(100)];
+function getRandomPowerUp(weapon) {
+  // const POWERUPS = [new InvertedControls(100), new Shield(100), new ExtraLife(100), new RapidFire(100)];
+  const POWERUPS = [];
+
+  // No need to drop more missiles if the player already has one loaded, easy to modify if we decide to drop them
+  // down the road
+  if (!weapon.hasMissile) {
+    POWERUPS.push(new HomingMissile(100));
+  }
 
   return POWERUPS[Math.floor(Math.random() * POWERUPS.length)];
 }
