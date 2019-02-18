@@ -133,7 +133,7 @@ function loadSpriteSheets() {
           frameHeight: 330,
           frameCount: 1,
           timePerFrame: 0.1,
-          scale: 0.3,
+          scale: 1,
           flip: false,
         }
       }
