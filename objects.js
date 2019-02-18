@@ -4,22 +4,22 @@ function loadTemplates() {
    *   radius: the hitbox for this Projectile
    *   hitValue: the amount of destruction (default=1)
    *   rotate: if true then image/sprite will be adjusted to the current angle
-   *   
+   *
    *   image: use an image directly from the Asset Manager
    *   scale: used to scale down an image only (sprites do this on their own)
-   *     --OR--  
+   *     --OR--
    *   sprite: use to show a sprite instead of an image
    *     --OR--
    *   if no image or sprite is given then a solid circle is drawn
-   * 
+   *
    * A custom projectile can use the following methods to produce unique behavior.
    *   init() is called one time immediately prior to launch
    *   update() to customize the trajectory/behavior\
    *   onHit(ship) is called when struck by an opposing Ship
-   * 
+   *
    *   {local} values stored here are accessible in this.local and can be used
    *           to manage state for custom trajectory/behavior.
-   * 
+   *
    * pre-conditions:
    *   1. the projectile has a valid this.current.{ x, y, angle }
    *   2. init() has been called
@@ -31,11 +31,11 @@ function loadTemplates() {
   /** This tracks the player. So only load it on an Enemy! */
   projectile.homing = {
     radius: 3,
-    
+
     local: {
       isHoming: true,
       limit: 250, // minimum distance to stop tracking
-    },    
+    },
 
     update() {
       // update angle if projectile is beyond the limit
@@ -49,8 +49,8 @@ function loadTemplates() {
       }
 
       // update r
-      this.current.velocity.radial += this.current.acceleration.radial * this.game.clockTick;
-      this.current.r = this.current.velocity.radial * this.game.clockTick
+      this.current.velocity.radial += this.current.acceleration.radial * this.current.elapsedTime;
+      this.current.r = this.current.velocity.radial * this.current.elapsedTime;
     },
   };
 
@@ -62,30 +62,30 @@ function loadTemplates() {
     // image: AM.getAsset('./img/bullet.png'),
     // scale: .04,
     sprite: sprite.laser.bigOrange,
-    
+
     local: {
       range: 400, // maximum
-    },    
+    },
 
     update() {
       const hitList = this.game.getEnemiesInRange(this.current, this.local.range);
-      
+
       // sorted list; closest enemy at index 0
       if (hitList.length > 0) {
         const {
           x,
           y,
         } = hitList[0].ship.current;
-        
+
         // set target angle
         const deltaX = x - this.current.x;
         const deltaY = y - this.current.y;
         this.current.angle = Math.atan2(deltaY, deltaX);
       }
-    
+
       // update r
-      this.current.velocity.radial += this.current.acceleration.radial * this.game.clockTick;
-      this.current.r = this.current.velocity.radial * this.game.clockTick
+      this.current.velocity.radial += this.current.acceleration.radial * this.current.elapsedTime;
+      this.current.r = this.current.velocity.radial * this.current.elapsedTime;
     },
   }
 
@@ -99,16 +99,16 @@ function loadTemplates() {
       time: 0,
       amp: 3 * 2 * Math.PI
     },
-    
+
     update() {
-      this.local.time += this.game.clockTick;
-      this.current.r = this.current.velocity.radial * this.game.clockTick;
+      this.local.time += this.current.elapsedTime;
+      this.current.r = this.current.velocity.radial * this.current.elapsedTime;
 
       const deltaAngle = Math.cos(this.local.amp * this.local.time);
       this.current.angle = this.config.baseAngle + deltaAngle;
     },
   };
-  
+
   /** This tracks an enemy. */
   projectile.chainGun = {
     radius: 3,
@@ -117,11 +117,11 @@ function loadTemplates() {
     // image: AM.getAsset('./img/bullet.png'),
     // scale: .04,
     sprite: sprite.laser.bigOrange,
-    
+
     local: {
       count: 0,
       range: 400, // maximum
-    },    
+    },
 
     onHit() {
       this.local.count += 1;
@@ -130,18 +130,18 @@ function loadTemplates() {
     },
 
     update() {
-      
+
       // only track after the first hit
       if (this.local.count > 0) {
         const hitList = this.game.getEnemiesInRange(this.current, this.local.range);
-      
+
         // sorted list; closest enemy at index 0
         if (hitList.length > 0) {
           const {
             x,
             y,
           } = hitList[0].ship.current;
-          
+
           // set target angle
           const deltaX = x - this.current.x;
           const deltaY = y - this.current.y;
@@ -150,8 +150,8 @@ function loadTemplates() {
       }
 
       // update r
-      this.current.velocity.radial += this.current.acceleration.radial * this.game.clockTick;
-      this.current.r = this.current.velocity.radial * this.game.clockTick
+      this.current.velocity.radial += this.current.acceleration.radial * this.current.elapsedTime;
+      this.current.r = this.current.velocity.radial * this.current.elapsedTime;
     },
   };
 
@@ -160,17 +160,17 @@ function loadTemplates() {
     radius: 6,
     // a circle is now drawn by default if you don't include an image or sprite
   };
-  
+
   projectile.microBullet = {
     radius: 3,
-    
+
     // use init() for any pre-processing immediately prior to launch.
     // for player bullets we can easily say "only travel up"
     init() {
       this.current.angle = toRadians(270);
     }
   };
-    
+
   projectile.paperBall = {
     radius: 15,
     rotate: false,
@@ -231,27 +231,30 @@ function loadTemplates() {
    *  overrides:count,pulse,rapidReload //don't use rotation//
    */
   pattern.simple = {
-    sequence: [ [ 1, 1, 1, 0, 0, 0, 1, 1, 1],
-                [ 0, 1, 1, 1, 0, 1, 1, 1, 0],
-                [ 0, 0, 1, 1, 1, 1, 1, 0, 0],
-                [ 0, 0, 0, 1, 1, 1, 0, 0, 0],
-                [ 0, 0, 0, 0, 1, 0, 0, 0, 0],
-              ],
+    sequence: [
+      [1, 1, 1, 0, 0, 0, 1, 1, 1],
+      [0, 1, 1, 1, 0, 1, 1, 1, 0],
+      [0, 0, 1, 1, 1, 1, 1, 0, 0],
+      [0, 0, 0, 1, 1, 1, 0, 0, 0],
+      [0, 0, 0, 0, 1, 0, 0, 0, 0],
+    ],
     delay: 2, // seconds between rounds
   }
 
   pattern.j = {
-    sequence: [ [ 1, 1, 1, 1 ],
-                [ 0, 0, 1, 0 ],
-                [ 0, 0, 1, 0 ],
-                [ 0, 0, 1, 0 ],
-                [ 0, 0, 1, 0 ],
-                [ 1, 0, 1, 0 ],
-                [ 1, 1, 1, 0 ],
-                [ 0, 1, 0, 0 ] ],
+    sequence: [
+      [1, 1, 1, 1],
+      [0, 0, 1, 0],
+      [0, 0, 1, 0],
+      [0, 0, 1, 0],
+      [0, 0, 1, 0],
+      [1, 0, 1, 0],
+      [1, 1, 1, 0],
+      [0, 1, 0, 0]
+    ],
     delay: 2,
   }
-  
+
   /** *** RING: FIRING PATTERNS **** */
   ring.patternTest = {
     payload: {
@@ -269,7 +272,7 @@ function loadTemplates() {
       viewTurret: true,
     },
   };
-    
+
   ring.linearTest = {
     payload: {
       type: projectile.homing,
@@ -330,7 +333,7 @@ function loadTemplates() {
       }
     },
   };
-  
+
   ring.spiralAlphaReverse = {
     payload: {
       type: projectile.circleBullet,
@@ -841,7 +844,7 @@ function loadTemplates() {
     },
   };
 
-  /** 
+  /**
    *  Uni Bullet Hell patterns
    *  https://www.youtube.com/watch?v=xbQ9e0zYuj4
    */
@@ -1492,6 +1495,64 @@ function loadTemplates() {
     // ],
   };
 
+  /** *** BACKGROUNDS *** */
+  background.paper = {
+    layers: [
+      {
+        layer: AM.getAsset('./img/clouds.png'),
+        offset: -2304,
+        verticalPixels: 2304,
+        parallaxMult: 1.25,
+      },
+      {
+        layer: AM.getAsset('./img/clouds.png'),
+        offset: -4608,
+        verticalPixels: 2304,
+        parallaxMult: 1.25,
+      },
+      {
+        layer: AM.getAsset('./img/notebook.png'),
+        offset: 0,
+        verticalPixels: 768,
+      },
+      {
+        layer: AM.getAsset('./img/notebook.png'),
+        offset: -768,
+        verticalPixels: 768,
+      },
+    ],
+  };
+
+  background.beach = {
+    layers: [
+    {
+      layer: AM.getAsset('./img/verticalscrollingbeach.png'),
+      offset: - 1766 + 768,
+      verticalPixels: 1766,
+    },
+    {
+      layer: AM.getAsset('./img/verticalscrollingbeach.png'),
+      offset: -1766 * 2 + 768,
+      verticalPixels: 1766,
+    },
+  ],
+  };
+
+  background.pattern = {
+    layers: [
+    {
+      layer: AM.getAsset('./img/seamless_pattern.png'),
+      offset: - 1023 + 768,
+      verticalPixels: 1023,
+    },
+    {
+      layer: AM.getAsset('./img/seamless_pattern.png'),
+      offset: -1023 * 2 + 768,
+      verticalPixels: 1023,
+    },
+  ],
+  };
+
   ship.testCrane = {
     config: {
       hitValue: 5,
@@ -1546,10 +1607,11 @@ function loadTemplates() {
   path.backAndForth = [
     [0, 25, 5],
     [180, 25, 5]
-  ]
+  ];
 
   /** *** SCENES **** */
   scene.easyPaper = {
+    background: background.pattern,
     waves: [
       // wave 1
       {
@@ -1609,29 +1671,27 @@ function loadTemplates() {
         paths: [
           path.doNothing,
         ],
-        shipManifestOverride: [
-          {
-            config: {
-              sprite: sprite.swallow.boss,
-              health: 100,
-              snapLineSpeed: 50,
-              hitValue: 2000,
-              snapLine: 250,
-              radius: 200,
+        shipManifestOverride: [{
+          config: {
+            sprite: sprite.swallow.boss,
+            health: 100,
+            snapLineSpeed: 50,
+            hitValue: 2000,
+            snapLine: 250,
+            radius: 200,
+          },
+          weapon: {
+            rotation: {
+              angle: 20,
+              frequency: 6,
             },
-            weapon: {
-              rotation: {
-                angle: 20,
-                frequency: 6,
-              },
-              firing: {
-                count: 100,
-                radius: 250,
-                loadTime: 0.005,
-              },
+            firing: {
+              count: 100,
+              radius: 250,
+              loadTime: 0.005,
             },
           },
-        ],
+        }, ],
         waitUntilEnemiesGone: true,
       },
     ],
@@ -1642,7 +1702,7 @@ function loadTemplates() {
   /** *** ALL PLAYER THINGS **** */
   projectile.player1 = {
     radius: 8,
-    
+
     init() {
       this.current.angle = toRadians(270);
     }
@@ -1661,7 +1721,7 @@ function loadTemplates() {
       spread: 0,
       count: 1,
       loadTime: 0.01,
-      cooldownTime: 0.25, 
+      cooldownTime: 0.25,
       rapidReload: true,
       viewTurret: false,
     },
@@ -1678,7 +1738,7 @@ function loadTemplates() {
       radius: 0,
       count: 1,
       loadTime: 0,
-      cooldownTime: 5, 
+      cooldownTime: 5,
       rapidReload: false,
       viewTurret: true,
     },
@@ -1694,14 +1754,13 @@ function loadTemplates() {
         y: 700,
       },
     },
-    weapon: [
-      {
+    weapon: [{
         ring: ring.player,
       },
-      {
-        ring: ring.enemyHoming,
-        offset: { x: -12, y: 44}
-      }
+      // {
+      //   ring: ring.enemyHoming,
+      //   offset: { x: -12, y: 44}
+      // }
     ],
   };
   /** End of PLAYER configuration */
@@ -1868,15 +1927,22 @@ function loadTemplates() {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
     },
-    path: [ [90,175,30]],
-    weapon: [
-      {
+    path: [
+      [90, 175, 30]
+    ],
+    weapon: [{
         ring: ring.gammaOne,
-        offset: { x: -30, y: 20}
+        offset: {
+          x: -30,
+          y: 20
+        }
       },
       {
         ring: ring.gammaOne,
-        offset: { x: 30, y: 20}
+        offset: {
+          x: 30,
+          y: 20
+        }
       }
     ],
   };
@@ -1892,11 +1958,9 @@ function loadTemplates() {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
     },
-    weapon: [
-      {
-        ring: ring.gammaTwo,
-      }
-    ],
+    weapon: [{
+      ring: ring.gammaTwo,
+    }],
   };
 
   ship.jaredTestPlane = {
@@ -1915,11 +1979,14 @@ function loadTemplates() {
       // },
       {
         ring: ring.enemyHoming,
-        offset: { x: -12, y: 30}
+        offset: {
+          x: -12,
+          y: 30
+        }
       }
     ],
   };
-  
+
   // ship.testDove.config.origin = {x: 200, y: -50};
   // this.addEntity(new Ship(this, ship.testDove));
   // ship.testDove.config.origin = {x: 500, y: -50};
@@ -1931,25 +1998,63 @@ function loadTemplates() {
   scene.jaredTestScene = {
     player: ship.jaredTestPlane,
 
-    waves: [
-      {
+    waves: [{
         numOfEnemies: 3,
         ships: new Array(3).fill(ship.jaredTestDove),
         paths: new Array(10).fill(path.straightDown),
         initialXPoints: [ // omit to evenly space enemies.
           600, 400, 700, 250, 400, 850, 450, 380, 770, 650
         ],
-        shipManifestOverride: [
-          { config: { waitOffScreen: 0 } },
-          { config: { waitOffScreen: 2 } }, 
-          { config: { waitOffScreen: 3 } },
-          { config: { waitOffScreen: 5 } },
-          { config: { waitOffScreen: 8 } },
-          { config: { waitOffScreen: 9 } },
-          { config: { waitOffScreen: 11 } },
-          { config: { waitOffScreen: 15 } },
-          { config: { waitOffScreen: 18 } },
-          { config: { waitOffScreen: 19 } },
+        shipManifestOverride: [{
+            config: {
+              waitOffScreen: 0
+            }
+          },
+          {
+            config: {
+              waitOffScreen: 2
+            }
+          },
+          {
+            config: {
+              waitOffScreen: 3
+            }
+          },
+          {
+            config: {
+              waitOffScreen: 5
+            }
+          },
+          {
+            config: {
+              waitOffScreen: 8
+            }
+          },
+          {
+            config: {
+              waitOffScreen: 9
+            }
+          },
+          {
+            config: {
+              waitOffScreen: 11
+            }
+          },
+          {
+            config: {
+              waitOffScreen: 15
+            }
+          },
+          {
+            config: {
+              waitOffScreen: 18
+            }
+          },
+          {
+            config: {
+              waitOffScreen: 19
+            }
+          },
         ],
         waitUntilEnemiesGone: true,
       },
@@ -1957,13 +2062,13 @@ function loadTemplates() {
         warpSpeed: true,
         message: {
           type: 'warning',
-          text: ['Jared Test Scene','--CUT--'],
+          text: ['Jared Test Scene', '--CUT--'],
           duration: 6,
         }
       },
     ],
   };
-  
+
   /** JaredLevel: Templates for a Level --IN PLACE ASSETS-- */
   ring.gammaOne = {
     payload: {
@@ -2019,15 +2124,22 @@ function loadTemplates() {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
     },
-    path: [ [90,175,30]],
-    weapon: [
-      {
+    path: [
+      [90, 175, 30]
+    ],
+    weapon: [{
         ring: ring.gammaOne,
-        offset: { x: -30, y: 20}
+        offset: {
+          x: -30,
+          y: 20
+        }
       },
       {
         ring: ring.gammaOne,
-        offset: { x: 30, y: 20}
+        offset: {
+          x: 30,
+          y: 20
+        }
       }
     ],
   };
@@ -2043,33 +2155,69 @@ function loadTemplates() {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
     },
-    weapon: [
-      {
-        ring: ring.gammaTwo,
-      }
-    ],
+    weapon: [{
+      ring: ring.gammaTwo,
+    }],
   };
-  
+
   scene.gamma = {
-    waves: [
-      {
+    waves: [{
         numOfEnemies: 10,
         ships: new Array(10).fill(ship.jaredTestDove),
         paths: new Array(10).fill(path.straightDown),
         initialXPoints: [ // omit to evenly space enemies.
           600, 400, 700, 250, 400, 850, 450, 380, 770, 650
         ],
-        shipManifestOverride: [
-          { config: { waitOffScreen: 0 } },
-          { config: { waitOffScreen: 2 } }, 
-          { config: { waitOffScreen: 3 } },
-          { config: { waitOffScreen: 5 } },
-          { config: { waitOffScreen: 8 } },
-          { config: { waitOffScreen: 9 } },
-          { config: { waitOffScreen: 11 } },
-          { config: { waitOffScreen: 15 } },
-          { config: { waitOffScreen: 18 } },
-          { config: { waitOffScreen: 19 } },
+        shipManifestOverride: [{
+            config: {
+              waitOffScreen: 0
+            }
+          },
+          {
+            config: {
+              waitOffScreen: 2
+            }
+          },
+          {
+            config: {
+              waitOffScreen: 3
+            }
+          },
+          {
+            config: {
+              waitOffScreen: 5
+            }
+          },
+          {
+            config: {
+              waitOffScreen: 8
+            }
+          },
+          {
+            config: {
+              waitOffScreen: 9
+            }
+          },
+          {
+            config: {
+              waitOffScreen: 11
+            }
+          },
+          {
+            config: {
+              waitOffScreen: 15
+            }
+          },
+          {
+            config: {
+              waitOffScreen: 18
+            }
+          },
+          {
+            config: {
+              waitOffScreen: 19
+            }
+          },
         ],
         waitUntilEnemiesGone: true,
       },
@@ -2080,13 +2228,36 @@ function loadTemplates() {
         initialXPoints: [ // omit to evenly space enemies.
           100, 300, 600, 120, 700, 550
         ],
-        shipManifestOverride: [
-          { config: { waitOffScreen: 5 } },
-          { config: { waitOffScreen: 9 } }, 
-          { config: { waitOffScreen: 11 } },
-          { config: { waitOffScreen: 13 } },
-          { config: { waitOffScreen: 17 } },
-          { config: { waitOffScreen: 20} },
+        shipManifestOverride: [{
+            config: {
+              waitOffScreen: 5
+            }
+          },
+          {
+            config: {
+              waitOffScreen: 9
+            }
+          },
+          {
+            config: {
+              waitOffScreen: 11
+            }
+          },
+          {
+            config: {
+              waitOffScreen: 13
+            }
+          },
+          {
+            config: {
+              waitOffScreen: 17
+            }
+          },
+          {
+            config: {
+              waitOffScreen: 20
+            }
+          },
         ],
         waitUntilEnemiesGone: true,
       },
@@ -2094,7 +2265,7 @@ function loadTemplates() {
         warpSpeed: true,
         message: {
           type: 'warning',
-          text: ['First Wave Complete','--CUT--'],
+          text: ['First Wave Complete', '--CUT--'],
           duration: 6,
         }
       },
@@ -2133,7 +2304,7 @@ function loadTemplates() {
     ],
   };
   /** end of jared level */
-  
+
 
 
 

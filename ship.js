@@ -153,23 +153,17 @@ class Ship extends Entity {
       // check all systems
       this.updateHelm();
       this.updateCollisionDetection();
-      this.updateWeapons();
+      this.weapon.update();
     }
     super.update();
   }
 
   draw() {
     this.sprite.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
-    this.drawWeapon();   
+    this.weapon.draw();
     super.draw();
   }
-
-  drawWeapon() {
-    for (let i = 0; i < this.weapon.length; i++) {
-      this.weapon[i].ring.draw();
-    }
-  }
-
+  
   /**
    * Collisions: detection checks bounds along canvas, collision with
    * player and collision with player bullets.
@@ -202,21 +196,6 @@ class Ship extends Entity {
           this.game.onEnemyDestruction(this);
         }
       }
-    }
-  }
-
-  /**
-   * Weapons: manage turret initialization, rotation, firing and cooldown.
-   */
-  updateWeapons() {
-    // assume that this.current has been updated to Ship's x,y postion
-    for (let i = 0; i < this.weapon.length; i++) {
-      let weapon = this.weapon[i];
-
-      weapon.ring.current.x = this.current.x + weapon.offset.x;
-      weapon.ring.current.y = this.current.y + weapon.offset.y;
-
-      weapon.ring.update();
     }
   }
 
@@ -280,31 +259,13 @@ class Ship extends Entity {
   }
 
   initializeWeapon(weaponManifest) {
-    this.weapon = new Array();
-    
-    if (weaponManifest instanceof Array) {
-      // process the multi-ring format
-      for (let i = 0; i < weaponManifest.length; i++) {
-        var r = new Ring(this, weaponManifest[i].ring);
-        var offset = weaponManifest[i].offset || { x: 0, y: 0 };
-
-        this.weapon.push({
-          ring: r,
-          offset: offset,
-        });
-      }
-    } else if (weaponManifest) {
-      // process the single-ring format  
-      var r = new Ring(this, weaponManifest);
-      
-      this.weapon.push({
-        ring: r,
-        offset: { x: 0, y: 0 },
-      });
-    }
+    this.weapon = new Weapon(this, weaponManifest);
   }
 
-  /** Helpers for repeated work. */
+  disarm() {
+    this.weapon = new Weapon(this);
+  }
+
   // Idle hover effect
   idle() {
     if (this.idleTrans) {
@@ -329,15 +290,6 @@ class Ship extends Entity {
     }
   }
 
-  disarm() {
-    // for (const projectile of this.weapon.bay) {
-    //   projectile.removeFromWorld = true;
-    // }
-    // bullets are not added to world until after launch, so just remove bays.
-    this.weapon.bay = [];
-  }
-
-  //
   static getInitPoint(game, manifest) {
     let x;
     let y;
@@ -357,7 +309,7 @@ class Ship extends Entity {
       y,
     };
   }
-}
+} // end of Ship class
 
 /**
  * The Player is an entity. Some of the configuration is similar
@@ -577,7 +529,7 @@ class Plane extends Ship {
       this.sprite.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
     }
 
-    this.drawWeapon();
+    this.weapon.draw();
   }
 
   /**
@@ -620,6 +572,114 @@ class Plane extends Ship {
       x,
       y,
     };
+  }
+} // end of Plane class
+
+
+/**
+ * The weapon class holds and controls a collection of rings.
+ */
+class Weapon {
+  constructor(owner, manifest) {
+    this.owner = owner;
+    this.slot = new Array();
+
+    // construct and mount the rings
+    if (manifest instanceof Array) {
+      // process the multi-ring format
+      for (let i = 0; i < manifest.length; i++) {
+        var r = new Ring(owner, manifest[i].ring);
+        var offset = manifest[i].offset || { x: 0, y: 0 };
+
+        this.slot.push({
+          ring: r,
+          offset: offset,
+        });
+      }
+    } else if (manifest) {
+      // process the single-ring format  
+      var r = new Ring(owner, manifest);
+      
+      this.slot.push({
+        ring: r,
+        offset: { x: 0, y: 0 },
+      });
+    }
+
+    // ring[0] is the primary ring for the player
+    // ring[1] is mounted to the left
+  }
+
+  /**
+   * Weapons: manage turret initialization, rotation, firing and cooldown.
+   */
+  update() {
+    // assume that this.current has been updated to Ship's x,y postion
+    const {
+      x,
+      y
+    } = this.owner.current;
+    
+    for (let i = 0; i < this.slot.length; i++) {
+      let weapon = this.slot[i];
+
+      weapon.ring.current.x = x + weapon.offset.x;
+      weapon.ring.current.y = y + weapon.offset.y;
+
+      weapon.ring.update();
+    }
+  
+    // evaluate firing decision?
+    // an enemy fires any ring that is ready
+
+    // a player fires based on key press
+    // we can map different keys for the special weapons    
+
+  }
+
+  loadHomingMissile(callback) {
+    // we can load this and keep count of how many times it has been fired
+    const maxUse = 1;
+ 
+    if (this.slot.length === 1) {
+      //mount the homing missle
+      var r = new Ring(this.owner, ring.enemyHoming);
+      var offset = { x: -12, y: 44 };
+
+      this.slot.push({
+        ring: r,
+        offset: offset,
+      });
+
+      callback();
+    }
+  }
+
+  decreaseCoolDown() {
+    // already works inside the powerUp. decrement primary ring cooldown
+    // until it reaches a minimum value
+
+  }
+
+  addTurret() {
+    // add an additional turret to the primary weapon.
+    // this will require constructing a new Ring with the new count
+    // and we can also scale down the damage value
+
+  }
+
+  onHit() {
+    // remove a turret. we could hold on to the previous ones and then swap
+    // out and call update again. or just build a new one?
+
+    // for now this can use the ship's hit box. maybe in the future use the ring's?
+
+  }
+
+  draw() {
+    for (let i = 0; i < this.slot.length; i++) {
+      this.slot[i].ring.draw();
+    }
   }
 }
 
@@ -740,17 +800,13 @@ class Ring {
 
   update() {
     const game = this.owner.game;
-    //this.status.elapsedTime += game.clockTick;
     this.status.elapsedTime += game.clockTick;
 
     // update active time counter; used for the pulse delay
     this.status.elapsedActiveTime += game.clockTick;
-    //console.log("update=" + ++this.status.count + " interval=" + game.clockTick + " elapsed=" + this.status.elapsedTime);
     
-
-    // ring center position is updated by the Ship before calling Ring.update()
-
-    // adjust angle for bay[0] if this ring is rotating
+    // ring center position is updated by the Ship before calling this method.
+    // we only need to adjust the angle for bay[0] if this ring is rotating.
     if (this.fixedRotation) {
       const doublePI = 2 * Math.PI;
       const delta = doublePI * this.fixedRotation * game.clockTick;
@@ -776,7 +832,6 @@ class Ring {
       });
       projectile.current.x = currentPosition.x;
       projectile.current.y = currentPosition.y;
-      
     }
 
     // now that all projectiles have been updated we can evaluate the next

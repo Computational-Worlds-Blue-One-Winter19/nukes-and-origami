@@ -8,6 +8,7 @@ const pattern = {};
 const projectile = {};
 const path = {};
 const scene = {};
+const background = {};
 
 /** These are the image assets declared by filename */
 AM.queueDownload('./img/bat-sheet.png');
@@ -36,6 +37,9 @@ AM.queueDownload('./img/reverse.png');
 AM.queueDownload('./img/fire-rate.png');
 AM.queueDownload('./img/space1024x3072.png');
 AM.queueDownload('./img/light_blue_plane.png');
+AM.queueDownload('./img/verticalscrollingbeach.png');
+AM.queueDownload('./img/seamless_pattern.png');
+
 
 /**
  * NukesAndOrigami extends GameEngine and adds additional functions
@@ -58,7 +62,6 @@ class NukesAndOrigami extends GameEngine {
   }
 
   initializeSceneManager() {
-    // this.sceneManager = new SceneManager(this);
     // load completed levels
     this.sceneManager.scenes.push(scene.easyPaper);
   }
@@ -370,7 +373,7 @@ AM.downloadAll(() => {
   game.start();
 
   // add background
-  game.addBackground();
+  // game.addBackground();
 
   // spawn standard ship.player
   game.spawnPlayer();
@@ -431,6 +434,13 @@ class SceneManager {
   loadScene(scene) {
     this.currentScene = scene;
     this.waves = scene.waves;
+
+    // Load new background
+    if (scene.background) {
+      for (const bg of scene.background.layers) {
+        this.game.entities.unshift(new Background(this.game, bg.layer, bg.verticalPixels, bg.parallaxMult, bg.offset));
+      }
+    }
 
     // replace current player if a new one is provided
     if (scene.player) {
@@ -654,12 +664,13 @@ AM.downloadAll(() => {
 });
 
 class Background extends Entity {
-  constructor(game, spritesheet, canvasHeight, point) {
-    super(game, point);
+  constructor(game, spritesheet, verticalPixels, parallaxMult, initOffset) {
+    super(game, { x: 0, y: initOffset });
     this.spritesheet = spritesheet;
     this.game = game;
     this.ctx = game.ctx;
-    this.canvasHeight = canvasHeight;
+    this.parallaxMult = parallaxMult || 1;
+    this.verticalPixels = verticalPixels;
   }
 
   draw() {
@@ -668,41 +679,13 @@ class Background extends Entity {
   }
 
   update() {
-    this.current.y += this.game.backgroundSpeed;
-    if (this.current.y >= this.canvasHeight) {
+    this.current.y += this.parallaxMult * this.game.backgroundSpeed;
+    if (this.current.y >= this.game.surfaceHeight) {
       // Adjust for overshoot
-      this.current.y = -this.canvasHeight + (this.current.y - this.canvasHeight);
-      console.log(this.current.y);
+      this.current.y = -this.verticalPixels * 2 + this.game.surfaceHeight + (this.current.y - this.game.surfaceHeight);
     }
   }
 }
-
-
-class Clouds extends Entity {
-  constructor(game, spritesheet, canvasHeight, point) {
-    super(game, point);
-    this.startY = point.y;
-    this.spritesheet = spritesheet;
-    this.game = game;
-    this.ctx = game.ctx;
-    this.canvasHeight = canvasHeight;
-    this.speedMultiplier = 0;
-  }
-
-  draw() {
-    this.ctx.drawImage(this.spritesheet, this.current.x, this.current.y);
-  }
-
-  update() {
-    // Multiply by 1.25 for parallax effect
-    this.current.y += 1.25 * this.game.backgroundSpeed;
-    if (this.current.y >= this.canvasHeight) {
-      // adjust for overshoot
-      this.current.y = -3840 + (this.current.y - this.canvasHeight);
-    }
-  }
-}
-
 
 class ShieldEntity extends Entity {
   constructor(game, point) {
