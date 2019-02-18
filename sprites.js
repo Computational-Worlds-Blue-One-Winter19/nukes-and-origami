@@ -159,6 +159,24 @@ function loadSpriteSheets() {
     },
   };
 
+  sprite.heartIcon = {
+    default: {
+      default: {
+        image: AM.getAsset('./img/heart.png'),
+        dimension: {
+          originX: 0,
+          originY: 0,
+          frameWidth: 100,
+          frameHeight: 83,
+          frameCount: 1,
+          timePerFrame: 30,
+          scale: 0.5,
+          flip: false,
+        },
+      },
+    },
+  };
+
   sprite.shieldIcon = {
     default: {
       default: {
@@ -166,11 +184,11 @@ function loadSpriteSheets() {
         dimension: {
           originX: 0,
           originY: 0,
-          frameWidth: 256,
-          frameHeight: 256,
+          frameWidth: 53,
+          frameHeight: 57,
           frameCount: 1,
           timePerFrame: 30,
-          scale: 0.15,
+          scale: 1,
           flip: false,
         },
       },
@@ -196,15 +214,33 @@ function loadSpriteSheets() {
   sprite.rapidFire = {
     default: {
       default: {
-        image: AM.getAsset('./img/rapid-bullet.png'),
+        image: AM.getAsset('./img/fire-rate.png'),
         dimension: {
           originX: 0,
           originY: 0,
-          frameWidth: 1280,
-          frameHeight: 360,
+          frameWidth: 57,
+          frameHeight: 50,
+          frameCount: 1,
+          timePerFrame: 60,
+          scale: 1,
+          flip: false,
+        },
+      },
+    },
+  };
+
+  sprite.reverseControls = {
+    default: {
+      default: {
+        image: AM.getAsset('./img/reverse.png'),
+        dimension: {
+          originX: 0,
+          originY: 0,
+          frameWidth: 62,
+          frameHeight: 54,
           frameCount: 1,
           timePerFrame: 30,
-          scale: 0.10,
+          scale: 1,
           flip: false,
         },
       },

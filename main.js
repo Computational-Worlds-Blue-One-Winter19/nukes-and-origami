@@ -32,6 +32,9 @@ AM.queueDownload('./img/glass_ball.png');
 AM.queueDownload('./img/laser_red.png');
 AM.queueDownload('./img/cut_laser.png');
 AM.queueDownload('./img/swallow-sheet-HIT.png');
+AM.queueDownload('./img/heart.png');
+AM.queueDownload('./img/reverse.png');
+AM.queueDownload('./img/fire-rate.png');
 AM.queueDownload('./img/space1024x3072.png');
 AM.queueDownload('./img/light_blue_plane.png');
 AM.queueDownload('./img/verticalscrollingbeach.png');
@@ -116,10 +119,9 @@ class NukesAndOrigami extends GameEngine {
     const maxRangeSquared = Math.pow(range, 2) || Infinity;
     const result = new Array();
 
-    for (let e of this.entities) {
+    for (const e of this.entities) {
       if (e instanceof Ship && !e.isPlayer) {
-
-        let distance = Math.pow(point.x - e.current.x, 2) + Math.pow(point.y - e.current.y, 2);
+        const distance = Math.pow(point.x - e.current.x, 2) + Math.pow(point.y - e.current.y, 2);
 
         if (distance < maxRangeSquared) {
           result.push({
@@ -131,14 +133,13 @@ class NukesAndOrigami extends GameEngine {
     }
 
     // return list in sorted order
-    return result.sort(function (a, b) {
+    return result.sort((a, b) => {
       if (a.distance < b.distance) {
         return -1;
-      } else if (a.distance > b.distance) {
+      } if (a.distance > b.distance) {
         return 1;
-      } else {
-        return 0;
       }
+      return 0;
     });
   }
 
@@ -295,10 +296,30 @@ class NukesAndOrigami extends GameEngine {
 
 
   addBackground() {
-    this.addEntity(new Background(this, AM.getAsset('./img/notebook.png'), point1));
-    this.addEntity(new Background(this, AM.getAsset('./img/notebook.png'), point2));
-    this.addEntity(new Clouds(this, AM.getAsset('./img/clouds.png'), cloudPoint1));
-    this.addEntity(new Clouds(this, AM.getAsset('./img/clouds.png'), cloudPoint2));
+    // Using object deconstructing to access the canvas property
+    const {
+      canvas,
+    } = this.ctx;
+    const point1 = {
+      x: 0,
+      y: 0,
+    };
+    const point2 = {
+      x: 0,
+      y: -canvas.height,
+    };
+    const cloudPoint1 = {
+      x: 0,
+      y: -2304,
+    };
+    const cloudPoint2 = {
+      x: 0,
+      y: -2304 * 2,
+    };
+    this.addEntity(new Background(this, AM.getAsset('./img/notebook.png'), canvas.height, point1));
+    this.addEntity(new Background(this, AM.getAsset('./img/notebook.png'), canvas.height, point2));
+    this.addEntity(new Clouds(this, AM.getAsset('./img/clouds.png'), canvas.height, cloudPoint1));
+    this.addEntity(new Clouds(this, AM.getAsset('./img/clouds.png'), canvas.height, cloudPoint2));
   }
 
 
@@ -314,12 +335,12 @@ class NukesAndOrigami extends GameEngine {
     spawn(this);
 
     // override onEnemyDestruction() to respawn scene
-    this.onEnemyDestruction = function() {
+    this.onEnemyDestruction = function () {
       count--;
       if (count === 0) {
         spawn(this);
       }
-    }
+    };
 
     // introduce test player
     this.player = new Plane(this, ship.jaredTestPlane);
@@ -329,14 +350,13 @@ class NukesAndOrigami extends GameEngine {
     function spawn(that) {
       count = 3;
 
-      ship.testDove.config.origin = {x: 200, y: -50};
+      ship.testDove.config.origin = { x: 200, y: -50 };
       that.addEntity(new Ship(that, ship.testDove));
-      ship.testDove.config.origin = {x: 500, y: -50};
+      ship.testDove.config.origin = { x: 500, y: -50 };
       that.addEntity(new Ship(that, ship.testDove));
-      ship.testDove.config.origin = {x: 800, y: -50};
-      ship.testDove.config.snapLine = 380
+      ship.testDove.config.origin = { x: 800, y: -50 };
+      ship.testDove.config.snapLine = 380;
       that.addEntity(new Ship(that, ship.testDove));
-
     }
   } // end test scene
 }
@@ -362,13 +382,13 @@ AM.downloadAll(() => {
   initIntroMessage(game);
 
   // view simple test scene; defined above
-  //game.testScene();
+  // game.testScene();
 
   // view single scene with SceneManager
-  //game.sceneManager.scenes.push(scene.jaredTestScene);
+  // game.sceneManager.scenes.push(scene.jaredTestScene);
 
   // run prototype level
-  //game.spawnEnemies();
+  // game.spawnEnemies();
 
   console.log('All Done!');
   canvas.focus();
@@ -417,12 +437,12 @@ class SceneManager {
 
     // Load new background
     if (scene.background) {
-      for (let bg of scene.background.layers) {
+      for (const bg of scene.background.layers) {
         this.game.entities.unshift(new Background(this.game, bg.layer, bg.verticalPixels, bg.parallaxMult, bg.offset));
       }
     }
 
-    //replace current player if a new one is provided
+    // replace current player if a new one is provided
     if (scene.player) {
       if (this.game.player) {
         this.game.player.removeFromWorld = true;
@@ -447,7 +467,8 @@ class SceneManager {
       this.message = wave.message;
     }
 
-    let spacing, locationCounter;
+    let spacing; let
+      locationCounter;
     // More than one enemy?
     if (wave.numOfEnemies > 1) {
       // Space evenly
@@ -461,7 +482,7 @@ class SceneManager {
     // Create the ships.
     for (let i = 0; i < wave.numOfEnemies; i++) {
       // Make shallow copies to not modify the objects.js defaults
-      let manifestCopy = Object.assign({}, wave.ships[i]);
+      const manifestCopy = Object.assign({}, wave.ships[i]);
       // If path was overridden, put that in the manifestCopy
       manifestCopy.path = wave.paths ? wave.paths[i] : 0;
       if (wave.shipManifestOverride) {
@@ -493,7 +514,7 @@ class SceneManager {
 
       // The ship constructor **should** copy data; try without Object.assign() here
       // let ship = new Ship(this.game, Object.assign({}, manifestCopy));
-      let ship = new Ship(this.game, manifestCopy);
+      const ship = new Ship(this.game, manifestCopy);
 
       // Was the location overriden?
       if (wave.initialXPoints) {
@@ -513,10 +534,10 @@ class SceneManager {
   // Called when anything other than a projectile is removed from the gameengine.
   // Used for keeping track of if waves
   shipRemoved(entity) {
-    for (let i = 0; i < this.entitiesInWave.length; i++) {
-      if (entity == this.entitiesInWave[i]) {
+    for (let i = 0; i < this.entitiesInWave.length; i += 1) {
+      if (entity === this.entitiesInWave[i]) {
         this.entitiesInWave.splice(i, 1);
-        i--;
+        i -= 1;
       }
     }
   }
@@ -534,7 +555,7 @@ class SceneManager {
     // No scene? load the next one
     if (!this.currentScene) {
       // Hang here if we have no more scenes
-      if (!(this.scenes.length == 0)) {
+      if (!(this.scenes.length === 0)) {
         this.loadScene(this.scenes.shift());
       }
     } else {
@@ -614,14 +635,41 @@ class SceneManager {
   }
 }
 
+/** Call AssetManager to download assets and launch the game. */
+AM.downloadAll(() => {
+  const canvas = document.getElementById('gameWorld');
+  const ctx = canvas.getContext('2d');
+
+  loadSpriteSheets();
+  loadTemplates();
+
+  const game = new NukesAndOrigami();
+  game.init(ctx);
+  game.start();
+
+  // add background and player
+  game.addBackground();
+  game.spawnPlayer();
+
+  // view test stage
+  // game.testScene();
+
+  // run prototype level
+  // game.spawnEnemies();
+
+  initIntroMessage(game);
+
+  console.log('All Done!');
+  canvas.focus();
+});
 
 class Background extends Entity {
   constructor(game, spritesheet, verticalPixels, parallaxMult, initOffset) {
-    super(game, {x:0, y:initOffset});
+    super(game, { x: 0, y: initOffset });
     this.spritesheet = spritesheet;
     this.game = game;
     this.ctx = game.ctx;
-    this.parallaxMult = parallaxMult ? parallaxMult : 1;
+    this.parallaxMult = parallaxMult || 1;
     this.verticalPixels = verticalPixels;
   }
 
@@ -679,7 +727,7 @@ class ShieldEntity extends Entity {
    */
   removeShield() {
     const {
-      shield
+      shield,
     } = this.game.player;
 
     const shieldHit = shield.entities.pop();
