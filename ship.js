@@ -217,7 +217,6 @@ class Ship extends Entity {
         e.onHit(this); //notify projectile
         this.health -= e.config.hitValue;
         this.sprite = this.hitSprite;
-        console.log("HP: " + this.health);
         this.timeSinceHit += this.game.clockTick;
         ///if (this.health <= 0) {
           //this.disarm();
