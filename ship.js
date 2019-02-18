@@ -119,7 +119,8 @@ class Ship extends Entity {
   constructor(game, manifest) {
     super(game, Ship.getInitPoint(game, manifest));
     this.sprite = new Sprite(manifest.config.sprite.default);
-
+    this.defaultSprite = new Sprite(manifest.config.sprite.default);
+    this.hitSprite = new Sprite(manifest.config.sprite.hit);
     // store class constants in config
     this.config = Object.assign({}, manifest.config);
     this.config.radius = this.config.radius || 50;
@@ -133,6 +134,7 @@ class Ship extends Entity {
     this.idleTrans = false;
     this.idleCount = 0;
     this.lastFired = 0;
+    this.timeSinceHit = 0;
     this.health = manifest.config.health;
 
     // initialize any included weapon and path
@@ -154,6 +156,14 @@ class Ship extends Entity {
       this.updateHelm();
       this.updateCollisionDetection();
       this.weapon.update();
+    }
+    //sprite change when hit:
+    if(this.timeSinceHit != 0)  {
+      this.timeSinceHit += this.game.clockTick;
+    }
+    if(this.timeSinceHit >= 0.1) {
+      this.sprite = this.defaultSprite;
+      this.timeSinceHit = 0;
     }
     super.update();
   }
@@ -189,7 +199,8 @@ class Ship extends Entity {
       if (e instanceof Projectile && e.playerShot && this.isCollided(e)) {
         e.onHit(this); //notify projectile
         this.health -= e.config.hitValue;
-
+        this.sprite = this.hitSprite;
+        this.timeSinceHit += this.game.clockTick;
         if (this.health <= 0) {
           this.disarm();
           this.removeFromWorld = true;
