@@ -319,6 +319,10 @@ class Ship extends Entity {
     }
   }
 
+  isDead() {
+    return this.health <= 0;
+  }
+
   static getInitPoint(game, manifest) {
     let x;
     let y;
@@ -682,13 +686,14 @@ class Weapon {
     // we can map different keys for the special weapons
   }
 
-  loadHomingMissile(callback) {
+  loadHomingMissile(type, callback) {
     // we can load this and keep count of how many times it has been fired
     const maxUse = 1;
 
     if (this.slot.length === 1) {
       // mount the homing missle
-      const r = new Ring(this.owner, ring.enemyHoming);
+      // const r = new Ring(this.owner, ring.enemyHoming);
+      const r = new Ring(this.owner, type);
       const offset = { x: -12, y: 44 };
 
       this.slot.push({

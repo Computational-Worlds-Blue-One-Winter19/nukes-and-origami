@@ -175,7 +175,7 @@ class HomingMissile extends PowerUp {
             entity.weapon.hasMissile = true;
             entity.weapon.inventory.push(() => {
               // Pushing the function that will be used to activate the powerUp by the player
-              entity.weapon.loadHomingMissile(() => {
+              entity.weapon.loadHomingMissile(ring.enemyHoming, () => {
                 // send a callback to run this function if loadHomingMissle() is successful
                 removeItem('hommingMissle', 'weapon');
 
@@ -189,6 +189,46 @@ class HomingMissile extends PowerUp {
     };
   }
 }
+
+class ChainGun extends PowerUp {
+  constructor(dropRate) {
+    super(dropRate);
+
+    // Will be initial
+    this.entity = null;
+
+    this.manifest = {
+      owner: null,
+      angle: Math.PI / 2,
+      payload: {
+        type: {
+          sprite: sprite.chainGun.default,
+          radius: 30,
+        },
+        speed: 60,
+        powerUp(entity) {
+          // this.entity = entity;
+          // this.activate();
+          if (!entity.weapon.hasMissile) {
+            addItem('./img/chaingun.png', 'chainGun', 'weapon');
+            entity.weapon.hasMissile = true;
+            entity.weapon.inventory.push(() => {
+              // Pushing the function that will be used to activate the powerUp by the player
+              entity.weapon.loadHomingMissile(ring.chainGun, () => {
+                // send a callback to run this function if loadHomingMissle() is successful
+                removeItem('chainGun', 'weapon');
+
+                // Start the timer
+                startTimer(20, entity.weapon.removeHomingMissile, entity.weapon);
+              });
+            });
+          }
+        },
+      },
+    };
+  }
+}
+
 
 class InvertedControls extends PowerUp {
   constructor(dropRate) {
@@ -223,7 +263,7 @@ function getRandomPowerUp(weapon) {
   // No need to drop more missiles if the player already has one loaded, easy to modify if we decide to drop them
   // down the road
   if (!weapon.hasMissile) {
-    POWERUPS.push(new InvertedControls(100));
+    POWERUPS.push(new ChainGun(100));
   }
 
   return POWERUPS[Math.floor(Math.random() * POWERUPS.length)];

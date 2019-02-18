@@ -124,7 +124,8 @@ class NukesAndOrigami extends GameEngine {
     const result = new Array();
 
     for (const e of this.entities) {
-      if (e instanceof Ship && !e.isPlayer) {
+      if (e instanceof Ship && !e.isPlayer && !e.isDead()) {
+        console.log(`is Dead ${e.isDead()}`);
         const distance = Math.pow(point.x - e.current.x, 2) + Math.pow(point.y - e.current.y, 2);
 
         if (distance < maxRangeSquared) {
@@ -441,11 +442,11 @@ class SceneManager {
     this.waves = scene.waves;
 
     // Load new background
-    if (scene.background) {
-      for (const bg of scene.background.layers) {
-        this.game.entities.unshift(new Background(this.game, bg.layer, bg.verticalPixels, bg.parallaxMult, bg.offset));
-      }
-    }
+    // if (scene.background) {
+    //   for (const bg of scene.background.layers) {
+    //     this.game.entities.unshift(new Background(this.game, bg.layer, bg.verticalPixels, bg.parallaxMult, bg.offset));
+    //   }
+    // }
 
     // replace current player if a new one is provided
     if (scene.player) {
