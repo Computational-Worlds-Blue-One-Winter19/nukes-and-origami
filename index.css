@@ -83,6 +83,12 @@ h2 {
     width: 40px;
 }
 
+/* CSS for the header weapon and timer container */
+.title {
+    display: flex;
+    align-items: center;
+}
+
 /* Add a blue border to the first weapon in the players inventory class */
 #weapon img:first-child {
     box-shadow: 0 4px 5px -3px rgba(81, 203, 238, 1);
@@ -216,3 +222,50 @@ div.key.icon > span {
 center > h4 {
      margin-top: 50px;
 }
+
+/* Timer Related CSS */
+  #countdown {
+    position: relative;
+    /* margin: auto; */
+    /* margin-top: 100px; */
+    padding-left: 15px;
+    height: 40px;
+    width: 40px;
+    text-align: center;
+  }
+  
+  #countdown-number {
+    color: black;
+    display: inline-block;
+    line-height: 40px;
+  }
+  
+  svg {
+    /* At the start we don't want to show the circle for the timer */
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 40px;
+    height: 40px;
+    transform: rotateY(-180deg) rotateZ(-90deg);
+  }
+  
+  svg circle {
+    stroke-dasharray: 113px;
+    stroke-dashoffset: 0px;
+    stroke-linecap: round;
+    stroke-width: 2px;
+    stroke: black;
+    fill: none;
+    animation: countdown 5s linear infinite forwards;
+  }
+  
+  @keyframes countdown {
+    from {
+      stroke-dashoffset: 0px;
+    }
+    to {
+      stroke-dashoffset: 113px;
+    }
+  }

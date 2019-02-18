@@ -178,6 +178,9 @@ class HomingMissile extends PowerUp {
               entity.weapon.loadHomingMissile(() => {
                 // send a callback to run this function if loadHomingMissle() is successful
                 removeItem('hommingMissle', 'weapon');
+
+                // Start the timer
+                startTimer(5, entity.weapon.removeHomingMissile, entity.weapon);
               });
             });
           }

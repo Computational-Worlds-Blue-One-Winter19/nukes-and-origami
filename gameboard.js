@@ -186,7 +186,6 @@ function addPowerUp(src, type) {
 }
 
 function addItem(src, type, container) {
-  console.log('Inside the addItem');
   const img = new Image();
   img.src = src;
   img.className = type;
@@ -223,4 +222,40 @@ function removeItem(type, container) {
   if (containerElement.length) {
     parent.removeChild(containerElement[containerElement.length - 1]);
   }
+}
+
+/**
+ * Starts a timer that will last the given time
+ * @param {} time
+ * @param {*} callBack
+ * @param {*} weapon
+ */
+function startTimer(time, callBack, weapon) {
+  // Get the svg element
+  const circleElement = document.getElementById('circle');
+  circleElement.style.display = 'block';
+
+  // Get the element that will show the numbers
+  const countdownNumberElement = document.getElementById('countdown-number');
+  let countdown = time;
+
+  countdownNumberElement.textContent = countdown;
+
+  let timer = null;
+
+  // When we active the callBack we'll need to remove the time as well
+  const finished = () => {
+    circleElement.style.display = 'none';
+    countdownNumberElement.textContent = '';
+    // Stop the intercal from running
+    clearInterval(timer);
+    callBack(weapon);
+  };
+
+  // Sets the number being shown in the timer
+  timer = setInterval(() => {
+    countdown = --countdown <= 0 ? finished() : countdown;
+
+    countdownNumberElement.textContent = countdown;
+  }, 1000);
 }

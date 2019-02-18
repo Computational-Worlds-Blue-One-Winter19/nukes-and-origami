@@ -638,7 +638,6 @@ class Weapon {
 
     // Check if the player is activating a weapon from their inventory
     if (this.owner.game.keysDown.KeyA) {
-      console.log('Activating weapon');
       // Get the first item in the inventory
       const weaponActivation = this.inventory.pop();
       if (weaponActivation) {
@@ -671,6 +670,16 @@ class Weapon {
     }
   }
 
+  /**
+   * Removes the homing missile from the given weapon
+   * @param {Weapon} weapon The weapon whose homing missile will be removed
+   */
+  removeHomingMissile(weapon) {
+    console.log('Removing missiel');
+    weapon.slot.pop();
+    weapon.hasMissile = false;
+  }
+
   decreaseCoolDown() {
     // already works inside the powerUp. decrement primary ring cooldown
     // until it reaches a minimum value
@@ -689,10 +698,6 @@ class Weapon {
     // out and call update again. or just build a new one?
 
     // for now this can use the ship's hit box. maybe in the future use the ring's?
-
-  }
-
-  activateWeapon() {
 
   }
 

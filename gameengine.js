@@ -99,7 +99,6 @@ class GameEngine {
         // toggle outlines for debugging
         that.showOutlines = !that.showOutlines;
       } else {
-        console.log(e.code);
         that.keysDown[e.code] = true;
         e.preventDefault();
       }

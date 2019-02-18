@@ -93,7 +93,7 @@ class NukesAndOrigami extends GameEngine {
 
     // Generate a powerUp
     const powerUp = getRandomPowerUp(this.player.weapon);
-    if (powerUp.shouldDrop()) {
+    if (powerUp && powerUp.shouldDrop()) {
       this.addEntity(new Projectile(this, {
         origin: {
           x: current.x,
