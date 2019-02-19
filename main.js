@@ -387,7 +387,7 @@ AM.downloadAll(() => {
   initIntroMessage(game);
 
   // view simple test scene; defined above
-  game.testScene();
+  // game.testScene();
 
   // view single scene with SceneManager
   // game.sceneManager.scenes.push(scene.jaredTestScene);
