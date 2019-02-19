@@ -1536,6 +1536,34 @@ function loadTemplates() {
     ],
   };
 
+  background.desert = {
+    layers: [{
+        layer: AM.getAsset('./img/verticalscrollingdesert.png'),
+        offset: -1766,
+        verticalPixels: 1766,
+      },
+      {
+        layer: AM.getAsset('./img/verticalscrollingdesert.png'),
+        offset: -1766 * 2,
+        verticalPixels: 1766,
+      },
+    ],
+  };
+
+  background.trees = {
+    layers: [{
+        layer: AM.getAsset('./img/verticalscrollingtrees.png'),
+        offset: -1766,
+        verticalPixels: 1766,
+      },
+      {
+        layer: AM.getAsset('./img/verticalscrollingtrees.png'),
+        offset: -1766 * 2,
+        verticalPixels: 1766,
+      },
+    ],
+  };
+
   background.pattern = {
     layers: [{
         layer: AM.getAsset('./img/seamless_pattern.png'),
@@ -1644,7 +1672,7 @@ function loadTemplates() {
           },
           {
             id: 'loadBackground',
-            bg: background.pattern,
+            bg: background.trees,
           },
           {
             id: 'decelerateFromWarpSpeed',
