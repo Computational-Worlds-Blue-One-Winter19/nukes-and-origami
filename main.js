@@ -69,7 +69,7 @@ class NukesAndOrigami extends GameEngine {
 
   initializeSceneManager() {
     // load completed levels
-    this.sceneManager.scenes.push(scene.oneWaveTest);
+    // this.sceneManager.scenes.push(scene.oneWaveTest);
     this.sceneManager.scenes.push(scene.easyPaper);
   }
 
@@ -387,6 +387,8 @@ class SceneManager {
 
     this.leftSpawnLimit = 100;
     this.rightSpawnLimit = 1024 - 100;
+    this.upperSpawnLimit = 100;
+    this.lowerSpawnLimit = 768 - 350;
     this.timeBetweenWaves = 1;
 
     this.waveTimer = 0;
@@ -449,28 +451,41 @@ class SceneManager {
 
   // Loads all enemies as specified in the wave.
   loadEnemies(wave) {
-    let spacing;
-    let locationCounter;
+    let horizontalSpacing;
+    let verticalSpacing;
+    let horizontalLocationCounter;
+    let verticalLocationCounter;
     // More than one enemy?
     if (wave.numOfEnemies > 1) {
       // Space evenly
-      spacing = ((this.rightSpawnLimit - this.leftSpawnLimit) / (wave.numOfEnemies - 1));
-      locationCounter = this.leftSpawnLimit;
+      horizontalSpacing = ((this.rightSpawnLimit - this.leftSpawnLimit) / (wave.numOfEnemies - 1));
+      horizontalLocationCounter = this.leftSpawnLimit;
+      verticalSpacing = ((this.lowerSpawnLimit - this.upperSpawnLimit) / (wave.numOfEnemies - 1));
+      verticalLocationCounter = this.upperSpawnLimit;
     } else {
       // Put the single enemy in the middle
-      locationCounter = this.leftSpawnLimit + (this.rightSpawnLimit - this.leftSpawnLimit) / 2;
+      horizontalLocationCounter = this.leftSpawnLimit + (this.rightSpawnLimit - this.leftSpawnLimit) / 2;
+      verticalLocationCounter = this.upperSpawnLimit + (this.lowerSpawnLimit - this.upperSpawnLimit) / 2;
     }
 
     // Create the ships.
     for (let i = 0; i < wave.numOfEnemies; i++) {
       // Make shallow copies to not modify the objects.js defaults
-      const manifestCopy = Object.assign({}, wave.ships[i]);
       // If path was overridden, put that in the manifestCopy
-      manifestCopy.path = wave.paths ? wave.paths[i] : 0;
+      let manifestCopy = JSON.parse(JSON.stringify(wave.ships[i]));
+      manifestCopy.path = wave.paths ? JSON.parse(JSON.stringify(wave.paths[i])) : 0;
+      Object.assign(manifestCopy.config.sprite, wave.ships[i].config.sprite);
+      console.log(manifestCopy.config.sprite)
+
       if (wave.shipManifestOverride) {
         // do a recursive merge
         if (wave.shipManifestOverride[i].config) {
           Object.assign(manifestCopy.config, wave.shipManifestOverride[i].config);
+          if (wave.shipManifestOverride[i].config.sprite) {
+            Object.assign(manifestCopy.config.sprite, wave.shipManifestOverride[i].config.sprite);
+          } else {
+            Object.assign(manifestCopy.config.sprite, wave.ships[i].config.sprite);
+          }
         }
         if (wave.shipManifestOverride[i].weapon) {
           if (wave.shipManifestOverride[i].weapon.firing) {
@@ -501,10 +516,21 @@ class SceneManager {
       // Was the location overriden?
       if (wave.initialXPoints) {
         ship.current.x = wave.initialXPoints[i];
-      } else {
-        ship.current.x = locationCounter;
-        locationCounter += spacing;
+      } else if (ship.initialDirection === 'north'
+        || ship.initialDirection === 'south') {
+          ship.current.x = horizontalLocationCounter;
+          horizontalLocationCounter += horizontalSpacing;
       }
+
+
+      if (wave.initialYPoints) {
+        ship.current.y = wave.initialYPoints[i];
+      } else if (ship.initialDirection === 'west'
+        || ship.initialDirection === 'east') {
+          ship.current.y = verticalLocationCounter;
+          verticalLocationCounter += verticalSpacing;
+      }
+
 
       this.game.addEntity(ship);
       if (wave.waitUntilEnemiesGone) {
@@ -589,7 +615,7 @@ class SceneManager {
         this.wave = false;
         this.waveTimer = 0;
         // Also advance choreography if we have it.
-        if (this.choreography[0]) {
+        if (this.choreography) {
           this.choreography.shift();
         }
       }
