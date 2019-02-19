@@ -64,6 +64,7 @@ class NukesAndOrigami extends GameEngine {
   initializeSceneManager() {
     // load completed levels
     this.sceneManager.scenes.push(scene.easyPaper);
+    this.sceneManager.scenes.push(scene.jaredTestScene);
   }
 
   // Override
@@ -135,7 +136,8 @@ class NukesAndOrigami extends GameEngine {
     return result.sort((a, b) => {
       if (a.distance < b.distance) {
         return -1;
-      } if (a.distance > b.distance) {
+      }
+      if (a.distance > b.distance) {
         return 1;
       }
       return 0;
@@ -294,32 +296,32 @@ class NukesAndOrigami extends GameEngine {
   }
 
 
-  addBackground() {
-    // Using object deconstructing to access the canvas property
-    const {
-      canvas,
-    } = this.ctx;
-    const point1 = {
-      x: 0,
-      y: 0,
-    };
-    const point2 = {
-      x: 0,
-      y: -canvas.height,
-    };
-    const cloudPoint1 = {
-      x: 0,
-      y: -2304,
-    };
-    const cloudPoint2 = {
-      x: 0,
-      y: -2304 * 2,
-    };
-    this.addEntity(new Background(this, AM.getAsset('./img/notebook.png'), canvas.height, point1));
-    this.addEntity(new Background(this, AM.getAsset('./img/notebook.png'), canvas.height, point2));
-    this.addEntity(new Clouds(this, AM.getAsset('./img/clouds.png'), canvas.height, cloudPoint1));
-    this.addEntity(new Clouds(this, AM.getAsset('./img/clouds.png'), canvas.height, cloudPoint2));
-  }
+  // addBackground() {
+  //   // Using object deconstructing to access the canvas property
+  //   const {
+  //     canvas,
+  //   } = this.ctx;
+  //   const point1 = {
+  //     x: 0,
+  //     y: 0,
+  //   };
+  //   const point2 = {
+  //     x: 0,
+  //     y: -canvas.height,
+  //   };
+  //   const cloudPoint1 = {
+  //     x: 0,
+  //     y: -2304,
+  //   };
+  //   const cloudPoint2 = {
+  //     x: 0,
+  //     y: -2304 * 2,
+  //   };
+  //   this.addEntity(new Background(this, AM.getAsset('./img/notebook.png'), canvas.height, point1));
+  //   this.addEntity(new Background(this, AM.getAsset('./img/notebook.png'), canvas.height, point2));
+  //   this.addEntity(new Clouds(this, AM.getAsset('./img/clouds.png'), canvas.height, cloudPoint1));
+  //   this.addEntity(new Clouds(this, AM.getAsset('./img/clouds.png'), canvas.height, cloudPoint2));
+  // }
 
 
   /** Test scene: place something quick and dirty. I have switched to my own test scene
@@ -334,7 +336,7 @@ class NukesAndOrigami extends GameEngine {
     spawn(this);
 
     // override onEnemyDestruction() to respawn scene
-    this.onEnemyDestruction = function () {
+    this.onEnemyDestruction = function() {
       count--;
       if (count === 0) {
         spawn(this);
@@ -349,11 +351,20 @@ class NukesAndOrigami extends GameEngine {
     function spawn(that) {
       count = 3;
 
-      ship.testDove.config.origin = { x: 200, y: -50 };
+      ship.testDove.config.origin = {
+        x: 200,
+        y: -50
+      };
       that.addEntity(new Ship(that, ship.testDove));
-      ship.testDove.config.origin = { x: 500, y: -50 };
+      ship.testDove.config.origin = {
+        x: 500,
+        y: -50
+      };
       that.addEntity(new Ship(that, ship.testDove));
-      ship.testDove.config.origin = { x: 800, y: -50 };
+      ship.testDove.config.origin = {
+        x: 800,
+        y: -50
+      };
       ship.testDove.config.snapLine = 380;
       that.addEntity(new Ship(that, ship.testDove));
     }
@@ -415,7 +426,9 @@ class SceneManager {
     this.accelerationAmount = 6;
     this.decelerationAmount = 6;
 
-    // Flags for cutscenes/automatic things
+    // Used for keeping track of animation sequences (e.g. going to warp speed)
+    this.cutsceneStack = [];
+
     this.atDefaultSpeed = true;
     this.acceleratingToWarpSpeed = false;
     this.atWarpSpeed = false;
@@ -424,6 +437,13 @@ class SceneManager {
     this.waitUntilAtDefaultSpeed = false;
 
     this.scenes = new Array();
+  }
+
+  // Do a cool animation into the new background.
+  loadBackground(background) {
+    for (const bg of background.layers) {
+      this.game.entities.unshift(new Background(this.game, bg.layer, bg.verticalPixels, bg.parallaxMult, bg.offset));
+    }
   }
 
   // In the future, handle the changing out of assets here like changing
@@ -436,9 +456,7 @@ class SceneManager {
 
     // Load new background
     if (scene.background) {
-      for (const bg of scene.background.layers) {
-        this.game.entities.unshift(new Background(this.game, bg.layer, bg.verticalPixels, bg.parallaxMult, bg.offset));
-      }
+      this.loadBackground(scene.background);
     }
 
     // replace current player if a new one is provided
@@ -452,22 +470,10 @@ class SceneManager {
     }
   }
 
-  // In the future, handle any wave specific activity here. This could be doing
-  // something special for the boss or a special enemy, for example.
-  loadWave(wave) {
-    this.wave = wave;
-    if (wave.warpSpeed) {
-      this.acceleratingToWarpSpeed = true;
-      this.atDefaultSpeed = false;
-      this.waitUntilAtDefaultSpeed = true;
-    }
-
-    if (wave.message) {
-      this.message = wave.message;
-    }
-
-    let spacing; let
-      locationCounter;
+  // Loads all enemies as specified in the wave.
+  loadEnemies(wave) {
+    let spacing;
+    let locationCounter;
     // More than one enemy?
     if (wave.numOfEnemies > 1) {
       // Space evenly
@@ -530,6 +536,19 @@ class SceneManager {
     }
   }
 
+  // In the future, handle any wave specific activity here. This could be doing
+  // something special for the boss or a special enemy, for example.
+  loadWave(wave) {
+    this.wave = wave;
+    // Set up cutscene stack for this wave.
+    if (wave.choreography) {
+      this.choreography = wave.choreography;
+    } else {
+      // No choreography specified? default is to just load enemies.
+      this.loadEnemies(wave);
+    }
+  }
+
   // Called when anything other than a projectile is removed from the gameengine.
   // Used for keeping track of if waves
   shipRemoved(entity) {
@@ -571,65 +590,107 @@ class SceneManager {
           }
         }
       } else {
-        // We are inside a wave
+        // A wave is currently happening.
 
-        // Are we waiting for enemies to be killed/go off screen before we
-        // continue?
-        if (this.wave.waitUntilEnemiesGone) {
-          if (this.entitiesInWave.length == 0) {
-            this.wave = false;
-            this.waveTimer = 0;
-          }
+        // Is this wave choreographed? Handle that.
+        if (this.choreography) {
+          this.choreographyUpdate();
+        } else if (this.wave) {
+          // A wave is happening that is not choreographed, handle it normally
+          this.handleEnemyWaveCompletion();
         }
+      }
+    }
+  }
 
-        // Is there a message to display to the player?
-        if (this.message) {
-          this.showingmessage = true;
-          showMessage(this.message.text[0], this.message.text[1]);
-          this.waveTimer = 0;
-          this.waitTime = this.message.duration;
-          this.message = 0;
+  handleEnemyWaveCompletion() {
+    // Are we waiting for enemies to be killed/go off screen before we
+    // continue?
+    if (this.wave.waitUntilEnemiesGone) {
+      if (this.entitiesInWave.length == 0) {
+        this.wave = false;
+        this.waveTimer = 0;
+        // Also advance choreography
+        if (this.choreography[0].id === 'spawnEnemies') {
+          this.choreography.shift();
         }
+      }
+    }
+  }
 
-        // Waiting for a period of time (for right now only for messages)
-        if (this.waitTime) {
-          if (this.waveTimer > this.waitTime) {
-            this.waitTime = 0;
+  // A choreographed wave calls this method to update.
+  choreographyUpdate() {
+    // Is choreography over?
+    if (this.choreography.length == 0) {
+      this.wave = false;
+      this.waveTimer = 0;
+      return;
+    }
+
+    let currentChor = this.choreography[0];
+
+    // Handle all possible choreography cases here. This will get long.
+    switch (currentChor.id) {
+
+      case 'accelerateToWarpspeed':
+        this.game.backgroundSpeed += this.accelerationAmount * this.game.clockTick;
+        if (this.game.backgroundSpeed >= this.game.warpBackgroundSpeed) {
+          this.game.backgroundSpeed = this.game.warpBackgroundSpeed;
+          this.choreography.shift();
+        }
+        break;
+
+      case 'decelerateFromWarpSpeed':
+        this.game.backgroundSpeed -= this.decelerationAmount * this.game.clockTick;
+        if (this.game.backgroundSpeed <= this.game.defaultBackgroundSpeed) {
+          this.game.backgroundSpeed = this.game.defaultBackgroundSpeed;
+          this.choreography.shift();
+        }
+        break;
+
+      case 'showMessage':
+        // Initialize the message, then count down from duration if specified
+        if (currentChor.init) {
+          if (this.waveTimer > currentChor.duration) {
             hideMessage('message-overlay');
-            // For now, decelerate from warp speed here
-            this.deceleratingFromWarpSpeed = true;
-            this.atWarpSpeed = false;
+            this.choreography.shift();
+          }
+        } else {
+          showMessage(currentChor.text[0], currentChor.text[1]);
+          // If duration isn't specified, just move on
+          if (!currentChor.duration) {
+            this.choreography.shift();
+          } else {
+            // Else start countdown
+            this.waveTimer = 0;
+            currentChor.init = true;
           }
         }
+        break;
 
-        // Are we waiting for a warp speed animation to complete?
-        if (this.waitUntilAtDefaultSpeed) {
-          if (this.atDefaultSpeed) {
-            this.waitUntilAtDefaultSpeed = false;
-            // next wave
-            this.wave = false;
+      case 'wait':
+        if (currentChor.init) {
+          if (this.waveTimer >= currentChor.duration) {
+            this.choreography.shift();
           }
+        } else {
+          this.waveTimer = 0;
+          currentChor.init = true;
         }
-      }
-    }
-    // Handle accelerating to/from warpspeed
-    if (this.acceleratingToWarpSpeed) {
-      this.game.backgroundSpeed += this.accelerationAmount * this.game.clockTick;
-      if (this.game.backgroundSpeed >= this.game.warpBackgroundSpeed) {
-        this.game.backgroundSpeed = this.game.warpBackgroundSpeed;
-        this.acceleratingToWarpSpeed = false;
-        this.atWarpSpeed = true;
-      }
-    }
+        break;
 
-    if (this.deceleratingFromWarpSpeed) {
-      this.game.backgroundSpeed -= this.decelerationAmount * this.game.clockTick;
-      if (this.game.backgroundSpeed <= this.game.defaultBackgroundSpeed) {
-        this.game.backgroundSpeed = this.game.defaultBackgroundSpeed;
-        this.deceleratingFromWarpSpeed = false;
-        this.atWarpSpeed = false;
-        this.atDefaultSpeed = true;
-      }
+      case 'hideMessage':
+        hideMessage('message-overlay');
+        this.choreography.shift();
+        break;
+
+      case 'spawnEnemies':
+        // only spawn enemies once
+        if (!currentChor.init) {
+          this.loadEnemies(this.wave);
+          currentChor.init = true;
+        }
+        break;
     }
   }
 }
@@ -647,7 +708,7 @@ AM.downloadAll(() => {
   game.start();
 
   // add background and player
-  game.addBackground();
+  // game.addBackground();
   game.spawnPlayer();
 
   // view test stage
@@ -664,7 +725,10 @@ AM.downloadAll(() => {
 
 class Background extends Entity {
   constructor(game, spritesheet, verticalPixels, parallaxMult, initOffset) {
-    super(game, { x: 0, y: initOffset });
+    super(game, {
+      x: 0,
+      y: initOffset
+    });
     this.spritesheet = spritesheet;
     this.game = game;
     this.ctx = game.ctx;

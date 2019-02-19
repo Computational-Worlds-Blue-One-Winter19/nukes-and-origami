@@ -1497,8 +1497,7 @@ function loadTemplates() {
 
   /** *** BACKGROUNDS *** */
   background.paper = {
-    layers: [
-      {
+    layers: [{
         layer: AM.getAsset('./img/clouds.png'),
         offset: -2304,
         verticalPixels: 2304,
@@ -1524,33 +1523,31 @@ function loadTemplates() {
   };
 
   background.beach = {
-    layers: [
-    {
-      layer: AM.getAsset('./img/verticalscrollingbeach.png'),
-      offset: - 1766 + 768,
-      verticalPixels: 1766,
-    },
-    {
-      layer: AM.getAsset('./img/verticalscrollingbeach.png'),
-      offset: -1766 * 2 + 768,
-      verticalPixels: 1766,
-    },
-  ],
+    layers: [{
+        layer: AM.getAsset('./img/verticalscrollingbeach.png'),
+        offset: -1766 + 768,
+        verticalPixels: 1766,
+      },
+      {
+        layer: AM.getAsset('./img/verticalscrollingbeach.png'),
+        offset: -1766 * 2 + 768,
+        verticalPixels: 1766,
+      },
+    ],
   };
 
   background.pattern = {
-    layers: [
-    {
-      layer: AM.getAsset('./img/seamless_pattern.png'),
-      offset: - 1023 + 768,
-      verticalPixels: 1023,
-    },
-    {
-      layer: AM.getAsset('./img/seamless_pattern.png'),
-      offset: -1023 * 2 + 768,
-      verticalPixels: 1023,
-    },
-  ],
+    layers: [{
+        layer: AM.getAsset('./img/seamless_pattern.png'),
+        offset: -1023 + 768,
+        verticalPixels: 1023,
+      },
+      {
+        layer: AM.getAsset('./img/seamless_pattern.png'),
+        offset: -1023 * 2 + 768,
+        verticalPixels: 1023,
+      },
+    ],
   };
 
   ship.testCrane = {
@@ -1611,61 +1608,85 @@ function loadTemplates() {
 
   /** *** SCENES **** */
   scene.easyPaper = {
-    background: background.pattern,
+    background: background.beach,
     waves: [
       // wave 1
+      // {
+      //   numOfEnemies: 2,
+      //   ships: new Array(2).fill(ship.bat),
+      //   paths: [
+      //     path.strafeRight,
+      //     path.strafeLeft,
+      //   ],
+      //   waitUntilEnemiesGone: true,
+      // },
+      // {
+      //   numOfEnemies: 3,
+      //   ships: new Array(3).fill(ship.crane),
+      //   waitUntilEnemiesGone: true,
+      // },
+      // {
+      //   numOfEnemies: 3,
+      //   ships: [ship.bat, ship.dove, ship.bat],
+      //   paths: [
+      //     // first bat cornerleft
+      //     path.cornerLeft,
+      //     // dove do nothing
+      //     path.doNothing,
+      //     // second bat cornerright
+      //     path.cornerRight,
+      //   ],
+      //   shipManifestOverride: [
+      //     // change first bat to tracking test
+      //     {
+      //       weapon: ring.trackingTest1,
+      //     },
+      //     // don't do anything to dove
+      //     {},
+      //     // change second bat to tracking test
+      //     {
+      //       weapon: ring.trackingTest1,
+      //     },
+      //   ],
+      //   initialXPoints: [ // omit to evenly space enemies.
+      //     400, 500, 600,
+      //   ],
+      //   waitUntilEnemiesGone: true,
+      // },
       {
-        numOfEnemies: 2,
-        ships: new Array(2).fill(ship.bat),
-        paths: [
-          path.strafeRight,
-          path.strafeLeft,
-        ],
-        waitUntilEnemiesGone: true,
-      },
-      {
-        numOfEnemies: 3,
-        ships: new Array(3).fill(ship.crane),
-        waitUntilEnemiesGone: true,
-      },
-      {
-        numOfEnemies: 3,
-        ships: [ship.bat, ship.dove, ship.bat],
-        paths: [
-          // first bat cornerleft
-          path.cornerLeft,
-          // dove do nothing
-          path.doNothing,
-          // second bat cornerright
-          path.cornerRight,
-        ],
-        shipManifestOverride: [
-          // change first bat to tracking test
+        choreography: [
           {
-            weapon: ring.trackingTest1,
+            id: 'showMessage',
+            type: 'warning',
+            text: ['Waves complete!', 'Get Ready...'],
           },
-          // don't do anything to dove
-          {},
-          // change second bat to tracking test
           {
-            weapon: ring.trackingTest1,
+            id: 'accelerateToWarpspeed',
+          },
+          {
+            id: 'wait',
+            duration: 5,
+          },
+          {
+            id: 'decelerateFromWarpSpeed',
+          },
+          {
+            id: 'hideMessage',
           },
         ],
-        initialXPoints: [ // omit to evenly space enemies.
-          400, 500, 600,
-        ],
-        waitUntilEnemiesGone: true,
-      },
-      {
-        warpSpeed: true,
-        message: {
-          type: 'warning',
-          text: ['Waves complete!', 'Get Ready...'],
-          duration: 6,
-        },
       },
       // BOSS SWALLOW!!
       {
+        choreography: [
+          {
+            id: 'showMessage',
+            text: ['hello', 'world'],
+            duration: 5
+          },
+          {
+            id: 'spawnEnemies'
+          }
+        ],
         numOfEnemies: 1,
         ships: [ship.swallow],
         paths: [
