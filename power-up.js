@@ -185,7 +185,7 @@ class HomingMissile extends PowerUp {
                 removeItem('hommingMissile', 'weapon');
 
                 // Start the timer
-                startTimer(10, entity.weapon.removeHomingMissile, entity.weapon);
+                startTimer(20, entity.weapon.removeHomingMissile, entity.weapon);
               });
             });
           }
@@ -225,7 +225,7 @@ class ChainGun extends PowerUp {
                 removeItem('chainGun', 'weapon');
 
                 // Start the timer
-                startTimer(10, entity.weapon.removeHomingMissile, entity.weapon);
+                startTimer(20, entity.weapon.removeHomingMissile, entity.weapon);
               });
             });
           }
@@ -263,8 +263,8 @@ class InvertedControls extends PowerUp {
 
 // From the collection of implemented powerups, retrieves and return a random one
 function getRandomPowerUp(weapon) {
-  // const POWERUPS = [new InvertedControls(100), new Shield(100), new ExtraLife(100), new RapidFire(100)];
-  const POWERUPS = [];
+  const POWERUPS = [new InvertedControls(100), new Shield(100), new ExtraLife(100), new RapidFire(100)];
+  // const POWERUPS = [];
 
   // No need to drop more missiles if the player already has one loaded, easy to modify if we decide to drop them
   // down the road
