@@ -620,10 +620,14 @@ class Weapon {
     // Used to keep track of any weapons that the player may have picked up, for now
     // the first one is activated
     this.inventory = [];
+    this.timer = null;
+    this.lastTimeAPressed = 0;
 
     // This is to prevent duplicate homing missile weapons from being added to the inventory
     // We can decide how to handle this later
-    this.hasMissile = false;
+    this.hasHomingMissile = false;
+    // this.hasChainGun = false;
+    this.typeLoaded = '';
 
     // construct and mount the rings
     if (manifest instanceof Array) {
@@ -672,10 +676,24 @@ class Weapon {
 
     // Check if the player is activating a weapon from their inventory
     if (this.owner.game.keysDown.KeyA) {
-      // Get the first item in the inventory
-      const weaponActivation = this.inventory.pop();
-      if (weaponActivation) {
-        weaponActivation();
+      if (this.lastTimeAPressed === 0) { // record the time the key was pressed
+        this.lastTimeAPressed = this.owner.game.timer.gameTime;
+        console.log('Recording the tick');
+        console.log('Detected keyPress');
+
+        // Activate the weapon
+        // Get the first item in the inventory
+        const weaponActivation = this.inventory.shift();
+        if (weaponActivation) {
+          weaponActivation();
+        }
+      } else if (this.owner.game.timer.gameTime - this.lastTimeAPressed >= 1) {
+        // Activate the weapon
+        // Get the first item in the inventory
+        const weaponActivation = this.inventory.shift();
+        if (weaponActivation) {
+          weaponActivation();
+        }
       }
     }
 
@@ -690,19 +708,50 @@ class Weapon {
     // we can load this and keep count of how many times it has been fired
     const maxUse = 1;
 
-    if (this.slot.length === 1) {
-      // mount the homing missle
-      // const r = new Ring(this.owner, ring.enemyHoming);
-      const r = new Ring(this.owner, type);
-      const offset = { x: -12, y: 44 };
-
-      this.slot.push({
-        ring: r,
-        offset,
-      });
-
-      callback();
+    if (this.slot.length !== 1) {
+      // Remove the current missile loaded
+      this.slot.pop();
+      stopTimer(this.timer);
     }
+
+    // if (this.slot.length === 1) {
+    // mount the homing missle
+    // const r = new Ring(this.owner, ring.enemyHoming);
+    const r = new Ring(this.owner, type);
+    console.log(`the tpye is ${type}`);
+    const offset = { x: -12, y: 44 };
+
+    this.slot.push({
+      ring: r,
+      offset,
+    });
+
+    callback();
+  }
+
+  loadChainGun(type, callback) {
+    // we can load this and keep count of how many times it has been fired
+    const maxUse = 1;
+
+    if (this.slot.length !== 1) {
+      // Remove the current missile loaded
+      this.slot.pop();
+      stopTimer(this.timer);
+    }
+
+    // if (this.slot.length === 1) {
+    // mount the homing missle
+    // const r = new Ring(this.owner, ring.enemyHoming);
+    const r = new Ring(this.owner, type);
+    console.log(`the tpye is ${type}`);
+    const offset = { x: -12, y: 44 };
+
+    this.slot.push({
+      ring: r,
+      offset,
+    });
+
+    callback();
   }
 
   /**
@@ -710,9 +759,7 @@ class Weapon {
    * @param {Weapon} weapon The weapon whose homing missile will be removed
    */
   removeHomingMissile(weapon) {
-    console.log('Removing missiel');
     weapon.slot.pop();
-    weapon.hasMissile = false;
   }
 
   decreaseCoolDown() {

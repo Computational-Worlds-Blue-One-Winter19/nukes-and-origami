@@ -95,6 +95,11 @@ h2 {
     border-bottom: 1px solid rgba(81, 203, 238, 1);
 }
 
+#weapon {
+    display: flex;
+    align-items: center;
+}
+
 #message-overlay, #intro-message, #normal-message, #control-message  {
     font-family: 'VT323', monospace;
     font-size: 2em;
@@ -254,7 +259,7 @@ center > h4 {
     stroke-width: 2px;
     stroke: black;
     fill: none;
-    animation: countdown 20s linear infinite forwards;
+    animation: countdown 10s linear infinite forwards;
   }
 
   @keyframes countdown {

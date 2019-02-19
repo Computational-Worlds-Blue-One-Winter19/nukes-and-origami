@@ -223,7 +223,7 @@ function removeItem(type, container) {
 
   // Find all the images with the respective class type
   const containerElement = document.getElementsByClassName(type);
-
+  console.log('Inisde remove item');
   // If we find any go ahead and remove the last one
   if (containerElement.length) {
     parent.removeChild(containerElement[containerElement.length - 1]);
@@ -249,21 +249,29 @@ function startTimer(time, callBack, weapon) {
 
   countdownNumberElement.textContent = countdown;
 
-  let timer = null;
+  // const timer = null;
 
   // When we active the callBack we'll need to remove the time as well
-  const finished = () => {
-    circleElement.style.display = 'none';
-    countdownNumberElement.textContent = '';
-    // Stop the intercal from running
-    clearInterval(timer);
+  const finished = (timer) => {
+    stopTimer(timer);
     callBack(weapon);
   };
-
+  console.log('Starting the timer');
   // Sets the number being shown in the timer
-  timer = setInterval(() => {
-    countdown = --countdown <= 0 ? finished() : countdown;
+  weapon.timer = setInterval(() => {
+    console.log(`Weapon timer is ${weapon.timer}`);
+    countdown = --countdown <= 0 ? finished(weapon.timer) : countdown;
 
     countdownNumberElement.textContent = countdown;
   }, 1000);
+}
+
+function stopTimer(timer) {
+  const circleElement = document.getElementById('circle');
+  const countdownNumberElement = document.getElementById('countdown-number');
+
+  circleElement.style.display = 'none';
+  countdownNumberElement.textContent = '';
+  // Stop the intercal from running
+  clearInterval(timer);
 }

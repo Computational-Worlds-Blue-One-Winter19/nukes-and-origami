@@ -151,6 +151,11 @@ class RapidFire extends PowerUp {
   }
 }
 
+function containsType(type) {
+  const elements = document.getElementsByClassName(type);
+
+  return elements.length === 1;
+}
 class HomingMissile extends PowerUp {
   constructor(dropRate) {
     super(dropRate);
@@ -170,17 +175,17 @@ class HomingMissile extends PowerUp {
         powerUp(entity) {
           // this.entity = entity;
           // this.activate();
-          if (!entity.weapon.hasMissile) {
-            addItem('./img/missile.png', 'hommingMissle', 'weapon');
-            entity.weapon.hasMissile = true;
+          if (!containsType('hommingMissile')) {
+            addItem('./img/missile.png', 'hommingMissile', 'weapon');
+            // entity.weapon.hasHomingMissile = true;
             entity.weapon.inventory.push(() => {
               // Pushing the function that will be used to activate the powerUp by the player
               entity.weapon.loadHomingMissile(ring.enemyHoming, () => {
                 // send a callback to run this function if loadHomingMissle() is successful
-                removeItem('hommingMissle', 'weapon');
+                removeItem('hommingMissile', 'weapon');
 
                 // Start the timer
-                startTimer(20, entity.weapon.removeHomingMissile, entity.weapon);
+                startTimer(10, entity.weapon.removeHomingMissile, entity.weapon);
               });
             });
           }
@@ -189,6 +194,7 @@ class HomingMissile extends PowerUp {
     };
   }
 }
+
 
 class ChainGun extends PowerUp {
   constructor(dropRate) {
@@ -209,17 +215,17 @@ class ChainGun extends PowerUp {
         powerUp(entity) {
           // this.entity = entity;
           // this.activate();
-          if (!entity.weapon.hasMissile) {
+          if (!containsType('chainGun')) {
             addItem('./img/chaingun.png', 'chainGun', 'weapon');
-            entity.weapon.hasMissile = true;
+            // entity.weapon.hasChainGun = true;
             entity.weapon.inventory.push(() => {
               // Pushing the function that will be used to activate the powerUp by the player
-              entity.weapon.loadHomingMissile(ring.chainGun, () => {
+              entity.weapon.loadChainGun(ring.chainGun, () => {
                 // send a callback to run this function if loadHomingMissle() is successful
                 removeItem('chainGun', 'weapon');
 
                 // Start the timer
-                startTimer(20, entity.weapon.removeHomingMissile, entity.weapon);
+                startTimer(10, entity.weapon.removeHomingMissile, entity.weapon);
               });
             });
           }
@@ -262,9 +268,14 @@ function getRandomPowerUp(weapon) {
 
   // No need to drop more missiles if the player already has one loaded, easy to modify if we decide to drop them
   // down the road
-  if (!weapon.hasMissile) {
+  if (!containsType('hommingMissile')) {
+    POWERUPS.push(new HomingMissile(100));
+  }
+
+  if (!containsType('chainGun')) {
     POWERUPS.push(new ChainGun(100));
   }
+
 
   return POWERUPS[Math.floor(Math.random() * POWERUPS.length)];
 }
