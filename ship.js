@@ -764,7 +764,12 @@ class Weapon {
 class Ring {
   constructor(owner, manifest) {
     this.owner = owner;
-    this.payload = manifest.payload;
+    this.payload = JSON.parse(JSON.stringify(manifest.payload));
+    if (this.payload.type.image) {
+      this.payload.type.image = manifest.payload.type.image;
+    } else if (this.payload.type.sprite) {
+      this.payload.type.sprite.default = manifest.payload.type.sprite.default;
+    }
     this.rotation = manifest.rotation;
     this.bay = [];
 

@@ -1651,41 +1651,41 @@ function loadTemplates() {
   /** *** SCENES **** */
   scene.oneWaveTest = {
     waves: [
-      // {
-      //   choreography: [{
-      //       id: 'accelerateToWarpspeed',
-      //     },
-      //     {
-      //       id: 'loadBackground',
-      //       bg: background.white,
-      //     },
-      //     {
-      //       id: 'wait',
-      //       duration: 0.25,
-      //     },
-      //     {
-      //       id: 'showMessage',
-      //       text: ['LEVEL 1', 'START'],
-      //     },
-      //     {
-      //       id: 'wait',
-      //       duration: 3,
-      //     },
-      //     {
-      //       id: 'loadBackground',
-      //       bg: background.trees,
-      //     },
-      //     {
-      //       id: 'decelerateFromWarpSpeed',
-      //     },
-      //     {
-      //       id: 'hideMessage',
-      //     },
-      //   ],
-      // },
       {
-        numOfEnemies: 2,
-        ships: new Array(2).fill(ship.bat),
+        choreography: [{
+            id: 'accelerateToWarpspeed',
+          },
+          {
+            id: 'loadBackground',
+            bg: background.white,
+          },
+          {
+            id: 'wait',
+            duration: 0.25,
+          },
+          {
+            id: 'showMessage',
+            text: ['LEVEL 1', 'START'],
+          },
+          {
+            id: 'wait',
+            duration: 3,
+          },
+          {
+            id: 'loadBackground',
+            bg: background.trees,
+          },
+          {
+            id: 'decelerateFromWarpSpeed',
+          },
+          {
+            id: 'hideMessage',
+          },
+        ],
+      },
+      {
+        numOfEnemies: 7,
+        ships: new Array(7).fill(ship.bat),
         paths: [
           path.strafeRight,
           path.strafeLeft,
@@ -1746,53 +1746,53 @@ function loadTemplates() {
 
   scene.easyPaper = {
     waves: [
-      // {
-      //   choreography: [{
-      //       id: 'accelerateToWarpspeed',
-      //     },
-      //     {
-      //       id: 'loadBackground',
-      //       bg: background.white,
-      //     },
-      //     {
-      //       id: 'wait',
-      //       duration: 0.25,
-      //     },
-      //     {
-      //       id: 'showMessage',
-      //       text: ['WELL DONE', 'LEVEL 2 START'],
-      //     },
-      //     {
-      //       id: 'wait',
-      //       duration: 3,
-      //     },
-      //     {
-      //       id: 'loadBackground',
-      //       bg: background.paper,
-      //     },
-      //     {
-      //       id: 'decelerateFromWarpSpeed',
-      //     },
-      //     {
-      //       id: 'hideMessage',
-      //     },
-      //   ],
-      // },
+      {
+        choreography: [{
+            id: 'accelerateToWarpspeed',
+          },
+          {
+            id: 'loadBackground',
+            bg: background.white,
+          },
+          {
+            id: 'wait',
+            duration: 0.25,
+          },
+          {
+            id: 'showMessage',
+            text: ['WELL DONE', 'LEVEL 2 START'],
+          },
+          {
+            id: 'wait',
+            duration: 3,
+          },
+          {
+            id: 'loadBackground',
+            bg: background.paper,
+          },
+          {
+            id: 'decelerateFromWarpSpeed',
+          },
+          {
+            id: 'hideMessage',
+          },
+        ],
+      },
       // wave 1
-      // {
-      //   numOfEnemies: 2,
-      //   ships: new Array(2).fill(ship.bat),
-      //   paths: [
-      //     path.strafeRight,
-      //     path.strafeLeft,
-      //   ],
-      //   waitUntilEnemiesGone: true,
-      // },
-      // {
-      //   numOfEnemies: 3,
-      //   ships: new Array(3).fill(ship.crane),
-      //   waitUntilEnemiesGone: true,
-      // },
+      {
+        numOfEnemies: 2,
+        ships: new Array(2).fill(ship.bat),
+        paths: [
+          path.strafeRight,
+          path.strafeLeft,
+        ],
+        waitUntilEnemiesGone: true,
+      },
+      {
+        numOfEnemies: 3,
+        ships: new Array(3).fill(ship.crane),
+        waitUntilEnemiesGone: true,
+      },
       {
         numOfEnemies: 3,
         ships: [ship.bat, ship.dove, ship.bat],

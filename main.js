@@ -69,7 +69,7 @@ class NukesAndOrigami extends GameEngine {
 
   initializeSceneManager() {
     // load completed levels
-    // this.sceneManager.scenes.push(scene.oneWaveTest);
+    this.sceneManager.scenes.push(scene.oneWaveTest);
     this.sceneManager.scenes.push(scene.easyPaper);
   }
 
@@ -475,7 +475,6 @@ class SceneManager {
       let manifestCopy = JSON.parse(JSON.stringify(wave.ships[i]));
       manifestCopy.path = wave.paths ? JSON.parse(JSON.stringify(wave.paths[i])) : 0;
       Object.assign(manifestCopy.config.sprite, wave.ships[i].config.sprite);
-      console.log(manifestCopy.config.sprite)
 
       if (wave.shipManifestOverride) {
         // do a recursive merge
@@ -507,6 +506,12 @@ class SceneManager {
             Object.assign(manifestCopy.weapon.payload, wave.shipManifestOverride[i].weapon.payload);
           }
         }
+      }
+      if (wave.ships[i].weapon.payload.type.sprite) {
+        manifestCopy.weapon.payload.type.sprite = wave.ships[i].weapon.payload.type.sprite
+      }
+      if (wave.ships[i].weapon.payload.type.image) {
+        manifestCopy.weapon.payload.type.image = wave.ships[i].weapon.payload.type.image
       }
 
       // The ship constructor **should** copy data; try without Object.assign() here
