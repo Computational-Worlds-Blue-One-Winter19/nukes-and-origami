@@ -1621,7 +1621,7 @@ function loadTemplates() {
   ];
 
   /** *** SCENES **** */
-  scene.easyPaper = {
+  scene.oneWaveTest = {
     waves: [{
         choreography: [{
             id: 'accelerateToWarpspeed',
@@ -1637,6 +1637,51 @@ function loadTemplates() {
           {
             id: 'showMessage',
             text: ['LEVEL 1', 'START'],
+          },
+          {
+            id: 'wait',
+            duration: 3,
+          },
+          {
+            id: 'loadBackground',
+            bg: background.pattern,
+          },
+          {
+            id: 'decelerateFromWarpSpeed',
+          },
+          {
+            id: 'hideMessage',
+          },
+        ],
+      },
+      {
+        numOfEnemies: 2,
+        ships: new Array(2).fill(ship.bat),
+        paths: [
+          path.strafeRight,
+          path.strafeLeft,
+        ],
+        waitUntilEnemiesGone: true,
+      },
+    ],
+  }
+
+  scene.easyPaper = {
+    waves: [{
+        choreography: [{
+            id: 'accelerateToWarpspeed',
+          },
+          {
+            id: 'loadBackground',
+            bg: background.white,
+          },
+          {
+            id: 'wait',
+            duration: 0.25,
+          },
+          {
+            id: 'showMessage',
+            text: ['WELL DONE', 'LEVEL 2 START'],
           },
           {
             id: 'wait',
@@ -1708,7 +1753,7 @@ function loadTemplates() {
           },
           {
             id: 'wait',
-            duration: 5,
+            duration: 3,
           },
           {
             id: 'decelerateFromWarpSpeed',
@@ -1720,11 +1765,7 @@ function loadTemplates() {
       },
       // BOSS SWALLOW!!
       {
-        choreography: [{
-            id: 'showMessage',
-            text: ['hello', 'world'],
-            duration: 5
-          },
+        choreography: [
           {
             id: 'spawnEnemies'
           }

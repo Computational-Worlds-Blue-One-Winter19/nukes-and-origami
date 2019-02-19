@@ -54,9 +54,9 @@ class NukesAndOrigami extends GameEngine {
     this.score = 0;
 
     this.defaultBackgroundSpeed = 2;
-    this.warpBackgroundSpeed = 40;
-    this.accelerationAmount = 10;
-    this.decelerationAmount = 10;
+    this.warpBackgroundSpeed = 70;
+    this.accelerationAmount = 40;
+    this.decelerationAmount = 25;
     this.backgroundSpeed = this.defaultBackgroundSpeed;
 
     // Initilize the game board
@@ -66,8 +66,8 @@ class NukesAndOrigami extends GameEngine {
 
   initializeSceneManager() {
     // load completed levels
+    this.sceneManager.scenes.push(scene.oneWaveTest);
     this.sceneManager.scenes.push(scene.easyPaper);
-    this.sceneManager.scenes.push(scene.jaredTestScene);
   }
 
   // Override
@@ -585,8 +585,8 @@ class SceneManager {
       if (this.entitiesInWave.length == 0) {
         this.wave = false;
         this.waveTimer = 0;
-        // Also advance choreography
-        if (this.choreography[0].id === 'spawnEnemies') {
+        // Also advance choreography if we have it.
+        if (this.choreography[0]) {
           this.choreography.shift();
         }
       }
