@@ -220,15 +220,39 @@ class ChainGun extends PowerUp {
             // entity.weapon.hasChainGun = true;
             entity.weapon.inventory.push(() => {
               // Pushing the function that will be used to activate the powerUp by the player
-              entity.weapon.loadChainGun(ring.chainGun, () => {
-                // send a callback to run this function if loadHomingMissle() is successful
+              entity.weapon.loadHomingMissile(ring.chainGun, () => {
+              // send a callback to run this function if loadHomingMissle() is successful
                 removeItem('chainGun', 'weapon');
 
-                // Start the timer
-                startTimer(20, entity.weapon.removeHomingMissile, entity.weapon);
+              // Start the timer
+              // startTimer(20, entity.weapon.removeHomingMissile, entity.weapon);
               });
             });
           }
+        },
+      },
+    };
+  }
+}
+
+class MultiGun extends PowerUp {
+  constructor(dropRate) {
+    super(dropRate);
+
+    // Will be initial
+    this.entity = null;
+
+    this.manifest = {
+      owner: null,
+      angle: Math.PI / 2,
+      payload: {
+        type: {
+          sprite: sprite.gunUp.default,
+          radius: 30,
+        },
+        speed: 60,
+        powerUp(entity) {
+          entity.weapon.addTurret();
         },
       },
     };
@@ -263,17 +287,17 @@ class InvertedControls extends PowerUp {
 
 // From the collection of implemented powerups, retrieves and return a random one
 function getRandomPowerUp(weapon) {
-  const POWERUPS = [new InvertedControls(100), new Shield(100), new ExtraLife(100), new RapidFire(100)];
-  // const POWERUPS = [];
+  // const POWERUPS = [new InvertedControls(100), new Shield(100), new ExtraLife(100), new RapidFire(100)];
+  const POWERUPS = [];
 
   // No need to drop more missiles if the player already has one loaded, easy to modify if we decide to drop them
   // down the road
   if (!containsType('hommingMissile')) {
-    POWERUPS.push(new HomingMissile(100));
+    // POWERUPS.push(new HomingMissile(100));
   }
 
   if (!containsType('chainGun')) {
-    POWERUPS.push(new ChainGun(100));
+    POWERUPS.push(new MultiGun(100));
   }
 
 

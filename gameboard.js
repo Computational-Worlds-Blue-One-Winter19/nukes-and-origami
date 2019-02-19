@@ -175,7 +175,6 @@ function initIntroMessage(game) {
 
 // Inventory related functions
 function addPowerUp(src, type) {
-  console.log('Inside the addPowerUp');
   const img = new Image();
   img.src = src;
   img.className = type;
@@ -223,7 +222,6 @@ function removeItem(type, container) {
 
   // Find all the images with the respective class type
   const containerElement = document.getElementsByClassName(type);
-  console.log('Inisde remove item');
   // If we find any go ahead and remove the last one
   if (containerElement.length) {
     parent.removeChild(containerElement[containerElement.length - 1]);

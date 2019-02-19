@@ -43,6 +43,7 @@ AM.queueDownload('./img/missile.png');
 AM.queueDownload('./img/gunup.png');
 AM.queueDownload('./img/chaingun.png');
 AM.queueDownload('./img/explosion-sheet.png');
+AM.queueDownload('./img/rapid-bullet-horizontal.png');
 
 /**
  * NukesAndOrigami extends GameEngine and adds additional functions
@@ -693,7 +694,6 @@ class Clouds extends Entity {
 class ShieldEntity extends Entity {
   constructor(game, point) {
     super(game, point);
-    console.log('Inside constructor');
     this.offset = 50;
     this.current.y = point.y;
     this.current.x = point.x;

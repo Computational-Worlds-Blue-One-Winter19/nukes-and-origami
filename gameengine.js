@@ -81,7 +81,6 @@ class GameEngine {
   }
 
   start() {
-    // console.log('starting game');
     const that = this;
     (function gameLoop() {
       that.loop();

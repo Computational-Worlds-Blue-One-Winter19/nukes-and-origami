@@ -212,6 +212,18 @@ function loadTemplates() {
     },
   };
 
+  projectile.multiGun = {
+    radius: 3,
+
+    // use init() for any pre-processing immediately prior to launch.
+    // for player bullets we can easily say "only travel up"
+    init() {
+      this.current.angle = toRadians(270);
+    },
+    image: AM.getAsset('./img/rapid-bullet-horizontal.png'),
+    scale: 0.1,
+  };
+
   projectile.paperBall = {
     radius: 15,
     rotate: false,
@@ -1749,9 +1761,28 @@ function loadTemplates() {
 
   };
 
+  // Default player ring
   ring.player = {
     payload: {
       type: projectile.paperBall,
+      speed: 500,
+      rotate: true,
+    },
+    firing: {
+      angle: 270,
+      radius: 30,
+      spread: 0,
+      count: 1,
+      loadTime: 0.01,
+      cooldownTime: 0.25,
+      rapidReload: true,
+      viewTurret: false,
+    },
+  };
+
+  ring.multiGun = {
+    payload: {
+      type: projectile.multiGun,
       speed: 500,
       rotate: true,
     },

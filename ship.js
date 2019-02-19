@@ -31,7 +31,6 @@ class Sprite {
       } else {
         this.currentFrame = Math.floor(this.elapsedTime / this.time);
       }
-      // console.log(this.currentFrame);
     }
 
     const locX = x - (this.width / 2) * this.scale;
@@ -217,13 +216,6 @@ class Ship extends Entity {
         this.health -= e.config.hitValue;
         this.sprite = this.hitSprite;
         this.timeSinceHit += this.game.clockTick;
-        // /if (this.health <= 0) {
-        // this.disarm();
-        // if(this.deathAnimation.isDone())  {
-        //   //this.removeFromWorld = true;
-        //   this.game.onEnemyDestruction(this);
-        // }
-        // }
       }
     }
   }
@@ -583,6 +575,12 @@ class Plane extends Ship {
           this.shield.entities[0].removeShield();
         } else { // hit by enemy bullet
           this.game.onPlayerHit(this);
+
+          console.log('Inside the hit detection');
+          // Call the weapon.onHit method to remove turrets if needed
+          if (!this.weapon.hasRegularGun) {
+            this.weapon.onHit();
+          }
         }
         entity.onHit(this); // notify projectile
       }
@@ -616,22 +614,24 @@ class Weapon {
   constructor(owner, manifest) {
     this.owner = owner;
     this.slot = new Array();
-    
+
     // Used to keep track of any weapons that the player may have picked up, for now
     // the first one is activated
     this.inventory = [];
     this.timer = null;
     this.lastTimeAPressed = 0;
+    this.originalManifest = null;
+
 
     // This is to prevent duplicate homing missile weapons from being added to the inventory
     // We can decide how to handle this later
-    this.hasHomingMissile = false;
-    // this.hasChainGun = false;
-    this.typeLoaded = '';
+    this.hasRegularGun = true;
 
     // construct and mount the rings
     if (manifest instanceof Array) {
       this.primaryRingManifest = manifest[0].ring;
+      // Save a reference of the original manifest
+      this.originalManifest = this.primaryRingManifest;
 
       // process the multi-ring format
       for (let i = 0; i < manifest.length; i++) {
@@ -682,8 +682,6 @@ class Weapon {
     if (this.owner.game.keysDown.KeyA) {
       if (this.lastTimeAPressed === 0) { // record the time the key was pressed
         this.lastTimeAPressed = this.owner.game.timer.gameTime;
-        console.log('Recording the tick');
-        console.log('Detected keyPress');
 
         // Activate the weapon
         // Get the first item in the inventory
@@ -703,15 +701,12 @@ class Weapon {
 
     // evaluate firing decision
     if (this.owner.isPlayer && this.owner.game.keysDown.Space) {
-
       // you could separate these mappings here or just fire all
       // or check if one is ready to play sound.
       // let ready = this.slot[0].ring.isReady;
-      
       for (let i = 0; i < this.slot.length; i++) {
         this.slot[i].ring.fire();
       }
-
     } else if (!this.owner.isPlayer) {
       // an enemy always fires when ready
       for (let i = 0; i < this.slot.length; i++) {
@@ -722,6 +717,7 @@ class Weapon {
 
   loadHomingMissile(type, callback) {
     // we can load this and keep count of how many times it has been fired
+
     const maxUse = 1;
 
     if (this.slot.length !== 1) {
@@ -732,9 +728,7 @@ class Weapon {
 
     // if (this.slot.length === 1) {
     // mount the homing missle
-    // const r = new Ring(this.owner, ring.enemyHoming);
     const r = new Ring(this.owner, type);
-    console.log(`the tpye is ${type}`);
     const offset = { x: -12, y: 44 };
 
     this.slot.push({
@@ -742,33 +736,32 @@ class Weapon {
       offset,
     });
 
-    callback();
-  }
-
-  loadChainGun(type, callback) {
-    // we can load this and keep count of how many times it has been fired
-    const maxUse = 1;
-
-    if (this.slot.length !== 1) {
-      // Remove the current missile loaded
-      this.slot.pop();
-      stopTimer(this.timer);
-    }
-
-    // if (this.slot.length === 1) {
-    // mount the homing missle
-    // const r = new Ring(this.owner, ring.enemyHoming);
-    const r = new Ring(this.owner, type);
-    console.log(`the tpye is ${type}`);
-    const offset = { x: -12, y: 44 };
-
-    this.slot.push({
-      ring: r,
-      offset,
-    });
 
     callback();
   }
+
+  // loadChainGun(type, callback) {
+  //   // we can load this and keep count of how many times it has been fired
+  //   const maxUse = 1;
+
+  //   if (this.slot.length !== 1) {
+  //     // Remove the current missile loaded
+  //     this.slot.pop();
+  //     stopTimer(this.timer);
+  //   }
+
+  //   // if (this.slot.length === 1) {
+  //   // mount the chain gun
+  //   const r = new Ring(this.owner, type);
+  //   const offset = { x: -12, y: 44 };
+
+  //   this.slot.push({
+  //     ring: r,
+  //     offset,
+  //   });
+
+  //   callback();
+  // }
 
   /**
    * Removes the homing missile from the given weapon
@@ -785,31 +778,59 @@ class Weapon {
   }
 
   addTurret() {
+    if (this.hasRegularGun) {
+      // Reset the firing count, this is needed because the object is mutuable and won't be reset from
+      // the last time the player had the mutli gun object
+      ring.multiGun.firing.count = 1;
+      ring.multiGun.firing.spread = 0;
+
+
+      // We need to switch it out to the multiGun
+      // ring.multiGun
+      this.primaryRingManifest = Object.assign({}, ring.multiGun);
+      // Update bool to indicate gun was switched out
+      this.hasRegularGun = false;
+    }
     const maxCount = 5;
     const primary = this.slot[0];
     const manifest = this.primaryRingManifest;
 
     if (manifest.firing.count < maxCount) {
       manifest.firing.count += 1;
-      manifest.firing.spread += 0.5;
-      
+      manifest.firing.spread += 50.5;
+
       primary.ring = new Ring(this.owner, manifest);
     }
-    
+
     // the damage value is in the Ship, so we may want to move that to the projectile
     // or is it already there? i'm not sure there is some inconsistency...
-    
+
     // add an additional turret to the primary weapon.
     // this will require constructing a new Ring with the new count
     // and we can also scale down the damage value
   }
 
+  removeTurret() {
+    if (this.primaryRingManifest.firing.count === 2) { // We need to set the regular gun back
+      this.primaryRingManifest = this.originalManifest;
+      this.hasRegularGun = true;
+    }
+    const primary = this.slot[0];
+
+    // Decrease the turret count
+    this.primaryRingManifest.firing.count -= 1;
+
+    // Update the players ring
+    primary.ring = new Ring(this.owner, this.primaryRingManifest);
+  }
+
   onHit() {
     // remove a turret. we could hold on to the previous ones and then swap
     // out and call update again. or just build a new one?
-
+    console.log('On hit was called!!!!');
     // for now this can use the ship's hit box. maybe in the future use the ring's?
 
+    this.removeTurret();
   }
 
   draw() {
@@ -1047,7 +1068,6 @@ class Ring {
   fireAll() {
     // the projectiles have been updated so just add to game and replace again
     // this previously fired all and then looped back to reload. was that better?
-    // console.log("fire");
 
     for (let i = 0; i < this.bay.length; i++) {
       const projectile = this.bay[i];
