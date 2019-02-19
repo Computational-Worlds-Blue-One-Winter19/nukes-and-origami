@@ -616,7 +616,7 @@ class Weapon {
   constructor(owner, manifest) {
     this.owner = owner;
     this.slot = new Array();
-
+    
     // Used to keep track of any weapons that the player may have picked up, for now
     // the first one is activated
     this.inventory = [];
@@ -631,6 +631,8 @@ class Weapon {
 
     // construct and mount the rings
     if (manifest instanceof Array) {
+      this.primaryRingManifest = manifest[0].ring;
+
       // process the multi-ring format
       for (let i = 0; i < manifest.length; i++) {
         var r = new Ring(owner, manifest[i].ring);
@@ -642,6 +644,8 @@ class Weapon {
         });
       }
     } else if (manifest) {
+      this.primaryRingManifest = manifest;
+
       // process the single-ring format
       var r = new Ring(owner, manifest);
 
@@ -697,11 +701,23 @@ class Weapon {
       }
     }
 
-    // evaluate firing decision?
-    // an enemy fires any ring that is ready
+    // evaluate firing decision
+    if (this.owner.isPlayer && this.owner.game.keysDown.Space) {
 
-    // a player fires based on key press
-    // we can map different keys for the special weapons
+      // you could separate these mappings here or just fire all
+      // or check if one is ready to play sound.
+      // let ready = this.slot[0].ring.isReady;
+      
+      for (let i = 0; i < this.slot.length; i++) {
+        this.slot[i].ring.fire();
+      }
+
+    } else if (!this.owner.isPlayer) {
+      // an enemy always fires when ready
+      for (let i = 0; i < this.slot.length; i++) {
+        this.slot[i].ring.fire();
+      }
+    }
   }
 
   loadHomingMissile(type, callback) {
@@ -769,10 +785,23 @@ class Weapon {
   }
 
   addTurret() {
+    const maxCount = 5;
+    const primary = this.slot[0];
+    const manifest = this.primaryRingManifest;
+
+    if (manifest.firing.count < maxCount) {
+      manifest.firing.count += 1;
+      manifest.firing.spread += 0.5;
+      
+      primary.ring = new Ring(this.owner, manifest);
+    }
+    
+    // the damage value is in the Ship, so we may want to move that to the projectile
+    // or is it already there? i'm not sure there is some inconsistency...
+    
     // add an additional turret to the primary weapon.
     // this will require constructing a new Ring with the new count
     // and we can also scale down the damage value
-
   }
 
   onHit() {
@@ -954,29 +983,6 @@ class Ring {
         this.bay.push(this.loadNext());
         this.status.elapsedTime = 0;
       }
-    } else if (this.status.isReady) {
-      // Ready state
-      // a player only fires on command, all others fire on ready
-      if (!this.owner.isPlayer || game.keysDown.Space) {
-        if (this.config.pattern && --this.status.round > -1) {
-          this.fireLine(this.status.round);
-          this.status.isReady = false;
-          this.status.isCooling = true;
-          this.status.elapsedTime = 0;
-        } else if (this.config.pattern) {
-          // end pattern proceed to wait
-          this.status.round = this.status.roundLength;
-          this.status.isReady = false;
-          this.status.isWaiting = true;
-          this.status.elapsedTime = 0;
-        } else {
-          this.fireAll();
-          // update state
-          this.status.isReady = false;
-          this.status.isCooling = true;
-          this.status.elapsedTime = 0;
-        }
-      }
     } else if (this.status.isCooling && this.status.elapsedTime > this.config.cooldownTime) {
       // Cooldown state
       this.status.isCooling = false;
@@ -998,6 +1004,34 @@ class Ring {
 
       // if tracking then set flag to track next shot
       this.current.isLeadShot = this.config.targetLeadShot;
+    }
+  }
+
+  // this method is used by the weapon controller to fire the ring.
+  // pre-condition: ring.isReady = true
+  // post-condition: one round is fired, and the ring is in cooldown state
+  fire() {
+    if (!this.status.isReady) {
+      return;
+    }
+
+    if (this.config.pattern && --this.status.round > -1) {
+      this.fireLine(this.status.round);
+      this.status.isReady = false;
+      this.status.isCooling = true;
+      this.status.elapsedTime = 0;
+    } else if (this.config.pattern) {
+      // end pattern proceed to wait
+      this.status.round = this.status.roundLength;
+      this.status.isReady = false;
+      this.status.isWaiting = true;
+      this.status.elapsedTime = 0;
+    } else {
+      this.fireAll();
+      // update state
+      this.status.isReady = false;
+      this.status.isCooling = true;
+      this.status.elapsedTime = 0;
     }
   }
 
