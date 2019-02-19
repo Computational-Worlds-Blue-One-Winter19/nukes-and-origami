@@ -1498,6 +1498,16 @@ function loadTemplates() {
   /** *** BACKGROUNDS *** */
   background.paper = {
     layers: [{
+        layer: AM.getAsset('./img/notebook.png'),
+        offset: -768,
+        verticalPixels: 768,
+      },
+      {
+        layer: AM.getAsset('./img/notebook.png'),
+        offset: -768 * 2,
+        verticalPixels: 768,
+      },
+      {
         layer: AM.getAsset('./img/clouds.png'),
         offset: -2304,
         verticalPixels: 2304,
@@ -1509,28 +1519,18 @@ function loadTemplates() {
         verticalPixels: 2304,
         parallaxMult: 1.25,
       },
-      {
-        layer: AM.getAsset('./img/notebook.png'),
-        offset: 0,
-        verticalPixels: 768,
-      },
-      {
-        layer: AM.getAsset('./img/notebook.png'),
-        offset: -768,
-        verticalPixels: 768,
-      },
     ],
   };
 
   background.beach = {
     layers: [{
         layer: AM.getAsset('./img/verticalscrollingbeach.png'),
-        offset: -1766 + 768,
+        offset: -1766,
         verticalPixels: 1766,
       },
       {
         layer: AM.getAsset('./img/verticalscrollingbeach.png'),
-        offset: -1766 * 2 + 768,
+        offset: -1766 * 2,
         verticalPixels: 1766,
       },
     ],
@@ -1539,13 +1539,27 @@ function loadTemplates() {
   background.pattern = {
     layers: [{
         layer: AM.getAsset('./img/seamless_pattern.png'),
-        offset: -1023 + 768,
+        offset: -1023,
         verticalPixels: 1023,
       },
       {
         layer: AM.getAsset('./img/seamless_pattern.png'),
-        offset: -1023 * 2 + 768,
+        offset: -1023 * 2,
         verticalPixels: 1023,
+      },
+    ],
+  };
+
+  background.white = {
+    layers: [{
+        layer: AM.getAsset('./img/white_background.jpg'),
+        offset: -768,
+        verticalPixels: 768,
+      },
+      {
+        layer: AM.getAsset('./img/white_background.jpg'),
+        offset: -768 * 2,
+        verticalPixels: 768,
       },
     ],
   };
@@ -1608,54 +1622,83 @@ function loadTemplates() {
 
   /** *** SCENES **** */
   scene.easyPaper = {
-    background: background.beach,
-    waves: [
-      // wave 1
-      // {
-      //   numOfEnemies: 2,
-      //   ships: new Array(2).fill(ship.bat),
-      //   paths: [
-      //     path.strafeRight,
-      //     path.strafeLeft,
-      //   ],
-      //   waitUntilEnemiesGone: true,
-      // },
-      // {
-      //   numOfEnemies: 3,
-      //   ships: new Array(3).fill(ship.crane),
-      //   waitUntilEnemiesGone: true,
-      // },
-      // {
-      //   numOfEnemies: 3,
-      //   ships: [ship.bat, ship.dove, ship.bat],
-      //   paths: [
-      //     // first bat cornerleft
-      //     path.cornerLeft,
-      //     // dove do nothing
-      //     path.doNothing,
-      //     // second bat cornerright
-      //     path.cornerRight,
-      //   ],
-      //   shipManifestOverride: [
-      //     // change first bat to tracking test
-      //     {
-      //       weapon: ring.trackingTest1,
-      //     },
-      //     // don't do anything to dove
-      //     {},
-      //     // change second bat to tracking test
-      //     {
-      //       weapon: ring.trackingTest1,
-      //     },
-      //   ],
-      //   initialXPoints: [ // omit to evenly space enemies.
-      //     400, 500, 600,
-      //   ],
-      //   waitUntilEnemiesGone: true,
-      // },
-      {
-        choreography: [
+    waves: [{
+        choreography: [{
+            id: 'accelerateToWarpspeed',
+          },
           {
+            id: 'loadBackground',
+            bg: background.white,
+          },
+          {
+            id: 'wait',
+            duration: 0.25,
+          },
+          {
+            id: 'showMessage',
+            text: ['LEVEL 1', 'START'],
+          },
+          {
+            id: 'wait',
+            duration: 3,
+          },
+          {
+            id: 'loadBackground',
+            bg: background.paper,
+          },
+          {
+            id: 'decelerateFromWarpSpeed',
+          },
+          {
+            id: 'hideMessage',
+          },
+        ],
+      },
+      // wave 1
+      {
+        numOfEnemies: 2,
+        ships: new Array(2).fill(ship.bat),
+        paths: [
+          path.strafeRight,
+          path.strafeLeft,
+        ],
+        waitUntilEnemiesGone: true,
+      },
+      {
+        numOfEnemies: 3,
+        ships: new Array(3).fill(ship.crane),
+        waitUntilEnemiesGone: true,
+      },
+      {
+        numOfEnemies: 3,
+        ships: [ship.bat, ship.dove, ship.bat],
+        paths: [
+          // first bat cornerleft
+          path.cornerLeft,
+          // dove do nothing
+          path.doNothing,
+          // second bat cornerright
+          path.cornerRight,
+        ],
+        shipManifestOverride: [
+          // change first bat to tracking test
+          {
+            weapon: ring.trackingTest1,
+          },
+          // don't do anything to dove
+          {},
+          // change second bat to tracking test
+          {
+            weapon: ring.trackingTest1,
+          },
+        ],
+        initialXPoints: [ // omit to evenly space enemies.
+          400, 500, 600,
+        ],
+        waitUntilEnemiesGone: true,
+      },
+      {
+        choreography: [{
             id: 'showMessage',
             type: 'warning',
             text: ['Waves complete!', 'Get Ready...'],
@@ -1677,8 +1720,7 @@ function loadTemplates() {
       },
       // BOSS SWALLOW!!
       {
-        choreography: [
-          {
+        choreography: [{
             id: 'showMessage',
             text: ['hello', 'world'],
             duration: 5

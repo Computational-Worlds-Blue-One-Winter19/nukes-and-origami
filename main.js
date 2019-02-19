@@ -40,6 +40,7 @@ AM.queueDownload('./img/light_blue_plane.png');
 AM.queueDownload('./img/verticalscrollingbeach.png');
 AM.queueDownload('./img/seamless_pattern.png');
 AM.queueDownload('./img/explosion-sheet.png');
+AM.queueDownload('./img/white_background.jpg');
 
 /**
  * NukesAndOrigami extends GameEngine and adds additional functions
@@ -53,7 +54,9 @@ class NukesAndOrigami extends GameEngine {
     this.score = 0;
 
     this.defaultBackgroundSpeed = 2;
-    this.warpBackgroundSpeed = 20;
+    this.warpBackgroundSpeed = 40;
+    this.accelerationAmount = 10;
+    this.decelerationAmount = 10;
     this.backgroundSpeed = this.defaultBackgroundSpeed;
 
     // Initilize the game board
@@ -371,40 +374,6 @@ class NukesAndOrigami extends GameEngine {
   } // end test scene
 }
 
-
-/** Call AssetManager to download assets and launch the game. */
-AM.downloadAll(() => {
-  const canvas = document.getElementById('gameWorld');
-  const ctx = canvas.getContext('2d');
-  loadSpriteSheets();
-  loadTemplates();
-  const game = new NukesAndOrigami();
-  game.init(ctx);
-  game.start();
-
-  // add background
-  // game.addBackground();
-
-  // spawn standard ship.player
-  game.spawnPlayer();
-
-  // run standard gameplay
-  initIntroMessage(game);
-
-  // view simple test scene; defined above
-  // game.testScene();
-
-  // view single scene with SceneManager
-  // game.sceneManager.scenes.push(scene.jaredTestScene);
-
-  // run prototype level
-  // game.spawnEnemies();
-
-  console.log('All Done!');
-  canvas.focus();
-});
-
-
 class SceneManager {
   // The scene manager takes a GameEngine to hold references to what it will
   // need to manipulate.
@@ -423,8 +392,6 @@ class SceneManager {
     this.wave = null;
     this.waves = null;
     this.entitiesInWave = [];
-    this.accelerationAmount = 6;
-    this.decelerationAmount = 6;
 
     // Used for keeping track of animation sequences (e.g. going to warp speed)
     this.cutsceneStack = [];
@@ -437,13 +404,25 @@ class SceneManager {
     this.waitUntilAtDefaultSpeed = false;
 
     this.scenes = new Array();
+    // console.log('constructed')
   }
 
   // Do a cool animation into the new background.
-  loadBackground(background) {
-    for (const bg of background.layers) {
-      this.game.entities.unshift(new Background(this.game, bg.layer, bg.verticalPixels, bg.parallaxMult, bg.offset));
+  loadBackground(background, init) {
+    let that = this;
+    // insert backgrounds on top of previously placed ones
+    let i = 0;
+    while (this.game.entities[i] instanceof Background) {
+      this.game.entities[i].removeOnNextScroll = true;
+      i++;
     }
+    background.layers.slice().reverse().forEach(function(bg) {
+      if (init) {
+        that.game.entities.splice(i, 0, new Background(that.game, bg.layer, bg.verticalPixels, bg.parallaxMult, bg.offset + 768));
+      } else {
+        that.game.entities.splice(i, 0, new Background(that.game, bg.layer, bg.verticalPixels, bg.parallaxMult, bg.offset));
+      }
+    });
   }
 
   // In the future, handle the changing out of assets here like changing
@@ -453,11 +432,6 @@ class SceneManager {
   loadScene(scene) {
     this.currentScene = scene;
     this.waves = scene.waves;
-
-    // Load new background
-    if (scene.background) {
-      this.loadBackground(scene.background);
-    }
 
     // replace current player if a new one is provided
     if (scene.player) {
@@ -546,6 +520,7 @@ class SceneManager {
     } else {
       // No choreography specified? default is to just load enemies.
       this.loadEnemies(wave);
+      // console.log('loading enemies normally')
     }
   }
 
@@ -595,7 +570,7 @@ class SceneManager {
         // Is this wave choreographed? Handle that.
         if (this.choreography) {
           this.choreographyUpdate();
-        } else if (this.wave) {
+        } else {
           // A wave is happening that is not choreographed, handle it normally
           this.handleEnemyWaveCompletion();
         }
@@ -624,6 +599,7 @@ class SceneManager {
     if (this.choreography.length == 0) {
       this.wave = false;
       this.waveTimer = 0;
+      this.choreography = 0;
       return;
     }
 
@@ -633,7 +609,7 @@ class SceneManager {
     switch (currentChor.id) {
 
       case 'accelerateToWarpspeed':
-        this.game.backgroundSpeed += this.accelerationAmount * this.game.clockTick;
+        this.game.backgroundSpeed += this.game.accelerationAmount * this.game.clockTick;
         if (this.game.backgroundSpeed >= this.game.warpBackgroundSpeed) {
           this.game.backgroundSpeed = this.game.warpBackgroundSpeed;
           this.choreography.shift();
@@ -641,7 +617,7 @@ class SceneManager {
         break;
 
       case 'decelerateFromWarpSpeed':
-        this.game.backgroundSpeed -= this.decelerationAmount * this.game.clockTick;
+        this.game.backgroundSpeed -= this.game.decelerationAmount * this.game.clockTick;
         if (this.game.backgroundSpeed <= this.game.defaultBackgroundSpeed) {
           this.game.backgroundSpeed = this.game.defaultBackgroundSpeed;
           this.choreography.shift();
@@ -691,6 +667,11 @@ class SceneManager {
           currentChor.init = true;
         }
         break;
+
+      case 'loadBackground':
+        this.loadBackground(currentChor.bg);
+        this.choreography.shift();
+        break;
     }
   }
 }
@@ -707,6 +688,7 @@ AM.downloadAll(() => {
   game.init(ctx);
   game.start();
 
+
   // add background and player
   // game.addBackground();
   game.spawnPlayer();
@@ -719,8 +701,9 @@ AM.downloadAll(() => {
 
   initIntroMessage(game);
 
-  console.log('All Done!');
+  // console.log('All Done!');
   canvas.focus();
+  game.sceneManager.loadBackground(background.beach, 1);
 });
 
 class Background extends Entity {
@@ -734,6 +717,7 @@ class Background extends Entity {
     this.ctx = game.ctx;
     this.parallaxMult = parallaxMult || 1;
     this.verticalPixels = verticalPixels;
+    this.removeOnNextScroll = false;
   }
 
   draw() {
@@ -744,8 +728,12 @@ class Background extends Entity {
   update() {
     this.current.y += this.parallaxMult * this.game.backgroundSpeed;
     if (this.current.y >= this.game.surfaceHeight) {
-      // Adjust for overshoot
-      this.current.y = -this.verticalPixels * 2 + this.game.surfaceHeight + (this.current.y - this.game.surfaceHeight);
+      if (this.removeOnNextScroll) {
+        this.removeFromWorld = true;
+      } else {
+        // Adjust for overshoot
+        this.current.y = -this.verticalPixels * 2 + this.game.surfaceHeight + (this.current.y - this.game.surfaceHeight);
+      }
     }
   }
 }
@@ -753,7 +741,7 @@ class Background extends Entity {
 class ShieldEntity extends Entity {
   constructor(game, point) {
     super(game, point);
-    console.log('Inside constructor');
+    // console.log('Inside constructor');
     this.offset = 50;
     this.current.y = point.y;
     this.current.x = point.x;
