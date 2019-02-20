@@ -400,22 +400,22 @@ AM.downloadAll(() => {
   game.init(ctx);
   game.start();
 
-
   // add background and player
   // game.addBackground();
   game.spawnPlayer();
 
   // view test stage
   // game.testScene();
+  game.sceneManager.scenes.push(scene.Nathan);
 
-  // run prototype level
+  // run completed levels
+  //initIntroMessage(game);
+
+  // run first prototype level
   // game.spawnEnemies();
 
-  initIntroMessage(game);
-
-  // console.log('All Done!');
   canvas.focus();
-  game.sceneManager.loadBackground(background.beach, 1);
+  //game.sceneManager.loadBackground(background.beach, 1);
 });
 
 class SceneManager {

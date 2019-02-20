@@ -17,19 +17,44 @@ class Sprite {
     this.totalTime = config.dimension.timePerFrame * config.dimension.frameCount; // Not set by user
     this.elapsedTime = 0; // Not set by user
     this.currentFrame = 0;
-  }
+
+    if (config.hit) {
+      this.hit = Object.assign({}, config.hit);
+      this.remainingHitDuration = 0;
+      this.remainingHitInterval = 0;
+    }
+}
 
   drawFrame(tick, ctx, x, y) {
     this.elapsedTime += tick;
     if (this.time !== 0) {
-      if (this.elapsedTime >= this.totalTimes && this.loop) { // The isDone() function does exactly this. Use either.
+      if (this.elapsedTime >= this.totalTime && this.loop) { // The isDone() function does exactly this. Use either.
         // All frames used. Start over to loop.
         this.elapsedTime = 0;
       }
+
       if (this.loop) {
         this.currentFrame = (Math.floor(this.elapsedTime / this.time)) % this.len;
       } else {
         this.currentFrame = Math.floor(this.elapsedTime / this.time);
+      }
+
+      // update hit condition
+      if (this.hit) {
+        if (this.remainingHitDuration > 0) {
+          this.remainingHitInterval -= tick;
+          this.remainingHitDuration -= tick;
+          if (this.remainingHitInterval < 0 && this.oriY === 0) {
+            this.remainingHitInterval = this.hit.interval;
+            this.oriY = this.height;
+          } else if (this.remainingHitInterval < 0) {
+            this.remainingHitInterval = this.hit.interval;
+            this.oriY = 0;
+          } 
+        } else {
+          // done with this hit so reset oriY
+          this.oriY = 0;
+        }
       }
     }
 
@@ -53,6 +78,22 @@ class Sprite {
 
   isDone() {
     return this.elapsedTime >= this.totalTime;
+  }
+
+  onHit() {
+    if (this.hit) {
+      // hit is defined so set interval and duration
+      this.remainingHitDuration = this.hit.duration;
+      this.remainingHitInterval = this.hit.interval;
+      this.oriY = this.height;
+    }
+
+    // alternate between this.sprite and this.hitSprite on each interval
+
+
+
+    // stop on duration
+
   }
 }
 
@@ -219,8 +260,9 @@ class Ship extends Entity {
         //manifest.config.sprite.hit
         //this.sprite.currentFrame
         //this.hitSprite.currentFrame = this.sprite.currentFrame + 1;
-        this.sprite = this.hitSprite;
-        this.timeSinceHit += this.game.clockTick;
+        //this.sprite = this.hitSprite;
+        //this.timeSinceHit += this.game.clockTick;
+        this.sprite.onHit();
       }
     }
   }

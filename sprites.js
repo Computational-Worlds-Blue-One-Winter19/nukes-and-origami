@@ -292,6 +292,10 @@ function loadSpriteSheets() {
           scale: 1.5,
           flip: false,
           loop: true
+        },
+        hit: {
+          interval: 0.1,
+          duration: 0.5,
         }
       },
       hit:  {
