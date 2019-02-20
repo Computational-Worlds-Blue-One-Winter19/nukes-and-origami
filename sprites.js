@@ -346,6 +346,7 @@ function loadSpriteSheets() {
 
   sprite.hummer = {
     default: {
+      default: {
         image: AM.getAsset('./img/hummer-sheet.png'),
         dimension:  {
           originX: 0,
@@ -375,6 +376,7 @@ function loadSpriteSheets() {
       }
     }
   }
+  
 
   // Power up sprites
   sprite.rainbowBall = {

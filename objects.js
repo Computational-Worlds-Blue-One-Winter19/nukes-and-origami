@@ -1812,6 +1812,25 @@ function loadTemplates() {
     ],
   };
 
+  scene.Nathan = {
+    background: background.paper,
+    waves: [
+      {
+        numOfEnemies: 7,
+        ships: [ship.crane, ship.crane, ship.]
+      }
+      // {
+      //   numOfEnemies: 2,
+      //   ships: new Array(2).fill(ship.bat),
+      //   paths: [
+      //     path.strafeRight,
+      //     path.strafeLeft,
+      //   ],
+      //   waitUntilEnemiesGone: true,
+      // },
+    ]
+  }
+
 
   /** *** ALL PLAYER THINGS **** */
   projectile.player1 = {
