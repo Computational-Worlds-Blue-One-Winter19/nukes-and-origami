@@ -44,6 +44,10 @@ AM.queueDownload('./img/gunup.png');
 AM.queueDownload('./img/chaingun.png');
 AM.queueDownload('./img/explosion-sheet.png');
 AM.queueDownload('./img/rapid-bullet-horizontal.png');
+AM.queueDownload('./img/bird-sheet-HIT.png');
+AM.queueDownload('./img/eagle-boss-sheet.png');
+AM.queueDownload('./img/hummer-sheet.png');
+AM.queueDownload('./img/goose-sheet-HIT.png');
 
 /**
  * NukesAndOrigami extends GameEngine and adds additional functions
@@ -517,6 +521,8 @@ class SceneManager {
           }
         }
       }
+
+      console.log(manifestCopy);
 
       // The ship constructor **should** copy data; try without Object.assign() here
       // let ship = new Ship(this.game, Object.assign({}, manifestCopy));

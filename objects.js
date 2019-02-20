@@ -1385,6 +1385,25 @@ function loadTemplates() {
     weapon: ring.angularTest,
   };
 
+  ship.testEagleBoss = {
+    config: {
+      health: 1000,
+      hitValue: 1000,
+      radius: 100,
+      sprite: sprite.eagleBoss.default,
+      snapLine: 150,
+      snapLineSpeed: 100,
+      snapLineWait: 0,
+      origin: {
+        x: 500,
+        y: -50
+      },
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0
+    },
+    weapon: ring.spiralAlpha4,
+  }
+
 
   // Default trimmed down versions of enemies for the scene manager to use as
   // a starting point.
@@ -1816,8 +1835,10 @@ function loadTemplates() {
     background: background.paper,
     waves: [
       {
-        numOfEnemies: 7,
-        ships: [ship.crane, ship.crane, ship.]
+        numOfEnemies: 1,
+        ships: [ship.testEagleBoss],
+        paths: [path.doNothing],
+
       }
       // {
       //   numOfEnemies: 2,
@@ -1828,7 +1849,7 @@ function loadTemplates() {
       //   ],
       //   waitUntilEnemiesGone: true,
       // },
-    ]
+    ],
   }
 
 

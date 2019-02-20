@@ -289,7 +289,7 @@ function loadSpriteSheets() {
           frameHeight: 500,
           frameCount: 8,
           timePerFrame: 0.2,
-          scale: 0.5,
+          scale: 1.5,
           flip: false,
           loop: true
         }
@@ -303,7 +303,7 @@ function loadSpriteSheets() {
           frameHeight: 500,
           frameCount: 8,
           timePerFrame: 0.2,
-          scale: 0.5,
+          scale: 1.5,
           flip: false,
           loop: true
         }
