@@ -71,7 +71,7 @@ class NukesAndOrigami extends GameEngine {
 
   initializeSceneManager() {
     // load completed levels
-    this.sceneManager.scenes.push(scene.Nathan);
+    this.sceneManager.scenes.push(scene.easyPaper);
   }
 
   // Override

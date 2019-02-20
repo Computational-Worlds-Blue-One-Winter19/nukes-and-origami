@@ -166,7 +166,7 @@ class Ship extends Entity {
       this.timeSinceHit += this.game.clockTick;
     }
     if (this.timeSinceHit >= 0.1) {
-      this.defaultSprite.currentFrame = this.sprite.currentFrame - 1;
+      //this.defaultSprite.currentFrame = this.sprite.currentFrame - 1;
       this.sprite = this.defaultSprite;
       this.timeSinceHit = 0;
     }
@@ -217,7 +217,7 @@ class Ship extends Entity {
         this.health -= e.config.hitValue;
         //manifest.config.sprite.hit
         //this.sprite.currentFrame
-        this.hitSprite.currentFrame = this.sprite.currentFrame + 1;
+        //this.hitSprite.currentFrame = this.sprite.currentFrame + 1;
         this.sprite = this.hitSprite;
         this.timeSinceHit += this.game.clockTick;
       }
