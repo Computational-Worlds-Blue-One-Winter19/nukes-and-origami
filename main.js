@@ -522,8 +522,6 @@ class SceneManager {
         }
       }
 
-      console.log(manifestCopy);
-
       // The ship constructor **should** copy data; try without Object.assign() here
       // let ship = new Ship(this.game, Object.assign({}, manifestCopy));
       const ship = new Ship(this.game, manifestCopy);

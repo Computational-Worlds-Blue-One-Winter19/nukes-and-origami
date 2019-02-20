@@ -166,7 +166,6 @@ function loadTemplates() {
     },
 
     init()  {
-      console.log(this);
       this.current.angle = toRadians(270);
       this.local.target = this.current.y/2;
     },
