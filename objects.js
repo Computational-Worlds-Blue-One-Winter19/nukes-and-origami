@@ -158,13 +158,15 @@ function loadTemplates() {
     rotate: true,
     image: AM.getAsset('./img/rainbow_ball.png'),
     scale: 0.1,
+    drawNuke: false,
     //sprite: sprite.laser.bigOrange,
 
     local: {
-      range: 800, // maximum
+      range: 1200, // maximum
     },
 
     init()  {
+      console.log(this);
       this.current.angle = toRadians(270);
       this.local.target = this.current.y/2;
     },
@@ -173,9 +175,10 @@ function loadTemplates() {
       if(this.local.target < this.current.y)  {
         this.current.velocity.radial += this.current.acceleration.radial * this.current.elapsedTime;
         this.current.r = this.current.velocity.radial * this.current.elapsedTime;
-      } else if (this.config.radius < this.local.range) {
-        this.config.radius += 5;
-        this.scale += 0.035;
+      } else if (this.config.radius < this.local.range || this.coll) {
+        this.drawNuke = true;
+        this.config.radius += 10;
+        //this.scale += 0.035;
       } else {
         this.removeFromWorld = true;
       }
@@ -184,11 +187,29 @@ function loadTemplates() {
       
     },
 
-    onHit() {
-      // this.local.count += 1;
-      // this.current.velocity.radial *= 1.4;
-      // stay alive
+    draw()  {
+      if(!this.drawNuke)  {
+        this.drawImage(this.ctx, this.current.x, this.current.y);
+      } else {
+        this.ctx.fillStyle = "#ffe900";
+        this.ctx.beginPath();
+        this.ctx.arc(this.current.x, this.current.y, this.config.radius + 150, 0 * Math.PI, 2 * Math.PI);
+        this.ctx.stroke();
+        this.ctx.fill();
+        this.ctx.fillStyle = "#ea3209";
+        this.ctx.beginPath();
+        this.ctx.arc(this.current.x, this.current.y, this.config.radius + 100, 0 * Math.PI, 2 * Math.PI);
+        this.ctx.stroke();
+        this.ctx.fill();
+        this.ctx.fillStyle = "#d6a400";
+        this.ctx.beginPath();
+        this.ctx.arc(this.current.x, this.current.y, this.config.radius, 0 * Math.PI, 2 * Math.PI);
+        this.ctx.stroke();
+        this.ctx.fill();
+      }
     },
+
+    onHit() {},
   };
 
 

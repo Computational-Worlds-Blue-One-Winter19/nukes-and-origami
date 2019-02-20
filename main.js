@@ -379,16 +379,16 @@ AM.downloadAll(() => {
   game.start();
 
   // add background
-  // game.addBackground();
+   game.addBackground();
 
   // spawn standard ship.player
   game.spawnPlayer();
 
   // run standard gameplay
-  //initIntroMessage(game);
+  initIntroMessage(game);
 
   // view simple test scene; defined above
-   game.testScene();
+   //game.testScene();
 
   // view single scene with SceneManager
   // game.sceneManager.scenes.push(scene.jaredTestScene);
@@ -441,12 +441,12 @@ class SceneManager {
     this.currentScene = scene;
     this.waves = scene.waves;
 
-    // Load new background
-    // if (scene.background) {
-    //   for (const bg of scene.background.layers) {
-    //     this.game.entities.unshift(new Background(this.game, bg.layer, bg.verticalPixels, bg.parallaxMult, bg.offset));
-    //   }
-    // }
+    //Load new background
+    if (scene.background) {
+      for (const bg of scene.background.layers) {
+        this.game.entities.unshift(new Background(this.game, bg.layer, bg.verticalPixels, bg.parallaxMult, bg.offset));
+      }
+    }
 
     // replace current player if a new one is provided
     if (scene.player) {

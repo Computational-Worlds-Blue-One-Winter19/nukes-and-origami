@@ -1205,6 +1205,10 @@ class Projectile extends Entity {
       this.onHit = this.payload.onHit;
     }
 
+    if (this.payload.draw)  {
+      this.draw = this.payload.draw;
+    }
+
     // check for sprite or image and set desired function
     if (this.payload.image) {
       this.image = this.payload.image;
