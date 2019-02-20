@@ -245,6 +245,137 @@ function loadSpriteSheets() {
     }
   }
 
+  sprite.bird = {
+    default: {
+      default: {
+        image: AM.getAsset('./img/bird-sheet-HIT.png'),
+        dimension:  {
+          originX: 0,
+          originY: 0,
+          frameWidth: 774,
+          frameHeight: 430,
+          frameCount: 8,
+          timePerFrame: 0.1,
+          scale: 0.3,
+          flip: false,
+          loop: true
+        }
+      },
+      hit:  {
+        image: AM.getAsset('./img/bird-sheet-HIT.png'),
+        dimension:  {
+          originX: 6192,
+          originY: 0,
+          frameWidth: 774,
+          frameHeight: 430,
+          frameCount: 1,
+          timePerFrame: 0.1,
+          scale: 0.3,
+          flip: false,
+          loop: true
+        }
+      }
+    }
+  }
+
+  sprite.eagleBoss = {
+    default: {
+      default: {
+        image: AM.getAsset('./img/eagle-boss-sheet.png'),
+        dimension:  {
+          originX: 0,
+          originY: 0,
+          frameWidth: 1000,
+          frameHeight: 500,
+          frameCount: 8,
+          timePerFrame: 0.2,
+          scale: 0.5,
+          flip: false,
+          loop: true
+        }
+      },
+      hit:  {
+        image: AM.getAsset('./img/eagle-boss-sheet.png'),
+        dimension:  {
+          originX: 0,
+          originY: 501,
+          frameWidth: 1000,
+          frameHeight: 500,
+          frameCount: 8,
+          timePerFrame: 0.2,
+          scale: 0.5,
+          flip: false,
+          loop: true
+        }
+      }
+    }
+  }
+
+  sprite.goose = {
+    default: {
+      default: {
+        image: AM.getAsset('./img/goose-sheet-HIT.png'),
+        dimension:  {
+          originX: 0,
+          originY: 0,
+          frameWidth: 627,
+          frameHeight: 430,
+          frameCount: 8,
+          timePerFrame: 0.1,
+          scale: 0.3,
+          flip: false,
+          loop: true
+        }
+      },
+      hit:  {
+        image: AM.getAsset('./img/goose-sheet-HIT.png'),
+        dimension:  {
+          originX: 5016,
+          originY: 0,
+          frameWidth: 627,
+          frameHeight: 430,
+          frameCount: 1,
+          timePerFrame: 0.1,
+          scale: 0.3,
+          flip: false,
+          loop: true
+        }
+      }
+    }
+  }
+
+  sprite.hummer = {
+    default: {
+        image: AM.getAsset('./img/hummer-sheet.png'),
+        dimension:  {
+          originX: 0,
+          originY: 0,
+          frameWidth: 430,
+          frameHeight: 424,
+          frameCount: 6,
+          timePerFrame: 0.08,
+          scale: 0.3,
+          flip: false,
+          loop: true
+        }
+      },
+      hit:  {
+        image: AM.getAsset('./img/hummer-sheet.png'),
+        dimension:  {
+          originX: 0,
+          originY: 424,
+          frameWidth: 430,
+          frameHeight: 424,
+          frameCount: 6,
+          timePerFrame: 0.08,
+          scale: 0.3,
+          flip: false,
+          loop: true
+        }
+      }
+    }
+  }
+
   // Power up sprites
   sprite.rainbowBall = {
     default: {
