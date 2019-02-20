@@ -350,7 +350,7 @@ class NukesAndOrigami extends GameEngine {
     // introduce test player
     // this.player = new Plane(this, ship.jaredTestPlane);
     this.spawnPlayer();
-    this.addEntity(this.player);
+    //this.addEntity(this.player);
 
     // introduce test enemies
     function spawn(that) {
@@ -385,10 +385,10 @@ AM.downloadAll(() => {
   game.spawnPlayer();
 
   // run standard gameplay
-  initIntroMessage(game);
+  //initIntroMessage(game);
 
   // view simple test scene; defined above
-  // game.testScene();
+   game.testScene();
 
   // view single scene with SceneManager
   // game.sceneManager.scenes.push(scene.jaredTestScene);

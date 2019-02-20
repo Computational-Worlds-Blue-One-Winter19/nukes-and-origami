@@ -152,6 +152,47 @@ function loadTemplates() {
   };
 
   /** This tracks an enemy. */
+  projectile.nuke = {
+    radius: 3,
+    hitValue: 3,
+    rotate: true,
+    image: AM.getAsset('./img/rainbow_ball.png'),
+    scale: 0.1,
+    //sprite: sprite.laser.bigOrange,
+
+    local: {
+      range: 800, // maximum
+    },
+
+    init()  {
+      this.current.angle = toRadians(270);
+      this.local.target = this.current.y/2;
+    },
+
+    update() {
+      if(this.local.target < this.current.y)  {
+        this.current.velocity.radial += this.current.acceleration.radial * this.current.elapsedTime;
+        this.current.r = this.current.velocity.radial * this.current.elapsedTime;
+      } else if (this.config.radius < this.local.range) {
+        this.config.radius += 5;
+        this.scale += 0.035;
+      } else {
+        this.removeFromWorld = true;
+      }
+
+      // update r
+      
+    },
+
+    onHit() {
+      // this.local.count += 1;
+      // this.current.velocity.radial *= 1.4;
+      // stay alive
+    },
+  };
+
+
+  /** This tracks an enemy. */
   projectile.chainGun = {
     radius: 3,
     hitValue: 3,
@@ -1764,7 +1805,7 @@ function loadTemplates() {
   // Default player ring
   ring.player = {
     payload: {
-      type: projectile.paperBall,
+      type: projectile.nuke,
       speed: 500,
       rotate: true,
     },
