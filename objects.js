@@ -183,7 +183,7 @@ function loadTemplates() {
       }
 
       // update r
-      
+
     },
 
     draw()  {
@@ -1692,10 +1692,11 @@ function loadTemplates() {
       {
         layer: AM.getAsset('./img/verticalscrollingtrees.png'),
         offset: -1766 * 2,
+        verticalPixels: 1766,
       },
     ],
   };
-  
+
   background.pattern = {
     layers: [
       {
@@ -2106,6 +2107,7 @@ function loadTemplates() {
       speed: 500,
       rotate: true,
     },
+
     firing: {
       angle: 270,
       radius: 0,
