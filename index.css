@@ -7,6 +7,7 @@ body {
     background-color: transparent;
     position: absolute;
     z-index: 10;
+    width: 1024px;
     /* pointer-events: none; */
 }
 
@@ -26,12 +27,9 @@ h2 {
 }
 
 .scoreBoard {
-    /* width: 1024; */
-    /* height: 768; */
     margin-left: 24px;
     font-family: 'VT323', monospace;
     font-size: 1.2em;
-    /* float: right; */
 }
 
 .lives, .score {
@@ -69,22 +67,44 @@ h2 {
 }
 
 /* Iventory CSS Styles */
+.inventory-container {
+    height: 100px;
+}
+
 #inventory {
     /* Some items/pngs aren't square or don't have any height so we need to center align all items vertically */
     display: flex;
     align-items: center;
 }
 
-#inventory img {
+.inventory-container img {
     width: 40px;
+}
+
+/* CSS for the header weapon and timer container */
+.title {
+    display: flex;
+    align-items: center;
+}
+
+/* Add a blue border to the first weapon in the players inventory class */
+#weapon img:first-child {
+    box-shadow: 0 4px 5px -3px rgba(81, 203, 238, 1);
+    padding: 3px 0px 3px 3px;
+    margin: 5px 1px 3px 0px;
+    border-bottom: 1px solid rgba(81, 203, 238, 1);
+}
+
+#weapon {
+    display: flex;
+    align-items: center;
 }
 
 #message-overlay, #intro-message, #normal-message, #control-message  {
     font-family: 'VT323', monospace;
     font-size: 2em;
     position: absolute;
-    /* (width(canvas) / 2) - (width(element) / 2) */
-    left: 344px;
+    left: 0;
     /* (height(canvas) / 2) - (height(element) / 2) */
     top: 307px;
     display: none;
@@ -92,13 +112,12 @@ h2 {
 
 /* Modifies the position of the intro message */
 #intro-message {
-    left: 265px;
     top: 180px;
 }
 
 #normal-message, #control-message {
-    /* left: 265px; */
     top: 650px;
+    text-align: center;
 }
 
 #intro-message p {
@@ -204,3 +223,50 @@ div.key.icon > span {
 center > h4 {
      margin-top: 50px;
 }
+
+/* Timer Related CSS */
+  #countdown {
+    position: relative;
+    /* margin: auto; */
+    /* margin-top: 100px; */
+    padding-left: 15px;
+    height: 40px;
+    width: 40px;
+    text-align: center;
+  }
+  
+  #countdown-number {
+    color: black;
+    display: inline-block;
+    line-height: 40px;
+  }
+  
+  svg {
+    /* At the start we don't want to show the circle for the timer */
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 40px;
+    height: 40px;
+    transform: rotateY(-180deg) rotateZ(-90deg);
+  }
+  
+  svg circle {
+    stroke-dasharray: 113px;
+    stroke-dashoffset: 0px;
+    stroke-linecap: round;
+    stroke-width: 2px;
+    stroke: black;
+    fill: none;
+    animation: countdown 20s linear infinite forwards;
+  }
+
+  @keyframes countdown {
+    from {
+      stroke-dashoffset: 0px;
+    }
+    to {
+      stroke-dashoffset: 113px;
+    }
+  }

@@ -26,12 +26,11 @@ class Sprite {
         // All frames used. Start over to loop.
         this.elapsedTime = 0;
       }
-      if(this.loop) {
+      if (this.loop) {
         this.currentFrame = (Math.floor(this.elapsedTime / this.time)) % this.len;
       } else {
         this.currentFrame = Math.floor(this.elapsedTime / this.time);
       }
-      // console.log(this.currentFrame);
     }
 
     const locX = x - (this.width / 2) * this.scale;
@@ -135,7 +134,6 @@ class Ship extends Entity {
     this.initialDirection = this.config.initialDirection || 'south';
     this.snapLineSpeed = this.config.snapLineSpeed || 300;
     this.hitValue = this.config.hitValue;
-    this.powerUp = getRandomPowerUp();
 
     // additional fields
     this.idleTrans = false;
@@ -164,15 +162,15 @@ class Ship extends Entity {
       this.updateCollisionDetection();
       this.weapon.update();
     }
-    //sprite change when hit:
-    if(this.timeSinceHit != 0)  {
+    // sprite change when hit:
+    if (this.timeSinceHit != 0) {
       this.timeSinceHit += this.game.clockTick;
     }
-    if(this.timeSinceHit >= 0.1) {
+    if (this.timeSinceHit >= 0.1) {
       this.sprite = this.defaultSprite;
       this.timeSinceHit = 0;
     }
-    if(this.health <= 0 && this.deathAnimation.isDone())  {
+    if (this.health <= 0 && this.deathAnimation.isDone()) {
       this.disarm();
       this.game.onEnemyDestruction(this);
       this.removeFromWorld = true;
@@ -181,10 +179,10 @@ class Ship extends Entity {
   }
 
   draw() {
-    if(this.health > 0) { //alive
+    if (this.health > 0) { // alive
       this.sprite.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
     }
-    if(this.health <= 0)  { //dead, draw my explosion
+    if (this.health <= 0) { // dead, draw my explosion
       this.deathAnimation.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
     }
     this.weapon.draw();
@@ -215,17 +213,10 @@ class Ship extends Entity {
     // Check for hit from player bullets
     for (const e of this.game.entities) {
       if (e instanceof Projectile && e.playerShot && this.isCollided(e)) {
-        e.onHit(this); //notify projectile
+        e.onHit(this); // notify projectile
         this.health -= e.config.hitValue;
         this.sprite = this.hitSprite;
         this.timeSinceHit += this.game.clockTick;
-        ///if (this.health <= 0) {
-          //this.disarm();
-          // if(this.deathAnimation.isDone())  {
-          //   //this.removeFromWorld = true;
-          //   this.game.onEnemyDestruction(this);
-          // }
-        //}
       }
     }
   }
@@ -342,10 +333,14 @@ class Ship extends Entity {
     }
   }
 
+  isDead() {
+    return this.health <= 0;
+  }
+
   static getInitPoint(game, manifest) {
     let x;
     let y;
-    // Is origin specified?
+
     // Handle cases for all directions to snap line
     // Start it in the middle off the screen it will be coming from.
     switch (manifest.config.initialDirection) {
@@ -372,11 +367,11 @@ class Ship extends Entity {
         break;
     }
 
+    // Is origin specified?
     if (manifest.config.origin) {
       x = manifest.config.origin.x || x;
       y = manifest.config.origin.y || y;
     }
-
 
     return {
       x,
@@ -501,7 +496,6 @@ class Plane extends Ship {
         }
       }
 
-
       if ((this.controls.hasInvertedControls && leftKeyCheck)
       || (!this.controls.hasInvertedControls && rightKeyCheck)) {
         if (this.game.keysDown.KeyC && this.canRoll) {
@@ -624,6 +618,12 @@ class Plane extends Ship {
           this.shield.entities[0].removeShield();
         } else { // hit by enemy bullet
           this.game.onPlayerHit(this);
+
+          console.log('Inside the hit detection');
+          // Call the weapon.onHit method to remove turrets if needed
+          if (!this.weapon.hasRegularGun) {
+            this.weapon.onHit();
+          }
         }
         entity.onHit(this); // notify projectile
       }
@@ -658,19 +658,37 @@ class Weapon {
     this.owner = owner;
     this.slot = new Array();
 
+    // Used to keep track of any weapons that the player may have picked up, for now
+    // the first one is activated
+    this.inventory = [];
+    this.timer = null;
+    this.lastTimeAPressed = 0;
+    this.originalManifest = null;
+
+
+    // This is to prevent duplicate homing missile weapons from being added to the inventory
+    // We can decide how to handle this later
+    this.hasRegularGun = true;
+
     // construct and mount the rings
     if (manifest instanceof Array) {
+      this.primaryRingManifest = manifest[0].ring;
+      // Save a reference of the original manifest
+      this.originalManifest = this.primaryRingManifest;
+
       // process the multi-ring format
       for (let i = 0; i < manifest.length; i++) {
         var r = new Ring(owner, manifest[i].ring);
-        var offset = manifest[i].offset || { x: 0, y: 0 };
+        const offset = manifest[i].offset || { x: 0, y: 0 };
 
         this.slot.push({
           ring: r,
-          offset: offset,
+          offset,
         });
       }
     } else if (manifest) {
+      this.primaryRingManifest = manifest;
+
       // process the single-ring format
       var r = new Ring(owner, manifest);
 
@@ -691,11 +709,11 @@ class Weapon {
     // assume that this.current has been updated to Ship's x,y postion
     const {
       x,
-      y
+      y,
     } = this.owner.current;
 
     for (let i = 0; i < this.slot.length; i++) {
-      let weapon = this.slot[i];
+      const weapon = this.slot[i];
 
       weapon.ring.current.x = x + weapon.offset.x;
       weapon.ring.current.y = y + weapon.offset.y;
@@ -703,30 +721,97 @@ class Weapon {
       weapon.ring.update();
     }
 
-    // evaluate firing decision?
-    // an enemy fires any ring that is ready
+    // Check if the player is activating a weapon from their inventory
+    if (this.owner.game.keysDown.KeyA) {
+      if (this.lastTimeAPressed === 0) { // record the time the key was pressed
+        this.lastTimeAPressed = this.owner.game.timer.gameTime;
 
-    // a player fires based on key press
-    // we can map different keys for the special weapons
+        // Activate the weapon
+        // Get the first item in the inventory
+        const weaponActivation = this.inventory.shift();
+        if (weaponActivation) {
+          weaponActivation();
+        }
+      } else if (this.owner.game.timer.gameTime - this.lastTimeAPressed >= 1) {
+        // Activate the weapon
+        // Get the first item in the inventory
+        const weaponActivation = this.inventory.shift();
+        if (weaponActivation) {
+          weaponActivation();
+        }
+      }
+    }
 
+    // evaluate firing decision
+    if (this.owner.isPlayer && this.owner.game.keysDown.Space) {
+      // you could separate these mappings here or just fire all
+      // or check if one is ready to play sound.
+      // let ready = this.slot[0].ring.isReady;
+      for (let i = 0; i < this.slot.length; i++) {
+        this.slot[i].ring.fire();
+      }
+    } else if (!this.owner.isPlayer) {
+      // an enemy always fires when ready
+      for (let i = 0; i < this.slot.length; i++) {
+        this.slot[i].ring.fire();
+      }
+    }
   }
 
-  loadHomingMissile(callback) {
+  loadHomingMissile(type, callback) {
     // we can load this and keep count of how many times it has been fired
+
     const maxUse = 1;
 
-    if (this.slot.length === 1) {
-      //mount the homing missle
-      var r = new Ring(this.owner, ring.enemyHoming);
-      var offset = { x: -12, y: 44 };
-
-      this.slot.push({
-        ring: r,
-        offset: offset,
-      });
-
-      callback();
+    if (this.slot.length !== 1) {
+      // Remove the current missile loaded
+      this.slot.pop();
+      stopTimer(this.timer);
     }
+
+    // if (this.slot.length === 1) {
+    // mount the homing missle
+    const r = new Ring(this.owner, type);
+    const offset = { x: -12, y: 44 };
+
+    this.slot.push({
+      ring: r,
+      offset,
+    });
+
+
+    callback();
+  }
+
+  // loadChainGun(type, callback) {
+  //   // we can load this and keep count of how many times it has been fired
+  //   const maxUse = 1;
+
+  //   if (this.slot.length !== 1) {
+  //     // Remove the current missile loaded
+  //     this.slot.pop();
+  //     stopTimer(this.timer);
+  //   }
+
+  //   // if (this.slot.length === 1) {
+  //   // mount the chain gun
+  //   const r = new Ring(this.owner, type);
+  //   const offset = { x: -12, y: 44 };
+
+  //   this.slot.push({
+  //     ring: r,
+  //     offset,
+  //   });
+
+  //   callback();
+  // }
+
+  /**
+   * Removes the homing missile from the given weapon
+   * @param {Weapon} weapon The weapon whose homing missile will be removed
+   */
+  removeHomingMissile(weapon) {
+    weapon.slot.pop();
   }
 
   decreaseCoolDown() {
@@ -736,18 +821,59 @@ class Weapon {
   }
 
   addTurret() {
+    if (this.hasRegularGun) {
+      // Reset the firing count, this is needed because the object is mutuable and won't be reset from
+      // the last time the player had the mutli gun object
+      ring.multiGun.firing.count = 1;
+      ring.multiGun.firing.spread = 0;
+
+
+      // We need to switch it out to the multiGun
+      // ring.multiGun
+      this.primaryRingManifest = Object.assign({}, ring.multiGun);
+      // Update bool to indicate gun was switched out
+      this.hasRegularGun = false;
+    }
+    const maxCount = 5;
+    const primary = this.slot[0];
+    const manifest = this.primaryRingManifest;
+
+    if (manifest.firing.count < maxCount) {
+      manifest.firing.count += 1;
+      manifest.firing.spread += 50.5;
+
+      primary.ring = new Ring(this.owner, manifest);
+    }
+
+    // the damage value is in the Ship, so we may want to move that to the projectile
+    // or is it already there? i'm not sure there is some inconsistency...
+
     // add an additional turret to the primary weapon.
     // this will require constructing a new Ring with the new count
     // and we can also scale down the damage value
+  }
 
+  removeTurret() {
+    if (this.primaryRingManifest.firing.count === 2) { // We need to set the regular gun back
+      this.primaryRingManifest = this.originalManifest;
+      this.hasRegularGun = true;
+    }
+    const primary = this.slot[0];
+
+    // Decrease the turret count
+    this.primaryRingManifest.firing.count -= 1;
+
+    // Update the players ring
+    primary.ring = new Ring(this.owner, this.primaryRingManifest);
   }
 
   onHit() {
     // remove a turret. we could hold on to the previous ones and then swap
     // out and call update again. or just build a new one?
-
+    console.log('On hit was called!!!!');
     // for now this can use the ship's hit box. maybe in the future use the ring's?
 
+    this.removeTurret();
   }
 
   draw() {
@@ -764,12 +890,7 @@ class Weapon {
 class Ring {
   constructor(owner, manifest) {
     this.owner = owner;
-    this.payload = JSON.parse(JSON.stringify(manifest.payload));
-    if (this.payload.type.image) {
-      this.payload.type.image = manifest.payload.type.image;
-    } else if (this.payload.type.sprite) {
-      this.payload.type.sprite.default = manifest.payload.type.sprite.default;
-    }
+    this.payload = manifest.payload;
     this.rotation = manifest.rotation;
     this.bay = [];
 
@@ -926,29 +1047,6 @@ class Ring {
         this.bay.push(this.loadNext());
         this.status.elapsedTime = 0;
       }
-    } else if (this.status.isReady) {
-      // Ready state
-      // a player only fires on command, all others fire on ready
-      if (!this.owner.isPlayer || game.keysDown.Space) {
-        if (this.config.pattern && --this.status.round > -1) {
-          this.fireLine(this.status.round);
-          this.status.isReady = false;
-          this.status.isCooling = true;
-          this.status.elapsedTime = 0;
-        } else if (this.config.pattern) {
-          // end pattern proceed to wait
-          this.status.round = this.status.roundLength;
-          this.status.isReady = false;
-          this.status.isWaiting = true;
-          this.status.elapsedTime = 0;
-        } else {
-          this.fireAll();
-          // update state
-          this.status.isReady = false;
-          this.status.isCooling = true;
-          this.status.elapsedTime = 0;
-        }
-      }
     } else if (this.status.isCooling && this.status.elapsedTime > this.config.cooldownTime) {
       // Cooldown state
       this.status.isCooling = false;
@@ -973,6 +1071,34 @@ class Ring {
     }
   }
 
+  // this method is used by the weapon controller to fire the ring.
+  // pre-condition: ring.isReady = true
+  // post-condition: one round is fired, and the ring is in cooldown state
+  fire() {
+    if (!this.status.isReady) {
+      return;
+    }
+
+    if (this.config.pattern && --this.status.round > -1) {
+      this.fireLine(this.status.round);
+      this.status.isReady = false;
+      this.status.isCooling = true;
+      this.status.elapsedTime = 0;
+    } else if (this.config.pattern) {
+      // end pattern proceed to wait
+      this.status.round = this.status.roundLength;
+      this.status.isReady = false;
+      this.status.isWaiting = true;
+      this.status.elapsedTime = 0;
+    } else {
+      this.fireAll();
+      // update state
+      this.status.isReady = false;
+      this.status.isCooling = true;
+      this.status.elapsedTime = 0;
+    }
+  }
+
   draw() {
     if (this.config.viewTurret) {
       const ctx = this.owner.game.ctx;
@@ -985,7 +1111,6 @@ class Ring {
   fireAll() {
     // the projectiles have been updated so just add to game and replace again
     // this previously fired all and then looped back to reload. was that better?
-    // console.log("fire");
 
     for (let i = 0; i < this.bay.length; i++) {
       const projectile = this.bay[i];
@@ -1017,7 +1142,6 @@ class Ring {
         if (this.config.rapidReload) {
           this.bay[i] = this.loadNext(projectile);
         }
-
       }
     }
 
@@ -1073,7 +1197,7 @@ class Ring {
     // return a configured projectile
     return new Projectile(this.owner.game, manifest);
   }
-} //end of Ring class
+} // end of Ring class
 
 /**
  * The projectile class manages its own path given a velocity and acceleration.

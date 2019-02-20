@@ -72,8 +72,6 @@ function initializeScoreBoardLives(lives) {
   for (let i = 0; i < lives; i += 1) {
     addLife(lifeColor[i]);
   }
-  // addPowerUp('./img/shield-icon.png');
-  // addPowerUp('./img/rapid-bullet.png');
 }
 
 /**
@@ -177,7 +175,6 @@ function initIntroMessage(game) {
 
 // Inventory related functions
 function addPowerUp(src, type) {
-  console.log('Inside the addPowerUp');
   const img = new Image();
   img.src = src;
   img.className = type;
@@ -186,6 +183,17 @@ function addPowerUp(src, type) {
 
   container.appendChild(img);
 }
+
+function addItem(src, type, container) {
+  const img = new Image();
+  img.src = src;
+  img.className = type;
+
+  const elementContainer = document.getElementById(container);
+
+  elementContainer.appendChild(img);
+}
+
 
 function removePowerUp(type) {
   // Need to get the parent element to be able to remove the power up icons
@@ -199,4 +207,69 @@ function removePowerUp(type) {
   if (container.length) {
     parent.removeChild(container[container.length - 1]);
   }
+}
+
+/**
+ * Removes an item from the dom.
+ *
+ * @param {String} type The type of item that will be removed from the dom.
+ * @param {String} container The container holding the item that will be removed.
+ */
+function removeItem(type, container) {
+  // Need to get the parent element to be able to remove the power up icons
+  const parent = document.getElementById(container);
+
+
+  // Find all the images with the respective class type
+  const containerElement = document.getElementsByClassName(type);
+  // If we find any go ahead and remove the last one
+  if (containerElement.length) {
+    parent.removeChild(containerElement[containerElement.length - 1]);
+  }
+}
+
+/**
+ * Starts a timer that will last the given time, once the timer has finished
+ * the callBack will be called
+ * A reference of the given weapon will be passed to the callback
+ * @param {} time
+ * @param {*} callBack
+ * @param {*} weapon
+ */
+function startTimer(time, callBack, weapon) {
+  // Get the svg element
+  const circleElement = document.getElementById('circle');
+  circleElement.style.display = 'block';
+
+  // Get the element that will show the numbers
+  const countdownNumberElement = document.getElementById('countdown-number');
+  let countdown = time;
+
+  countdownNumberElement.textContent = countdown;
+
+  // const timer = null;
+
+  // When we active the callBack we'll need to remove the time as well
+  const finished = (timer) => {
+    stopTimer(timer);
+    callBack(weapon);
+  };
+  console.log('Starting the timer');
+  // Sets the number being shown in the timer
+  weapon.timer = setInterval(() => {
+    console.log(`Weapon timer is ${weapon.timer}`);
+    countdown = --countdown <= 0 ? finished(weapon.timer) : countdown;
+
+    countdownNumberElement.textContent = countdown;
+  }, 1000);
+}
+
+function stopTimer(timer) {
+  const circleElement = document.getElementById('circle');
+  const countdownNumberElement = document.getElementById('countdown-number');
+
+  circleElement.style.display = 'none';
+  countdownNumberElement.textContent = '';
+  // Stop the intercal from running
+  clearInterval(timer);
 }

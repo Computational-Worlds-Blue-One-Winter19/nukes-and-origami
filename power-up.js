@@ -93,7 +93,7 @@ class Shield extends PowerUp {
         powerUp(entity) {
           // Add the power up to the screen inventory
 
-          addPowerUp('./img/shield-icon.png', 'shield');
+          addItem('./img/shield-icon.png', 'shield', 'powerUp');
 
 
           const currentX = entity.game.player.current.x;
@@ -135,16 +135,130 @@ class RapidFire extends PowerUp {
           //   addPowerUp('./img/rapid-bullet.png', 'rapidFire');
           // }
 
-          // temp override to see if homing missle will work
-          entity.weapon.loadHomingMissile(() => {
-            // send a callback to run this function if loadHomingMissle() is successful
-            addPowerUp('./img/rapid-bullet.png', 'rapidFire');
-          });
+          // // temp override to see if homing missle will work
+          // entity.weapon.loadHomingMissile(() => {
+          //   // send a callback to run this function if loadHomingMissle() is successful
+          //   addPowerUp('./img/rapid-bullet.png', 'rapidFire');
+          // });
+          const ring = entity.weapon.slot[0].ring;
+          if (ring.config.cooldownTime > 0.05) {
+            ring.config.cooldownTime -= 0.1;
+            addItem('./img/fire-rate.png', 'rapidFire', 'powerUp');
+          }
         },
       },
     };
   }
 }
+
+function containsType(type) {
+  const elements = document.getElementsByClassName(type);
+
+  return elements.length === 1;
+}
+class HomingMissile extends PowerUp {
+  constructor(dropRate) {
+    super(dropRate);
+
+    // Will be initial
+    this.entity = null;
+
+    this.manifest = {
+      owner: null,
+      angle: Math.PI / 2,
+      payload: {
+        type: {
+          sprite: sprite.homingMissile.default,
+          radius: 30,
+        },
+        speed: 60,
+        powerUp(entity) {
+          // this.entity = entity;
+          // this.activate();
+          if (!containsType('hommingMissile')) {
+            addItem('./img/missile.png', 'hommingMissile', 'weapon');
+            // entity.weapon.hasHomingMissile = true;
+            entity.weapon.inventory.push(() => {
+              // Pushing the function that will be used to activate the powerUp by the player
+              entity.weapon.loadHomingMissile(ring.enemyHoming, () => {
+                // send a callback to run this function if loadHomingMissle() is successful
+                removeItem('hommingMissile', 'weapon');
+
+                // Start the timer
+                startTimer(20, entity.weapon.removeHomingMissile, entity.weapon);
+              });
+            });
+          }
+        },
+      },
+    };
+  }
+}
+
+
+class ChainGun extends PowerUp {
+  constructor(dropRate) {
+    super(dropRate);
+
+    // Will be initial
+    this.entity = null;
+
+    this.manifest = {
+      owner: null,
+      angle: Math.PI / 2,
+      payload: {
+        type: {
+          sprite: sprite.chainGun.default,
+          radius: 30,
+        },
+        speed: 60,
+        powerUp(entity) {
+          // this.entity = entity;
+          // this.activate();
+          if (!containsType('chainGun')) {
+            addItem('./img/chaingun.png', 'chainGun', 'weapon');
+            // entity.weapon.hasChainGun = true;
+            entity.weapon.inventory.push(() => {
+              // Pushing the function that will be used to activate the powerUp by the player
+              entity.weapon.loadHomingMissile(ring.chainGun, () => {
+              // send a callback to run this function if loadHomingMissle() is successful
+                removeItem('chainGun', 'weapon');
+
+              // Start the timer
+              // startTimer(20, entity.weapon.removeHomingMissile, entity.weapon);
+              });
+            });
+          }
+        },
+      },
+    };
+  }
+}
+
+class MultiGun extends PowerUp {
+  constructor(dropRate) {
+    super(dropRate);
+
+    // Will be initial
+    this.entity = null;
+
+    this.manifest = {
+      owner: null,
+      angle: Math.PI / 2,
+      payload: {
+        type: {
+          sprite: sprite.gunUp.default,
+          radius: 30,
+        },
+        speed: 60,
+        powerUp(entity) {
+          entity.weapon.addTurret();
+        },
+      },
+    };
+  }
+}
+
 
 class InvertedControls extends PowerUp {
   constructor(dropRate) {
@@ -172,8 +286,20 @@ class InvertedControls extends PowerUp {
 
 
 // From the collection of implemented powerups, retrieves and return a random one
-function getRandomPowerUp() {
-  const POWERUPS = [new InvertedControls(), new Shield(100), new ExtraLife(100), new RapidFire(100)];
+function getRandomPowerUp(weapon) {
+  // const POWERUPS = [new InvertedControls(100), new Shield(100), new ExtraLife(100), new RapidFire(100)];
+  const POWERUPS = [];
+
+  // No need to drop more missiles if the player already has one loaded, easy to modify if we decide to drop them
+  // down the road
+  if (!containsType('hommingMissile')) {
+    // POWERUPS.push(new HomingMissile(100));
+  }
+
+  if (!containsType('chainGun')) {
+    POWERUPS.push(new MultiGun(100));
+  }
+
 
   return POWERUPS[Math.floor(Math.random() * POWERUPS.length)];
 }

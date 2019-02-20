@@ -2,12 +2,12 @@
 // IO talk in 2011
 
 window.requestAnimFrame = (function requestAnimFrame() {
-  return window.requestAnimationFrame ||
-    window.webkitRequestAnimationFrame ||
-    window.mozRequestAnimationFrame ||
-    window.oRequestAnimationFrame ||
-    window.msRequestAnimationFrame ||
-    function animFrame( /* function */ callback) {
+  return window.requestAnimationFrame
+    || window.webkitRequestAnimationFrame
+    || window.mozRequestAnimationFrame
+    || window.oRequestAnimationFrame
+    || window.msRequestAnimationFrame
+    || function animFrame(/* function */ callback) {
       window.setTimeout(callback, 1000 / 60);
     };
 }());
@@ -81,7 +81,6 @@ class GameEngine {
   }
 
   start() {
-    // console.log('starting game');
     const that = this;
     (function gameLoop() {
       that.loop();
@@ -219,8 +218,8 @@ class Entity {
   isOutsideScreen() {
     let hasLeftScreen = false;
     if (this.config.radius) {
-      hasLeftScreen = (this.current.x < 0 - this.config.radius || this.current.x > this.game.surfaceWidth + this.config.radius ||
-        this.current.y < 0 - this.config.radius || this.current.y > this.game.surfaceHeight + this.config.radius);
+      hasLeftScreen = (this.current.x < 0 - this.config.radius || this.current.x > this.game.surfaceWidth + this.config.radius
+        || this.current.y < 0 - this.config.radius || this.current.y > this.game.surfaceHeight + this.config.radius);
     }
     return hasLeftScreen;
   }

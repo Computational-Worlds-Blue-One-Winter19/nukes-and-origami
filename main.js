@@ -42,8 +42,12 @@ AM.queueDownload('./img/verticalscrollingcemetary.png');
 AM.queueDownload('./img/verticalscrollingtrees.png');
 AM.queueDownload('./img/verticalscrollingdesert.png');
 AM.queueDownload('./img/seamless_pattern.png');
+AM.queueDownload('./img/missile.png');
+AM.queueDownload('./img/gunup.png');
+AM.queueDownload('./img/chaingun.png');
 AM.queueDownload('./img/explosion-sheet.png');
 AM.queueDownload('./img/white_background.jpg');
+AM.queueDownload('./img/rapid-bullet-horizontal.png');
 
 /**
  * NukesAndOrigami extends GameEngine and adds additional functions
@@ -92,9 +96,11 @@ class NukesAndOrigami extends GameEngine {
     const {
       current,
       hitValue,
-      powerUp,
     } = enemy;
     this.increaseScoreBy(hitValue);
+
+    // Generate a powerUp
+    const powerUp = getRandomPowerUp(this.player.weapon);
     if (powerUp && powerUp.shouldDrop()) {
       this.addEntity(new Projectile(this, {
         origin: {
@@ -126,7 +132,7 @@ class NukesAndOrigami extends GameEngine {
     const result = new Array();
 
     for (const e of this.entities) {
-      if (e instanceof Ship && !e.isPlayer) {
+      if (e instanceof Ship && !e.isPlayer && !e.isDead()) {
         const distance = Math.pow(point.x - e.current.x, 2) + Math.pow(point.y - e.current.y, 2);
 
         if (distance < maxRangeSquared) {
@@ -342,15 +348,16 @@ class NukesAndOrigami extends GameEngine {
     spawn(this);
 
     // override onEnemyDestruction() to respawn scene
-    this.onEnemyDestruction = function() {
-      count--;
-      if (count === 0) {
-        spawn(this);
-      }
-    };
+    // this.onEnemyDestruction = function () {
+    //   count--;
+    //   if (count === 0) {
+    //     spawn(this);
+    //   }
+    // };
 
     // introduce test player
-    this.player = new Plane(this, ship.jaredTestPlane);
+    // this.player = new Plane(this, ship.jaredTestPlane);
+    this.spawnPlayer();
     this.addEntity(this.player);
 
     // introduce test enemies
@@ -376,6 +383,36 @@ class NukesAndOrigami extends GameEngine {
     }
   } // end test scene
 }
+
+/** Call AssetManager to download assets and launch the game. */
+AM.downloadAll(() => {
+  const canvas = document.getElementById('gameWorld');
+  const ctx = canvas.getContext('2d');
+
+  loadSpriteSheets();
+  loadTemplates();
+
+  const game = new NukesAndOrigami();
+  game.init(ctx);
+  game.start();
+
+
+  // add background and player
+  // game.addBackground();
+  game.spawnPlayer();
+
+  // view test stage
+  // game.testScene();
+
+  // run prototype level
+  // game.spawnEnemies();
+
+  initIntroMessage(game);
+
+  // console.log('All Done!');
+  canvas.focus();
+  game.sceneManager.loadBackground(background.beach, 1);
+});
 
 class SceneManager {
   // The scene manager takes a GameEngine to hold references to what it will
@@ -710,36 +747,6 @@ class SceneManager {
   }
 }
 
-/** Call AssetManager to download assets and launch the game. */
-AM.downloadAll(() => {
-  const canvas = document.getElementById('gameWorld');
-  const ctx = canvas.getContext('2d');
-
-  loadSpriteSheets();
-  loadTemplates();
-
-  const game = new NukesAndOrigami();
-  game.init(ctx);
-  game.start();
-
-
-  // add background and player
-  // game.addBackground();
-  game.spawnPlayer();
-
-  // view test stage
-  // game.testScene();
-
-  // run prototype level
-  // game.spawnEnemies();
-
-  initIntroMessage(game);
-
-  // console.log('All Done!');
-  canvas.focus();
-  game.sceneManager.loadBackground(background.beach, 1);
-});
-
 class Background extends Entity {
   constructor(game, spritesheet, verticalPixels, parallaxMult, initOffset) {
     super(game, {
@@ -772,10 +779,35 @@ class Background extends Entity {
   }
 }
 
+class Clouds extends Entity {
+  constructor(game, spritesheet, canvasHeight, point) {
+    super(game, point);
+    this.startY = point.y;
+    this.spritesheet = spritesheet;
+    this.game = game;
+    this.ctx = game.ctx;
+    this.canvasHeight = canvasHeight;
+    this.speedMultiplier = 0;
+  }
+
+  draw() {
+    this.ctx.drawImage(this.spritesheet, this.current.x, this.current.y);
+  }
+
+  update() {
+    // Multiply by 1.25 for parallax effect
+    this.current.y += 1.25 * this.game.backgroundSpeed;
+    if (this.current.y >= this.canvasHeight) {
+      // adjust for overshoot
+      this.current.y = -3840 + (this.current.y - this.canvasHeight);
+    }
+  }
+}
+
+
 class ShieldEntity extends Entity {
   constructor(game, point) {
     super(game, point);
-    // console.log('Inside constructor');
     this.offset = 50;
     this.current.y = point.y;
     this.current.x = point.x;
@@ -817,7 +849,7 @@ class ShieldEntity extends Entity {
 
     const shieldHit = shield.entities.pop();
     shieldHit.removeFromWorld = true;
-    removePowerUp('shield');
+    removeItem('shield', 'powerUp');
     if (!shield.entities.length) {
       shield.hasShield = false;
     }
