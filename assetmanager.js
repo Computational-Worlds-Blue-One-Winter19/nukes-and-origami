@@ -27,7 +27,7 @@ class AssetManager {
       });
 
       img.addEventListener('error', function eventListener() {
-        console.log(`Error loading ${this.src}`);
+        // console.log(`Error loading ${this.src}`);
         that.errorCount += 1;
         if (that.isDone()) callback();
       });

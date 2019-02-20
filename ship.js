@@ -131,6 +131,7 @@ class Ship extends Entity {
     this.config.radius = this.config.radius || 50;
     this.config.hitValue = this.config.hitValue || 1;
     this.snapLine = this.config.snapLine || 100;
+    this.initialDirection = this.config.initialDirection || 'south';
     this.snapLineSpeed = this.config.snapLineSpeed || 300;
     this.hitValue = this.config.hitValue;
 
@@ -268,11 +269,32 @@ class Ship extends Entity {
    * SnapPath: manage the transition to the starting point.
    */
   updateSnapPath() {
-    this.current.y += this.snapLineSpeed * this.game.clockTick;
-
-    // check for arrival at snapLine
-    if (this.current.y >= this.snapLine) {
-      this.snapLine = null;
+    switch (this.initialDirection) {
+      case 'north':
+        this.current.y -= this.snapLineSpeed * this.game.clockTick;
+        // check for arrival at snapLine
+        if (this.current.y <= this.snapLine) {
+          this.snapLine = null;
+        }
+        break;
+      case 'south':
+        this.current.y += this.snapLineSpeed * this.game.clockTick;
+        if (this.current.y >= this.snapLine) {
+          this.snapLine = null;
+        }
+        break;
+      case 'west':
+        this.current.x -= this.snapLineSpeed * this.game.clockTick;
+        if (this.current.x <= this.snapLine) {
+          this.snapLine = null;
+        }
+        break;
+      case 'east':
+        this.current.x += this.snapLineSpeed * this.game.clockTick;
+        if (this.current.x >= this.snapLine) {
+          this.snapLine = null;
+        }
+        break;
     }
   }
 
@@ -322,15 +344,37 @@ class Ship extends Entity {
   static getInitPoint(game, manifest) {
     let x;
     let y;
+
+    // Handle cases for all directions to snap line
+    // Start it in the middle off the screen it will be coming from.
+    switch (manifest.config.initialDirection) {
+      case 'north':
+        x = 512;
+        y = game.surfaceHeight + manifest.config.sprite.default.dimension.frameHeight / 2;
+        break;
+      case 'south':
+        x = 512;
+        y = -manifest.config.sprite.default.dimension.frameHeight / 2;
+        break;
+      case 'west':
+        x = game.surfaceWidth + manifest.config.sprite.default.dimension.frameWidth / 2;
+        y = 768 / 2;
+        break;
+      case 'east':
+        x = -manifest.config.sprite.default.dimension.frameWidth / 2;
+        y = 768 / 2;
+        break;
+      default:
+        // top middle
+        x = 512;
+        y = -manifest.config.sprite.default.dimension.frameHeight / 2;
+        break;
+    }
+
     // Is origin specified?
     if (manifest.config.origin) {
-      // Use one or both parameters specified
-      x = manifest.config.origin.x || 512;
-      y = manifest.config.origin.y || -manifest.config.sprite.default.dimension.frameHeight / 2;
-    } else {
-      // Start it above screen in the middle
-      x = 512;
-      y = -manifest.config.sprite.default.dimension.frameHeight / 2;
+      x = manifest.config.origin.x || x;
+      y = manifest.config.origin.y || y;
     }
 
     return {
@@ -455,7 +499,6 @@ class Plane extends Ship {
           this.sprite = this.left;
         }
       }
-
 
       if ((this.controls.hasInvertedControls && leftKeyCheck)
       || (!this.controls.hasInvertedControls && rightKeyCheck)) {
