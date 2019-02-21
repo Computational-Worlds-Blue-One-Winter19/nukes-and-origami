@@ -127,7 +127,6 @@ function loadTemplates() {
 
       // sorted list; closest enemy at index 0
       if (hitList.length > 0) {
-        console.log('Have enemies in the hit list');
         const {
           x,
           y,
@@ -151,7 +150,6 @@ function loadTemplates() {
     },
   };
 
-  /** This tracks an enemy. */
   projectile.nuke = {
     radius: 3,
     hitValue: 3,
@@ -176,14 +174,18 @@ function loadTemplates() {
         this.current.r = this.current.velocity.radial * this.current.elapsedTime;
       } else if (this.config.radius < this.local.range || this.coll) {
         this.drawNuke = true;
-        this.config.radius += 10;
+        this.config.radius += 30;
         //this.scale += 0.035;
       } else {
         this.removeFromWorld = true;
       }
 
-      // update r
-
+      for (const e of this.game.entities) {
+        if(e instanceof Projectile && this.isCollided(e) && !e.playerShot && !e.payload.powerUp) {
+          e.removeFromWorld = true;
+        }
+      }
+      
     },
 
     draw() {
@@ -192,12 +194,12 @@ function loadTemplates() {
       } else {
         this.ctx.fillStyle = "#ffe900";
         this.ctx.beginPath();
-        this.ctx.arc(this.current.x, this.current.y, this.config.radius + 150, 0 * Math.PI, 2 * Math.PI);
+        this.ctx.arc(this.current.x, this.current.y, this.config.radius + 100, 0 * Math.PI, 2 * Math.PI);
         this.ctx.stroke();
         this.ctx.fill();
         this.ctx.fillStyle = "#ea3209";
         this.ctx.beginPath();
-        this.ctx.arc(this.current.x, this.current.y, this.config.radius + 100, 0 * Math.PI, 2 * Math.PI);
+        this.ctx.arc(this.current.x, this.current.y, this.config.radius + 50, 0 * Math.PI, 2 * Math.PI);
         this.ctx.stroke();
         this.ctx.fill();
         this.ctx.fillStyle = "#d6a400";
@@ -1484,7 +1486,7 @@ function loadTemplates() {
 
   ship.testEagleBoss = {
     config: {
-      health: 1000,
+      health: 10,
       hitValue: 1000,
       radius: 100,
       sprite: sprite.eagleBoss.default,
@@ -2836,6 +2838,24 @@ function loadTemplates() {
       viewTurret: true,
     },
   };
+
+  ring.nuke = {
+    payload: {
+      type: projectile.nuke,
+      speed: 500,
+      rotate: true,
+    },
+    firing: {
+      angle: 270,
+      radius: 30,
+      spread: 0,
+      count: 1,
+      loadTime: 0.01,
+      cooldownTime: 0.25,
+      rapidReload: true,
+      viewTurret: false,
+    },
+  }
 
   ship.player = {
     config: {

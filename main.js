@@ -11,16 +11,22 @@ const scene = {};
 const background = {};
 
 /** These are the image assets declared by filename */
-AM.queueDownload('./img/bat-sheet-HIT.png');
-AM.queueDownload('./img/crane-sheet-HIT.png');
+AM.queueDownload('./img/bat.png');
+AM.queueDownload('./img/bird.png');
+AM.queueDownload('./img/crane.png');
+AM.queueDownload('./img/dove.png');
+AM.queueDownload('./img/eagle.png');
+AM.queueDownload('./img/goose.png');
+AM.queueDownload('./img/hummer.png');
+AM.queueDownload('./img/owl.png');
+AM.queueDownload('./img/pigeon.png');
+AM.queueDownload('./img/swallow.png');
 AM.queueDownload('./img/mini-crane-sheet.png');
 AM.queueDownload('./img/plane-small.png');
 AM.queueDownload('./img/purple-plane-small.png');
 AM.queueDownload('./img/notebook.png');
 AM.queueDownload('./img/bullet.png');
 AM.queueDownload('./img/nuke_single.png');
-AM.queueDownload('./img/owl-sheet-HIT.png');
-AM.queueDownload('./img/dove-sheet-HIT.png');
 AM.queueDownload('./img/rainbow_ball.png');
 AM.queueDownload('./img/shield-icon.png');
 AM.queueDownload('./img/shield.png');
@@ -31,7 +37,6 @@ AM.queueDownload('./img/7_shoot_sheet.png');
 AM.queueDownload('./img/glass_ball.png');
 AM.queueDownload('./img/laser_red.png');
 AM.queueDownload('./img/cut_laser.png');
-AM.queueDownload('./img/swallow-sheet-HIT.png');
 AM.queueDownload('./img/heart.png');
 AM.queueDownload('./img/reverse.png');
 AM.queueDownload('./img/fire-rate.png');
@@ -48,10 +53,6 @@ AM.queueDownload('./img/chaingun.png');
 AM.queueDownload('./img/explosion-sheet.png');
 AM.queueDownload('./img/white_background.jpg');
 AM.queueDownload('./img/rapid-bullet-horizontal.png');
-AM.queueDownload('./img/bird-sheet-HIT.png');
-AM.queueDownload('./img/eagle-boss-sheet.png');
-AM.queueDownload('./img/hummer-sheet.png');
-AM.queueDownload('./img/goose-sheet-HIT.png');
 
 /**
  * NukesAndOrigami extends GameEngine and adds additional functions
@@ -70,7 +71,17 @@ class NukesAndOrigami extends GameEngine {
     this.decelerationAmount = 25;
     this.backgroundSpeed = this.defaultBackgroundSpeed;
 
+    this.sounds = {
+      gameLoop: {
+        path: './audio/Game_Loop_v.1.ogg',
+        // Two instances of a howler are needed to loop sounds, so we'll need
+        // references of these instances to stop or pause music
+        instances: []
+      }
+    }
+
     // Initilize the game board
+
     initializeScoreBoardLives(this.lives);
     this.sceneManager = new SceneManager(this);
   }
@@ -91,6 +102,14 @@ class NukesAndOrigami extends GameEngine {
     // Let our scenemanager do what it needs to with highest precedence
     if (this.sceneManager) {
       this.sceneManager.update();
+    }
+  }
+
+  //Override
+  draw()  {
+    super.draw();
+    if(this.player) {
+      this.player.draw(); //Player over everything
     }
   }
 
@@ -139,7 +158,7 @@ class NukesAndOrigami extends GameEngine {
     const result = new Array();
 
     for (const e of this.entities) {
-      if (e instanceof Ship && !e.isPlayer && !e.isDead()) {
+      if (e instanceof Ship && !e.isPlayer) {
         const distance = Math.pow(point.x - e.current.x, 2) + Math.pow(point.y - e.current.y, 2);
 
         if (distance < maxRangeSquared) {
@@ -365,7 +384,7 @@ class NukesAndOrigami extends GameEngine {
     // introduce test player
     // this.player = new Plane(this, ship.jaredTestPlane);
     this.spawnPlayer();
-    //this.addEntity(this.player);
+    // this.addEntity(this.player);
 
     // introduce test enemies
     function spawn(that) {
@@ -373,17 +392,17 @@ class NukesAndOrigami extends GameEngine {
 
       ship.testDove.config.origin = {
         x: 200,
-        y: -50
+        y: -50,
       };
       that.addEntity(new Ship(that, ship.testDove));
       ship.testDove.config.origin = {
         x: 500,
-        y: -50
+        y: -50,
       };
       that.addEntity(new Ship(that, ship.testDove));
       ship.testDove.config.origin = {
         x: 800,
-        y: -50
+        y: -50,
       };
       ship.testDove.config.snapLine = 380;
       that.addEntity(new Ship(that, ship.testDove));
@@ -403,22 +422,23 @@ AM.downloadAll(() => {
   game.init(ctx);
   game.start();
 
-
   // add background and player
   // game.addBackground();
   game.spawnPlayer();
 
   // view test stage
-  // game.testScene();
+  //game.testScene();
+  game.sceneManager.scenes.push(scene.oneWaveTest);
+  game.sceneManager.scenes.push(scene.easyPaper);
 
-  // run prototype level
+  // run completed levels
+  //initIntroMessage(game);
+
+  // run first prototype level
   // game.spawnEnemies();
 
-  initIntroMessage(game);
-
-  // console.log('All Done!');
   canvas.focus();
-  game.sceneManager.loadBackground(background.beach, 1);
+  //game.sceneManager.loadBackground(background.beach, 1);
 });
 
 class SceneManager {
@@ -453,19 +473,18 @@ class SceneManager {
     this.waitUntilAtDefaultSpeed = false;
 
     this.scenes = new Array();
-    // console.log('constructed')
   }
 
   // Do a cool animation into the new background.
   loadBackground(background, init) {
-    let that = this;
+    const that = this;
     // insert backgrounds on top of previously placed ones
     let i = 0;
     while (this.game.entities[i] instanceof Background) {
       this.game.entities[i].removeOnNextScroll = true;
       i++;
     }
-    background.layers.slice().reverse().forEach(function(bg) {
+    background.layers.slice().reverse().forEach((bg) => {
       if (init) {
         that.game.entities.splice(i, 0, new Background(that.game, bg.layer, bg.verticalPixels, bg.parallaxMult, bg.offset + 768));
       } else {
@@ -516,8 +535,7 @@ class SceneManager {
     for (let i = 0; i < wave.numOfEnemies; i++) {
       // Make shallow copies to not modify the objects.js defaults
       // If path was overridden, put that in the manifestCopy
-      let manifestCopy = JSON.parse(JSON.stringify(wave.ships[i]));
-
+      const manifestCopy = JSON.parse(JSON.stringify(wave.ships[i]));
       manifestCopy.path = wave.paths ? JSON.parse(JSON.stringify(wave.paths[i])) : 0;
       Object.assign(manifestCopy.config.sprite, wave.ships[i].config.sprite);
 
@@ -576,8 +594,8 @@ class SceneManager {
       // Was the location overriden?
       if (wave.initialXPoints) {
         ship.current.x = wave.initialXPoints[i];
-      } else if (ship.initialDirection === 'north' ||
-        ship.initialDirection === 'south') {
+      } else if (ship.initialDirection === 'north'
+        || ship.initialDirection === 'south') {
         ship.current.x = horizontalLocationCounter;
         horizontalLocationCounter += horizontalSpacing;
       }
@@ -585,8 +603,8 @@ class SceneManager {
 
       if (wave.initialYPoints) {
         ship.current.y = wave.initialYPoints[i];
-      } else if (ship.initialDirection === 'west' ||
-        ship.initialDirection === 'east') {
+      } else if (ship.initialDirection === 'west'
+        || ship.initialDirection === 'east') {
         ship.current.y = verticalLocationCounter;
         verticalLocationCounter += verticalSpacing;
       }
@@ -609,7 +627,6 @@ class SceneManager {
     } else {
       // No choreography specified? default is to just load enemies.
       this.loadEnemies(wave);
-      // console.log('loading enemies normally')
     }
   }
 
@@ -682,11 +699,10 @@ class SceneManager {
       return;
     }
 
-    let currentChor = this.choreography[0];
+    const currentChor = this.choreography[0];
 
     // Handle all possible choreography cases here. This will get long.
     switch (currentChor.id) {
-
       case 'accelerateToWarpspeed':
         this.game.backgroundSpeed += this.game.accelerationAmount * this.game.clockTick;
         if (this.game.backgroundSpeed >= this.game.warpBackgroundSpeed) {
@@ -794,7 +810,7 @@ class Background extends Entity {
   constructor(game, spritesheet, verticalPixels, parallaxMult, initOffset) {
     super(game, {
       x: 0,
-      y: initOffset
+      y: initOffset,
     });
     this.spritesheet = spritesheet;
     this.game = game;

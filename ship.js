@@ -17,19 +17,41 @@ class Sprite {
     this.totalTime = config.dimension.timePerFrame * config.dimension.frameCount; // Not set by user
     this.elapsedTime = 0; // Not set by user
     this.currentFrame = 0;
-  }
+    this.hitDuration = 0.08;
+    this.remainingHitDuration = 0;
+    this.remainingHitInterval = 0;
+}
 
   drawFrame(tick, ctx, x, y) {
     this.elapsedTime += tick;
     if (this.time !== 0) {
-      if (this.elapsedTime >= this.totalTimes && this.loop) { // The isDone() function does exactly this. Use either.
+      if (this.elapsedTime >= this.totalTime && this.loop) { // The isDone() function does exactly this. Use either.
         // All frames used. Start over to loop.
         this.elapsedTime = 0;
       }
+
       if (this.loop) {
         this.currentFrame = (Math.floor(this.elapsedTime / this.time)) % this.len;
       } else {
         this.currentFrame = Math.floor(this.elapsedTime / this.time);
+      }
+
+      // handle hit flickering
+      if (this.remainingHitDuration > 0) {
+        this.remainingHitInterval -= tick;
+        this.remainingHitDuration -= tick;
+        if (this.remainingHitInterval < 0 && this.oriY === 0) {
+          //this.remainingHitInterval = this.hit.interval;
+          this.remainingHitInterval = this.hitDuration;
+          this.oriY = this.height;
+        } else if (this.remainingHitInterval < 0) {
+          //this.remainingHitInterval = this.hit.interval;
+          this.remainingHitInterval = this.hitDuration;
+          this.oriY = 0;
+        }
+      } else {
+        // done with this hit so reset oriY
+        this.oriY = 0;
       }
     }
 
@@ -45,14 +67,16 @@ class Sprite {
       locY,
       this.width * this.scale,
       this.height * this.scale);
-    // }
-    // if (this.time !== 0) {
-    //   this.currentFrame += 1;
-    // }
   }
 
   isDone() {
     return this.elapsedTime >= this.totalTime;
+  }
+
+  onHit() {
+    this.remainingHitDuration = this.hitDuration;
+    this.remainingHitInterval = this.hitDuration;
+    this.oriY = this.height;
   }
 }
 
@@ -125,7 +149,7 @@ class Ship extends Entity {
     this.sprite = new Sprite(manifest.config.sprite.default);
     this.defaultSprite = new Sprite(manifest.config.sprite.default);
     this.hitSprite = new Sprite(manifest.config.sprite.hit);
-    this.deathAnimation = new Sprite(sprite.explosion.default);
+    //this.deathAnimation = new Sprite(sprite.explosion.default);
     // store class constants in config
     this.config = Object.assign({}, manifest.config);
     this.config.radius = this.config.radius || 50;
@@ -167,25 +191,27 @@ class Ship extends Entity {
       this.timeSinceHit += this.game.clockTick;
     }
     if (this.timeSinceHit >= 0.1) {
-      //this.defaultSprite.currentFrame = this.sprite.currentFrame - 1;
+      // this.defaultSprite.currentFrame = this.sprite.currentFrame - 1;
       this.sprite = this.defaultSprite;
       this.timeSinceHit = 0;
     }
-    if (this.health <= 0 && this.deathAnimation.isDone()) {
+    if (this.health <= 0) {
       this.disarm();
       this.game.onEnemyDestruction(this);
+      this.game.addEntity(new Death(this.game, this.current.x, this.current.y));
       this.removeFromWorld = true;
+
     }
     super.update();
   }
 
   draw() {
-    if (this.health > 0) { // alive
-      this.sprite.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
-    }
-    if (this.health <= 0) { // dead, draw my explosion
-      this.deathAnimation.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
-    }
+    //if (this.health > 0) { // alive
+    this.sprite.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
+    // }
+    // if (this.health <= 0) { // dead, draw my explosion
+    //   this.deathAnimation.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
+    // }
     this.weapon.draw();
     super.draw();
   }
@@ -219,8 +245,9 @@ class Ship extends Entity {
         //manifest.config.sprite.hit
         //this.sprite.currentFrame
         //this.hitSprite.currentFrame = this.sprite.currentFrame + 1;
-        this.sprite = this.hitSprite;
-        this.timeSinceHit += this.game.clockTick;
+        //this.sprite = this.hitSprite;
+        //this.timeSinceHit += this.game.clockTick;
+        this.sprite.onHit();
       }
     }
   }
@@ -335,10 +362,6 @@ class Ship extends Entity {
         this.idleCount = 0;
       }
     }
-  }
-
-  isDead() {
-    return this.health <= 0;
   }
 
   static getInitPoint(game, manifest) {
@@ -623,7 +646,6 @@ class Plane extends Ship {
         } else { // hit by enemy bullet
           this.game.onPlayerHit(this);
 
-          // console.log('Inside the hit detection');
           // Call the weapon.onHit method to remove turrets if needed
           if (!this.weapon.hasRegularGun) {
             this.weapon.onHit();
@@ -662,6 +684,8 @@ class Weapon {
     this.owner = owner;
     this.slot = new Array();
 
+    this.saveGun = null;
+
     // Used to keep track of any weapons that the player may have picked up, for now
     // the first one is activated
     this.inventory = [];
@@ -669,6 +693,7 @@ class Weapon {
     this.lastTimeAPressed = 0;
     this.originalManifest = null;
 
+    this.hasNuke = false;
 
     // This is to prevent duplicate homing missile weapons from being added to the inventory
     // We can decide how to handle this later
@@ -727,6 +752,7 @@ class Weapon {
 
     // Check if the player is activating a weapon from their inventory
     if (this.owner.game.keysDown.KeyA) {
+
       if (this.lastTimeAPressed === 0) { // record the time the key was pressed
         this.lastTimeAPressed = this.owner.game.timer.gameTime;
 
@@ -744,6 +770,7 @@ class Weapon {
           weaponActivation();
         }
       }
+
     }
 
     // evaluate firing decision
@@ -751,8 +778,18 @@ class Weapon {
       // you could separate these mappings here or just fire all
       // or check if one is ready to play sound.
       // let ready = this.slot[0].ring.isReady;
+
       for (let i = 0; i < this.slot.length; i++) {
-        this.slot[i].ring.fire();
+        const ready = this.slot[i].ring.status.isReady
+        if (ready) {
+          this.slot[i].ring.fire()
+          if(this.hasNuke)  {
+
+            this.slot[0] = Object.assign({}, this.saveGun);
+            this.hasNuke = false;
+            this.saveGun = null;
+          }
+        }
       }
     } else if (!this.owner.isPlayer) {
       // an enemy always fires when ready
@@ -764,7 +801,7 @@ class Weapon {
 
   loadHomingMissile(type, callback) {
     // we can load this and keep count of how many times it has been fired
-
+    console.log("Loading the missile type");
     const maxUse = 1;
 
     if (this.slot.length !== 1) {
@@ -784,6 +821,13 @@ class Weapon {
     });
 
 
+    callback();
+  }
+
+  loadNuke(callback)  {
+    this.saveGun = Object.assign({}, this.slot[0]);
+    this.slot[0].ring = new Ring(this.owner, ring.nuke);
+    this.hasNuke = true;
     callback();
   }
 
@@ -858,23 +902,26 @@ class Weapon {
   }
 
   removeTurret() {
-    if (this.primaryRingManifest.firing.count === 2) { // We need to set the regular gun back
-      this.primaryRingManifest = this.originalManifest;
-      this.hasRegularGun = true;
-    }
     const primary = this.slot[0];
 
     // Decrease the turret count
     this.primaryRingManifest.firing.count -= 1;
 
+    // If the firing count is equal to one we need to switch back to the regular gun
+    if (this.primaryRingManifest.firing.count === 1) {
+      this.primaryRingManifest = this.originalManifest;
+      this.hasRegularGun = true;
+    }
+
+
     // Update the players ring
     primary.ring = new Ring(this.owner, this.primaryRingManifest);
+
   }
 
   onHit() {
     // remove a turret. we could hold on to the previous ones and then swap
     // out and call update again. or just build a new one?
-    // console.log('On hit was called!!!!');
     // for now this can use the ship's hit box. maybe in the future use the ring's?
 
     this.removeTurret();
@@ -1083,6 +1130,15 @@ class Ring {
       return;
     }
 
+    if (this.owner.isPlayer) {
+      var sound = new Howl({
+        src: ['audio/laserShot.mp3'],
+        volume: 0.2,
+      });
+
+      sound.play();
+    }
+
     if (this.config.pattern && --this.status.round > -1) {
       this.fireLine(this.status.round);
       this.status.isReady = false;
@@ -1252,7 +1308,7 @@ class Projectile extends Entity {
       this.onHit = this.payload.onHit;
     }
 
-    if (this.payload.draw)  {
+    if (this.payload.draw) {
       this.draw = this.payload.draw;
     }
 
@@ -1360,6 +1416,26 @@ class Projectile extends Entity {
     ctx.fillStyle = this.colorFill;
     // console.log(this.colorFill);
     ctx.fill();
+  }
+}
+
+class Death  {
+  constructor(game, x, y) {
+    this.game = game;
+    this.ctx = game.ctx;
+    this.x = x;
+    this.y = y;
+    this.sprite = new Sprite(sprite.explosion.default);
+  }
+
+  draw()  {
+    this.sprite.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+  }
+
+  update() {
+    if(this.sprite.isDone())  {
+      this.removeFromWorld = true;
+    }
   }
 }
 
