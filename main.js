@@ -70,7 +70,17 @@ class NukesAndOrigami extends GameEngine {
     this.decelerationAmount = 25;
     this.backgroundSpeed = this.defaultBackgroundSpeed;
 
+    this.sounds = {
+      gameLoop: {
+        path: './audio/Game_Loop_v.1.ogg',
+        // Two instances of a howler are needed to loop sounds, so we'll need 
+        // references of these instances to stop or pause music
+        instances: []
+      }
+    }
+
     // Initilize the game board
+    
     initializeScoreBoardLives(this.lives);
     this.sceneManager = new SceneManager(this);
   }
@@ -363,7 +373,7 @@ class NukesAndOrigami extends GameEngine {
     // introduce test player
     // this.player = new Plane(this, ship.jaredTestPlane);
     this.spawnPlayer();
-    //this.addEntity(this.player);
+    // this.addEntity(this.player);
 
     // introduce test enemies
     function spawn(that) {
@@ -371,17 +381,17 @@ class NukesAndOrigami extends GameEngine {
 
       ship.testDove.config.origin = {
         x: 200,
-        y: -50
+        y: -50,
       };
       that.addEntity(new Ship(that, ship.testDove));
       ship.testDove.config.origin = {
         x: 500,
-        y: -50
+        y: -50,
       };
       that.addEntity(new Ship(that, ship.testDove));
       ship.testDove.config.origin = {
         x: 800,
-        y: -50
+        y: -50,
       };
       ship.testDove.config.snapLine = 380;
       that.addEntity(new Ship(that, ship.testDove));
@@ -456,14 +466,14 @@ class SceneManager {
 
   // Do a cool animation into the new background.
   loadBackground(background, init) {
-    let that = this;
+    const that = this;
     // insert backgrounds on top of previously placed ones
     let i = 0;
     while (this.game.entities[i] instanceof Background) {
       this.game.entities[i].removeOnNextScroll = true;
       i++;
     }
-    background.layers.slice().reverse().forEach(function(bg) {
+    background.layers.slice().reverse().forEach((bg) => {
       if (init) {
         that.game.entities.splice(i, 0, new Background(that.game, bg.layer, bg.verticalPixels, bg.parallaxMult, bg.offset + 768));
       } else {
@@ -514,7 +524,7 @@ class SceneManager {
     for (let i = 0; i < wave.numOfEnemies; i++) {
       // Make shallow copies to not modify the objects.js defaults
       // If path was overridden, put that in the manifestCopy
-      let manifestCopy = JSON.parse(JSON.stringify(wave.ships[i]));
+      const manifestCopy = JSON.parse(JSON.stringify(wave.ships[i]));
       manifestCopy.path = wave.paths ? JSON.parse(JSON.stringify(wave.paths[i])) : 0;
       Object.assign(manifestCopy.config.sprite, wave.ships[i].config.sprite);
 
@@ -550,10 +560,10 @@ class SceneManager {
         }
       }
       if (wave.ships[i].weapon.payload.type.sprite) {
-        manifestCopy.weapon.payload.type.sprite = wave.ships[i].weapon.payload.type.sprite
+        manifestCopy.weapon.payload.type.sprite = wave.ships[i].weapon.payload.type.sprite;
       }
       if (wave.ships[i].weapon.payload.type.image) {
-        manifestCopy.weapon.payload.type.image = wave.ships[i].weapon.payload.type.image
+        manifestCopy.weapon.payload.type.image = wave.ships[i].weapon.payload.type.image;
       }
 
       // The ship constructor **should** copy data; try without Object.assign() here
@@ -563,8 +573,8 @@ class SceneManager {
       // Was the location overriden?
       if (wave.initialXPoints) {
         ship.current.x = wave.initialXPoints[i];
-      } else if (ship.initialDirection === 'north' ||
-        ship.initialDirection === 'south') {
+      } else if (ship.initialDirection === 'north'
+        || ship.initialDirection === 'south') {
         ship.current.x = horizontalLocationCounter;
         horizontalLocationCounter += horizontalSpacing;
       }
@@ -572,8 +582,8 @@ class SceneManager {
 
       if (wave.initialYPoints) {
         ship.current.y = wave.initialYPoints[i];
-      } else if (ship.initialDirection === 'west' ||
-        ship.initialDirection === 'east') {
+      } else if (ship.initialDirection === 'west'
+        || ship.initialDirection === 'east') {
         ship.current.y = verticalLocationCounter;
         verticalLocationCounter += verticalSpacing;
       }
@@ -669,11 +679,10 @@ class SceneManager {
       return;
     }
 
-    let currentChor = this.choreography[0];
+    const currentChor = this.choreography[0];
 
     // Handle all possible choreography cases here. This will get long.
     switch (currentChor.id) {
-
       case 'accelerateToWarpspeed':
         this.game.backgroundSpeed += this.game.accelerationAmount * this.game.clockTick;
         if (this.game.backgroundSpeed >= this.game.warpBackgroundSpeed) {
@@ -777,7 +786,7 @@ class Background extends Entity {
   constructor(game, spritesheet, verticalPixels, parallaxMult, initOffset) {
     super(game, {
       x: 0,
-      y: initOffset
+      y: initOffset,
     });
     this.spritesheet = spritesheet;
     this.game = game;

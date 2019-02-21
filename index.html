@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="./button.css">
     <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
+    <script type="text/javascript" src="./howler.js"></script>
     <script type="text/javascript" src="./gameengine.js"></script>
     <script type="text/javascript" src="./assetmanager.js"></script>
     <script type="text/javascript" src="./gameboard.js"></script>
@@ -99,9 +100,10 @@
         <div class="inventory-container">
             <div class="title">
                 <h2>Weapons</h2>
+                <!-- Wrapper used for the Timer -->
                 <div id="countdown">
                 <div id="countdown-number"></div>
-                    <svg id="circle">
+                    <svg class="timer" id="circle">
                         <circle r="18" cx="20" cy="20"></circle>
                     </svg>
                 </div>
@@ -109,7 +111,6 @@
             <div id="weapon">
             </div>
         </div>
-        <!-- Wrapper used for the Timer -->
         
         <div class="overlay" id="message-overlay">
             <p id="message-line1"></p>
