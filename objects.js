@@ -1881,13 +1881,49 @@ function loadTemplates() {
   scene.bossTest = {
     waves: [
       {
+        choreography: [{
+            id: 'accelerateToWarpspeed',
+          },
+          {
+            id: 'loadBackground',
+            bg: background.white,
+          },
+          {
+            id: 'wait',
+            duration: 0.25,
+          },
+          {
+            id: 'showMessage',
+            text: ['WARNING', 'WARNING'],
+          },
+          {
+            id: 'wait',
+            duration: 3,
+          },
+          {
+            id: 'loadBackground',
+            bg: background.trees,
+          },
+          {
+            id: 'decelerateFromWarpSpeed',
+          },
+          {
+            id: 'hideMessage',
+          },
+        ],
+      },
+      // boss spawn animation
+      // {
+      //
+      // },
+      {
         choreography: [
           {
             id: 'spawnEnemies'
           },
           {
             id: 'wait',
-            duration: 5,
+            duration: 10,
           },
           {
             id: 'swapRing',
@@ -2071,6 +2107,32 @@ function loadTemplates() {
       },
     ],
   };
+
+  scene.endingScene = {
+    waves: [
+      {
+        choreography: [
+          {
+            id: 'showMessage',
+            text: ['Well done!', 'YOU WIN!'],
+          },
+          {
+            id: 'wait',
+            duration: 5
+          },
+          {
+            id: 'showMessage',
+            text: ['You could do better.', 'Try again for a higher score!'],
+          },
+          {
+            id: 'wait',
+            duration: 5
+          },
+
+        ]
+      }
+    ]
+  }
 
   scene.Nathan = {
     background: background.paper,
