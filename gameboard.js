@@ -1,5 +1,63 @@
 const lifeColor = ['red', 'blue', 'aqua', 'oragne', 'green'];
 
+// ---- START Sound related function
+
+function crossfadedLoop(enteringInstance, leavingInstance) {
+  const volume = 0.09;
+  const crossfadeDuration = 1000;
+
+   // Get the sound duration in ms from the Howler engine
+  const soundDuration = Math.floor(enteringInstance._duration * 1000);
+
+
+  // Fade in entering instance
+  const audio = enteringInstance.pos(100).play();
+  enteringInstance.fade(0, volume, crossfadeDuration);
+
+  // Wait for the audio end to fade out entering instance
+  // white fading in leaving instance
+  setTimeout(() => {
+    enteringInstance.fade(volume, 0, crossfadeDuration);
+    crossfadedLoop(leavingInstance, enteringInstance);
+  }, soundDuration - crossfadeDuration);
+}
+
+/**
+ * Helper to build similar instances
+ * @param {String} urls The source path for the audio files
+ * @param {Function} onload Call back method for then the sound is loaded
+ */
+function createHowlerInstance(urls, onload) {
+  return new Howl({
+    src: urls,
+    loop: false,
+    volume: 0,
+    onload,
+  });
+};
+
+function playLoop(soundObject) {
+
+  // Create "slave" instance. This instance is meant
+  // to be played after the first one is done.
+  soundObject.instances.push(createHowlerInstance(['./audio/Game_Loop_v.1.ogg']))
+
+    // Create "master" instance. The onload function passed to
+  // the singleton creator will coordinate the crossfaded loop
+  soundObject.instances.push(createHowlerInstance(['./audio/Game_Loop_v.1.ogg'], () => {
+
+    crossfadedLoop(soundObject.instances[1], soundObject.instances[0]);
+  }));
+
+}
+
+function pauseLoop(soundObject) {
+  for(let i = 0; i < soundObject.instances.length; i++) {
+    soundObject.instances[i].pause();
+  }
+}
+
+// ---- END Sound related function
 /**
  * Updates the score board to reflect the user's current score
  * @param {Int} currentScore
@@ -143,6 +201,8 @@ function hideControlMessage() {
   message.style.display = 'none';
 }
 
+
+
 /**
  * Starts the game by spawning enemies, initializing the scoreboard lives and
  * setting the focus to the canvas
@@ -150,56 +210,16 @@ function hideControlMessage() {
  */
 function startGame(game) {
   game.initializeSceneManager();
-  let id1;
+  
+  playLoop(game.sounds.gameLoop);
 
-  // Play the intro sound
-  const crossfadeDuration = 1000;
-
-
-  const volume = 0.09;
-
-  let instance1; let instance2; let
-    soundDuration;
-
-  // Singleton helper to build similar instances
-  const createHowlerInstance = function (urls, onload) {
-    return new Howl({
-      src: urls,
-      loop: false,
-      volume: 0,
-      onload,
-    });
-  };
-
-  // Create "slave" instance. This instance is meant
-  // to be played after the first one is done.
-  instance2 = createHowlerInstance(['./audio/Game_Loop_v.1.ogg']);
-
-  // Create "master" instance. The onload function passed to
-  // the singleton creator will coordinate the crossfaded loop
-  instance1 = createHowlerInstance(['./audio/Game_Loop_v.1.ogg'], () => {
-    // Get the sound duration in ms from the Howler engine
-    soundDuration = Math.floor(instance1._duration * 1000);
-
-    (function crossfadedLoop(enteringInstance, leavingInstance) {
-      // Fade in entering instance
-      const audio = enteringInstance.pos(100).play();
-      enteringInstance.fade(0, volume, crossfadeDuration);
-
-      // Wait for the audio end to fade out entering instance
-      // white fading in leaving instance
-      setTimeout(() => {
-        enteringInstance.fade(volume, 0, crossfadeDuration);
-        crossfadedLoop(leavingInstance, enteringInstance);
-      }, soundDuration - crossfadeDuration);
-    }(instance1, instance2));
-  });
   // Initilize the game board
   initializeScoreBoardLives(game.lives);
 
   hideMessage('intro-message');
   document.getElementById('gameWorld').focus();
 }
+
 
 function addEvent(element, evnt, funct) {
   if (element.attachEvent) { return element.attachEvent(`on${evnt}`, funct); }

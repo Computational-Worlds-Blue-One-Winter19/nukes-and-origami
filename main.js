@@ -70,6 +70,15 @@ class NukesAndOrigami extends GameEngine {
     this.decelerationAmount = 25;
     this.backgroundSpeed = this.defaultBackgroundSpeed;
 
+    this.sounds = {
+      gameLoop: {
+        path: './audio/Game_Loop_v.1.ogg',
+        // Two instances of a howler are needed to loop sounds, so we'll need 
+        // references of these instances to stop or pause music
+        instances: []
+      }
+    }
+
     // Initilize the game board
     initializeScoreBoardLives(this.lives);
     this.sceneManager = new SceneManager(this);
