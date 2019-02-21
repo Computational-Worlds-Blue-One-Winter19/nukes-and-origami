@@ -210,7 +210,7 @@ function hideControlMessage() {
  */
 function startGame(game) {
   game.initializeSceneManager();
-  
+
   playLoop(game.sounds.gameLoop);
 
   // Initilize the game board

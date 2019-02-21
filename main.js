@@ -428,9 +428,6 @@ AM.downloadAll(() => {
 
   // view test stage
   //game.testScene();
-  game.sceneManager.scenes.push(scene.mikeLevel);
-  game.sceneManager.scenes.push(scene.bossTest);
-  game.sceneManager.scenes.push(scene.endingScene);
 
   // run completed levels
   initIntroMessage(game);
