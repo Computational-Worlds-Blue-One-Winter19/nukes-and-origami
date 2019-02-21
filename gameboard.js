@@ -1,5 +1,63 @@
 const lifeColor = ['red', 'blue', 'aqua', 'oragne', 'green'];
 
+// ---- START Sound related function
+
+function crossfadedLoop(enteringInstance, leavingInstance) {
+  const volume = 0.09;
+  const crossfadeDuration = 1000;
+
+   // Get the sound duration in ms from the Howler engine
+  const soundDuration = Math.floor(enteringInstance._duration * 1000);
+
+
+  // Fade in entering instance
+  const audio = enteringInstance.pos(100).play();
+  enteringInstance.fade(0, volume, crossfadeDuration);
+
+  // Wait for the audio end to fade out entering instance
+  // white fading in leaving instance
+  setTimeout(() => {
+    enteringInstance.fade(volume, 0, crossfadeDuration);
+    crossfadedLoop(leavingInstance, enteringInstance);
+  }, soundDuration - crossfadeDuration);
+}
+
+/**
+ * Helper to build similar instances
+ * @param {String} urls The source path for the audio files
+ * @param {Function} onload Call back method for then the sound is loaded
+ */
+function createHowlerInstance(urls, onload) {
+  return new Howl({
+    src: urls,
+    loop: false,
+    volume: 0,
+    onload,
+  });
+};
+
+function playLoop(soundObject) {
+
+  // Create "slave" instance. This instance is meant
+  // to be played after the first one is done.
+  soundObject.instances.push(createHowlerInstance(['./audio/Game_Loop_v.1.ogg']))
+
+    // Create "master" instance. The onload function passed to
+  // the singleton creator will coordinate the crossfaded loop
+  soundObject.instances.push(createHowlerInstance(['./audio/Game_Loop_v.1.ogg'], () => {
+
+    crossfadedLoop(soundObject.instances[1], soundObject.instances[0]);
+  }));
+
+}
+
+function pauseLoop(soundObject) {
+  for(let i = 0; i < soundObject.instances.length; i++) {
+    soundObject.instances[i].pause();
+  }
+}
+
+// ---- END Sound related function
 /**
  * Updates the score board to reflect the user's current score
  * @param {Int} currentScore
@@ -69,6 +127,7 @@ function removeLifeFromBoard() {
  * @param {Int} lives A heart icon will be drawn for each number of lives that is given
  */
 function initializeScoreBoardLives(lives) {
+  console.log("Adding lifes");
   for (let i = 0; i < lives; i += 1) {
     addLife(lifeColor[i]);
   }
@@ -77,9 +136,13 @@ function initializeScoreBoardLives(lives) {
 /**
  * This function shows a 2 line message to the player.
  */
-function showMessage(line1, line2) {
+function showMessage(line1, line2, isBlinking) {
   const message = document.getElementById('message-overlay');
   message.style.display = 'block';
+
+  if (isBlinking) {
+    message.className += ' blinking';
+  }
   document.getElementById('message-line1').innerHTML = line1;
   document.getElementById('message-line2').innerHTML = line2;
 }
@@ -98,6 +161,7 @@ function showStaticMessage(type) {
 function hideMessage(type) {
   const message = document.getElementById(`${type}`);
   message.style.display = 'none';
+  message.classList.remove('blinking');
 }
 
 
@@ -138,6 +202,8 @@ function hideControlMessage() {
   message.style.display = 'none';
 }
 
+
+
 /**
  * Starts the game by spawning enemies, initializing the scoreboard lives and
  * setting the focus to the canvas
@@ -145,13 +211,17 @@ function hideControlMessage() {
  */
 function startGame(game) {
   game.initializeSceneManager();
+  
+  playLoop(game.sounds.gameLoop);
 
   // Initilize the game board
+  console.log("adding lives");
   initializeScoreBoardLives(game.lives);
 
   hideMessage('intro-message');
   document.getElementById('gameWorld').focus();
 }
+
 
 function addEvent(element, evnt, funct) {
   if (element.attachEvent) { return element.attachEvent(`on${evnt}`, funct); }

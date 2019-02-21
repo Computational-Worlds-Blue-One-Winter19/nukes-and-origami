@@ -707,7 +707,7 @@ function loadTemplates() {
       acceleration: 1,
     },
     firing: {
-      spread: 330,
+      spread: 300,
       radius: 100,
       angle: 270,
       count: 50,
@@ -1694,10 +1694,11 @@ function loadTemplates() {
       {
         layer: AM.getAsset('./img/verticalscrollingtrees.png'),
         offset: -1766 * 2,
+        verticalPixels: 1766,
       },
     ],
   };
-  
+
   background.pattern = {
     layers: [
       {
@@ -1879,6 +1880,90 @@ function loadTemplates() {
     ],
   }
 
+  scene.bossTest = {
+    waves: [
+      {
+        choreography: [{
+            id: 'accelerateToWarpspeed',
+          },
+          {
+            id: 'loadBackground',
+            bg: background.white,
+          },
+          {
+            id: 'wait',
+            duration: 0.25,
+          },
+          {
+            id: 'showMessage',
+            text: ['WARNING', 'WARNING'],
+          },
+          {
+            id: 'wait',
+            duration: 3,
+          },
+          {
+            id: 'loadBackground',
+            bg: background.trees,
+          },
+          {
+            id: 'decelerateFromWarpSpeed',
+          },
+          {
+            id: 'hideMessage',
+          },
+        ],
+      },
+      // boss spawn animation
+      // {
+      //
+      // },
+      {
+        choreography: [
+          {
+            id: 'spawnEnemies'
+          },
+          {
+            id: 'wait',
+            duration: 10,
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.linearTest,
+          },
+        ],
+        numOfEnemies: 1,
+        ships: [ship.swallow],
+        paths: [
+          path.doNothing,
+        ],
+        shipManifestOverride: [{
+          config: {
+            sprite: sprite.swallow.boss,
+            health: 15,
+            snapLineSpeed: 500,
+            hitValue: 2000,
+            snapLine: 250,
+            radius: 200,
+          },
+          weapon: {
+            rotation: {
+              angle: 40,
+              frequency: 10,
+            },
+            firing: {
+              count: 100,
+              radius: 230,
+              loadTime: 0.005,
+            },
+          },
+        }],
+        waitUntilEnemiesGone: true,
+      },
+    ],
+  }
+
   scene.easyPaper = {
     waves: [
       {
@@ -1983,6 +2068,15 @@ function loadTemplates() {
         choreography: [
           {
             id: 'spawnEnemies'
+          },
+          {
+            id: 'wait',
+            duration: 15,
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.linearTest,
           }
         ],
         numOfEnemies: 1,
@@ -2001,12 +2095,12 @@ function loadTemplates() {
           },
           weapon: {
             rotation: {
-              angle: 20,
-              frequency: 6,
+              angle: 40,
+              frequency: 10,
             },
             firing: {
               count: 100,
-              radius: 250,
+              radius: 230,
               loadTime: 0.005,
             },
           },
@@ -2015,6 +2109,32 @@ function loadTemplates() {
       },
     ],
   };
+
+  scene.endingScene = {
+    waves: [
+      {
+        choreography: [
+          {
+            id: 'showMessage',
+            text: ['Well done!', 'YOU WIN!'],
+          },
+          {
+            id: 'wait',
+            duration: 5
+          },
+          {
+            id: 'showMessage',
+            text: ['You could do better.', 'Try again for a higher score!'],
+          },
+          {
+            id: 'wait',
+            duration: 5
+          },
+
+        ]
+      }
+    ]
+  }
 
   scene.Nathan = {
     background: background.paper,
@@ -2108,6 +2228,7 @@ function loadTemplates() {
       speed: 500,
       rotate: true,
     },
+
     firing: {
       angle: 270,
       radius: 0,

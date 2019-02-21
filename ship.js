@@ -191,7 +191,7 @@ class Ship extends Entity {
       this.timeSinceHit += this.game.clockTick;
     }
     if (this.timeSinceHit >= 0.1) {
-      //this.defaultSprite.currentFrame = this.sprite.currentFrame - 1;
+      // this.defaultSprite.currentFrame = this.sprite.currentFrame - 1;
       this.sprite = this.defaultSprite;
       this.timeSinceHit = 0;
     }
@@ -778,6 +778,7 @@ class Weapon {
       // you could separate these mappings here or just fire all
       // or check if one is ready to play sound.
       // let ready = this.slot[0].ring.isReady;
+
       for (let i = 0; i < this.slot.length; i++) {
         const ready = this.slot[0].ring.status.isReady
         if (ready) {
@@ -901,16 +902,21 @@ class Weapon {
   }
 
   removeTurret() {
-     // Decrease the turret count
-     this.primaryRingManifest.firing.count -= 1;
-    if (this.primaryRingManifest.firing.count === 1) { // We need to set the regular gun back
+    const primary = this.slot[0];
+
+    // Decrease the turret count
+    this.primaryRingManifest.firing.count -= 1;
+
+    // If the firing count is equal to one we need to switch back to the regular gun
+    if (this.primaryRingManifest.firing.count === 1) { 
       this.primaryRingManifest = this.originalManifest;
       this.hasRegularGun = true;
     }
-    const primary = this.slot[0];
+
 
     // Update the players ring
     primary.ring = new Ring(this.owner, this.primaryRingManifest);
+
   }
 
   onHit() {
@@ -1124,6 +1130,15 @@ class Ring {
       return;
     }
 
+    if (this.owner.isPlayer) {
+      var sound = new Howl({
+        src: ['audio/laserShot.mp3'],
+        volume: 0.2,
+      });
+      
+      sound.play();
+    }
+
     if (this.config.pattern && --this.status.round > -1) {
       this.fireLine(this.status.round);
       this.status.isReady = false;
@@ -1293,7 +1308,7 @@ class Projectile extends Entity {
       this.onHit = this.payload.onHit;
     }
 
-    if (this.payload.draw)  {
+    if (this.payload.draw) {
       this.draw = this.payload.draw;
     }
 

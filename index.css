@@ -153,7 +153,7 @@ div.key {
 }
 
 /* Blinking text */
-.blinking{
+.blinking p {
     animation:blinkingText 0.8s infinite;
 }
 @keyframes blinkingText{
@@ -241,7 +241,7 @@ center > h4 {
     line-height: 40px;
   }
   
-  svg {
+  .timer {
     /* At the start we don't want to show the circle for the timer */
     display: none;
     position: absolute;
@@ -252,7 +252,7 @@ center > h4 {
     transform: rotateY(-180deg) rotateZ(-90deg);
   }
   
-  svg circle {
+  #circle {
     stroke-dasharray: 113px;
     stroke-dashoffset: 0px;
     stroke-linecap: round;
