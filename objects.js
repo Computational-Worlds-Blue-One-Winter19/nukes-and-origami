@@ -165,13 +165,13 @@ function loadTemplates() {
       range: 1200, // maximum
     },
 
-    init()  {
+    init() {
       this.current.angle = toRadians(270);
-      this.local.target = this.current.y/2;
+      this.local.target = this.current.y / 2;
     },
 
     update() {
-      if(this.local.target < this.current.y)  {
+      if (this.local.target < this.current.y) {
         this.current.velocity.radial += this.current.acceleration.radial * this.current.elapsedTime;
         this.current.r = this.current.velocity.radial * this.current.elapsedTime;
       } else if (this.config.radius < this.local.range || this.coll) {
@@ -186,8 +186,8 @@ function loadTemplates() {
 
     },
 
-    draw()  {
-      if(!this.drawNuke)  {
+    draw() {
+      if (!this.drawNuke) {
         this.drawImage(this.ctx, this.current.x, this.current.y);
       } else {
         this.ctx.fillStyle = "#ffe900";
@@ -265,7 +265,6 @@ function loadTemplates() {
 
   projectile.microBullet = {
     radius: 3,
-
     // use init() for any pre-processing immediately prior to launch.
     // for player bullets we can easily say "only travel up"
     init() {
@@ -1458,6 +1457,31 @@ function loadTemplates() {
     weapon: ring.gap1,
   };
 
+  ship.eagle = {
+    config: {
+      health: 5,
+      hitValue: 5,
+      radius: 150,
+      sprite: sprite.eagleBoss.default,
+    },
+    weapon: [{
+        ring: ring.gammaOne,
+        offset: {
+          x: -30,
+          y: 20,
+        },
+      },
+      {
+        ring: ring.gammaOne,
+        offset: {
+          x: 30,
+          y: 20,
+        },
+      },
+    ],
+
+  }
+
   ship.dodgeOwl = {
     config: {
       health: 3,
@@ -1698,8 +1722,7 @@ function loadTemplates() {
   };
 
   background.pattern = {
-    layers: [
-      {
+    layers: [{
         layer: AM.getAsset('./img/seamless_pattern.png'),
         offset: -1023 + 768,
         verticalPixels: 1023,
@@ -1783,9 +1806,70 @@ function loadTemplates() {
   ];
 
   /** *** SCENES **** */
-  scene.oneWaveTest = {
+  scene.enemyTest = {
     waves: [
       {
+        numOfEnemies: 7,
+        ships: new Array(7).fill(ship.bat),
+        paths: [
+          path.strafeRight,
+          path.strafeLeft,
+          path.strafeRight,
+          path.strafeLeft,
+          path.strafeRight,
+          path.strafeLeft,
+          path.strafeRight,
+        ],
+        shipManifestOverride: [{
+            config: {
+              initialDirection: 'east',
+              snapLine: 100,
+            },
+          },
+          {
+            config: {
+              initialDirection: 'west',
+              snapLine: 924,
+            },
+          },
+          {
+            config: {
+              initialDirection: 'east',
+              snapLine: 100,
+            },
+          },
+          {
+            config: {
+              initialDirection: 'west',
+              snapLine: 924,
+            },
+          },
+          {
+            config: {
+              initialDirection: 'east',
+              snapLine: 100,
+            },
+          },
+          {
+            config: {
+              initialDirection: 'west',
+              snapLine: 924,
+            },
+          },
+          {
+            config: {
+              initialDirection: 'east',
+              snapLine: 100,
+            },
+          },
+        ],
+        waitUntilEnemiesGone: true,
+      },
+    ]
+  }
+
+  scene.oneWaveTest = {
+    waves: [{
         choreography: [{
             id: 'accelerateToWarpspeed',
           },
@@ -1807,7 +1891,7 @@ function loadTemplates() {
           },
           {
             id: 'loadBackground',
-            bg: background.trees,
+            bg: background.desert,
           },
           {
             id: 'decelerateFromWarpSpeed',
@@ -1829,8 +1913,7 @@ function loadTemplates() {
           path.strafeLeft,
           path.strafeRight,
         ],
-        shipManifestOverride: [
-          {
+        shipManifestOverride: [{
             config: {
               initialDirection: 'east',
               snapLine: 100,
@@ -1880,81 +1963,68 @@ function loadTemplates() {
 
   scene.bossTest = {
     waves: [
-      {
-        choreography: [{
-            id: 'accelerateToWarpspeed',
-          },
-          {
-            id: 'loadBackground',
-            bg: background.white,
-          },
-          {
-            id: 'wait',
-            duration: 0.25,
-          },
-          {
-            id: 'showMessage',
-            text: ['WARNING', 'WARNING'],
-          },
-          {
-            id: 'wait',
-            duration: 3,
-          },
-          {
-            id: 'loadBackground',
-            bg: background.trees,
-          },
-          {
-            id: 'decelerateFromWarpSpeed',
-          },
-          {
-            id: 'hideMessage',
-          },
-        ],
-      },
+      // {
+      //   choreography: [{
+      //       id: 'accelerateToWarpspeed',
+      //     },
+      //     {
+      //       id: 'loadBackground',
+      //       bg: background.white,
+      //     },
+      //     {
+      //       id: 'wait',
+      //       duration: 0.25,
+      //     },
+      //     {
+      //       id: 'showMessage',
+      //       text: ['WARNING', 'WARNING'],
+      //     },
+      //     {
+      //       id: 'wait',
+      //       duration: 3,
+      //     },
+      //     {
+      //       id: 'loadBackground',
+      //       bg: background.trees,
+      //     },
+      //     {
+      //       id: 'decelerateFromWarpSpeed',
+      //     },
+      //     {
+      //       id: 'hideMessage',
+      //     },
+      //   ],
+      // },
       // boss spawn animation
       // {
       //
       // },
       {
-        choreography: [
-          {
+        choreography: [{
             id: 'spawnEnemies'
           },
           {
             id: 'wait',
-            duration: 10,
+            duration: 0,
           },
-          {
-            id: 'swapRing',
-            enemyIndex: 0,
-            ring: ring.linearTest,
-          },
+          // {
+          //   id: 'swapRing',
+          //   enemyIndex: 0,
+          //   ring: ring.linearTest,
+          // },
         ],
         numOfEnemies: 1,
-        ships: [ship.swallow],
+        ships: [ship.eagle],
         paths: [
           path.doNothing,
         ],
         shipManifestOverride: [{
           config: {
-            sprite: sprite.swallow.boss,
             health: 15,
             snapLineSpeed: 500,
             hitValue: 2000,
             snapLine: 250,
             radius: 200,
-          },
-          weapon: {
-            rotation: {
-              angle: 40,
-              frequency: 10,
-            },
-            firing: {
-              count: 100,
-              radius: 230,
-              loadTime: 0.005,
-            },
           },
         }],
         waitUntilEnemiesGone: true,
@@ -1963,8 +2033,7 @@ function loadTemplates() {
   }
 
   scene.easyPaper = {
-    waves: [
-      {
+    waves: [{
         choreography: [{
             id: 'accelerateToWarpspeed',
           },
@@ -2028,8 +2097,7 @@ function loadTemplates() {
             weapon: ring.trackingTest1,
           },
           // don't do anything to dove
-          {
-          },
+          {},
           // change second bat to tracking test
           {
             weapon: ring.trackingTest1,
@@ -2063,8 +2131,7 @@ function loadTemplates() {
       },
       // BOSS SWALLOW!!
       {
-        choreography: [
-          {
+        choreography: [{
             id: 'spawnEnemies'
           },
           {
@@ -2109,35 +2176,31 @@ function loadTemplates() {
   };
 
   scene.endingScene = {
-    waves: [
-      {
-        choreography: [
-          {
-            id: 'showMessage',
-            text: ['Well done!', 'YOU WIN!'],
-          },
-          {
-            id: 'wait',
-            duration: 5
-          },
-          {
-            id: 'showMessage',
-            text: ['You could do better.', 'Try again for a higher score!'],
-          },
-          {
-            id: 'wait',
-            duration: 5
-          },
+    waves: [{
+      choreography: [{
+          id: 'showMessage',
+          text: ['Well done!', 'YOU WIN!'],
+        },
+        {
+          id: 'wait',
+          duration: 5
+        },
+        {
+          id: 'showMessage',
+          text: ['You could do better.', 'Try again for a higher score!'],
+        },
+        {
+          id: 'wait',
+          duration: 5
+        },
 
-        ]
-      }
-    ]
+      ]
+    }]
   }
 
   scene.Nathan = {
     background: background.paper,
-    waves: [
-      {
+    waves: [{
         numOfEnemies: 1,
         ships: [ship.testEagleBoss],
         paths: [path.doNothing],
@@ -2249,8 +2312,8 @@ function loadTemplates() {
       },
     },
     weapon: [{
-      ring: ring.player,
-    },
+        ring: ring.player,
+      },
       // {
       //   ring: ring.enemyHoming,
       //   offset: { x: -12, y: 44}
@@ -2424,19 +2487,19 @@ function loadTemplates() {
       [90, 175, 30],
     ],
     weapon: [{
-      ring: ring.gammaOne,
-      offset: {
-        x: -30,
-        y: 20,
+        ring: ring.gammaOne,
+        offset: {
+          x: -30,
+          y: 20,
+        },
       },
-    },
-    {
-      ring: ring.gammaOne,
-      offset: {
-        x: 30,
-        y: 20,
+      {
+        ring: ring.gammaOne,
+        offset: {
+          x: 30,
+          y: 20,
+        },
       },
-    },
     ],
   };
 
@@ -2492,73 +2555,73 @@ function loadTemplates() {
     player: ship.jaredTestPlane,
 
     waves: [{
-      numOfEnemies: 3,
-      ships: new Array(3).fill(ship.jaredTestDove),
-      paths: new Array(10).fill(path.straightDown),
-      initialXPoints: [ // omit to evenly space enemies.
-        600, 400, 700, 250, 400, 850, 450, 380, 770, 650,
-      ],
-      shipManifestOverride: [{
-        config: {
-          waitOffScreen: 0,
-        },
+        numOfEnemies: 3,
+        ships: new Array(3).fill(ship.jaredTestDove),
+        paths: new Array(10).fill(path.straightDown),
+        initialXPoints: [ // omit to evenly space enemies.
+          600, 400, 700, 250, 400, 850, 450, 380, 770, 650,
+        ],
+        shipManifestOverride: [{
+            config: {
+              waitOffScreen: 0,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 2,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 3,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 5,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 8,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 9,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 11,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 15,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 18,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 19,
+            },
+          },
+        ],
+        waitUntilEnemiesGone: true,
       },
       {
-        config: {
-          waitOffScreen: 2,
+        warpSpeed: true,
+        message: {
+          type: 'warning',
+          text: ['Jared Test Scene', '--CUT--'],
+          duration: 6,
         },
       },
-      {
-        config: {
-          waitOffScreen: 3,
-        },
-      },
-      {
-        config: {
-          waitOffScreen: 5,
-        },
-      },
-      {
-        config: {
-          waitOffScreen: 8,
-        },
-      },
-      {
-        config: {
-          waitOffScreen: 9,
-        },
-      },
-      {
-        config: {
-          waitOffScreen: 11,
-        },
-      },
-      {
-        config: {
-          waitOffScreen: 15,
-        },
-      },
-      {
-        config: {
-          waitOffScreen: 18,
-        },
-      },
-      {
-        config: {
-          waitOffScreen: 19,
-        },
-      },
-      ],
-      waitUntilEnemiesGone: true,
-    },
-    {
-      warpSpeed: true,
-      message: {
-        type: 'warning',
-        text: ['Jared Test Scene', '--CUT--'],
-        duration: 6,
-      },
-    },
     ],
   };
 
@@ -2621,19 +2684,19 @@ function loadTemplates() {
       [90, 175, 30],
     ],
     weapon: [{
-      ring: ring.gammaOne,
-      offset: {
-        x: -30,
-        y: 20,
+        ring: ring.gammaOne,
+        offset: {
+          x: -30,
+          y: 20,
+        },
       },
-    },
-    {
-      ring: ring.gammaOne,
-      offset: {
-        x: 30,
-        y: 20,
+      {
+        ring: ring.gammaOne,
+        offset: {
+          x: 30,
+          y: 20,
+        },
       },
-    },
     ],
   };
 
@@ -2655,113 +2718,113 @@ function loadTemplates() {
 
   scene.gamma = {
     waves: [{
-      numOfEnemies: 10,
-      ships: new Array(10).fill(ship.jaredTestDove),
-      paths: new Array(10).fill(path.straightDown),
-      initialXPoints: [ // omit to evenly space enemies.
-        600, 400, 700, 250, 400, 850, 450, 380, 770, 650,
-      ],
-      shipManifestOverride: [{
-        config: {
-          waitOffScreen: 0,
-        },
+        numOfEnemies: 10,
+        ships: new Array(10).fill(ship.jaredTestDove),
+        paths: new Array(10).fill(path.straightDown),
+        initialXPoints: [ // omit to evenly space enemies.
+          600, 400, 700, 250, 400, 850, 450, 380, 770, 650,
+        ],
+        shipManifestOverride: [{
+            config: {
+              waitOffScreen: 0,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 2,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 3,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 5,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 8,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 9,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 11,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 15,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 18,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 19,
+            },
+          },
+        ],
+        waitUntilEnemiesGone: true,
       },
       {
-        config: {
-          waitOffScreen: 2,
-        },
+        numOfEnemies: 6,
+        ships: new Array(10).fill(ship.jaredTestCrane),
+        paths: new Array(10).fill(path.backAndForth),
+        initialXPoints: [ // omit to evenly space enemies.
+          100, 300, 600, 120, 700, 550,
+        ],
+        shipManifestOverride: [{
+            config: {
+              waitOffScreen: 5,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 9,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 11,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 13,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 17,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 20,
+            },
+          },
+        ],
+        waitUntilEnemiesGone: true,
       },
       {
-        config: {
-          waitOffScreen: 3,
+        warpSpeed: true,
+        message: {
+          type: 'warning',
+          text: ['First Wave Complete', '--CUT--'],
+          duration: 6,
         },
       },
-      {
-        config: {
-          waitOffScreen: 5,
-        },
-      },
-      {
-        config: {
-          waitOffScreen: 8,
-        },
-      },
-      {
-        config: {
-          waitOffScreen: 9,
-        },
-      },
-      {
-        config: {
-          waitOffScreen: 11,
-        },
-      },
-      {
-        config: {
-          waitOffScreen: 15,
-        },
-      },
-      {
-        config: {
-          waitOffScreen: 18,
-        },
-      },
-      {
-        config: {
-          waitOffScreen: 19,
-        },
-      },
-      ],
-      waitUntilEnemiesGone: true,
-    },
-    {
-      numOfEnemies: 6,
-      ships: new Array(10).fill(ship.jaredTestCrane),
-      paths: new Array(10).fill(path.backAndForth),
-      initialXPoints: [ // omit to evenly space enemies.
-        100, 300, 600, 120, 700, 550,
-      ],
-      shipManifestOverride: [{
-        config: {
-          waitOffScreen: 5,
-        },
-      },
-      {
-        config: {
-          waitOffScreen: 9,
-        },
-      },
-      {
-        config: {
-          waitOffScreen: 11,
-        },
-      },
-      {
-        config: {
-          waitOffScreen: 13,
-        },
-      },
-      {
-        config: {
-          waitOffScreen: 17,
-        },
-      },
-      {
-        config: {
-          waitOffScreen: 20,
-        },
-      },
-      ],
-      waitUntilEnemiesGone: true,
-    },
-    {
-      warpSpeed: true,
-      message: {
-        type: 'warning',
-        text: ['First Wave Complete', '--CUT--'],
-        duration: 6,
-      },
-    },
       // BOSS SWALLOW!!
       // {
       //   numOfEnemies: 1,

@@ -517,7 +517,7 @@ class SceneManager {
       let manifestCopy = JSON.parse(JSON.stringify(wave.ships[i]));
       manifestCopy.path = wave.paths ? JSON.parse(JSON.stringify(wave.paths[i])) : 0;
       Object.assign(manifestCopy.config.sprite, wave.ships[i].config.sprite);
-
+      console.log(wave.ships[i])
       if (wave.shipManifestOverride) {
         // do a recursive merge
         if (wave.shipManifestOverride[i].config) {
@@ -549,12 +549,15 @@ class SceneManager {
           }
         }
       }
-      if (wave.ships[i].weapon.payload.type.sprite) {
-        manifestCopy.weapon.payload.type.sprite = wave.ships[i].weapon.payload.type.sprite
+      if (wave.ships[i].weapon.payload && wave.ships[i].weapon.payload.type) {
+        if (wave.ships[i].weapon.payload.type.sprite) {
+          manifestCopy.weapon.payload.type.sprite = wave.ships[i].weapon.payload.type.sprite
+        }
+        if (wave.ships[i].weapon.payload.type.image) {
+          manifestCopy.weapon.payload.type.image = wave.ships[i].weapon.payload.type.image
+        }
       }
-      if (wave.ships[i].weapon.payload.type.image) {
-        manifestCopy.weapon.payload.type.image = wave.ships[i].weapon.payload.type.image
-      }
+      console.log(manifestCopy);
 
       // The ship constructor **should** copy data; try without Object.assign() here
       // let ship = new Ship(this.game, Object.assign({}, manifestCopy));

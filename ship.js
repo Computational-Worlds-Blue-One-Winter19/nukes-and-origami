@@ -623,7 +623,7 @@ class Plane extends Ship {
         } else { // hit by enemy bullet
           this.game.onPlayerHit(this);
 
-          console.log('Inside the hit detection');
+          // console.log('Inside the hit detection');
           // Call the weapon.onHit method to remove turrets if needed
           if (!this.weapon.hasRegularGun) {
             this.weapon.onHit();
@@ -874,7 +874,7 @@ class Weapon {
   onHit() {
     // remove a turret. we could hold on to the previous ones and then swap
     // out and call update again. or just build a new one?
-    console.log('On hit was called!!!!');
+    // console.log('On hit was called!!!!');
     // for now this can use the ship's hit box. maybe in the future use the ring's?
 
     this.removeTurret();
@@ -1266,6 +1266,7 @@ class Projectile extends Entity {
       this.drawImage = this.drawSpriteFrame;
     } else {
       this.drawImage = this.drawCircle;
+      this.colorFill = manifest.payload.type.colorFill;
     }
 
     this.config.rotate = this.payload.rotate || false;
@@ -1356,6 +1357,8 @@ class Projectile extends Entity {
     ctx.beginPath();
     ctx.arc(x, y, this.config.radius, 0 * Math.PI, 2 * Math.PI);
     ctx.stroke();
+    ctx.fillStyle = this.colorFill;
+    // console.log(this.colorFill);
     ctx.fill();
   }
 }
