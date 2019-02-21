@@ -778,7 +778,7 @@ class SceneManager {
         this.enemiesInWave = false;
         // Also advance choreography if we have it.
         if (this.choreography) {
-          this.choreography.shift();
+          this.choreography = 0;
         }
       }
     }

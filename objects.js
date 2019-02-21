@@ -716,6 +716,64 @@ function loadTemplates() {
     },
   };
 
+  ring.laserGapDown = {
+    payload: {
+      type: projectile.testLaser,
+      speed: 100,
+      acceleration: 1,
+    },
+    firing: {
+      spread: 330,
+      radius: 100,
+      angle: 270,
+      count: 100,
+      loadTime: 0.01,
+      cooldownTime: 0.2,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: true,
+    },
+  };
+
+  ring.laserGapLeft = {
+    payload: {
+      type: projectile.testLaser,
+      speed: 100,
+      acceleration: 1,
+    },
+    firing: {
+      spread: 330,
+      radius: 100,
+      angle: 180,
+      count: 100,
+      loadTime: 0.01,
+      cooldownTime: 0.2,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: true,
+    },
+  };
+
+  ring.laserGapRight = {
+    payload: {
+      type: projectile.testLaser,
+      speed: 100,
+      acceleration: 1,
+    },
+    firing: {
+      spread: 330,
+      radius: 100,
+      angle: 0,
+      count: 100,
+      loadTime: 0.01,
+      cooldownTime: 0.2,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: true,
+    },
+  };
+
+
   ring.singleDown = {
     payload: {
       type: projectile.circleBullet,
@@ -1525,7 +1583,7 @@ function loadTemplates() {
       radius: 150,
       sprite: sprite.eagleBoss.default,
     },
-    weapon: ring.gap1,
+    weapon: ring.laserGapDown,
 
   }
 
@@ -2267,12 +2325,111 @@ function loadTemplates() {
           },
           {
             id: 'wait',
-            duration: 5,
+            duration: 15,
           },
           {
             id: 'swapRing',
             enemyIndex: 0,
-            ring: ring.linearTest,
+            ring: ring.slowLaserTargetPlayer,
+          },
+          {
+            id: 'wait',
+            duration: 7,
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.laserGapRight,
+          },
+          {
+            id: 'wait',
+            duration: 7,
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.slowLaserTargetPlayer,
+          },
+          {
+            id: 'wait',
+            duration: 7,
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.laserGapLeft,
+          },
+          {
+            id: 'wait',
+            duration: 7,
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.slowLaserTargetPlayer,
+          },
+          {
+            id: 'wait',
+            duration: 7,
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.laserGapRight,
+          },
+          {
+            id: 'wait',
+            duration: 7,
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.slowLaserTargetPlayer,
+          },
+          {
+            id: 'wait',
+            duration: 7,
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.laserGapLeft,
+          },
+          {
+            id: 'wait',
+            duration: 7,
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.slowLaserTargetPlayer,
+          },
+          {
+            id: 'wait',
+            duration: 7,
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.laserGapRight,
+          },
+          {
+            id: 'wait',
+            duration: 7,
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.slowLaserTargetPlayer,
+          },
+          {
+            id: 'wait',
+            duration: 7,
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.laserGapLeft,
           },
         ],
         numOfEnemies: 1,
@@ -2282,13 +2439,12 @@ function loadTemplates() {
         ],
         shipManifestOverride: [{
           config: {
-            health: 15,
-            snapLineSpeed: 500,
+            health: 200,
+            snapLineSpeed: 50,
             hitValue: 2000,
             snapLine: 250,
             radius: 200,
           },
-          weapon: ring.gap1,
         }],
         waitUntilEnemiesGone: true,
       },
