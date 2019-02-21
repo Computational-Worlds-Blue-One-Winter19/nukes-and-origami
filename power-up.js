@@ -235,6 +235,41 @@ class ChainGun extends PowerUp {
   }
 }
 
+class Nuke extends PowerUp {
+  constructor(dropRate) {
+    super(dropRate);
+
+    this.entity = null;
+
+    this.manifest = {
+      owner: null,
+      angle: Math.PI / 2,
+      payload: {
+        type: {
+          sprite: sprite.rainbowBall.default,
+          radius: 30,
+        },
+        speed: 60,
+        powerUp(entity) {
+          if (!containsType('nuke'))  {
+            addItem('./img/rainbow_ball.png', 'nuke', 'weapon');
+            entity.weapon.inventory.push(() => {
+              // Pushing the function that will be used to activate the powerUp by the player
+              entity.weapon.loadNuke( () => {
+              // send a callback to run this function if loadHomingMissle() is successful
+                removeItem('nuke', 'weapon');
+
+              // Start the timer
+              // startTimer(20, entity.weapon.removeHomingMissile, entity.weapon);
+              });
+            });
+          }
+        }
+      }
+    };
+  }
+}
+
 class MultiGun extends PowerUp {
   constructor(dropRate) {
     super(dropRate);
@@ -297,7 +332,7 @@ function getRandomPowerUp(weapon) {
   }
 
   if (!containsType('chainGun')) {
-    POWERUPS.push(new MultiGun(100));
+    POWERUPS.push(new Nuke(100));
   }
 
 

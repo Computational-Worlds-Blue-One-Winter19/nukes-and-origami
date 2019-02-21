@@ -2052,7 +2052,7 @@ function loadTemplates() {
   // Default player ring
   ring.player = {
     payload: {
-      type: projectile.nuke,
+      type: projectile.paperBall,
       speed: 500,
       rotate: true,
     },
@@ -2119,6 +2119,24 @@ function loadTemplates() {
       viewTurret: true,
     },
   };
+
+  ring.nuke = {
+    payload: {
+      type: projectile.nuke,
+      speed: 500,
+      rotate: true,
+    },
+    firing: {
+      angle: 270,
+      radius: 30,
+      spread: 0,
+      count: 1,
+      loadTime: 0.01,
+      cooldownTime: 0.25,
+      rapidReload: true,
+      viewTurret: false,
+    },
+  }
 
   ship.player = {
     config: {

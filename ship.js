@@ -685,6 +685,8 @@ class Weapon {
     this.owner = owner;
     this.slot = new Array();
 
+    this.saveGun = null;
+
     // Used to keep track of any weapons that the player may have picked up, for now
     // the first one is activated
     this.inventory = [];
@@ -692,6 +694,7 @@ class Weapon {
     this.lastTimeAPressed = 0;
     this.originalManifest = null;
 
+    this.hasNuke = false;
 
     // This is to prevent duplicate homing missile weapons from being added to the inventory
     // We can decide how to handle this later
@@ -750,6 +753,7 @@ class Weapon {
 
     // Check if the player is activating a weapon from their inventory
     if (this.owner.game.keysDown.KeyA) {
+      
       if (this.lastTimeAPressed === 0) { // record the time the key was pressed
         this.lastTimeAPressed = this.owner.game.timer.gameTime;
 
@@ -767,6 +771,7 @@ class Weapon {
           weaponActivation();
         }
       }
+      
     }
 
     // evaluate firing decision
@@ -776,6 +781,13 @@ class Weapon {
       // let ready = this.slot[0].ring.isReady;
       for (let i = 0; i < this.slot.length; i++) {
         this.slot[i].ring.fire();
+      }
+      if(this.hasNuke)  {
+        this.slot[0] = Object.assign({}, this.saveGun);
+        console.log("loaded");
+        console.log(this.saveGun);
+        this.hasNuke = false;
+        this.saveGun = null;
       }
     } else if (!this.owner.isPlayer) {
       // an enemy always fires when ready
@@ -807,6 +819,15 @@ class Weapon {
     });
 
 
+    callback();
+  }
+
+  loadNuke(callback)  {
+    this.saveGun = Object.assign({}, this.slot[0]);
+    console.log("saving:");
+    console.log(this.saveGun);
+    this.slot[0].ring = new Ring(this.owner, ring.nuke);
+    this.hasNuke = true;
     callback();
   }
 
