@@ -859,17 +859,21 @@ class Weapon {
   }
 
   removeTurret() {
-    if (this.primaryRingManifest.firing.count === 2) { // We need to set the regular gun back
-      this.primaryRingManifest = this.originalManifest;
-      this.hasRegularGun = true;
-    }
     const primary = this.slot[0];
 
     // Decrease the turret count
     this.primaryRingManifest.firing.count -= 1;
 
+    // If the firing count is equal to one we need to switch back to the regular gun
+    if (this.primaryRingManifest.firing.count === 1) { 
+      this.primaryRingManifest = this.originalManifest;
+      this.hasRegularGun = true;
+    }
+
+
     // Update the players ring
     primary.ring = new Ring(this.owner, this.primaryRingManifest);
+
   }
 
   onHit() {

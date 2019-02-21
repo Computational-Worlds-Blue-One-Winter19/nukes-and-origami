@@ -80,6 +80,7 @@ class NukesAndOrigami extends GameEngine {
     }
 
     // Initilize the game board
+    
     initializeScoreBoardLives(this.lives);
     this.sceneManager = new SceneManager(this);
   }
