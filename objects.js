@@ -3227,7 +3227,7 @@ function loadTemplates() {
 
   ship.gammaDove = {
     config: {
-      health: 3,
+      health: 2,
       hitValue: 3,
       radius: 70,
       sprite: sprite.dove.default,
@@ -3258,7 +3258,7 @@ function loadTemplates() {
 
   ship.gammaCrane = {
     config: {
-      health: 12,
+      health: 5,
       hitValue: 3,
       radius: 70,
       sprite: sprite.crane.default,
@@ -3275,7 +3275,7 @@ function loadTemplates() {
   scene.gamma = {
     waves: [{
         numOfEnemies: 10,
-        ships: new Array(10).fill(ship.jaredTestDove),
+        ships: new Array(10).fill(ship.gammaDove),
         paths: new Array(10).fill(path.straightDown),
         initialXPoints: [ // omit to evenly space enemies.
           600, 400, 700, 250, 400, 850, 450, 380, 770, 650,
@@ -3335,7 +3335,7 @@ function loadTemplates() {
       },
       {
         numOfEnemies: 6,
-        ships: new Array(10).fill(ship.jaredTestCrane),
+        ships: new Array(10).fill(ship.gammaCrane),
         paths: new Array(10).fill(path.backAndForth),
         initialXPoints: [ // omit to evenly space enemies.
           100, 300, 600, 120, 700, 550,
