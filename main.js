@@ -86,8 +86,9 @@ class NukesAndOrigami extends GameEngine {
 
   initializeSceneManager() {
     // load completed levels
-    this.sceneManager.scenes.push(scene.oneWaveTest);
+    this.sceneManager.scenes.push(scene.bossTest);
     this.sceneManager.scenes.push(scene.easyPaper);
+    this.sceneManager.scenes.push(scene.endingScene);
   }
 
   // Override
@@ -662,25 +663,15 @@ class SceneManager {
     }
   }
 
-  handleEnemyWaveCompletion() {
-    // Are we waiting for enemies to be killed/go off screen before we
-    // continue?
-    if (this.wave.waitUntilEnemiesGone) {
-      if (this.entitiesInWave.length == 0) {
-        this.wave = false;
-        this.waveTimer = 0;
-        // Also advance choreography if we have it.
-        if (this.choreography) {
-          this.choreography.shift();
-        }
-      }
-    }
-  }
-
   // A choreographed wave calls this method to update.
   choreographyUpdate() {
     // Is choreography over?
     if (this.choreography.length == 0) {
+      // Are there enemies we are waiting for?
+      if (this.enemiesInWave) {
+        this.handleEnemyWaveCompletion();
+        return;
+      }
       this.wave = false;
       this.waveTimer = 0;
       this.choreography = 0;
@@ -732,6 +723,11 @@ class SceneManager {
           if (this.waveTimer >= currentChor.duration) {
             this.choreography.shift();
           }
+          // Also check if the enemies are dead
+          if (this.enemiesInWave) {
+            // console.log('checking dead');
+            this.handleEnemyWaveCompletion();
+          }
         } else {
           this.waveTimer = 0;
           currentChor.init = true;
@@ -747,14 +743,40 @@ class SceneManager {
         // only spawn enemies once
         if (!currentChor.init) {
           this.loadEnemies(this.wave);
+          this.enemiesInWave = true;
           currentChor.init = true;
         }
+        this.choreography.shift();
         break;
 
       case 'loadBackground':
         this.loadBackground(currentChor.bg);
         this.choreography.shift();
         break;
+
+      case 'swapRing':
+        // If it exists,
+        if (this.entitiesInWave[currentChor.enemyIndex]) {
+          this.entitiesInWave[currentChor.enemyIndex].initializeWeapon(currentChor.ring);
+        }
+        this.choreography.shift();
+        break;
+    }
+  }
+
+  handleEnemyWaveCompletion() {
+    // Are we waiting for enemies to be killed/go off screen before we
+    // continue?
+    if (this.wave.waitUntilEnemiesGone) {
+      if (this.entitiesInWave.length == 0) {
+        this.wave = false;
+        this.waveTimer = 0;
+        this.enemiesInWave = false;
+        // Also advance choreography if we have it.
+        if (this.choreography) {
+          this.choreography.shift();
+        }
+      }
     }
   }
 }
