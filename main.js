@@ -415,7 +415,8 @@ AM.downloadAll(() => {
 
   // view test stage
   // game.testScene();
-  game.sceneManager.scenes.push(scene.Nathan);
+  game.sceneManager.scenes.push(scene.oneWaveTest);
+  game.sceneManager.scenes.push(scene.easyPaper);
 
   // run completed levels
   //initIntroMessage(game);

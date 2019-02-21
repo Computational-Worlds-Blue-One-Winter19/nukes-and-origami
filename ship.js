@@ -196,6 +196,7 @@ class Ship extends Entity {
       this.timeSinceHit = 0;
     }
     if (this.health <= 0) {
+      console.log("DEAD");
       this.disarm();
       this.game.onEnemyDestruction(this);
       this.game.addEntity(new Death(this.game, this.current.x, this.current.y));
@@ -881,14 +882,13 @@ class Weapon {
   }
 
   removeTurret() {
-    if (this.primaryRingManifest.firing.count === 2) { // We need to set the regular gun back
+     // Decrease the turret count
+     this.primaryRingManifest.firing.count -= 1;
+    if (this.primaryRingManifest.firing.count === 1) { // We need to set the regular gun back
       this.primaryRingManifest = this.originalManifest;
       this.hasRegularGun = true;
     }
     const primary = this.slot[0];
-
-    // Decrease the turret count
-    this.primaryRingManifest.firing.count -= 1;
 
     // Update the players ring
     primary.ring = new Ring(this.owner, this.primaryRingManifest);
