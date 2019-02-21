@@ -2049,7 +2049,7 @@ function loadTemplates() {
   // Default player ring
   ring.player = {
     payload: {
-      type: projectile.paperBall,
+      type: projectile.nuke,
       speed: 500,
       rotate: true,
     },

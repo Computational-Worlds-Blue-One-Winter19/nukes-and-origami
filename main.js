@@ -92,6 +92,14 @@ class NukesAndOrigami extends GameEngine {
     }
   }
 
+  //Override
+  draw()  {
+    super.draw();
+    if(this.player) {
+      this.player.draw(); //Player over everything
+    }
+  }
+
   increaseLivesCount() {
     this.lives += 1;
   }
