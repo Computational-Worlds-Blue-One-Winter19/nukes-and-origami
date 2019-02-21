@@ -185,7 +185,7 @@ function loadTemplates() {
           e.removeFromWorld = true;
         }
       }
-      
+
     },
 
     draw() {
@@ -3170,14 +3170,18 @@ function loadTemplates() {
         ],
         waitUntilEnemiesGone: true,
       },
-      {
-        warpSpeed: true,
-        message: {
-          type: 'warning',
-          text: ['Jared Test Scene', '--CUT--'],
-          duration: 6,
-        },
-      },
+      // {
+      //   choreography: [
+      //   {
+      //     id: 'accelerateToWarpspeed',
+      //   },
+      //   {
+      //     id: 'showMessage',
+      //     text: ['Jared Test Scene', '--CUT--'],
+      //     duration: 6,
+      //   },
+      // ],
+      // },
     ],
   };
 
@@ -3375,11 +3379,13 @@ function loadTemplates() {
       },
       {
         warpSpeed: true,
-        message: {
-          type: 'warning',
-          text: ['First Wave Complete', '--CUT--'],
-          duration: 6,
-        },
+        choreography: [
+          {
+            type: 'message',
+            text: ['First Wave Complete', '--CUT--'],
+            duration: 6,
+          },
+        ]
       },
       // BOSS SWALLOW!!
       // {
