@@ -149,7 +149,7 @@ class Ship extends Entity {
     this.sprite = new Sprite(manifest.config.sprite.default);
     this.defaultSprite = new Sprite(manifest.config.sprite.default);
     this.hitSprite = new Sprite(manifest.config.sprite.hit);
-    this.deathAnimation = new Sprite(sprite.explosion.default);
+    //this.deathAnimation = new Sprite(sprite.explosion.default);
     // store class constants in config
     this.config = Object.assign({}, manifest.config);
     this.config.radius = this.config.radius || 50;
@@ -195,21 +195,23 @@ class Ship extends Entity {
       this.sprite = this.defaultSprite;
       this.timeSinceHit = 0;
     }
-    if (this.health <= 0 && this.deathAnimation.isDone()) {
+    if (this.health <= 0) {
       this.disarm();
       this.game.onEnemyDestruction(this);
+      this.game.addEntity(new Death(this.game, this.current.x, this.current.y));
       this.removeFromWorld = true;
+
     }
     super.update();
   }
 
   draw() {
-    if (this.health > 0) { // alive
-      this.sprite.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
-    }
-    if (this.health <= 0) { // dead, draw my explosion
-      this.deathAnimation.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
-    }
+    //if (this.health > 0) { // alive
+    this.sprite.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
+    // }
+    // if (this.health <= 0) { // dead, draw my explosion
+    //   this.deathAnimation.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
+    // }
     this.weapon.draw();
     super.draw();
   }
@@ -360,10 +362,6 @@ class Ship extends Entity {
         this.idleCount = 0;
       }
     }
-  }
-
-  isDead() {
-    return this.health <= 0;
   }
 
   static getInitPoint(game, manifest) {
@@ -1382,6 +1380,26 @@ class Projectile extends Entity {
     ctx.arc(x, y, this.config.radius, 0 * Math.PI, 2 * Math.PI);
     ctx.stroke();
     ctx.fill();
+  }
+}
+
+class Death  {
+  constructor(game, x, y) {
+    this.game = game;
+    this.ctx = game.ctx;
+    this.x = x;
+    this.y = y;
+    this.sprite = new Sprite(sprite.explosion.default);
+  }
+
+  draw()  {
+    this.sprite.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+  }
+
+  update() {
+    if(this.sprite.isDone())  {
+      this.removeFromWorld = true;
+    }
   }
 }
 

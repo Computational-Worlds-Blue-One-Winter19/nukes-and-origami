@@ -1386,7 +1386,7 @@ function loadTemplates() {
 
   ship.testEagleBoss = {
     config: {
-      health: 1000,
+      health: 10,
       hitValue: 1000,
       radius: 100,
       sprite: sprite.eagleBoss.default,

@@ -137,7 +137,7 @@ class NukesAndOrigami extends GameEngine {
     const result = new Array();
 
     for (const e of this.entities) {
-      if (e instanceof Ship && !e.isPlayer && !e.isDead()) {
+      if (e instanceof Ship && !e.isPlayer) {
         const distance = Math.pow(point.x - e.current.x, 2) + Math.pow(point.y - e.current.y, 2);
 
         if (distance < maxRangeSquared) {
