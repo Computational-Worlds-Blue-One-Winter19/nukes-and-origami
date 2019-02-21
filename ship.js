@@ -196,7 +196,6 @@ class Ship extends Entity {
       this.timeSinceHit = 0;
     }
     if (this.health <= 0) {
-      console.log("DEAD");
       this.disarm();
       this.game.onEnemyDestruction(this);
       this.game.addEntity(new Death(this.game, this.current.x, this.current.y));
@@ -1294,6 +1293,7 @@ class Projectile extends Entity {
     this.config.rotate = this.payload.rotate || false;
     this.customUpdate = this.payload.update;
     this.playerShot = (this.owner === game.player);
+    console.log(this);
   }
 
   /** Computes new position in polar coordinates using current velocity and acceleration.

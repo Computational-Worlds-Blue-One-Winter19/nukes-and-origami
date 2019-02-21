@@ -151,7 +151,6 @@ function loadTemplates() {
     },
   };
 
-  /** This tracks an enemy. */
   projectile.nuke = {
     radius: 3,
     hitValue: 3,
@@ -176,13 +175,17 @@ function loadTemplates() {
         this.current.r = this.current.velocity.radial * this.current.elapsedTime;
       } else if (this.config.radius < this.local.range || this.coll) {
         this.drawNuke = true;
-        this.config.radius += 10;
+        this.config.radius += 30;
         //this.scale += 0.035;
       } else {
         this.removeFromWorld = true;
       }
 
-      // update r
+      for (const e of this.game.entities) {
+        if(e instanceof Projectile && this.isCollided(e) && !e.playerShot && !e.payload.powerUp) {
+          e.removeFromWorld = true;
+        }
+      }
       
     },
 
@@ -192,12 +195,12 @@ function loadTemplates() {
       } else {
         this.ctx.fillStyle = "#ffe900";
         this.ctx.beginPath();
-        this.ctx.arc(this.current.x, this.current.y, this.config.radius + 150, 0 * Math.PI, 2 * Math.PI);
+        this.ctx.arc(this.current.x, this.current.y, this.config.radius + 100, 0 * Math.PI, 2 * Math.PI);
         this.ctx.stroke();
         this.ctx.fill();
         this.ctx.fillStyle = "#ea3209";
         this.ctx.beginPath();
-        this.ctx.arc(this.current.x, this.current.y, this.config.radius + 100, 0 * Math.PI, 2 * Math.PI);
+        this.ctx.arc(this.current.x, this.current.y, this.config.radius + 50, 0 * Math.PI, 2 * Math.PI);
         this.ctx.stroke();
         this.ctx.fill();
         this.ctx.fillStyle = "#d6a400";
@@ -2049,7 +2052,7 @@ function loadTemplates() {
   // Default player ring
   ring.player = {
     payload: {
-      type: projectile.paperBall,
+      type: projectile.nuke,
       speed: 500,
       rotate: true,
     },
