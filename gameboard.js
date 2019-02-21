@@ -150,7 +150,50 @@ function hideControlMessage() {
  */
 function startGame(game) {
   game.initializeSceneManager();
+  let id1;
 
+  // Play the intro sound
+  const crossfadeDuration = 100;
+
+
+  const volume = 0.5;
+
+  let instance1; let instance2; let
+    soundDuration;
+
+  // Singleton helper to build similar instances
+  const createHowlerInstance = function (urls, onload) {
+    return new Howl({
+      src: urls,
+      loop: false,
+      volume: 0,
+      onload,
+    });
+  };
+
+  // Create "slave" instance. This instance is meant
+  // to be played after the first one is done.
+  instance2 = createHowlerInstance(['./audio/Game_Loop_v.1.ogg']);
+
+  // Create "master" instance. The onload function passed to
+  // the singleton creator will coordinate the crossfaded loop
+  instance1 = createHowlerInstance(['./audio/Game_Loop_v.1.ogg'], () => {
+    // Get the sound duration in ms from the Howler engine
+    soundDuration = Math.floor(instance1._duration * 1000);
+
+    (function crossfadedLoop(enteringInstance, leavingInstance) {
+      // Fade in entering instance
+      const audio = enteringInstance.pos(100).play();
+      enteringInstance.fade(volume, volume, crossfadeDuration);
+
+      // Wait for the audio end to fade out entering instance
+      // white fading in leaving instance
+      setTimeout(() => {
+        enteringInstance.fade(volume, volume, crossfadeDuration);
+        crossfadedLoop(leavingInstance, enteringInstance);
+      }, soundDuration - crossfadeDuration);
+    }(instance1, instance2));
+  });
   // Initilize the game board
   initializeScoreBoardLives(game.lives);
 
