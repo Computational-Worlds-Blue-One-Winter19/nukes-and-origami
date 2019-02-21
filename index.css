@@ -134,7 +134,7 @@ div.key {
 }
 
 /* Blinking text */
-.blinking{
+.blinking p {
     animation:blinkingText 0.8s infinite;
 }
 @keyframes blinkingText{
