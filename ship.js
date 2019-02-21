@@ -780,7 +780,7 @@ class Weapon {
       // let ready = this.slot[0].ring.isReady;
 
       for (let i = 0; i < this.slot.length; i++) {
-        const ready = this.slot[0].ring.status.isReady
+        const ready = this.slot[i].ring.status.isReady
         if (ready) {
           this.slot[i].ring.fire()
           if(this.hasNuke)  {
@@ -801,7 +801,7 @@ class Weapon {
 
   loadHomingMissile(type, callback) {
     // we can load this and keep count of how many times it has been fired
-
+    console.log("Loading the missile type");
     const maxUse = 1;
 
     if (this.slot.length !== 1) {

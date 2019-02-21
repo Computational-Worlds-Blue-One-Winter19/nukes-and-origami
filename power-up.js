@@ -219,13 +219,14 @@ class ChainGun extends PowerUp {
             addItem('./img/chaingun.png', 'chainGun', 'weapon');
             // entity.weapon.hasChainGun = true;
             entity.weapon.inventory.push(() => {
+
               // Pushing the function that will be used to activate the powerUp by the player
               entity.weapon.loadHomingMissile(ring.chainGun, () => {
               // send a callback to run this function if loadHomingMissle() is successful
                 removeItem('chainGun', 'weapon');
 
               // Start the timer
-              // startTimer(20, entity.weapon.removeHomingMissile, entity.weapon);
+              startTimer(20, entity.weapon.removeHomingMissile, entity.weapon);
               });
             });
           }
@@ -322,8 +323,8 @@ class InvertedControls extends PowerUp {
 
 // From the collection of implemented powerups, retrieves and return a random one
 function getRandomPowerUp(weapon) {
-  const POWERUPS = [new InvertedControls(100), new Shield(100), new ExtraLife(100), new RapidFire(100)];
-  //const POWERUPS = [];
+  const POWERUPS  = [new InvertedControls(100), new Shield(100), new ExtraLife(100), new RapidFire(100)];
+  // const POWERUPS = [];
 
   // No need to drop more missiles if the player already has one loaded, easy to modify if we decide to drop them
   // down the road
