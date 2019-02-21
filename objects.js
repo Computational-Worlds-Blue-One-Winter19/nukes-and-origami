@@ -2135,6 +2135,7 @@ function loadTemplates() {
           50, 50, 50, 50,
         ]
       },
+
       // geese zig zag in and stop, others just enter from left and right, all shooting
       // lasers at player
       {
@@ -2185,6 +2186,133 @@ function loadTemplates() {
           100, 100, 300, 300,
         ]
       },
+    ]
+  }
+
+  scene.mikeLevel = {
+    waves: [
+        {
+          choreography: [
+            {
+              id: 'accelerateToWarpspeed',
+            },
+            {
+              id: 'loadBackground',
+              bg: background.white,
+            },
+            {
+              id: 'wait',
+              duration: 0.25,
+            },
+            {
+              id: 'showMessage',
+              text: ['GET READY', 'LEVEL 1 START'],
+            },
+            {
+              id: 'wait',
+              duration: 3,
+            },
+            {
+              id: 'loadBackground',
+              bg: background.paper,
+            },
+            {
+              id: 'decelerateFromWarpSpeed',
+            },
+            {
+              id: 'hideMessage',
+            },
+          ],
+        },
+      // four hummingbirds fly left then come down
+      {
+        numOfEnemies: 4,
+        ships: new Array(4).fill(ship.hummer),
+        paths: new Array(4).fill(path.downSlow),
+        shipManifestOverride: [{
+            config: {
+              initialDirection: 'west',
+              snapLine: 100,
+            },
+          },
+          {
+            config: {
+              initialDirection: 'west',
+              snapLine: 374,
+              waitOffScreen: 1
+            },
+          },
+          {
+            config: {
+              initialDirection: 'west',
+              snapLine: 648,
+              waitOffScreen: 2
+            },
+          },
+          {
+            config: {
+              initialDirection: 'west',
+              snapLine:922,
+              waitOffScreen: 3
+            },
+          },
+        ],
+        waitUntilEnemiesGone: true,
+        initialYPoints: [
+          50, 50, 50, 50,
+        ]
+      },
+      // geese zig zag in and stop, others just enter from left and right, all shooting
+      // lasers at player
+      {
+        numOfEnemies: 4,
+        ships: [
+          ship.goose,
+          ship.goose,
+          ship.bat,
+          ship.bat,
+        ],
+        paths: [
+          path.sawtoothLeftStop,
+          path.sawtoothRightStop,
+          path.doNothing,
+          path.doNothing,
+        ],
+        shipManifestOverride: [{
+            config: {
+              initialDirection: 'west',
+              snapLine: 924,
+            },
+            weapon: ring.slowLaserTargetPlayer,
+          },
+          {
+            config: {
+              initialDirection: 'east',
+              snapLine: 100,
+            },
+            weapon: ring.slowLaserTargetPlayer,
+          },
+          {
+            config: {
+              initialDirection: 'west',
+              snapLine: 824,
+            },
+            weapon: ring.slowLaserTargetPlayer,
+          },
+          {
+            config: {
+              initialDirection: 'east',
+              snapLine:200,
+            },
+            weapon: ring.slowLaserTargetPlayer,
+          },
+        ],
+        waitUntilEnemiesGone: true,
+        initialYPoints: [
+          100, 100, 300, 300,
+        ]
+      },
+
     ]
   }
 
@@ -2283,42 +2411,31 @@ function loadTemplates() {
 
   scene.bossTest = {
     waves: [
-      // {
-      //   choreography: [{
-      //       id: 'accelerateToWarpspeed',
-      //     },
-      //     {
-      //       id: 'loadBackground',
-      //       bg: background.white,
-      //     },
-      //     {
-      //       id: 'wait',
-      //       duration: 0.25,
-      //     },
-      //     {
-      //       id: 'showMessage',
-      //       text: ['WARNING', 'WARNING'],
-      //     },
-      //     {
-      //       id: 'wait',
-      //       duration: 3,
-      //     },
-      //     {
-      //       id: 'loadBackground',
-      //       bg: background.trees,
-      //     },
-      //     {
-      //       id: 'decelerateFromWarpSpeed',
-      //     },
-      //     {
-      //       id: 'hideMessage',
-      //     },
-      //   ],
-      // },
-      // boss spawn animation
-      // {
-      //
-      // },
+      {
+        choreography: [{
+            id: 'accelerateToWarpspeed',
+          },
+          {
+            id: 'wait',
+            duration: 0.25,
+          },
+          {
+            id: 'showMessage',
+            type: 'warning',
+            text: ['WARNING', 'A BOSS APPROACHES'],
+          },
+          {
+            id: 'wait',
+            duration: 3,
+          },
+          {
+            id: 'decelerateFromWarpSpeed',
+          },
+          {
+            id: 'hideMessage',
+          },
+        ],
+      },
       {
         choreography: [{
             id: 'spawnEnemies'
@@ -2439,7 +2556,7 @@ function loadTemplates() {
         ],
         shipManifestOverride: [{
           config: {
-            health: 200,
+            health: 500,
             snapLineSpeed: 50,
             hitValue: 2000,
             snapLine: 250,

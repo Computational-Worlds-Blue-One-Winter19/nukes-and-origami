@@ -77,9 +77,10 @@ class NukesAndOrigami extends GameEngine {
 
   initializeSceneManager() {
     // load completed levels
+    this.sceneManager.scenes.push(scene.mikeLevel);
     this.sceneManager.scenes.push(scene.bossTest);
-    this.sceneManager.scenes.push(scene.waveBank);
-    this.sceneManager.scenes.push(scene.easyPaper);
+    // this.sceneManager.scenes.push(scene.waveBank);
+    // this.sceneManager.scenes.push(scene.easyPaper);
     this.sceneManager.scenes.push(scene.endingScene);
   }
 
@@ -710,7 +711,11 @@ class SceneManager {
             this.choreography.shift();
           }
         } else {
-          showMessage(currentChor.text[0], currentChor.text[1]);
+          if (currentChor.type === 'warning') {
+            showMessage(currentChor.text[0], currentChor.text[1], 1);
+          } else {
+            showMessage(currentChor.text[0], currentChor.text[1]);
+          }
           // If duration isn't specified, just move on
           if (!currentChor.duration) {
             this.choreography.shift();
