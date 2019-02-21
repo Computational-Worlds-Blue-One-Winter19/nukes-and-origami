@@ -1293,7 +1293,6 @@ class Projectile extends Entity {
     this.config.rotate = this.payload.rotate || false;
     this.customUpdate = this.payload.update;
     this.playerShot = (this.owner === game.player);
-    console.log(this);
   }
 
   /** Computes new position in polar coordinates using current velocity and acceleration.
