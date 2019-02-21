@@ -153,7 +153,7 @@ function startGame(game) {
   let id1;
 
   // Play the intro sound
-  const crossfadeDuration = 100;
+  const crossfadeDuration = 50;
 
 
   const volume = 0.5;
@@ -184,12 +184,12 @@ function startGame(game) {
     (function crossfadedLoop(enteringInstance, leavingInstance) {
       // Fade in entering instance
       const audio = enteringInstance.pos(100).play();
-      enteringInstance.fade(volume, volume, crossfadeDuration);
+      enteringInstance.fade(0, volume, crossfadeDuration);
 
       // Wait for the audio end to fade out entering instance
       // white fading in leaving instance
       setTimeout(() => {
-        enteringInstance.fade(volume, volume, crossfadeDuration);
+        enteringInstance.fade(volume, 0, crossfadeDuration);
         crossfadedLoop(leavingInstance, enteringInstance);
       }, soundDuration - crossfadeDuration);
     }(instance1, instance2));
