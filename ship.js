@@ -646,7 +646,6 @@ class Plane extends Ship {
         } else { // hit by enemy bullet
           this.game.onPlayerHit(this);
 
-          console.log('Inside the hit detection');
           // Call the weapon.onHit method to remove turrets if needed
           if (!this.weapon.hasRegularGun) {
             this.weapon.onHit();
@@ -780,14 +779,16 @@ class Weapon {
       // or check if one is ready to play sound.
       // let ready = this.slot[0].ring.isReady;
       for (let i = 0; i < this.slot.length; i++) {
-        this.slot[i].ring.fire();
-      }
-      if(this.hasNuke)  {
-        this.slot[0] = Object.assign({}, this.saveGun);
-        console.log("loaded");
-        console.log(this.saveGun);
-        this.hasNuke = false;
-        this.saveGun = null;
+        const ready = this.slot[0].ring.status.isReady
+        if (ready) {
+          this.slot[i].ring.fire()
+          if(this.hasNuke)  {
+
+            this.slot[0] = Object.assign({}, this.saveGun);
+            this.hasNuke = false;
+            this.saveGun = null;
+          }
+        }
       }
     } else if (!this.owner.isPlayer) {
       // an enemy always fires when ready
@@ -824,8 +825,6 @@ class Weapon {
 
   loadNuke(callback)  {
     this.saveGun = Object.assign({}, this.slot[0]);
-    console.log("saving:");
-    console.log(this.saveGun);
     this.slot[0].ring = new Ring(this.owner, ring.nuke);
     this.hasNuke = true;
     callback();
@@ -917,7 +916,6 @@ class Weapon {
   onHit() {
     // remove a turret. we could hold on to the previous ones and then swap
     // out and call update again. or just build a new one?
-    console.log('On hit was called!!!!');
     // for now this can use the ship's hit box. maybe in the future use the ring's?
 
     this.removeTurret();

@@ -414,9 +414,9 @@ AM.downloadAll(() => {
   game.spawnPlayer();
 
   // view test stage
-  // game.testScene();
-  game.sceneManager.scenes.push(scene.oneWaveTest);
-  game.sceneManager.scenes.push(scene.easyPaper);
+  game.testScene();
+  // game.sceneManager.scenes.push(scene.oneWaveTest);
+  // game.sceneManager.scenes.push(scene.easyPaper);
 
   // run completed levels
   //initIntroMessage(game);
@@ -460,7 +460,6 @@ class SceneManager {
     this.waitUntilAtDefaultSpeed = false;
 
     this.scenes = new Array();
-    // console.log('constructed')
   }
 
   // Do a cool animation into the new background.
@@ -605,7 +604,6 @@ class SceneManager {
     } else {
       // No choreography specified? default is to just load enemies.
       this.loadEnemies(wave);
-      // console.log('loading enemies normally')
     }
   }
 

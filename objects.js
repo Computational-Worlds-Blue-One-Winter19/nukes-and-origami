@@ -127,7 +127,6 @@ function loadTemplates() {
 
       // sorted list; closest enemy at index 0
       if (hitList.length > 0) {
-        console.log('Have enemies in the hit list');
         const {
           x,
           y,

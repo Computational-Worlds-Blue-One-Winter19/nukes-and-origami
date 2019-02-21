@@ -254,10 +254,8 @@ function startTimer(time, callBack, weapon) {
     stopTimer(timer);
     callBack(weapon);
   };
-  console.log('Starting the timer');
   // Sets the number being shown in the timer
   weapon.timer = setInterval(() => {
-    console.log(`Weapon timer is ${weapon.timer}`);
     countdown = --countdown <= 0 ? finished(weapon.timer) : countdown;
 
     countdownNumberElement.textContent = countdown;
