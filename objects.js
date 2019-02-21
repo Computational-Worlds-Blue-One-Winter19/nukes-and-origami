@@ -705,7 +705,7 @@ function loadTemplates() {
       acceleration: 1,
     },
     firing: {
-      spread: 330,
+      spread: 300,
       radius: 100,
       angle: 270,
       count: 50,
@@ -1878,6 +1878,54 @@ function loadTemplates() {
     ],
   }
 
+  scene.bossTest = {
+    waves: [
+      {
+        choreography: [
+          {
+            id: 'spawnEnemies'
+          },
+          {
+            id: 'wait',
+            duration: 40000,
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.linearTest,
+          },
+        ],
+        numOfEnemies: 1,
+        ships: [ship.swallow],
+        paths: [
+          path.doNothing,
+        ],
+        shipManifestOverride: [{
+          config: {
+            sprite: sprite.swallow.boss,
+            health: 1,
+            snapLineSpeed: 500,
+            hitValue: 2000,
+            snapLine: 250,
+            radius: 200,
+          },
+          weapon: {
+            rotation: {
+              angle: 40,
+              frequency: 10,
+            },
+            firing: {
+              count: 100,
+              radius: 230,
+              loadTime: 0.005,
+            },
+          },
+        }],
+        waitUntilEnemiesGone: true,
+      },
+    ],
+  }
+
   scene.easyPaper = {
     waves: [
       {
@@ -1982,6 +2030,15 @@ function loadTemplates() {
         choreography: [
           {
             id: 'spawnEnemies'
+          },
+          {
+            id: 'wait',
+            duration: 15,
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.linearTest,
           }
         ],
         numOfEnemies: 1,
@@ -2000,12 +2057,12 @@ function loadTemplates() {
           },
           weapon: {
             rotation: {
-              angle: 20,
-              frequency: 6,
+              angle: 40,
+              frequency: 10,
             },
             firing: {
               count: 100,
-              radius: 250,
+              radius: 230,
               loadTime: 0.005,
             },
           },
