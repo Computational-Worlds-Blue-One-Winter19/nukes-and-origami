@@ -68,6 +68,7 @@ class GameEngine {
     this.surfaceHeight = null;
     this.keysDown = [];
     this.stats = new Stats();
+    this.player;
   }
 
   init(ctx) {

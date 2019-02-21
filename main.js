@@ -11,16 +11,22 @@ const scene = {};
 const background = {};
 
 /** These are the image assets declared by filename */
-AM.queueDownload('./img/bat-sheet-HIT.png');
-AM.queueDownload('./img/crane-sheet-HIT.png');
+AM.queueDownload('./img/bat.png');
+AM.queueDownload('./img/bird.png');
+AM.queueDownload('./img/crane.png');
+AM.queueDownload('./img/dove.png');
+AM.queueDownload('./img/eagle.png');
+AM.queueDownload('./img/goose.png');
+AM.queueDownload('./img/hummer.png');
+AM.queueDownload('./img/owl.png');
+AM.queueDownload('./img/pigeon.png');
+AM.queueDownload('./img/swallow.png');
 AM.queueDownload('./img/mini-crane-sheet.png');
 AM.queueDownload('./img/plane-small.png');
 AM.queueDownload('./img/purple-plane-small.png');
 AM.queueDownload('./img/notebook.png');
 AM.queueDownload('./img/bullet.png');
 AM.queueDownload('./img/nuke_single.png');
-AM.queueDownload('./img/owl-sheet-HIT.png');
-AM.queueDownload('./img/dove-sheet-HIT.png');
 AM.queueDownload('./img/rainbow_ball.png');
 AM.queueDownload('./img/shield-icon.png');
 AM.queueDownload('./img/shield.png');
@@ -31,7 +37,6 @@ AM.queueDownload('./img/7_shoot_sheet.png');
 AM.queueDownload('./img/glass_ball.png');
 AM.queueDownload('./img/laser_red.png');
 AM.queueDownload('./img/cut_laser.png');
-AM.queueDownload('./img/swallow-sheet-HIT.png');
 AM.queueDownload('./img/heart.png');
 AM.queueDownload('./img/reverse.png');
 AM.queueDownload('./img/fire-rate.png');
@@ -48,10 +53,6 @@ AM.queueDownload('./img/chaingun.png');
 AM.queueDownload('./img/explosion-sheet.png');
 AM.queueDownload('./img/white_background.jpg');
 AM.queueDownload('./img/rapid-bullet-horizontal.png');
-AM.queueDownload('./img/bird-sheet-HIT.png');
-AM.queueDownload('./img/eagle-boss-sheet.png');
-AM.queueDownload('./img/hummer-sheet.png');
-AM.queueDownload('./img/goose-sheet-HIT.png');
 
 /**
  * NukesAndOrigami extends GameEngine and adds additional functions
@@ -102,6 +103,14 @@ class NukesAndOrigami extends GameEngine {
     }
   }
 
+  //Override
+  draw()  {
+    super.draw();
+    if(this.player) {
+      this.player.draw(); //Player over everything
+    }
+  }
+
   increaseLivesCount() {
     this.lives += 1;
   }
@@ -147,7 +156,7 @@ class NukesAndOrigami extends GameEngine {
     const result = new Array();
 
     for (const e of this.entities) {
-      if (e instanceof Ship && !e.isPlayer && !e.isDead()) {
+      if (e instanceof Ship && !e.isPlayer) {
         const distance = Math.pow(point.x - e.current.x, 2) + Math.pow(point.y - e.current.y, 2);
 
         if (distance < maxRangeSquared) {
@@ -411,22 +420,23 @@ AM.downloadAll(() => {
   game.init(ctx);
   game.start();
 
-
   // add background and player
   // game.addBackground();
   game.spawnPlayer();
 
   // view test stage
-  // game.testScene();
+  //game.testScene();
+  game.sceneManager.scenes.push(scene.oneWaveTest);
+  game.sceneManager.scenes.push(scene.easyPaper);
 
-  // run prototype level
+  // run completed levels
+  //initIntroMessage(game);
+
+  // run first prototype level
   // game.spawnEnemies();
 
-  initIntroMessage(game);
-
-  // console.log('All Done!');
   canvas.focus();
-  game.sceneManager.loadBackground(background.beach, 1);
+  //game.sceneManager.loadBackground(background.beach, 1);
 });
 
 class SceneManager {
@@ -461,7 +471,6 @@ class SceneManager {
     this.waitUntilAtDefaultSpeed = false;
 
     this.scenes = new Array();
-    // console.log('constructed')
   }
 
   // Do a cool animation into the new background.
@@ -606,7 +615,6 @@ class SceneManager {
     } else {
       // No choreography specified? default is to just load enemies.
       this.loadEnemies(wave);
-      // console.log('loading enemies normally')
     }
   }
 

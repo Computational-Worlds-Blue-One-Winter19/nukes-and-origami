@@ -127,7 +127,6 @@ function removeLifeFromBoard() {
  * @param {Int} lives A heart icon will be drawn for each number of lives that is given
  */
 function initializeScoreBoardLives(lives) {
-  console.log("Adding lifes");
   for (let i = 0; i < lives; i += 1) {
     addLife(lifeColor[i]);
   }
@@ -215,7 +214,6 @@ function startGame(game) {
   playLoop(game.sounds.gameLoop);
 
   // Initilize the game board
-  console.log("adding lives");
   initializeScoreBoardLives(game.lives);
 
   hideMessage('intro-message');
@@ -324,10 +322,8 @@ function startTimer(time, callBack, weapon) {
     stopTimer(timer);
     callBack(weapon);
   };
-  console.log('Starting the timer');
   // Sets the number being shown in the timer
   weapon.timer = setInterval(() => {
-    console.log(`Weapon timer is ${weapon.timer}`);
     countdown = --countdown <= 0 ? finished(weapon.timer) : countdown;
 
     countdownNumberElement.textContent = countdown;
