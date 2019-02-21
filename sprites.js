@@ -294,8 +294,8 @@ function loadSpriteSheets() {
           loop: true
         },
         hit: {
-          interval: 0.1,
-          duration: 0.5,
+          interval: 0.08,
+          duration: 0.08,
         }
       },
       hit:  {
