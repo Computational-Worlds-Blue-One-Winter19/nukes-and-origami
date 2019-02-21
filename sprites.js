@@ -376,7 +376,7 @@ function loadSpriteSheets() {
       }
     }
   }
-  
+
 
   // Power up sprites
   sprite.rainbowBall = {

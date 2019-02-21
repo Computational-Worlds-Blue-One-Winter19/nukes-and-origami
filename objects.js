@@ -34,7 +34,7 @@ function loadTemplates() {
 
     local: {
       isHoming: true,
-      limit: 250, // minimum distance to stop tracking
+      limit: 100, // minimum distance to stop tracking
     },
 
     update() {
@@ -699,7 +699,7 @@ function loadTemplates() {
 
   ring.gap1 = {
     payload: {
-      type: projectile.miniCrane,
+      type: projectile.testLaser,
       speed: 100,
       acceleration: 1,
     },
@@ -726,9 +726,9 @@ function loadTemplates() {
       angle: 90,
       count: 1,
       loadTime: 0.05,
-      cooldownTime: 0.5,
+      cooldownTime: 2,
       rapidReload: true,
-      targetPlayer: true,
+      targetPlayer: false,
     },
   };
 
@@ -754,6 +754,47 @@ function loadTemplates() {
       },
     },
   };
+
+  ring.singleTargetPlayer = {
+    payload: {
+      type: projectile.circleBullet,
+      speed: 100,
+    },
+    firing: {
+      radius: 40,
+      count: 1,
+      angle: 90,
+      loadTime: 0,
+      cooldownTime: 5,
+      rapidReload: true,
+      targetPlayer: true,
+      viewTurret: false,
+    },
+  };
+
+  ring.slowLaserTargetPlayer = {
+    payload: {
+      type: projectile.testLaser,
+      velocity: {
+        radial: 200,
+        angular: 0,
+      },
+      acceleration: {
+        radial: 0,
+        angular: 0,
+      },
+    },
+    firing: {
+      radius: 40,
+      count: 1,
+      angle: 90,
+      loadTime: 0,
+      cooldownTime: 3,
+      rapidReload: true,
+      targetPlayer: true,
+      viewTurret: false,
+    },
+  }
 
   ring.jaredAlpha1 = {
     payload: {
@@ -1457,28 +1498,34 @@ function loadTemplates() {
     weapon: ring.gap1,
   };
 
-  ship.eagle = {
+  ship.goose = {
     config: {
       health: 5,
+      hitValue: 5,
+      radius: 70,
+      sprite: sprite.goose.default,
+    },
+    weapon: ring.singleTargetPlayer,
+  }
+
+  ship.hummer = {
+    config: {
+      health: 5,
+      hitValue: 5,
+      radius: 70,
+      sprite: sprite.hummer.default,
+    },
+    weapon: ring.singleDown,
+  }
+
+  ship.eagle = {
+    config: {
+      health: 150,
       hitValue: 5,
       radius: 150,
       sprite: sprite.eagleBoss.default,
     },
-    weapon: [{
-        ring: ring.gammaOne,
-        offset: {
-          x: -30,
-          y: 20,
-        },
-      },
-      {
-        ring: ring.gammaOne,
-        offset: {
-          x: 30,
-          y: 20,
-        },
-      },
-    ],
+    weapon: ring.gap1,
 
   }
 
@@ -1749,6 +1796,37 @@ function loadTemplates() {
     ],
   };
 
+  ship.doubleRingTest = {
+    config: {
+      health: 3,
+      hitValue: 3,
+      radius: 70,
+      sprite: sprite.dove.default,
+      snapLine: 40,
+      snapLineSpeed: 250,
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0,
+    },
+    path: [
+      [90, 175, 30],
+    ],
+    weapon: [{
+        ring: ring.singleTargetPlayer,
+        offset: {
+          x: -30,
+          y: 20,
+        },
+      },
+      {
+        ring: ring.singleTargetPlayer,
+        offset: {
+          x: 30,
+          y: 20,
+        },
+      },
+    ],
+  };
+
   ship.testCrane = {
     config: {
       hitValue: 5,
@@ -1805,65 +1883,249 @@ function loadTemplates() {
     [180, 25, 5],
   ];
 
+  // sawtooth pattern back and forth starting right
+  path.sawtoothRightStop = [
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    // almost centered
+  ]
+
+  // sawtooth pattern back and forth starting left
+  path.sawtoothLeftStop = [
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    // almost centerd
+  ]
+
+  path.rightUTurn = [
+    [0, 200, 4],
+    [90, 150, 0.5],
+    [180, 150, 10],
+  ]
+
+  path.leftUTurn = [
+    [180, 200, 4],
+    [270, 150, 0.5],
+    [0, 150, 10],
+  ]
+
+  path.leftSawToothUTurn = [
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+
+
+    [90, 200, 0.25],
+
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+  ]
+
+  path.rightSawToothUTurn = [
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+
+    [90, 200, 0.25],
+
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+  ]
+
+  path.northEast = [
+    [45, 100, 50]
+  ]
+
+  path.northWest = [
+    [45, 100, 50]
+  ]
+
+  path.downSlow = [
+    [90, 30, 100],
+  ]
+
   /** *** SCENES **** */
-  scene.enemyTest = {
+  scene.waveBank = {
     waves: [
+      // four hummingbirds fly left then come down
       {
-        numOfEnemies: 7,
-        ships: new Array(7).fill(ship.bat),
-        paths: [
-          path.strafeRight,
-          path.strafeLeft,
-          path.strafeRight,
-          path.strafeLeft,
-          path.strafeRight,
-          path.strafeLeft,
-          path.strafeRight,
-        ],
+        numOfEnemies: 4,
+        ships: new Array(4).fill(ship.hummer),
+        paths: new Array(4).fill(path.downSlow),
         shipManifestOverride: [{
             config: {
-              initialDirection: 'east',
+              initialDirection: 'west',
               snapLine: 100,
             },
           },
           {
             config: {
               initialDirection: 'west',
-              snapLine: 924,
-            },
-          },
-          {
-            config: {
-              initialDirection: 'east',
-              snapLine: 100,
+              snapLine: 374,
+              waitOffScreen: 1
             },
           },
           {
             config: {
               initialDirection: 'west',
-              snapLine: 924,
-            },
-          },
-          {
-            config: {
-              initialDirection: 'east',
-              snapLine: 100,
+              snapLine: 648,
+              waitOffScreen: 2
             },
           },
           {
             config: {
               initialDirection: 'west',
-              snapLine: 924,
-            },
-          },
-          {
-            config: {
-              initialDirection: 'east',
-              snapLine: 100,
+              snapLine:922,
+              waitOffScreen: 3
             },
           },
         ],
         waitUntilEnemiesGone: true,
+        initialYPoints: [
+          50, 50, 50, 50,
+        ]
+      },
+      // geese zig zag in and stop, others just enter from left and right, all shooting
+      // lasers at player
+      {
+        numOfEnemies: 4,
+        ships: [
+          ship.goose,
+          ship.goose,
+          ship.bat,
+          ship.bat,
+        ],
+        paths: [
+          path.sawtoothLeftStop,
+          path.sawtoothRightStop,
+          path.doNothing,
+          path.doNothing,
+        ],
+        shipManifestOverride: [{
+            config: {
+              initialDirection: 'west',
+              snapLine: 924,
+            },
+            weapon: ring.slowLaserTargetPlayer,
+          },
+          {
+            config: {
+              initialDirection: 'east',
+              snapLine: 100,
+            },
+            weapon: ring.slowLaserTargetPlayer,
+          },
+          {
+            config: {
+              initialDirection: 'west',
+              snapLine: 824,
+            },
+            weapon: ring.slowLaserTargetPlayer,
+          },
+          {
+            config: {
+              initialDirection: 'east',
+              snapLine:200,
+            },
+            weapon: ring.slowLaserTargetPlayer,
+          },
+        ],
+        waitUntilEnemiesGone: true,
+        initialYPoints: [
+          100, 100, 300, 300,
+        ]
       },
     ]
   }
@@ -2005,13 +2267,13 @@ function loadTemplates() {
           },
           {
             id: 'wait',
-            duration: 0,
+            duration: 5,
           },
-          // {
-          //   id: 'swapRing',
-          //   enemyIndex: 0,
-          //   ring: ring.linearTest,
-          // },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.linearTest,
+          },
         ],
         numOfEnemies: 1,
         ships: [ship.eagle],
@@ -2026,6 +2288,7 @@ function loadTemplates() {
             snapLine: 250,
             radius: 200,
           },
+          weapon: ring.gap1,
         }],
         waitUntilEnemiesGone: true,
       },

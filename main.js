@@ -78,6 +78,7 @@ class NukesAndOrigami extends GameEngine {
   initializeSceneManager() {
     // load completed levels
     this.sceneManager.scenes.push(scene.bossTest);
+    this.sceneManager.scenes.push(scene.waveBank);
     this.sceneManager.scenes.push(scene.easyPaper);
     this.sceneManager.scenes.push(scene.endingScene);
   }
@@ -515,9 +516,10 @@ class SceneManager {
       // Make shallow copies to not modify the objects.js defaults
       // If path was overridden, put that in the manifestCopy
       let manifestCopy = JSON.parse(JSON.stringify(wave.ships[i]));
+
       manifestCopy.path = wave.paths ? JSON.parse(JSON.stringify(wave.paths[i])) : 0;
       Object.assign(manifestCopy.config.sprite, wave.ships[i].config.sprite);
-      console.log(wave.ships[i])
+
       if (wave.shipManifestOverride) {
         // do a recursive merge
         if (wave.shipManifestOverride[i].config) {
@@ -549,15 +551,22 @@ class SceneManager {
           }
         }
       }
-      if (wave.ships[i].weapon.payload && wave.ships[i].weapon.payload.type) {
+      if (!Array.isArray(wave.ships[i].weapon)) {
+        // sprites/images don't copy over when you parse a stringified JSON object,
+        // directly link them here.
         if (wave.ships[i].weapon.payload.type.sprite) {
           manifestCopy.weapon.payload.type.sprite = wave.ships[i].weapon.payload.type.sprite
         }
         if (wave.ships[i].weapon.payload.type.image) {
           manifestCopy.weapon.payload.type.image = wave.ships[i].weapon.payload.type.image
         }
+      } else {
+        // weapon is an array, copy over everything
+        manifestCopy.weapon = new Array(wave.ships[i].weapon.length);
+        for (let j = 0; j < wave.ships[i].weapon.length; j++) {
+          manifestCopy.weapon[j] = Object.assign({}, wave.ships[i].weapon[j]);
+        }
       }
-      console.log(manifestCopy);
 
       // The ship constructor **should** copy data; try without Object.assign() here
       // let ship = new Ship(this.game, Object.assign({}, manifestCopy));
