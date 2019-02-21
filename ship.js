@@ -17,12 +17,9 @@ class Sprite {
     this.totalTime = config.dimension.timePerFrame * config.dimension.frameCount; // Not set by user
     this.elapsedTime = 0; // Not set by user
     this.currentFrame = 0;
-
-    if (config.hit) {
-      this.hit = Object.assign({}, config.hit);
-      this.remainingHitDuration = 0;
-      this.remainingHitInterval = 0;
-    }
+    this.hitDuration = 0.08;
+    this.remainingHitDuration = 0;
+    this.remainingHitInterval = 0;
 }
 
   drawFrame(tick, ctx, x, y) {
@@ -39,22 +36,22 @@ class Sprite {
         this.currentFrame = Math.floor(this.elapsedTime / this.time);
       }
 
-      // update hit condition
-      if (this.hit) {
-        if (this.remainingHitDuration > 0) {
-          this.remainingHitInterval -= tick;
-          this.remainingHitDuration -= tick;
-          if (this.remainingHitInterval < 0 && this.oriY === 0) {
-            this.remainingHitInterval = this.hit.interval;
-            this.oriY = this.height;
-          } else if (this.remainingHitInterval < 0) {
-            this.remainingHitInterval = this.hit.interval;
-            this.oriY = 0;
-          } 
-        } else {
-          // done with this hit so reset oriY
+      // handle hit flickering
+      if (this.remainingHitDuration > 0) {
+        this.remainingHitInterval -= tick;
+        this.remainingHitDuration -= tick;
+        if (this.remainingHitInterval < 0 && this.oriY === 0) {
+          //this.remainingHitInterval = this.hit.interval;
+          this.remainingHitInterval = this.hitDuration;
+          this.oriY = this.height;
+        } else if (this.remainingHitInterval < 0) {
+          //this.remainingHitInterval = this.hit.interval;
+          this.remainingHitInterval = this.hitDuration;
           this.oriY = 0;
-        }
+        } 
+      } else {
+        // done with this hit so reset oriY
+        this.oriY = 0;
       }
     }
 
@@ -70,10 +67,6 @@ class Sprite {
       locY,
       this.width * this.scale,
       this.height * this.scale);
-    // }
-    // if (this.time !== 0) {
-    //   this.currentFrame += 1;
-    // }
   }
 
   isDone() {
@@ -81,19 +74,9 @@ class Sprite {
   }
 
   onHit() {
-    if (this.hit) {
-      // hit is defined so set interval and duration
-      this.remainingHitDuration = this.hit.duration;
-      this.remainingHitInterval = this.hit.interval;
-      this.oriY = this.height;
-    }
-
-    // alternate between this.sprite and this.hitSprite on each interval
-
-
-
-    // stop on duration
-
+    this.remainingHitDuration = this.hitDuration;
+    this.remainingHitInterval = this.hitDuration;
+    this.oriY = this.height;
   }
 }
 

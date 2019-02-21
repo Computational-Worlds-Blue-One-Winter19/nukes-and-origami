@@ -293,10 +293,10 @@ function loadSpriteSheets() {
           flip: false,
           loop: true
         },
-        hit: {
-          interval: 0.08,
-          duration: 0.08,
-        }
+        // hit: {
+        //   interval: 0.08,
+        //   duration: 0.08,
+        // }
       },
       hit:  {
         image: AM.getAsset('./img/eagle.png'),
