@@ -11,16 +11,22 @@ const scene = {};
 const background = {};
 
 /** These are the image assets declared by filename */
-AM.queueDownload('./img/bat-sheet-HIT.png');
-AM.queueDownload('./img/crane-sheet-HIT.png');
+AM.queueDownload('./img/bat.png');
+AM.queueDownload('./img/bird.png');
+AM.queueDownload('./img/crane.png');
+AM.queueDownload('./img/dove.png');
+AM.queueDownload('./img/eagle.png');
+AM.queueDownload('./img/goose.png');
+AM.queueDownload('./img/hummer.png');
+AM.queueDownload('./img/owl.png');
+AM.queueDownload('./img/pigeon.png');
+AM.queueDownload('./img/swallow.png');
 AM.queueDownload('./img/mini-crane-sheet.png');
 AM.queueDownload('./img/plane-small.png');
 AM.queueDownload('./img/purple-plane-small.png');
 AM.queueDownload('./img/notebook.png');
 AM.queueDownload('./img/bullet.png');
 AM.queueDownload('./img/nuke_single.png');
-AM.queueDownload('./img/owl-sheet-HIT.png');
-AM.queueDownload('./img/dove-sheet-HIT.png');
 AM.queueDownload('./img/rainbow_ball.png');
 AM.queueDownload('./img/shield-icon.png');
 AM.queueDownload('./img/shield.png');
@@ -31,7 +37,6 @@ AM.queueDownload('./img/7_shoot_sheet.png');
 AM.queueDownload('./img/glass_ball.png');
 AM.queueDownload('./img/laser_red.png');
 AM.queueDownload('./img/cut_laser.png');
-AM.queueDownload('./img/swallow-sheet-HIT.png');
 AM.queueDownload('./img/heart.png');
 AM.queueDownload('./img/reverse.png');
 AM.queueDownload('./img/fire-rate.png');
@@ -48,10 +53,6 @@ AM.queueDownload('./img/chaingun.png');
 AM.queueDownload('./img/explosion-sheet.png');
 AM.queueDownload('./img/white_background.jpg');
 AM.queueDownload('./img/rapid-bullet-horizontal.png');
-AM.queueDownload('./img/bird-sheet-HIT.png');
-AM.queueDownload('./img/eagle-boss-sheet.png');
-AM.queueDownload('./img/hummer-sheet.png');
-AM.queueDownload('./img/goose-sheet-HIT.png');
 
 /**
  * NukesAndOrigami extends GameEngine and adds additional functions
