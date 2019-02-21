@@ -153,10 +153,10 @@ function startGame(game) {
   let id1;
 
   // Play the intro sound
-  const crossfadeDuration = 50;
+  const crossfadeDuration = 1000;
 
 
-  const volume = 0.5;
+  const volume = 0.09;
 
   let instance1; let instance2; let
     soundDuration;
@@ -183,7 +183,7 @@ function startGame(game) {
 
     (function crossfadedLoop(enteringInstance, leavingInstance) {
       // Fade in entering instance
-      const audio = enteringInstance.pos(1000).play();
+      const audio = enteringInstance.pos(100).play();
       enteringInstance.fade(0, volume, crossfadeDuration);
 
       // Wait for the audio end to fade out entering instance
