@@ -1887,7 +1887,7 @@ function loadTemplates() {
           },
           {
             id: 'wait',
-            duration: 40000,
+            duration: 5,
           },
           {
             id: 'swapRing',
@@ -1903,7 +1903,7 @@ function loadTemplates() {
         shipManifestOverride: [{
           config: {
             sprite: sprite.swallow.boss,
-            health: 1,
+            health: 15,
             snapLineSpeed: 500,
             hitValue: 2000,
             snapLine: 250,

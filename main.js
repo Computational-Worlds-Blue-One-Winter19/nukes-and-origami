@@ -77,7 +77,7 @@ class NukesAndOrigami extends GameEngine {
 
   initializeSceneManager() {
     // load completed levels
-    // this.sceneManager.scenes.push(scene.oneWaveTest);
+    this.sceneManager.scenes.push(scene.bossTest);
     this.sceneManager.scenes.push(scene.easyPaper);
   }
 
@@ -657,6 +657,11 @@ class SceneManager {
   choreographyUpdate() {
     // Is choreography over?
     if (this.choreography.length == 0) {
+      // Are there enemies we are waiting for?
+      if (this.enemiesInWave) {
+        this.handleEnemyWaveCompletion();
+        return;
+      }
       this.wave = false;
       this.waveTimer = 0;
       this.choreography = 0;
@@ -711,6 +716,7 @@ class SceneManager {
           }
           // Also check if the enemies are dead
           if (this.enemiesInWave) {
+            // console.log('checking dead');
             this.handleEnemyWaveCompletion();
           }
         } else {
@@ -748,7 +754,7 @@ class SceneManager {
         break;
     }
   }
-  
+
   handleEnemyWaveCompletion() {
     // Are we waiting for enemies to be killed/go off screen before we
     // continue?
@@ -756,6 +762,7 @@ class SceneManager {
       if (this.entitiesInWave.length == 0) {
         this.wave = false;
         this.waveTimer = 0;
+        this.enemiesInWave = false;
         // Also advance choreography if we have it.
         if (this.choreography) {
           this.choreography.shift();
