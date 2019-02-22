@@ -88,11 +88,11 @@ class NukesAndOrigami extends GameEngine {
 
   initializeSceneManager() {
     // load completed levels
-    // this.sceneManager.scenes.push(scene.gamma);
+    this.sceneManager.scenes.push(scene.gamma);
     this.sceneManager.scenes.push(scene.mikeLevel);
+    this.sceneManager.scenes.push(scene.waveBank);
+    this.sceneManager.scenes.push(scene.easyPaper);
     this.sceneManager.scenes.push(scene.bossTest);
-    // this.sceneManager.scenes.push(scene.waveBank);
-    // this.sceneManager.scenes.push(scene.easyPaper);
     this.sceneManager.scenes.push(scene.endingScene);
   }
 
@@ -300,23 +300,6 @@ class NukesAndOrigami extends GameEngine {
 
     this.addEntity(doubleBat1);
     this.addEntity(doubleBat2);
-
-    // This commented out section is a good example of how to
-    // use Projectile to spawn random items on screen.
-    //
-    // this.addEntity(new Projectile(this, {
-    //   owner: this,
-    //   origin: {
-    //     x: 400,
-    //     y: 400
-    //   },
-    //   angle: 90,
-    //   payload: {
-    //     type: {
-    //       sprite: sprite.rainbowBall,
-    //     },
-    //   },
-    // }));
   }
 
   /**
@@ -333,35 +316,6 @@ class NukesAndOrigami extends GameEngine {
     this.player = new Plane(this, ship.player);
     this.addEntity(this.player);
   }
-
-
-  // addBackground() {
-  //   // Using object deconstructing to access the canvas property
-  //   const {
-  //     canvas,
-  //   } = this.ctx;
-  //   const point1 = {
-  //     x: 0,
-  //     y: 0,
-  //   };
-  //   const point2 = {
-  //     x: 0,
-  //     y: -canvas.height,
-  //   };
-  //   const cloudPoint1 = {
-  //     x: 0,
-  //     y: -2304,
-  //   };
-  //   const cloudPoint2 = {
-  //     x: 0,
-  //     y: -2304 * 2,
-  //   };
-  //   this.addEntity(new Background(this, AM.getAsset('./img/notebook.png'), canvas.height, point1));
-  //   this.addEntity(new Background(this, AM.getAsset('./img/notebook.png'), canvas.height, point2));
-  //   this.addEntity(new Clouds(this, AM.getAsset('./img/clouds.png'), canvas.height, cloudPoint1));
-  //   this.addEntity(new Clouds(this, AM.getAsset('./img/clouds.png'), canvas.height, cloudPoint2));
-  // }
-
 
   /** Test scene: place something quick and dirty. I have switched to my own test scene
    *  using the SceneManager, but this still works if you want.
@@ -428,10 +382,10 @@ AM.downloadAll(() => {
 
   // view test stage
   //game.testScene();
-  game.sceneManager.scenes.push(scene.gamma);
+  //game.sceneManager.scenes.push(scene.gamma);
 
   // run completed levels
-  //initIntroMessage(game);
+  initIntroMessage(game);
 
   // run first prototype level
   // game.spawnEnemies();

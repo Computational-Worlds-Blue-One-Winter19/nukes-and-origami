@@ -2747,7 +2747,7 @@ function loadTemplates() {
     config: {
       radius: 15,
       sprite: sprite.plane.purple,
-      speed: 300,
+      speed: 360,
       origin: {
         x: 1024 / 2, // omit x to get random position
         y: 700,
@@ -3105,7 +3105,7 @@ function loadTemplates() {
   };
   
   scene.gamma = {
-    player: ship.jaredTestPlane,
+    //player: ship.jaredTestPlane,
     waves: [
       {
         numOfEnemies: 10,
