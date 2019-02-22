@@ -19,8 +19,7 @@ class Sprite {
     this.elapsedTime = 0; // Not set by user
     this.currentFrame = 0;
     this.hitDuration = 0.08;
-    this.remainingHitDuration = 0;
-    this.remainingHitInterval = 0;
+    this.remainingHitTime = 0;
 }
 
   drawFrame(tick, ctx, x, y) {
@@ -38,21 +37,12 @@ class Sprite {
       }
 
       // handle hit flickering
-      if (this.remainingHitDuration > 0) {
-        this.remainingHitInterval -= tick;
-        this.remainingHitDuration -= tick;
-        if (this.remainingHitInterval < 0 && this.oriY === 0) {
-          //this.remainingHitInterval = this.hit.interval;
-          this.remainingHitInterval = this.hitDuration;
-          this.oriY = this.height;
-        } else if (this.remainingHitInterval < 0) {
-          //this.remainingHitInterval = this.hit.interval;
-          this.remainingHitInterval = this.hitDuration;
-          this.oriY = 0;
+      if (this.remainingHitTime > 0) {
+        this.remainingHitTime -= tick;
+        if (this.remainingHitTime <= 0) {
+          // done with this hit so reset oriY
+          this.oriY = this.initialY;
         }
-      } else {
-        // done with this hit so reset oriY
-        this.oriY = this.initialY;
       }
     }
 
@@ -75,8 +65,7 @@ class Sprite {
   }
 
   onHit() {
-    this.remainingHitDuration = this.hitDuration;
-    this.remainingHitInterval = this.hitDuration;
+    this.remainingHitTime = this.hitDuration;
     this.oriY = this.height;
   }
 }

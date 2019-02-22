@@ -159,7 +159,7 @@ class NukesAndOrigami extends GameEngine {
     const result = new Array();
 
     for (const e of this.entities) {
-      if (e instanceof Ship && !e.isPlayer) {
+      if (e instanceof Ship && !e.isPlayer && !e.snapLine) {
         const distance = Math.pow(point.x - e.current.x, 2) + Math.pow(point.y - e.current.y, 2);
 
         if (distance < maxRangeSquared) {
@@ -383,9 +383,8 @@ class NukesAndOrigami extends GameEngine {
     // };
 
     // introduce test player
-    // this.player = new Plane(this, ship.jaredTestPlane);
-    this.spawnPlayer();
-    // this.addEntity(this.player);
+    this.player = new Plane(this, ship.jaredTestPlane);
+    this.addEntity(this.player);
 
     // introduce test enemies
     function spawn(that) {
@@ -429,9 +428,10 @@ AM.downloadAll(() => {
 
   // view test stage
   //game.testScene();
+  game.sceneManager.scenes.push(scene.gamma);
 
   // run completed levels
-  initIntroMessage(game);
+  //initIntroMessage(game);
 
   // run first prototype level
   // game.spawnEnemies();

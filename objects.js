@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 function loadTemplates() {
   /**
    * Standard projectile values are:
@@ -112,14 +114,14 @@ function loadTemplates() {
   /** This tracks an enemy. */
   projectile.modifiedChainGun = {
     radius: 3,
-    hitValue: 3,
+    hitValue: 30,
     rotate: true,
     // image: AM.getAsset('./img/bullet.png'),
     // scale: .04,
     sprite: sprite.laser.bigOrange,
 
     local: {
-      range: 200, // maximum
+      range: 600, // maximum
     },
 
     update() {
@@ -225,12 +227,12 @@ function loadTemplates() {
 
     local: {
       count: 0,
-      range: 400, // maximum
+      range: 600, // maximum
     },
 
     onHit() {
       this.local.count += 1;
-      this.current.velocity.radial *= 1.4;
+      this.current.velocity.radial *= 1.1;
       // stay alive
     },
 
@@ -1753,7 +1755,7 @@ function loadTemplates() {
 
   ship.testDove = {
     config: {
-      health: 1,
+      health: 10,
       hitValue: 5,
       radius: 60,
       sprite: sprite.dove.default,
@@ -2800,7 +2802,7 @@ function loadTemplates() {
 
   ring.jaredStinger = {
     payload: {
-      type: projectile.microBullet,
+      type: projectile.glassBall,
       velocity: {
         radial: 800,
         angular: 0,
@@ -2880,18 +2882,7 @@ function loadTemplates() {
       },
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
-    },
-    // weapon: [
-    //   {
-    //     ring: ring.jaredTest3,
-    //     //offset: {x:-30,y:23},
-    //   },
-
-    //   // {
-    //   //   ring: ring.uniSpiralFourWay180,
-    //   //   //offset: {x:30,y:23},
-    //   // },
-    // ],
+    }
   };
 
   ship.jaredTestCrane = {
@@ -2927,14 +2918,14 @@ function loadTemplates() {
       [90, 175, 30],
     ],
     weapon: [{
-        ring: ring.gammaOne,
+        ring: ring.jaredStinger,
         offset: {
           x: -30,
           y: 20,
         },
       },
       {
-        ring: ring.gammaOne,
+        ring: ring.jaredStinger,
         offset: {
           x: 30,
           y: 20,
@@ -2959,113 +2950,66 @@ function loadTemplates() {
     }],
   };
 
+  ring.jaredPlayerRing = {
+    payload: {
+      type: projectile.microBullet,
+      speed: 500,
+      rotate: true,
+    },
+    firing: {
+      angle: 270,
+      radius: 30,
+      spread: 30,
+      count: 4,
+      loadTime: 0.01,
+      cooldownTime: 0.25,
+      rapidReload: true,
+      viewTurret: false,
+    },
+  }
+
   ship.jaredTestPlane = {
     config: {
       radius: 15,
       sprite: sprite.plane.lightBlue,
-      speed: 300,
+      speed: 400,
       origin: {
         x: 1024 / 2, // omit x to get random position
         y: 700,
       },
     },
-    weapon: [
-      // {
-      //   ring: ring.player,
-      // },
-      {
-        ring: ring.enemyHoming,
-        offset: {
-          x: -12,
-          y: 30,
-        },
-      },
-    ],
+    weapon: [{
+      ring: ring.jaredPlayerRing,
+    }],
   };
 
-  // ship.testDove.config.origin = {x: 200, y: -50};
-  // this.addEntity(new Ship(this, ship.testDove));
-  // ship.testDove.config.origin = {x: 500, y: -50};
-  // this.addEntity(new Ship(this, ship.testDove));
-  // ship.testDove.config.origin = {x: 800, y: -50};
-  // ship.testDove.config.snapLine = 380
-  // this.addEntity(new Ship(this, ship.testDove));
-
+  
   scene.jaredTestScene = {
     player: ship.jaredTestPlane,
-
-    waves: [{
+    waves: [
+      {
         numOfEnemies: 3,
-        ships: new Array(3).fill(ship.jaredTestDove),
-        paths: new Array(10).fill(path.straightDown),
+        ships: new Array(3).fill(ship.jaredTestDove2),
+        paths: new Array(3).fill(path.straightDown),
         initialXPoints: [ // omit to evenly space enemies.
-          600, 400, 700, 250, 400, 850, 450, 380, 770, 650,
+          600, 400, 700
         ],
-        shipManifestOverride: [{
-            config: {
-              waitOffScreen: 0,
-            },
-          },
-          {
-            config: {
-              waitOffScreen: 2,
-            },
-          },
-          {
-            config: {
-              waitOffScreen: 3,
-            },
-          },
-          {
-            config: {
-              waitOffScreen: 5,
-            },
-          },
-          {
-            config: {
-              waitOffScreen: 8,
-            },
-          },
-          {
-            config: {
-              waitOffScreen: 9,
-            },
-          },
-          {
-            config: {
-              waitOffScreen: 11,
-            },
-          },
-          {
-            config: {
-              waitOffScreen: 15,
-            },
-          },
-          {
-            config: {
-              waitOffScreen: 18,
-            },
-          },
-          {
-            config: {
-              waitOffScreen: 19,
-            },
-          },
+        shipManifestOverride: [
+          { config: { waitOffScreen: 0 } },
+          { config: { waitOffScreen: 2 } },
+          { config: { waitOffScreen: 3 } },
         ],
         waitUntilEnemiesGone: true,
       },
-      // {
-      //   choreography: [
-      //   {
-      //     id: 'accelerateToWarpspeed',
-      //   },
-      //   {
-      //     id: 'showMessage',
-      //     text: ['Jared Test Scene', '--CUT--'],
-      //     duration: 6,
-      //   },
-      // ],
-      // },
+      {
+        choreography: [
+          {
+            id: 'showMessage',
+            text: ['Jared Test Scene', '--CUT--'],
+            duration: 6,
+          },
+        ],
+      },//cut
     ],
   };
 
@@ -3159,116 +3103,57 @@ function loadTemplates() {
       ring: ring.gammaTwo,
     }],
   };
-
+  
   scene.gamma = {
-    waves: [{
+    player: ship.jaredTestPlane,
+    waves: [
+      {
         numOfEnemies: 10,
         ships: new Array(10).fill(ship.gammaDove),
         paths: new Array(10).fill(path.straightDown),
         initialXPoints: [ // omit to evenly space enemies.
           600, 400, 700, 250, 400, 850, 450, 380, 770, 650,
         ],
-        shipManifestOverride: [{
-            config: {
-              waitOffScreen: 0,
-            },
-          },
-          {
-            config: {
-              waitOffScreen: 2,
-            },
-          },
-          {
-            config: {
-              waitOffScreen: 3,
-            },
-          },
-          {
-            config: {
-              waitOffScreen: 5,
-            },
-          },
-          {
-            config: {
-              waitOffScreen: 8,
-            },
-          },
-          {
-            config: {
-              waitOffScreen: 9,
-            },
-          },
-          {
-            config: {
-              waitOffScreen: 11,
-            },
-          },
-          {
-            config: {
-              waitOffScreen: 15,
-            },
-          },
-          {
-            config: {
-              waitOffScreen: 18,
-            },
-          },
-          {
-            config: {
-              waitOffScreen: 19,
-            },
-          },
+        shipManifestOverride: [
+          { config: { waitOffScreen: 0 } },
+          { config: { waitOffScreen: 2 } },
+          { config: { waitOffScreen: 3 } },
+          { config: { waitOffScreen: 5 } },
+          { config: { waitOffScreen: 8 } },
+          { config: { waitOffScreen: 9 } },
+          { config: { waitOffScreen: 11 } },
+          { config: { waitOffScreen: 15 } },
+          { config: { waitOffScreen: 18 } },
+          { config: { waitOffScreen: 19 } },
         ],
         waitUntilEnemiesGone: true,
       },
       {
         numOfEnemies: 6,
-        ships: new Array(10).fill(ship.gammaCrane),
-        paths: new Array(10).fill(path.backAndForth),
+        ships: new Array(6).fill(ship.gammaCrane),
+        paths: new Array(6).fill(path.backAndForth),
         initialXPoints: [ // omit to evenly space enemies.
           100, 300, 600, 120, 700, 550,
         ],
-        shipManifestOverride: [{
-            config: {
-              waitOffScreen: 5,
-            },
-          },
-          {
-            config: {
-              waitOffScreen: 9,
-            },
-          },
-          {
-            config: {
-              waitOffScreen: 11,
-            },
-          },
-          {
-            config: {
-              waitOffScreen: 13,
-            },
-          },
-          {
-            config: {
-              waitOffScreen: 17,
-            },
-          },
-          {
-            config: {
-              waitOffScreen: 20,
-            },
-          },
+        shipManifestOverride: [
+          { config: { waitOffScreen: 5 } },
+          { config: { waitOffScreen: 9 } },
+          { config: { waitOffScreen: 11 } },
+          { config: { waitOffScreen: 13 } },
+          { config: { waitOffScreen: 17 } },
+          { config: { waitOffScreen: 20 } },
         ],
         waitUntilEnemiesGone: true,
       },
       {
-        warpSpeed: true,
-        choreography: [{
-          type: 'message',
-          text: ['First Wave Complete', '--CUT--'],
-          duration: 6,
-        }, ]
-      },
+        choreography: [
+          {
+            id: 'showMessage',
+            text: ['Gamma Scene', '--CUT--'],
+            duration: 6,
+          },
+        ],
+      },//cut
       // BOSS SWALLOW!!
       // {
       //   numOfEnemies: 1,
@@ -3302,7 +3187,8 @@ function loadTemplates() {
       //   waitUntilEnemiesGone: true,
       // },
     ],
-  };
+  }; 
+  /** end of jared level */
 
   scene.mikeLevel = {
     waves: [{

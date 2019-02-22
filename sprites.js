@@ -891,6 +891,22 @@ function loadSpriteSheets() {
           loop: false
         },
       },
+    },
+    lightBlue: {
+      default: {
+        image: AM.getAsset('./img/light_blue_plane.png'),
+        dimension: {
+          originX: 0,
+          originY: 0,
+          frameWidth: 60,
+          frameHeight: 66,
+          frameCount: 1,
+          timePerFrame: 0,
+          scale: 1.0,
+          flip: false,
+          loop: false
+        },
+      },        
       right: {
         image: AM.getAsset('./img/light_blue_plane.png'),
         dimension: {
@@ -945,6 +961,20 @@ function loadSpriteSheets() {
           scale: 1.0,
           flip: false,
           loop: true
+        },
+      },
+      hit:  {
+        image: AM.getAsset('./img/light_blue_plane.png'),
+        dimension: {
+          originX: 0,
+          originY: 0,
+          frameWidth: 60,
+          frameHeight: 66,
+          frameCount: 1,
+          timePerFrame: 0,
+          scale: 1.0,
+          flip: false,
+          loop: false
         },
       },
     },
