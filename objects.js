@@ -181,7 +181,7 @@ function loadTemplates() {
       }
 
       for (const e of this.game.entities) {
-        if(e instanceof Projectile && this.isCollided(e) && !e.playerShot && !e.payload.powerUp) {
+        if (e instanceof Projectile && this.isCollided(e) && !e.playerShot && !e.payload.powerUp) {
           e.removeFromWorld = true;
         }
       }
@@ -758,7 +758,7 @@ function loadTemplates() {
 
   ring.laserGapRight = {
     payload: {
-      type: projectile.testLaser,
+      type: projectile.orangeLaser,
       speed: 100,
       acceleration: 1,
     },
@@ -1518,6 +1518,16 @@ function loadTemplates() {
     weapon: ring.singleDown,
   };
 
+  ship.bird = {
+    config: {
+      health: 3,
+      hitValue: 5,
+      radius: 50,
+      sprite: sprite.bird.default,
+    },
+    weapon: ring.singleDown,
+  };
+
   ship.crane = {
     config: {
       health: 3,
@@ -1535,7 +1545,7 @@ function loadTemplates() {
       radius: 70,
       sprite: sprite.owl.default,
     },
-    weapon: ring.jaredAlpha1,
+    weapon: ring.singleDown,
   };
 
   ship.dove = {
@@ -1574,6 +1584,17 @@ function loadTemplates() {
       hitValue: 5,
       radius: 70,
       sprite: sprite.hummer.default,
+    },
+    weapon: ring.singleDown,
+  }
+
+
+  ship.pigeon = {
+    config: {
+      health: 5,
+      hitValue: 5,
+      radius: 70,
+      sprite: sprite.pigeon.default,
     },
     weapon: ring.singleDown,
   }
@@ -2127,7 +2148,7 @@ function loadTemplates() {
           {
             config: {
               initialDirection: 'west',
-              snapLine:922,
+              snapLine: 922,
               waitOffScreen: 3
             },
           },
@@ -2178,7 +2199,7 @@ function loadTemplates() {
           {
             config: {
               initialDirection: 'east',
-              snapLine:200,
+              snapLine: 200,
             },
             weapon: ring.slowLaserTargetPlayer,
           },
@@ -2188,133 +2209,6 @@ function loadTemplates() {
           100, 100, 300, 300,
         ]
       },
-    ]
-  }
-
-  scene.mikeLevel = {
-    waves: [
-        {
-          choreography: [
-            {
-              id: 'accelerateToWarpspeed',
-            },
-            {
-              id: 'loadBackground',
-              bg: background.white,
-            },
-            {
-              id: 'wait',
-              duration: 0.25,
-            },
-            {
-              id: 'showMessage',
-              text: ['GET READY', 'LEVEL 1 START'],
-            },
-            {
-              id: 'wait',
-              duration: 3,
-            },
-            {
-              id: 'loadBackground',
-              bg: background.paper,
-            },
-            {
-              id: 'decelerateFromWarpSpeed',
-            },
-            {
-              id: 'hideMessage',
-            },
-          ],
-        },
-      // four hummingbirds fly left then come down
-      {
-        numOfEnemies: 4,
-        ships: new Array(4).fill(ship.hummer),
-        paths: new Array(4).fill(path.downSlow),
-        shipManifestOverride: [{
-            config: {
-              initialDirection: 'west',
-              snapLine: 100,
-            },
-          },
-          {
-            config: {
-              initialDirection: 'west',
-              snapLine: 374,
-              waitOffScreen: 1
-            },
-          },
-          {
-            config: {
-              initialDirection: 'west',
-              snapLine: 648,
-              waitOffScreen: 2
-            },
-          },
-          {
-            config: {
-              initialDirection: 'west',
-              snapLine:922,
-              waitOffScreen: 3
-            },
-          },
-        ],
-        waitUntilEnemiesGone: true,
-        initialYPoints: [
-          50, 50, 50, 50,
-        ]
-      },
-      // geese zig zag in and stop, others just enter from left and right, all shooting
-      // lasers at player
-      {
-        numOfEnemies: 4,
-        ships: [
-          ship.goose,
-          ship.goose,
-          ship.bat,
-          ship.bat,
-        ],
-        paths: [
-          path.sawtoothLeftStop,
-          path.sawtoothRightStop,
-          path.doNothing,
-          path.doNothing,
-        ],
-        shipManifestOverride: [{
-            config: {
-              initialDirection: 'west',
-              snapLine: 924,
-            },
-            weapon: ring.slowLaserTargetPlayer,
-          },
-          {
-            config: {
-              initialDirection: 'east',
-              snapLine: 100,
-            },
-            weapon: ring.slowLaserTargetPlayer,
-          },
-          {
-            config: {
-              initialDirection: 'west',
-              snapLine: 824,
-            },
-            weapon: ring.slowLaserTargetPlayer,
-          },
-          {
-            config: {
-              initialDirection: 'east',
-              snapLine:200,
-            },
-            weapon: ring.slowLaserTargetPlayer,
-          },
-        ],
-        waitUntilEnemiesGone: true,
-        initialYPoints: [
-          100, 100, 300, 300,
-        ]
-      },
-
     ]
   }
 
@@ -2412,8 +2306,7 @@ function loadTemplates() {
   }
 
   scene.bossTest = {
-    waves: [
-      {
+    waves: [{
         choreography: [{
             id: 'accelerateToWarpspeed',
           },
@@ -2540,15 +2433,6 @@ function loadTemplates() {
             id: 'swapRing',
             enemyIndex: 0,
             ring: ring.slowLaserTargetPlayer,
-          },
-          {
-            id: 'wait',
-            duration: 7,
-          },
-          {
-            id: 'swapRing',
-            enemyIndex: 0,
-            ring: ring.laserGapLeft,
           },
         ],
         numOfEnemies: 1,
@@ -3379,13 +3263,11 @@ function loadTemplates() {
       },
       {
         warpSpeed: true,
-        choreography: [
-          {
-            type: 'message',
-            text: ['First Wave Complete', '--CUT--'],
-            duration: 6,
-          },
-        ]
+        choreography: [{
+          type: 'message',
+          text: ['First Wave Complete', '--CUT--'],
+          duration: 6,
+        }, ]
       },
       // BOSS SWALLOW!!
       // {
@@ -3421,5 +3303,195 @@ function loadTemplates() {
       // },
     ],
   };
+
+  scene.mikeLevel = {
+    waves: [{
+        choreography: [{
+            id: 'accelerateToWarpspeed',
+          },
+          {
+            id: 'loadBackground',
+            bg: background.white,
+          },
+          {
+            id: 'wait',
+            duration: 0.25,
+          },
+          {
+            id: 'showMessage',
+            text: ['GET READY', 'LEVEL 1 START'],
+          },
+          {
+            id: 'wait',
+            duration: 3,
+          },
+          {
+            id: 'loadBackground',
+            bg: background.paper,
+          },
+          {
+            id: 'decelerateFromWarpSpeed',
+          },
+          {
+            id: 'hideMessage',
+          },
+        ],
+      },
+      // four hummingbirds fly left then come down
+      {
+        numOfEnemies: 4,
+        ships: [
+          ship.hummer,
+          ship.owl,
+          ship.pigeon,
+          ship.bird,
+        ],
+        paths: new Array(4).fill(path.downSlow),
+        shipManifestOverride: [{
+            config: {
+              initialDirection: 'west',
+              snapLine: 100,
+            },
+          },
+          {
+            config: {
+              initialDirection: 'west',
+              snapLine: 374,
+              waitOffScreen: 1
+            },
+          },
+          {
+            config: {
+              initialDirection: 'west',
+              snapLine: 648,
+              waitOffScreen: 2
+            },
+          },
+          {
+            config: {
+              initialDirection: 'west',
+              snapLine: 922,
+              waitOffScreen: 3
+            },
+          },
+        ],
+        waitUntilEnemiesGone: true,
+        initialYPoints: [
+          50, 50, 50, 50,
+        ]
+      },
+      // geese zig zag in and stop, others just enter from left and right, all shooting
+      // lasers at player
+      {
+        numOfEnemies: 4,
+        ships: [
+          ship.goose,
+          ship.swallow,
+          ship.crane,
+          ship.bat,
+        ],
+        paths: [
+          path.sawtoothLeftStop,
+          path.sawtoothRightStop,
+          path.doNothing,
+          path.doNothing,
+        ],
+        shipManifestOverride: [{
+            config: {
+              initialDirection: 'west',
+              snapLine: 924,
+            },
+            weapon: ring.slowLaserTargetPlayer,
+          },
+          {
+            config: {
+              initialDirection: 'east',
+              snapLine: 100,
+            },
+            weapon: ring.slowLaserTargetPlayer,
+          },
+          {
+            config: {
+              initialDirection: 'west',
+              snapLine: 824,
+            },
+            weapon: ring.slowLaserTargetPlayer,
+          },
+          {
+            config: {
+              initialDirection: 'east',
+              snapLine: 200,
+            },
+            weapon: ring.slowLaserTargetPlayer,
+          },
+        ],
+        waitUntilEnemiesGone: true,
+        initialYPoints: [
+          100, 100, 300, 300,
+        ]
+      },
+      {
+        numOfEnemies: 10,
+        waitUntilEnemiesGone: true,
+        ships: new Array(10).fill(ship.gammaDove),
+        paths: new Array(10).fill(path.straightDown),
+        initialXPoints: [ // omit to evenly space enemies.
+          600, 400, 700, 250, 400, 850, 450, 380, 770, 650,
+        ],
+        shipManifestOverride: [{
+            config: {
+              waitOffScreen: 0,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 2,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 3,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 5,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 8,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 9,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 11,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 15,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 18,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 19,
+            },
+          },
+        ],
+      },
+
+    ]
+  }
   /** end of jared level */
 } // end of objects.js

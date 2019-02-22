@@ -245,6 +245,39 @@ function loadSpriteSheets() {
     }
   }
 
+  sprite.pigeon = {
+    default: {
+      default: {
+        image: AM.getAsset('./img/pigeon.png'),
+        dimension: {
+          originX: 0,
+          originY: 0,
+          frameWidth: 530,
+          frameHeight: 460,
+          frameCount: 10,
+          timePerFrame: 0.1,
+          scale: 0.3,
+          flip: false,
+          loop: true
+        }
+      },
+      hit:  {
+        image: AM.getAsset('./img/pigeon.png'),
+        dimension: {
+          originX: 0,
+          originY: 460,
+          frameWidth: 530,
+          frameHeight: 460,
+          frameCount: 10,
+          timePerFrame: 0.2,
+          scale: 0.3,
+          flip: false,
+          loop: true
+        }
+      }
+    }
+  }
+
   sprite.bird = {
     default: {
       default: {
