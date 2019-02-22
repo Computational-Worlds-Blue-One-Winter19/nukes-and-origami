@@ -6,6 +6,7 @@ class Sprite {
     this.sheet = config.image; // Source spritesheet
     this.oriX = config.dimension.originX; // Top left X point of where to start on the spritesheet
     this.oriY = config.dimension.originY; // Top left Y point of where to start on the spritesheet
+    this.initialY = this.oriY;
     this.width = config.dimension.frameWidth; // Pixel width of each frame
     this.height = config.dimension.frameHeight; // Pixel height of each frame
     this.len = config.dimension.frameCount; // # of frames in this sprite (to let user pick
@@ -51,7 +52,7 @@ class Sprite {
         }
       } else {
         // done with this hit so reset oriY
-        this.oriY = 0;
+        this.oriY = this.initialY;
       }
     }
 
