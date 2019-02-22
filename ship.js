@@ -988,7 +988,7 @@ class Ring {
 
     if (!this.payload.velocity) {
       this.payload.velocity = {
-        radial: this.payload.speed,
+        radial: this.payload.speed || 0,
         angular: 0,
       };
     } else {
@@ -1120,14 +1120,14 @@ class Ring {
       return;
     }
 
-    if (this.owner.isPlayer) {
-      var sound = new Howl({
-        src: ['audio/laserShot.mp3'],
-        volume: 0.2,
-      });
+    // if (this.owner.isPlayer) {
+    //   var sound = new Howl({
+    //     src: ['audio/laserShot.mp3'],
+    //     volume: 0.2,
+    //   });
 
-      sound.play();
-    }
+    //   sound.play();
+    // }
 
     if (this.config.pattern && --this.status.round > -1) {
       this.fireLine(this.status.round);
@@ -1273,7 +1273,7 @@ class Projectile extends Entity {
     this.local = Object.assign({}, this.payload.local);
 
     // support for origin format
-    if (!this.current.angle) {
+    if (this.current.angle === undefined) {
       this.current.angle = manifest.angle;
       this.current.velocity = {
         radial: manifest.payload.speed,

@@ -271,9 +271,6 @@ function loadTemplates() {
     radius: 3,
     // use init() for any pre-processing immediately prior to launch.
     // for player bullets we can easily say "only travel up"
-    init() {
-      this.current.angle = toRadians(270);
-    },
   };
 
   projectile.multiGun = {
