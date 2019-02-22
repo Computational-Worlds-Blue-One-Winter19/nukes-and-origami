@@ -685,6 +685,11 @@ class Weapon {
 
     this.hasNuke = false;
 
+    this.fireSound = new Howl({
+      src: ['audio/laserShot.mp3'],
+      volume: 0.2,
+    });
+
     // This is to prevent duplicate homing missile weapons from being added to the inventory
     // We can decide how to handle this later
     this.hasRegularGun = true;
@@ -772,7 +777,11 @@ class Weapon {
       for (let i = 0; i < this.slot.length; i++) {
         const ready = this.slot[i].ring.status.isReady
         if (ready) {
-          this.slot[i].ring.fire()
+          this.slot[i].ring.fire();
+          
+          // changed to single object construction. if you fire two slots it gives a little
+          // overlap maybe that is good? it add's a little emphasis. if not we can only play on slot[0]
+          this.fireSound.play();
           if(this.hasNuke)  {
 
             this.slot[0] = Object.assign({}, this.saveGun);
@@ -1119,16 +1128,7 @@ class Ring {
     if (!this.status.isReady) {
       return;
     }
-
-    // if (this.owner.isPlayer) {
-    //   var sound = new Howl({
-    //     src: ['audio/laserShot.mp3'],
-    //     volume: 0.2,
-    //   });
-
-    //   sound.play();
-    // }
-
+    
     if (this.config.pattern && --this.status.round > -1) {
       this.fireLine(this.status.round);
       this.status.isReady = false;
