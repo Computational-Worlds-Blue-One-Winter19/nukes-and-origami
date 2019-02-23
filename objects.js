@@ -1686,7 +1686,7 @@ function loadTemplates() {
           yDifference: -20, //Difference in Y value from master
         },
         weapon: ring.patternTestCircleBullet,
-        powerup: new Nuke(100)
+        powerup: 'nuke',
         },
         {
         config: {
@@ -1697,7 +1697,7 @@ function loadTemplates() {
           yDifference: -20, 
         },
         weapon: ring.patternTestCircleBullet,
-        powerup: new RapidFire(100)
+        powerup: 'rapidFire',
         }
       ]
     },

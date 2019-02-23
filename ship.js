@@ -169,8 +169,6 @@ class Ship extends Entity {
           y: this.current.y + this.slaves[i].config.yDifference
         }
         this.slaves[i].hitValue = this.slaves[i].config.hitValue;
-        this.slaves[i].powerup.owner = this.slaves[i];
-        this.slaves[i].powerup.entity = this;
         this.slaves[i].game = this.game;
         this.slaves[i].ctx = this.ctx;
         this.initializeSlaveWeapon(i, this.slaves[i].weapon);
