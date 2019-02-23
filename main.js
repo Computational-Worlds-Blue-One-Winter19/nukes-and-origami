@@ -90,10 +90,10 @@ class NukesAndOrigami extends GameEngine {
     this.sceneManager.scenes.push(scene.levelTwo);
     this.sceneManager.scenes.push(scene.levelThree);
     this.sceneManager.scenes.push(scene.oneWaveTest);
-    this.sceneManager.scenes.push(scene.gamma);
     this.sceneManager.scenes.push(scene.waveBank);
     this.sceneManager.scenes.push(scene.easyPaper);
     this.sceneManager.scenes.push(scene.bossTest);
+    this.sceneManager.scenes.push(scene.gamma);
     this.sceneManager.scenes.push(scene.endingScene);
   }
 

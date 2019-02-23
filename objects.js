@@ -3765,7 +3765,8 @@ function loadTemplates() {
 
   scene.gamma = {
     //player: ship.jaredTestPlane,
-    waves: [{
+    waves: [
+      {
         numOfEnemies: 10,
         ships: new Array(10).fill(ship.gammaDove),
         paths: new Array(10).fill(path.straightDown),
@@ -3942,14 +3943,14 @@ function loadTemplates() {
         ],
         waitUntilEnemiesGone: true,
       },
-      {
-        numOfEnemies: 3,
-        ships: new Array(3).fill(ship.gammaGoose),
-        initialXPoints: [ // omit to evenly space enemies.
-          1024 / 6, 1024 / 2, 1024 * 5 / 6
-        ],
-        waitUntilEnemiesGone: true,
-      },
+      // {
+      //   numOfEnemies: 3,
+      //   ships: new Array(3).fill(ship.gammaGoose),
+      //   initialXPoints: [ // omit to evenly space enemies.
+      //     1024 / 6, 1024 / 2, 1024 * 5 / 6
+      //   ],
+      //   waitUntilEnemiesGone: true,
+      // },
       {
         choreography: [{
           id: 'showMessage',
