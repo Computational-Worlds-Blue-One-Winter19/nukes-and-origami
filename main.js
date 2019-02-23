@@ -383,16 +383,16 @@ AM.downloadAll(() => {
 
   // view test stage
   //game.testScene();
-  //game.sceneManager.scenes.push(scene.jaredTestScene);
+  game.sceneManager.scenes.push(scene.gamma);
 
   // run completed levels
-  initIntroMessage(game);
+  //initIntroMessage(game);
 
   // run first prototype level
   // game.spawnEnemies();
 
   canvas.focus();
-  game.sceneManager.loadBackground(background.beach, 1);
+  //game.sceneManager.loadBackground(background.beach, 1);
 });
 
 class SceneManager {
@@ -461,7 +461,7 @@ class SceneManager {
         this.game.player.removeFromWorld = true;
       }
 
-      this.game.player = new Plane(this.game, scene.player);
+      this.game.player = new Plane(this.game, ship.player);
       this.game.addEntity(this.game.player);
     }
   }
