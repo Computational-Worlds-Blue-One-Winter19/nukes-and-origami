@@ -710,7 +710,7 @@ class Weapon {
           offset,
         });
       }
-    } else if (manifest) {
+    } else if (manifest && manifest.firing) {
       this.primaryRingManifest = manifest;
 
       // process the single-ring format
