@@ -1609,9 +1609,9 @@ function loadTemplates() {
         config: {
           health: 10,
           hitValue: 50,
-          radius: 50,
-          xDifference: -300, //Difference in X value from master
-          yDifference: 0, //Difference in Y value from master
+          radius: 150,
+          xDifference: -350, //Difference in X value from master
+          yDifference: -20, //Difference in Y value from master
         },
         weapon: ring.spreadBeta2
         },
@@ -1619,9 +1619,9 @@ function loadTemplates() {
         config: {
           health: 10,
           hitValue: 50,
-          radius: 50,
-          xDifference: 300, 
-          yDifference: 0, 
+          radius: 150,
+          xDifference: 350, 
+          yDifference: -20, 
         },
         weapon: ring.spreadBeta2
         }

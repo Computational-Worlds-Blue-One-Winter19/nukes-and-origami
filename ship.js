@@ -168,6 +168,7 @@ class Ship extends Entity {
           x: this.current.x + this.slaves[i].config.xDifference,
           y: this.current.y + this.slaves[i].config.yDifference
         }
+        this.slaves[i].hitValue = this.slaves[i].config.hitValue;
         this.slaves[i].game = this.game;
         this.slaves[i].ctx = this.ctx;
         this.initializeSlaveWeapon(i, this.slaves[i].weapon);
@@ -232,6 +233,7 @@ class Ship extends Entity {
         this.slaves[i].current.y = this.current.y + this.slaves[i].config.yDifference;
         this.slaves[i].weapon.update();
         if(this.slaves[i].config.health <= 0) {
+          this.game.onEnemyDestruction(this.slaves[i]);
           this.game.addEntity(new Death(this.game, this.slaves[i].current.x, this.slaves[i].current.y));
           this.slaves.splice(i, 1);
           i--;
