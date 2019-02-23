@@ -2914,21 +2914,7 @@ function loadTemplates() {
     path: [
       [90, 175, 30],
     ],
-    weapon: [{
-        ring: ring.jaredStinger,
-        offset: {
-          x: -30,
-          y: 20,
-        },
-      },
-      {
-        ring: ring.jaredStinger,
-        offset: {
-          x: 30,
-          y: 20,
-        },
-      },
-    ],
+    weapon: ring.jaredStinger,
   };
 
   ship.jaredTestCrane2 = {
@@ -2992,7 +2978,7 @@ function loadTemplates() {
           600, 400, 700
         ],
         shipManifestOverride: [
-          { config: { waitOffScreen: 0 } },
+          { config: { waitOffScreen: 0 }, weapon: ring.jaredWavy1 },
           { config: { waitOffScreen: 2 } },
           { config: { waitOffScreen: 3 } },
         ],
