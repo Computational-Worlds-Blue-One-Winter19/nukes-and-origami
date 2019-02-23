@@ -700,7 +700,7 @@ function loadTemplates() {
 
   ring.gap1 = {
     payload: {
-      type: projectile.testLaser,
+      type: projectile.miniCrane,
       speed: 100,
       acceleration: 1,
     },
@@ -2454,116 +2454,108 @@ function loadTemplates() {
   }
 
   scene.easyPaper = {
-    waves: [{
-        choreography: [{
-            id: 'accelerateToWarpspeed',
-          },
-          {
-            id: 'loadBackground',
-            bg: background.white,
-          },
-          {
-            id: 'wait',
-            duration: 0.25,
-          },
-          {
-            id: 'showMessage',
-            text: ['WELL DONE', 'LEVEL 2 START'],
-          },
-          {
-            id: 'wait',
-            duration: 3,
-          },
-          {
-            id: 'loadBackground',
-            bg: background.paper,
-          },
-          {
-            id: 'decelerateFromWarpSpeed',
-          },
-          {
-            id: 'hideMessage',
-          },
-        ],
-      },
-      // wave 1
-      {
-        numOfEnemies: 2,
-        ships: new Array(2).fill(ship.bat),
-        paths: [
-          path.strafeRight,
-          path.strafeLeft,
-        ],
-        waitUntilEnemiesGone: true,
-      },
-      {
-        numOfEnemies: 3,
-        ships: new Array(3).fill(ship.crane),
-        waitUntilEnemiesGone: true,
-      },
-      {
-        numOfEnemies: 3,
-        ships: [ship.bat, ship.dove, ship.bat],
-        paths: [
-          // first bat cornerleft
-          path.cornerLeft,
-          // dove do nothing
-          path.doNothing,
-          // second bat cornerright
-          path.cornerRight,
-        ],
-        shipManifestOverride: [
-          // change first bat to tracking test
-          {
-            weapon: ring.trackingTest1,
-          },
-          // don't do anything to dove
-          {},
-          // change second bat to tracking test
-          {
-            weapon: ring.trackingTest1,
-          },
-        ],
-        initialXPoints: [ // omit to evenly space enemies.
-          400, 500, 600,
-        ],
-        waitUntilEnemiesGone: true,
-      },
-      {
-        choreography: [{
-            id: 'showMessage',
-            type: 'warning',
-            text: ['Waves complete!', 'Get Ready...'],
-          },
-          {
-            id: 'accelerateToWarpspeed',
-          },
-          {
-            id: 'wait',
-            duration: 3,
-          },
-          {
-            id: 'decelerateFromWarpSpeed',
-          },
-          {
-            id: 'hideMessage',
-          },
-        ],
-      },
+    waves: [
+      // {
+      //   choreography: [{
+      //       id: 'accelerateToWarpspeed',
+      //     },
+      //     {
+      //       id: 'loadBackground',
+      //       bg: background.white,
+      //     },
+      //     {
+      //       id: 'wait',
+      //       duration: 0.25,
+      //     },
+      //     {
+      //       id: 'showMessage',
+      //       text: ['WELL DONE', 'LEVEL 2 START'],
+      //     },
+      //     {
+      //       id: 'wait',
+      //       duration: 3,
+      //     },
+      //     {
+      //       id: 'loadBackground',
+      //       bg: background.paper,
+      //     },
+      //     {
+      //       id: 'decelerateFromWarpSpeed',
+      //     },
+      //     {
+      //       id: 'hideMessage',
+      //     },
+      //   ],
+      // },
+      // // wave 1
+      // {
+      //   numOfEnemies: 2,
+      //   ships: new Array(2).fill(ship.bat),
+      //   paths: [
+      //     path.strafeRight,
+      //     path.strafeLeft,
+      //   ],
+      //   waitUntilEnemiesGone: true,
+      // },
+      // {
+      //   numOfEnemies: 3,
+      //   ships: new Array(3).fill(ship.crane),
+      //   waitUntilEnemiesGone: true,
+      // },
+      // {
+      //   numOfEnemies: 3,
+      //   ships: [ship.bat, ship.dove, ship.bat],
+      //   paths: [
+      //     // first bat cornerleft
+      //     path.cornerLeft,
+      //     // dove do nothing
+      //     path.doNothing,
+      //     // second bat cornerright
+      //     path.cornerRight,
+      //   ],
+      //   shipManifestOverride: [
+      //     // change first bat to tracking test
+      //     {
+      //       weapon: ring.trackingTest1,
+      //     },
+      //     // don't do anything to dove
+      //     {},
+      //     // change second bat to tracking test
+      //     {
+      //       weapon: ring.trackingTest1,
+      //     },
+      //   ],
+      //   initialXPoints: [ // omit to evenly space enemies.
+      //     400, 500, 600,
+      //   ],
+      //   waitUntilEnemiesGone: true,
+      // },
+      // {
+      //   choreography: [{
+      //       id: 'showMessage',
+      //       type: 'warning',
+      //       text: ['Waves complete!', 'Get Ready...'],
+      //     },
+      //     {
+      //       id: 'accelerateToWarpspeed',
+      //     },
+      //     {
+      //       id: 'wait',
+      //       duration: 3,
+      //     },
+      //     {
+      //       id: 'decelerateFromWarpSpeed',
+      //     },
+      //     {
+      //       id: 'hideMessage',
+      //     },
+      //   ],
+      // },
       // BOSS SWALLOW!!
       {
         choreography: [{
             id: 'spawnEnemies'
           },
-          {
-            id: 'wait',
-            duration: 15,
-          },
-          {
-            id: 'swapRing',
-            enemyIndex: 0,
-            ring: ring.linearTest,
-          }
         ],
         numOfEnemies: 1,
         ships: [ship.swallow],
@@ -2966,7 +2958,7 @@ function loadTemplates() {
     }],
   };
 
-  
+
   scene.jaredTestScene = {
     player: ship.jaredTestPlane,
     waves: [
@@ -3086,7 +3078,7 @@ function loadTemplates() {
       ring: ring.gammaTwo,
     }],
   };
-  
+
   scene.gamma = {
     //player: ship.jaredTestPlane,
     waves: [
@@ -3170,7 +3162,7 @@ function loadTemplates() {
       //   waitUntilEnemiesGone: true,
       // },
     ],
-  }; 
+  };
   /** end of jared level */
 
   scene.mikeLevel = {

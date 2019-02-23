@@ -89,12 +89,12 @@ class NukesAndOrigami extends GameEngine {
   initializeSceneManager() {
     // load completed levels
     this.sceneManager.scenes.push(scene.gamma);
-    this.sceneManager.scenes.push(scene.mikeLevel);
-    this.sceneManager.scenes.push(scene.oneWaveTest);
-    this.sceneManager.scenes.push(scene.waveBank);
+    // this.sceneManager.scenes.push(scene.mikeLevel);
+    // this.sceneManager.scenes.push(scene.oneWaveTest);
+    // this.sceneManager.scenes.push(scene.waveBank);
     this.sceneManager.scenes.push(scene.easyPaper);
-    this.sceneManager.scenes.push(scene.bossTest);
-    this.sceneManager.scenes.push(scene.endingScene);
+    // this.sceneManager.scenes.push(scene.bossTest);
+    // this.sceneManager.scenes.push(scene.endingScene);
   }
 
   // Override
@@ -521,25 +521,26 @@ class SceneManager {
               manifestCopy.weapon.payload = {};
             }
             Object.assign(manifestCopy.weapon.payload, wave.shipManifestOverride[i].weapon.payload);
-          } 
-        } else {
-          if (!Array.isArray(wave.ships[i].weapon)) {
-            // sprites/images don't copy over when you parse a stringified JSON object,
-            // directly link them here.
-            if (wave.ships[i].weapon.payload && wave.ships[i].weapon.payload.type.sprite) {
-              manifestCopy.weapon.payload.type.sprite = wave.ships[i].weapon.payload.type.sprite
-            }
-            if (wave.ships[i].weapon.payload && wave.ships[i].weapon.payload.type.image) {
-              manifestCopy.weapon.payload.type.image = wave.ships[i].weapon.payload.type.image
-            }
-          } else {
-            // weapon is an array, copy over everything
-            manifestCopy.weapon = new Array(wave.ships[i].weapon.length);
-            for (let j = 0; j < wave.ships[i].weapon.length; j++) {
-              manifestCopy.weapon[j] = Object.assign({}, wave.ships[i].weapon[j]);
-            }
           }
         }
+
+        if (!Array.isArray(wave.ships[i].weapon)) {
+          // sprites/images don't copy over when you parse a stringified JSON object,
+          // directly link them here.
+          if (wave.ships[i].weapon.payload && wave.ships[i].weapon.payload.type.sprite) {
+            manifestCopy.weapon.payload.type.sprite = wave.ships[i].weapon.payload.type.sprite;
+          }
+          if (wave.ships[i].weapon.payload && wave.ships[i].weapon.payload.type.image) {
+            manifestCopy.weapon.payload.type.image = wave.ships[i].weapon.payload.type.image;
+          }
+        } else {
+          // weapon is an array, copy over everything
+          manifestCopy.weapon = new Array(wave.ships[i].weapon.length);
+          for (let j = 0; j < wave.ships[i].weapon.length; j++) {
+            manifestCopy.weapon[j] = Object.assign({}, wave.ships[i].weapon[j]);
+          }
+        }
+
       }
 
       // The ship constructor **should** copy data; try without Object.assign() here
