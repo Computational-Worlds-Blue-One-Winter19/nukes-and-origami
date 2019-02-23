@@ -269,9 +269,9 @@ function loadTemplates() {
     radius: 3,
     // use init() for any pre-processing immediately prior to launch.
     // for player bullets we can easily say "only travel up"
-    init() {
-      this.current.angle = toRadians(270);
-    },
+    // init() {
+    //   this.current.angle = toRadians(270);
+    // },
   };
 
   projectile.multiGun = {
@@ -2737,13 +2737,54 @@ function loadTemplates() {
   }
 
   scene.Nathan = {
-    background: background.paper,
     waves: [{
-        numOfEnemies: 1,
-        ships: [ship.testEagleBoss],
-        paths: [path.doNothing],
+      choreography: [
+        {
+          id: 'loadBackground',
+          bg: background.paper,
+        },
+        {
+          id: 'accelerateToWarpspeed',
+        },
+        {
+          id: 'wait',
+          duration: 0.5,
+        },
+        {
+          id: 'decelerateFromWarpSpeed'
+        }
+      ]
+    },
+      //wave 1
+    // {
+    //   numOfEnemies: 4,
+    //   ships: [ship.crane, ship.dove, ship.dove, ship.crane],
+    //   paths: [path.sawtoothRightStop, path.straightDown, path.straightDown, path.sawtoothLeftStop],
+    //   shipManifestOverride: [
+    //     { weapon : ring.gammeTwo },
+    //     { weapon: ring.gammeOne },
+    //     { weapon : ring.gammaOne },
+    //     { weapon: ring.gammaTwo },
+    //   ],
+    //   waitUntilEnemiesGone: true,
+    // },
+    //wave 2
 
-      }
+    //Good ones: ring.jaredTest3, ring.jaredTest1, ring.jaredAlpha1
+    //           ring.spreadBeta1, ring.fourFixedSpeedCirclef
+    {
+      numOfEnemies: 1,
+      ships: [ship.hummer],//, ship.bat, ship.swallow, ship.bat, ship.hummer],
+      paths: [path.cornerLeft],//[path.cornerLeft, path.leftUTurn, path.straightDown, path.leftUTurn, path.cornerRight],
+      shipManifestOverride: [
+        {weapon : ring.jaredWavy1},
+        // {weapon : ring.doubleStraightDownPulse},
+        // {weapon : ring.fixedSpeed},
+        // {weapon : ring.doubleStraightDownPulse},
+        // {weapon : ring.patternTest},
+      ],
+      waitUntilEnemiesGone: true,
+    }
       // {
       //   numOfEnemies: 2,
       //   ships: new Array(2).fill(ship.bat),
@@ -2754,6 +2795,7 @@ function loadTemplates() {
       //   waitUntilEnemiesGone: true,
       // },
     ],
+
   }
 
 

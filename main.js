@@ -89,8 +89,8 @@ class NukesAndOrigami extends GameEngine {
   initializeSceneManager() {
     // load completed levels
     // this.sceneManager.scenes.push(scene.gamma);
-    this.sceneManager.scenes.push(scene.mikeLevel);
-    this.sceneManager.scenes.push(scene.bossTest);
+    this.sceneManager.scenes.push(scene.Nathan);
+    //this.sceneManager.scenes.push(scene.bossTest);
     // this.sceneManager.scenes.push(scene.waveBank);
     // this.sceneManager.scenes.push(scene.easyPaper);
     this.sceneManager.scenes.push(scene.endingScene);
@@ -535,6 +535,7 @@ class SceneManager {
       // Make shallow copies to not modify the objects.js defaults
       // If path was overridden, put that in the manifestCopy
       const manifestCopy = JSON.parse(JSON.stringify(wave.ships[i]));
+      console.log(wave.paths[i]);
       manifestCopy.path = wave.paths ? JSON.parse(JSON.stringify(wave.paths[i])) : 0;
       Object.assign(manifestCopy.config.sprite, wave.ships[i].config.sprite);
 
@@ -545,7 +546,7 @@ class SceneManager {
           if (wave.shipManifestOverride[i].config.sprite) {
             Object.assign(manifestCopy.config.sprite, wave.shipManifestOverride[i].config.sprite);
           } else {
-            Object.assign(manifestCopy.config.sprite, wave.ships[i].config.sprite);
+            //Object.assign(manifestCopy.config.sprite, wave.ships[i].config.sprite);
           }
         }
         if (wave.shipManifestOverride[i].weapon) {
