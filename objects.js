@@ -56,6 +56,34 @@ function loadTemplates() {
     },
   };
 
+  projectile.homingCrane = {
+    radius: 3,
+    sprite: sprite.miniCrane.default,
+    rotate: true,
+
+    local: {
+      isHoming: true,
+      limit: 50, // minimum distance to stop tracking
+    },
+
+
+    update() {
+      // update angle if projectile is beyond the limit
+      if (this.local.isHoming) {
+        const target = this.game.getPlayerLocation(this.current);
+        if (target.radius < this.local.limit) {
+          this.local.isHoming = false;
+        }
+
+        this.current.angle = target.angle;
+      }
+
+      // update r
+      this.current.velocity.radial += this.current.acceleration.radial * this.current.elapsedTime;
+      this.current.r = this.current.velocity.radial * this.current.elapsedTime;
+    },
+  };
+
   /** This tracks an enemy. */
   projectile.homingOnEnemy = {
     radius: 3,
@@ -733,7 +761,7 @@ function loadTemplates() {
       radius: 100,
       angle: 270,
       count: 50,
-      loadTime: 0.1,
+      loadTime: 0.01,
       cooldownTime: 0.2,
       rapidReload: true,
       targetPlayer: false,
@@ -1045,7 +1073,7 @@ function loadTemplates() {
       angle: 0,
       count: 1,
       loadTime: 0.05,
-      cooldownTime: 0.01,
+      cooldownTime: 0.1,
       rapidReload: true,
       targetPlayer: false,
       viewTurret: false,
@@ -1080,6 +1108,27 @@ function loadTemplates() {
       // }
     },
   };
+
+  ring.homingCrane = {
+    payload: {
+      type: projectile.homingCrane,
+      speed: 100,
+      acceleration: 1,
+    },
+    firing: {
+      angle: 0,
+      count: 1,
+      loadTime: 0.05,
+      cooldownTime: 0.5,
+      rapidReload: true,
+      targetPlayer: true,
+      viewTurret: true,
+      // pulse: {
+      //   duration: 2,
+      //   delay: 1
+      // }
+    },
+  }
 
   /**
    *  Uni Bullet Hell patterns
@@ -1949,6 +1998,21 @@ function loadTemplates() {
     weapon: ring.trackingTest1,
   };
 
+  ship.gooseHoming = {
+    config: {
+      health: 5,
+      hitValue: 5,
+      radius: 50,
+      sprite: sprite.goose.default,
+      snapLine: 150,
+      snapLineSpeed: 150,
+      snapLineWait: 0,
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0,
+    },
+    weapon: ring.homingCrane,
+  };
+
   /** *** PATHS **** */
   // I wonder what this does
   path.doNothing = [];
@@ -2143,6 +2207,23 @@ function loadTemplates() {
   /** *** SCENES **** */
   scene.waveBank = {
     waves: [
+      {
+        numOfEnemies: 6,
+        ships: new Array(6).fill(ship.gooseHoming),
+        paths: new Array(6).fill(path.downSlow),
+        initialXPoints: [ // omit to evenly space enemies.
+          100, 300, 600, 120, 700, 550,
+        ],
+        shipManifestOverride: [
+          { config: { waitOffScreen: 5 } },
+          { config: { waitOffScreen: 9 } },
+          { config: { waitOffScreen: 11 } },
+          { config: { waitOffScreen: 13 } },
+          { config: { waitOffScreen: 17 } },
+          { config: { waitOffScreen: 20 } },
+        ],
+        waitUntilEnemiesGone: true,
+      },
       // four hummingbirds fly left then come down
       {
         numOfEnemies: 4,
@@ -2475,6 +2556,131 @@ function loadTemplates() {
         waitUntilEnemiesGone: true,
       },
     ],
+  }
+
+  scene.firstScene = {
+    waves: [
+      // {
+      //   choreography: [{
+      //       id: 'accelerateToWarpspeed',
+      //     },
+      //     {
+      //       id: 'loadBackground',
+      //       bg: background.white,
+      //     },
+      //     {
+      //       id: 'wait',
+      //       duration: 0.25,
+      //     },
+      //     {
+      //       id: 'showMessage',
+      //       text: ['FIRST LEVEL', 'START'],
+      //     },
+      //     {
+      //       id: 'wait',
+      //       duration: 3,
+      //     },
+      //     {
+      //       id: 'loadBackground',
+      //       bg: background.paper,
+      //     },
+      //     {
+      //       id: 'decelerateFromWarpSpeed',
+      //     },
+      //     {
+      //       id: 'hideMessage',
+      //     },
+      //   ],
+      // },
+      {
+        numOfEnemies: 2,
+        ships: new Array(2).fill(ship.bat),
+        paths: [
+          path.strafeRight,
+          path.strafeLeft,
+        ],
+        shipManifestOverride: [
+          {
+            weapon: {
+              payload: {
+                type: projectile.redCircleBullet
+              }
+            }
+          },
+          {
+            weapon: {
+              payload: {
+                type: projectile.redCircleBullet
+              }
+            }
+          }
+        ],
+        waitUntilEnemiesGone: true,
+      },
+      {
+        numOfEnemies: 2,
+        ships: new Array(2).fill(ship.easyIdleSpiralCrane),
+        paths: [
+          path.doNothing,
+          path.doNothing,
+        ],
+        waitUntilEnemiesGone: true,
+      },
+      {
+        numOfEnemies: 3,
+        ships: new Array(3).fill(ship.dodgeOwl),
+        paths: new Array(3).fill(path.doNothing),
+        initialXPoints: [
+          400, 500, 600
+        ],
+        waitUntilEnemiesGone: true,
+      },
+      {
+        numOfEnemies: 1,
+        ships: [ship.denseDove],
+        paths: [path.doNothing],
+        waitUntilEnemiesGone: true,
+      },
+      {
+        numOfEnemies: 1,
+        ships: [ship.denseDove],
+        paths: [path.doNothing],
+        waitUntilEnemiesGone: true,
+      },
+      {
+        choreography: [{
+            id: 'spawnEnemies'
+          },
+        ],
+        numOfEnemies: 1,
+        ships: [ship.swallow],
+        paths: [
+          path.doNothing,
+        ],
+        shipManifestOverride: [{
+          config: {
+            sprite: sprite.swallow.boss,
+            health: 100,
+            snapLineSpeed: 50,
+            hitValue: 2000,
+            snapLine: 250,
+            radius: 200,
+          },
+          weapon: {
+            rotation: {
+              angle: 40,
+              frequency: 10,
+            },
+            firing: {
+              count: 100,
+              radius: 230,
+              loadTime: 0.005,
+            },
+          },
+        }],
+        waitUntilEnemiesGone: true,
+      },
+    ]
   }
 
   scene.easyPaper = {
