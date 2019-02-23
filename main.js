@@ -192,7 +192,7 @@ class NukesAndOrigami extends GameEngine {
       player.invincTime += this.clockTick;
     }
     if (this.lives === 0) { // game over
-      // this.gameOver()
+      this.gameOver()
     }
   }
 
