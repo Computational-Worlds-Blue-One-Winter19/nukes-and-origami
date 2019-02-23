@@ -344,6 +344,15 @@ function getRandomPowerUp(weapon) {
   return POWERUPS[Math.floor(Math.random() * POWERUPS.length)];
 }
 
+function   getPowerUp(type)  {
+  switch(type)  {
+    case 'nuke':
+      return new Nuke(100);
+    case 'rapidFire':
+      return new RapidFire(100);
+  }
+}
+
 
 
 // $('.btn2').click(() => audio2[soundNb++ % audio2.length].play());
