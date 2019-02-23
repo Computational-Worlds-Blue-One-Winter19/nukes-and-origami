@@ -387,6 +387,23 @@ function loadTemplates() {
     },
   };
 
+  ring.patternTestCircleBullet = {
+    payload: {
+      type: projectile.circleBullet,
+      speed: 350
+    },
+    firing: {
+      pattern: pattern.simple,
+      radius: 20,
+      angle: 90,
+      spread: 35,
+      loadTime: 0.2,
+      cooldownTime: 0.05,
+      targetPlayer: false,
+      viewTurret: true,
+    },
+  }
+
   ring.linearTest = {
     payload: {
       type: projectile.homing,
@@ -536,6 +553,27 @@ function loadTemplates() {
       viewTurret: true,
     },
   };
+
+  ring.spiralAlpha4Circle = {
+    payload: {
+      type: projectile.circleBullet,
+      speed: 300,
+      acceleration: 1,
+    },
+    rotation: {
+      angle: 180,
+      frequency: 20,
+    },
+    firing: {
+      angle: 90,
+      count: 10,
+      loadTime: 0.05,
+      cooldownTime: 0.45,
+      rapidReload: true,
+      targetPlayer: true,
+      viewTurret: true,
+    },
+  }
 
   ring.fixedSpeed = {
     payload: {
@@ -1613,7 +1651,7 @@ function loadTemplates() {
           xDifference: -350, //Difference in X value from master
           yDifference: -20, //Difference in Y value from master
         },
-        weapon: ring.spreadBeta2
+        weapon: ring.patternTestCircleBullet
         },
         {
         config: {
@@ -1623,11 +1661,11 @@ function loadTemplates() {
           xDifference: 350, 
           yDifference: -20, 
         },
-        weapon: ring.spreadBeta2
+        weapon: ring.patternTestCircleBullet
         }
       ]
     },
-    weapon: ring.uniTwentyWayTurn,
+    weapon: ring.spiralAlpha4Circle,
   }
 
   // ship.eagleSlave = {
@@ -2335,6 +2373,155 @@ function loadTemplates() {
     ],
   }
 
+  // scene.bossTest = {
+  //   waves: [{
+  //       choreography: [{
+  //           id: 'accelerateToWarpspeed',
+  //         },
+  //         {
+  //           id: 'wait',
+  //           duration: 0.25,
+  //         },
+  //         {
+  //           id: 'showMessage',
+  //           type: 'warning',
+  //           text: ['WARNING', 'A BOSS APPROACHES'],
+  //         },
+  //         {
+  //           id: 'wait',
+  //           duration: 3,
+  //         },
+  //         {
+  //           id: 'decelerateFromWarpSpeed',
+  //         },
+  //         {
+  //           id: 'hideMessage',
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       choreography: [{
+  //           id: 'spawnEnemies'
+  //         },
+  //         {
+  //           id: 'wait',
+  //           duration: 15,
+  //         },
+  //         {
+  //           id: 'swapRing',
+  //           enemyIndex: 0,
+  //           ring: ring.slowLaserTargetPlayer,
+  //         },
+  //         {
+  //           id: 'wait',
+  //           duration: 7,
+  //         },
+  //         {
+  //           id: 'swapRing',
+  //           enemyIndex: 0,
+  //           ring: ring.laserGapRight,
+  //         },
+  //         {
+  //           id: 'wait',
+  //           duration: 7,
+  //         },
+  //         {
+  //           id: 'swapRing',
+  //           enemyIndex: 0,
+  //           ring: ring.slowLaserTargetPlayer,
+  //         },
+  //         {
+  //           id: 'wait',
+  //           duration: 7,
+  //         },
+  //         {
+  //           id: 'swapRing',
+  //           enemyIndex: 0,
+  //           ring: ring.laserGapLeft,
+  //         },
+  //         {
+  //           id: 'wait',
+  //           duration: 7,
+  //         },
+  //         {
+  //           id: 'swapRing',
+  //           enemyIndex: 0,
+  //           ring: ring.slowLaserTargetPlayer,
+  //         },
+  //         {
+  //           id: 'wait',
+  //           duration: 7,
+  //         },
+  //         {
+  //           id: 'swapRing',
+  //           enemyIndex: 0,
+  //           ring: ring.laserGapRight,
+  //         },
+  //         {
+  //           id: 'wait',
+  //           duration: 7,
+  //         },
+  //         {
+  //           id: 'swapRing',
+  //           enemyIndex: 0,
+  //           ring: ring.slowLaserTargetPlayer,
+  //         },
+  //         {
+  //           id: 'wait',
+  //           duration: 7,
+  //         },
+  //         {
+  //           id: 'swapRing',
+  //           enemyIndex: 0,
+  //           ring: ring.laserGapLeft,
+  //         },
+  //         {
+  //           id: 'wait',
+  //           duration: 7,
+  //         },
+  //         {
+  //           id: 'swapRing',
+  //           enemyIndex: 0,
+  //           ring: ring.slowLaserTargetPlayer,
+  //         },
+  //         {
+  //           id: 'wait',
+  //           duration: 7,
+  //         },
+  //         {
+  //           id: 'swapRing',
+  //           enemyIndex: 0,
+  //           ring: ring.laserGapRight,
+  //         },
+  //         {
+  //           id: 'wait',
+  //           duration: 7,
+  //         },
+  //         {
+  //           id: 'swapRing',
+  //           enemyIndex: 0,
+  //           ring: ring.slowLaserTargetPlayer,
+  //         },
+  //       ],
+  //       numOfEnemies: 1,
+  //       ships: [ship.eagle],
+  //       paths: [
+  //         path.doNothing,
+  //       ],
+  //       shipManifestOverride: [{
+  //         config: {
+  //           health: 500,
+  //           snapLineSpeed: 50,
+  //           hitValue: 2000,
+  //           snapLine: 250,
+  //           radius: 200,
+  //         },
+  //       }],
+  //       waitUntilEnemiesGone: true,
+  //     },
+  //   ],
+  // }
+
   scene.bossTest = {
     waves: [{
         choreography: [{
@@ -2370,100 +2557,17 @@ function loadTemplates() {
             duration: 15,
           },
           {
-            id: 'swapRing',
+            id: 'swapSlaveRing',
             enemyIndex: 0,
-            ring: ring.slowLaserTargetPlayer,
+            slaveIndex: 0,
+            ring: ring.spreadBeta2,
           },
           {
-            id: 'wait',
-            duration: 7,
-          },
-          {
-            id: 'swapRing',
+            id: 'swapSlaveRing',
             enemyIndex: 0,
-            ring: ring.laserGapRight,
-          },
-          {
-            id: 'wait',
-            duration: 7,
-          },
-          {
-            id: 'swapRing',
-            enemyIndex: 0,
-            ring: ring.slowLaserTargetPlayer,
-          },
-          {
-            id: 'wait',
-            duration: 7,
-          },
-          {
-            id: 'swapRing',
-            enemyIndex: 0,
-            ring: ring.laserGapLeft,
-          },
-          {
-            id: 'wait',
-            duration: 7,
-          },
-          {
-            id: 'swapRing',
-            enemyIndex: 0,
-            ring: ring.slowLaserTargetPlayer,
-          },
-          {
-            id: 'wait',
-            duration: 7,
-          },
-          {
-            id: 'swapRing',
-            enemyIndex: 0,
-            ring: ring.laserGapRight,
-          },
-          {
-            id: 'wait',
-            duration: 7,
-          },
-          {
-            id: 'swapRing',
-            enemyIndex: 0,
-            ring: ring.slowLaserTargetPlayer,
-          },
-          {
-            id: 'wait',
-            duration: 7,
-          },
-          {
-            id: 'swapRing',
-            enemyIndex: 0,
-            ring: ring.laserGapLeft,
-          },
-          {
-            id: 'wait',
-            duration: 7,
-          },
-          {
-            id: 'swapRing',
-            enemyIndex: 0,
-            ring: ring.slowLaserTargetPlayer,
-          },
-          {
-            id: 'wait',
-            duration: 7,
-          },
-          {
-            id: 'swapRing',
-            enemyIndex: 0,
-            ring: ring.laserGapRight,
-          },
-          {
-            id: 'wait',
-            duration: 7,
-          },
-          {
-            id: 'swapRing',
-            enemyIndex: 0,
-            ring: ring.slowLaserTargetPlayer,
-          },
+            slaveIndex: 1,
+            ring: ring.spreadBeta2,
+          }
         ],
         numOfEnemies: 1,
         ships: [ship.eagle],

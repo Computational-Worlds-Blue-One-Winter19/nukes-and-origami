@@ -386,7 +386,9 @@ class Ship extends Entity {
   }
 
   initializeSlaveWeapon(index, weaponManifest) {
-    this.slaves[index].weapon = new Weapon(this.slaves[index], weaponManifest);
+    if(this.slaves[index])  {
+      this.slaves[index].weapon = new Weapon(this.slaves[index], weaponManifest);
+    }
   }
 
   disarm() {
@@ -1438,7 +1440,6 @@ class Projectile extends Entity {
       y,
       angle,
     } = this.current;
-
     if (this.config.rotate) {
       ctx.translate(x, y);
       ctx.rotate(angle + Math.PI / 2);
