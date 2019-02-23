@@ -88,11 +88,11 @@ class NukesAndOrigami extends GameEngine {
 
   initializeSceneManager() {
     // load completed levels
-    this.sceneManager.scenes.push(scene.gamma);
-    this.sceneManager.scenes.push(scene.mikeLevel);
-    this.sceneManager.scenes.push(scene.oneWaveTest);
-    this.sceneManager.scenes.push(scene.waveBank);
-    this.sceneManager.scenes.push(scene.easyPaper);
+    // this.sceneManager.scenes.push(scene.gamma);
+    // this.sceneManager.scenes.push(scene.mikeLevel);
+    // this.sceneManager.scenes.push(scene.oneWaveTest);
+    // this.sceneManager.scenes.push(scene.waveBank);
+    // this.sceneManager.scenes.push(scene.easyPaper);
     this.sceneManager.scenes.push(scene.bossTest);
     this.sceneManager.scenes.push(scene.endingScene);
   }
@@ -128,7 +128,7 @@ class NukesAndOrigami extends GameEngine {
     this.increaseScoreBy(hitValue);
 
     // Generate a powerUp
-    const powerUp = getRandomPowerUp(this.player.weapon);
+    const powerUp = getPowerUp(enemy.powerup)|| getRandomPowerUp(this.player.weapon);
     if (powerUp && powerUp.shouldDrop()) {
       this.addEntity(new Projectile(this, {
         origin: {
@@ -738,6 +738,12 @@ class SceneManager {
         // If it exists,
         if (this.entitiesInWave[currentChor.enemyIndex]) {
           this.entitiesInWave[currentChor.enemyIndex].initializeWeapon(currentChor.ring);
+        }
+        this.choreography.shift();
+        break;
+      case 'swapSlaveRing':
+        if(this.entitiesInWave[currentChor.enemyIndex].slaves)  {
+          this.entitiesInWave[currentChor.enemyIndex].initializeSlaveWeapon(currentChor.slaveIndex, currentChor.ring);
         }
         this.choreography.shift();
         break;
