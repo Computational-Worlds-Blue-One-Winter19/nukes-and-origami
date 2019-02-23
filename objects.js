@@ -1679,7 +1679,7 @@ function loadTemplates() {
       slave: [
         {
         config: {
-          health: 1,
+          health: 30,
           hitValue: 50,
           radius: 150,
           xDifference: -350, //Difference in X value from master
@@ -1690,7 +1690,7 @@ function loadTemplates() {
         },
         {
         config: {
-          health: 1,
+          health: 30,
           hitValue: 50,
           radius: 150,
           xDifference: 350, 
