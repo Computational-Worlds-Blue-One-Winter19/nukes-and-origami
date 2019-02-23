@@ -1045,6 +1045,40 @@ function loadTemplates() {
     },
   };
 
+  ring.trackingTest1CircleBullet = {
+    payload: {
+      type: projectile.testLaser,
+      velocity: {
+        radial: 500,
+        angular: 0,
+      },
+      acceleration: {
+        radial: 0,
+        angular: 0,
+      },
+    },
+    rotation: {
+      angle: 0,
+      frequency: 0,
+    },
+    firing: {
+      radius: 1,
+      angle: 90,
+      spread: 0,
+      count: 1,
+      loadTime: 0.005,
+      cooldownTime: 0.001,
+      rapidReload: true,
+      targetPlayer: false,
+      targetLeadShot: true,
+      viewTurret: false,
+      pulse: {
+        duration: 0.1,
+        delay: 1,
+      },
+    },
+  }
+
   ring.slowPulseSpiral = {
     payload: {
       type: projectile.microBullet,
@@ -1206,7 +1240,7 @@ function loadTemplates() {
 
   ring.uniLinearAccelAiming = {
     payload: {
-      type: projectile.microBullet,
+      type: projectile.circleBullet,
       speed: 180,
       acceleration: 200,
     },
@@ -1645,23 +1679,25 @@ function loadTemplates() {
       slave: [
         {
         config: {
-          health: 10,
+          health: 1,
           hitValue: 50,
           radius: 150,
           xDifference: -350, //Difference in X value from master
           yDifference: -20, //Difference in Y value from master
         },
-        weapon: ring.patternTestCircleBullet
+        weapon: ring.patternTestCircleBullet,
+        powerup: new Nuke(100)
         },
         {
         config: {
-          health: 10,
+          health: 1,
           hitValue: 50,
           radius: 150,
           xDifference: 350, 
           yDifference: -20, 
         },
-        weapon: ring.patternTestCircleBullet
+        weapon: ring.patternTestCircleBullet,
+        powerup: new RapidFire(100)
         }
       ]
     },
@@ -2537,6 +2573,10 @@ function loadTemplates() {
             text: ['WARNING', 'A BOSS APPROACHES'],
           },
           {
+            id: 'loadBackground',
+            bg: background.paper
+          },
+          {
             id: 'wait',
             duration: 3,
           },
@@ -2557,17 +2597,202 @@ function loadTemplates() {
             duration: 15,
           },
           {
+            id: 'wait',
+            duration: 10
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.uniFiveWay
+          },
+          {
             id: 'swapSlaveRing',
             enemyIndex: 0,
             slaveIndex: 0,
-            ring: ring.spreadBeta2,
+            ring: ring.uniLinearAccelAiming
           },
           {
             id: 'swapSlaveRing',
             enemyIndex: 0,
             slaveIndex: 1,
-            ring: ring.spreadBeta2,
-          }
+            ring: ring.uniLinearAccelAiming
+          },
+          {
+            id: 'wait',
+            duration: 10
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.doubleStraightDownPulse
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 0,
+            ring: ring.trackingTest1CircleBullet
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 1,
+            ring: ring.trackingTest1CircleBullet
+          },
+          {
+            id: 'wait',
+            duration: 10
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.spiralAlpha4Circle
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 0,
+            ring: ring.patternTestCircleBullet
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 1,
+            ring: ring.patternTestCircleBullet
+          },
+          {
+            id: 'wait',
+            duration: 15,
+          },
+          {
+            id: 'wait',
+            duration: 10
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.uniFiveWay
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 0,
+            ring: ring.uniLinearAccelAiming
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 1,
+            ring: ring.uniLinearAccelAiming
+          },
+          {
+            id: 'wait',
+            duration: 10
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.doubleStraightDownPulse
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 0,
+            ring: ring.trackingTest1CircleBullet
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 1,
+            ring: ring.trackingTest1CircleBullet
+          },
+          {
+            id: 'wait',
+            duration: 10
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.spiralAlpha4Circle
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 0,
+            ring: ring.patternTestCircleBullet
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 1,
+            ring: ring.patternTestCircleBullet
+          },
+          {
+            id: 'wait',
+            duration: 15,
+          },
+          {
+            id: 'wait',
+            duration: 10
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.uniFiveWay
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 0,
+            ring: ring.uniLinearAccelAiming
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 1,
+            ring: ring.uniLinearAccelAiming
+          },
+          {
+            id: 'wait',
+            duration: 10
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.doubleStraightDownPulse
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 0,
+            ring: ring.trackingTest1CircleBullet
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 1,
+            ring: ring.trackingTest1CircleBullet
+          },
+          {
+            id: 'wait',
+            duration: 10
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.spiralAlpha4Circle
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 0,
+            ring: ring.patternTestCircleBullet
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 1,
+            ring: ring.patternTestCircleBullet
+          },
         ],
         numOfEnemies: 1,
         ships: [ship.eagle],
@@ -2576,7 +2801,7 @@ function loadTemplates() {
         ],
         shipManifestOverride: [{
           config: {
-            health: 500,
+            health: 230,
             snapLineSpeed: 50,
             hitValue: 2000,
             snapLine: 250,

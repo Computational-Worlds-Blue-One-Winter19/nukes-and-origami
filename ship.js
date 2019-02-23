@@ -169,6 +169,8 @@ class Ship extends Entity {
           y: this.current.y + this.slaves[i].config.yDifference
         }
         this.slaves[i].hitValue = this.slaves[i].config.hitValue;
+        this.slaves[i].powerup.owner = this.slaves[i];
+        this.slaves[i].powerup.entity = this;
         this.slaves[i].game = this.game;
         this.slaves[i].ctx = this.ctx;
         this.initializeSlaveWeapon(i, this.slaves[i].weapon);
@@ -495,7 +497,7 @@ class Plane extends Ship {
     this.rollTimer = 0;
     this.rolling = false;
     this.timeSinceLastRoll = 0;
-    this.rollCooldown = 5; // seconds
+    this.rollCooldown = 2.5; // seconds
     this.canRoll = true;
     // specific to shooting
     this.timeSinceLastSpacePress = 0;
