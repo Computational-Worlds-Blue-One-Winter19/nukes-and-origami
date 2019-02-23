@@ -3465,12 +3465,7 @@ function loadTemplates() {
       ring: ring.jaredPlayerRing,
     }],
   };
-<<<<<<< HEAD
   
-=======
-
-
->>>>>>> bleeding
   scene.jaredTestScene = {
     player: ship.jaredTestPlane,
     waves: [

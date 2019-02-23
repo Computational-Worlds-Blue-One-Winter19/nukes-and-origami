@@ -381,16 +381,16 @@ AM.downloadAll(() => {
 
   // view test stage
   //game.testScene();
-  game.sceneManager.scenes.push(scene.gamma);
+  //game.sceneManager.scenes.push(scene.gamma);
 
   // run completed levels
-  //initIntroMessage(game);
+  initIntroMessage(game);
 
   // run first prototype level
-  // game.spawnEnemies();
+  //game.spawnEnemies();
 
   canvas.focus();
-  //game.sceneManager.loadBackground(background.beach, 1);
+  game.sceneManager.loadBackground(background.beach, 1);
 });
 
 class SceneManager {
