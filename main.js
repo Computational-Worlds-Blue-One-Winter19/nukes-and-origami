@@ -76,7 +76,8 @@ class NukesAndOrigami extends GameEngine {
         path: './audio/Game_Loop_v.1.ogg',
         // Two instances of a howler are needed to loop sounds, so we'll need
         // references of these instances to stop or pause music
-        instances: []
+        instances: [],
+        volume: 0.09,
       }
     }
 
