@@ -86,11 +86,13 @@ class NukesAndOrigami extends GameEngine {
 
   initializeSceneManager() {
     // load completed levels
-    // this.sceneManager.scenes.push(scene.gamma);
-    // this.sceneManager.scenes.push(scene.mikeLevel);
-    // this.sceneManager.scenes.push(scene.oneWaveTest);
-    // this.sceneManager.scenes.push(scene.waveBank);
-    // this.sceneManager.scenes.push(scene.easyPaper);
+    this.sceneManager.scenes.push(scene.levelOne);
+    this.sceneManager.scenes.push(scene.levelTwo);
+    this.sceneManager.scenes.push(scene.levelThree);
+    this.sceneManager.scenes.push(scene.oneWaveTest);
+    this.sceneManager.scenes.push(scene.gamma);
+    this.sceneManager.scenes.push(scene.waveBank);
+    this.sceneManager.scenes.push(scene.easyPaper);
     this.sceneManager.scenes.push(scene.bossTest);
     this.sceneManager.scenes.push(scene.endingScene);
   }
@@ -190,7 +192,7 @@ class NukesAndOrigami extends GameEngine {
       player.invincTime += this.clockTick;
     }
     if (this.lives === 0) { // game over
-      this.gameOver()
+      // this.gameOver()
     }
   }
 
@@ -381,13 +383,13 @@ AM.downloadAll(() => {
 
   // view test stage
   //game.testScene();
-  //game.sceneManager.scenes.push(scene.jaredTestScene);
+  //game.sceneManager.scenes.push(scene.gamma);
 
   // run completed levels
   initIntroMessage(game);
 
   // run first prototype level
-  // game.spawnEnemies();
+  //game.spawnEnemies();
 
   canvas.focus();
   game.sceneManager.loadBackground(background.beach, 1);
@@ -459,7 +461,7 @@ class SceneManager {
         this.game.player.removeFromWorld = true;
       }
 
-      this.game.player = new Plane(this.game, scene.player);
+      this.game.player = new Plane(this.game, ship.player);
       this.game.addEntity(this.game.player);
     }
   }
@@ -521,7 +523,7 @@ class SceneManager {
             Object.assign(manifestCopy.weapon.payload, wave.shipManifestOverride[i].weapon.payload);
           }
         }
-      }
+
 
       if (!Array.isArray(wave.ships[i].weapon)) {
         // sprites/images don't copy over when you parse a stringified JSON object,
@@ -538,9 +540,8 @@ class SceneManager {
         for (let j = 0; j < wave.ships[i].weapon.length; j++) {
           manifestCopy.weapon[j] = Object.assign({}, wave.ships[i].weapon[j]);
         }
-
-
       }
+    }
 
       // The ship constructor **should** copy data; try without Object.assign() here
       // let ship = new Ship(this.game, Object.assign({}, manifestCopy));
