@@ -846,6 +846,9 @@ class Weapon {
           // changed to single object construction. if you fire two slots it gives a little
           // overlap maybe that is good? it add's a little emphasis. if not we can only play on slot[0]
           this.fireSound.play();
+          
+          // this works, but it shorts the cooldown when we instantly swap back to primary,
+          // and on the next update it is ready to fire. maybe use a counter to allow one full cycle?
           if(this.hasNuke)  {
 
             this.slot[0] = Object.assign({}, this.saveGun);
