@@ -344,11 +344,10 @@ function getRandomPowerUp(weapon) {
     POWERUPS.push(new MultiGun(100));
   }
 
-
   return POWERUPS[Math.floor(Math.random() * POWERUPS.length)];
 }
 
-function   getPowerUp(type)  {
+function getPowerUp(type)  {
   switch(type)  {
     case 'nuke':
       return new Nuke(100);
