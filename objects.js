@@ -539,7 +539,7 @@ function loadTemplates() {
 
   ring.fixedSpeed = {
     payload: {
-      type: projectile.microBullet,
+      type: projectile.glassBall,
       speed: 350,
       acceleration: 1,
     },
@@ -793,7 +793,7 @@ function loadTemplates() {
 
   ring.doubleStraightDownPulse = {
     payload: {
-      type: projectile.microBullet,
+      type: projectile.circleBullet,
       speed: 250,
       acceleration: 1,
     },
@@ -1604,10 +1604,41 @@ function loadTemplates() {
       hitValue: 5,
       radius: 150,
       sprite: sprite.eagleBoss.default,
+      slave: [
+        {
+        config: {
+          health: 10,
+          hitValue: 50,
+          radius: 50,
+          xDifference: -300, //Difference in X value from master
+          yDifference: 0, //Difference in Y value from master
+        },
+        weapon: ring.spreadBeta2
+        },
+        {
+        config: {
+          health: 10,
+          hitValue: 50,
+          radius: 50,
+          xDifference: 300, 
+          yDifference: 0, 
+        },
+        weapon: ring.spreadBeta2
+        }
+      ]
     },
-    weapon: ring.laserGapDown,
-
+    weapon: ring.uniTwentyWayTurn,
   }
+
+  // ship.eagleSlave = {
+  //   config: {
+  //     health: 100,
+  //     hitValue: 50,
+  //     radius: 50,
+  //     slave: true
+  //   },
+  //   weapon: ring.spreadBeta2
+  // }
 
   ship.dodgeOwl = {
     config: {
@@ -2621,63 +2652,23 @@ function loadTemplates() {
 
   scene.Nathan = {
     waves: [{
-      choreography: [
-        {
-          id: 'loadBackground',
-          bg: background.paper,
-        },
-        {
-          id: 'accelerateToWarpspeed',
-        },
-        {
-          id: 'wait',
-          duration: 0.5,
-        },
-        {
-          id: 'decelerateFromWarpSpeed'
-        }
-      ]
-    },
-      //wave 1
-    // {
-    //   numOfEnemies: 4,
-    //   ships: [ship.crane, ship.dove, ship.dove, ship.crane],
-    //   paths: [path.sawtoothRightStop, path.straightDown, path.straightDown, path.sawtoothLeftStop],
-    //   shipManifestOverride: [
-    //     { weapon : ring.gammeTwo },
-    //     { weapon: ring.gammeOne },
-    //     { weapon : ring.gammaOne },
-    //     { weapon: ring.gammaTwo },
-    //   ],
-    //   waitUntilEnemiesGone: true,
-    // },
-    //wave 2
-
-    //Good ones: ring.jaredTest3, ring.jaredTest1, ring.jaredAlpha1
-    //           ring.spreadBeta1, ring.fourFixedSpeedCirclef
-    {
       numOfEnemies: 1,
-      ships: [ship.hummer],//, ship.bat, ship.swallow, ship.bat, ship.hummer],
-      paths: [path.cornerLeft],//[path.cornerLeft, path.leftUTurn, path.straightDown, path.leftUTurn, path.cornerRight],
-      shipManifestOverride: [
-        {weapon : ring.jaredWavy1},
-        // {weapon : ring.doubleStraightDownPulse},
-        // {weapon : ring.fixedSpeed},
-        // {weapon : ring.doubleStraightDownPulse},
-        // {weapon : ring.patternTest},
+      ships: [ship.eagle],
+      paths: [
+        path.doNothing,
       ],
+      shipManifestOverride: [{
+        config: {
+          health: 500,
+          snapLineSpeed: 50,
+          hitValue: 2000,
+          snapLine: 250,
+          radius: 200,
+        },
+      }],
       waitUntilEnemiesGone: true,
-    }
-      // {
-      //   numOfEnemies: 2,
-      //   ships: new Array(2).fill(ship.bat),
-      //   paths: [
-      //     path.strafeRight,
-      //     path.strafeLeft,
-      //   ],
-      //   waitUntilEnemiesGone: true,
-      // },
-    ],
+    },
+  ],
 
   }
 
@@ -3051,6 +3042,10 @@ function loadTemplates() {
       },//cut
     ],
   };
+
+  scene.eagleDebug = {
+    
+  }
 
   /** JaredLevel: Templates for a Level --IN PLACE ASSETS-- */
   ring.gammaOne = {

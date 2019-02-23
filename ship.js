@@ -156,6 +156,24 @@ class Ship extends Entity {
     this.timeSinceHit = 0;
     this.health = manifest.config.health;
 
+    //A slave is the "slave" to another ship. The other ship is the master
+    //and any hits the slave takes will be inflicted on the master.
+    //Slaves are also currently set to not be drawn.
+    //Example: The wings of the eagle are slaves.
+    if(manifest.config.slave) {
+      this.slaves = [];
+      for(let i = 0; i < manifest.config.slave.length; i++)  {
+        this.slaves[i] = Object.assign({}, manifest.config.slave[i]);
+        this.slaves[i].current = {
+          x: this.current.x + this.slaves[i].config.xDifference,
+          y: this.current.y + this.slaves[i].config.yDifference
+        }
+        this.slaves[i].game = this.game;
+        this.slaves[i].ctx = this.ctx;
+        this.initializeSlaveWeapon(i, this.slaves[i].weapon);
+      }
+    }
+
     // initialize any included weapon and path
     if (manifest.path) {
       this.initializePath(manifest.path);
@@ -175,6 +193,7 @@ class Ship extends Entity {
       this.updateHelm();
       this.updateCollisionDetection();
       this.weapon.update();
+      this.updateSlaves();
     }
     // sprite change when hit:
     if (this.timeSinceHit != 0) {
@@ -197,13 +216,50 @@ class Ship extends Entity {
 
   draw() {
     //if (this.health > 0) { // alive
-    this.sprite.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
+      this.sprite.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
     // }
     // if (this.health <= 0) { // dead, draw my explosion
     //   this.deathAnimation.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
     // }
     this.weapon.draw();
     super.draw();
+  }
+
+  updateSlaves()  {
+    if(this.slaves) {
+      for(let i = 0; i < this.slaves.length; i++) {
+        this.slaves[i].current.x = this.current.x + this.slaves[i].config.xDifference;
+        this.slaves[i].current.y = this.current.y + this.slaves[i].config.yDifference;
+        this.slaves[i].weapon.update();
+        if(this.slaves[i].config.health <= 0) {
+          this.game.addEntity(new Death(this.game, this.slaves[i].current.x, this.slaves[i].current.y));
+          this.slaves.splice(i, 1);
+          i--;
+        }
+      }
+    }
+  }
+
+  slaveCollision(e)  {
+    if(this.slaves) {
+      for(let i = 0; i < this.slaves.length; i++) {
+        if(this.slaveCollided(this.slaves[i], e))  {
+          this.slaves[i].config.health -= e.config.hitValue;
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  slaveCollided(slave, other)  {
+    let hasCollided = false;
+    if (slave.config.radius && other instanceof Entity && other.config.radius) {
+      const distanceSquared = Math.pow(slave.current.x - other.current.x, 2) + Math.pow(slave.current.y - other.current.y, 2);
+      const radiiSquared = Math.pow(slave.config.radius + other.config.radius, 2);
+      hasCollided = distanceSquared < radiiSquared;
+    }
+    return hasCollided;
   }
 
 
@@ -229,9 +285,10 @@ class Ship extends Entity {
 
     // Check for hit from player bullets
     for (const e of this.game.entities) {
-      if (e instanceof Projectile && e.playerShot && this.isCollided(e)) {
+      if (e instanceof Projectile && e.playerShot && (this.isCollided(e) || this.slaveCollision(e))) {
         e.onHit(this); // notify projectile
         this.health -= e.config.hitValue;
+        console.log(this.health);
         //manifest.config.sprite.hit
         //this.sprite.currentFrame
         //this.hitSprite.currentFrame = this.sprite.currentFrame + 1;
@@ -324,6 +381,10 @@ class Ship extends Entity {
 
   initializeWeapon(weaponManifest) {
     this.weapon = new Weapon(this, weaponManifest);
+  }
+
+  initializeSlaveWeapon(index, weaponManifest) {
+    this.slaves[index].weapon = new Weapon(this.slaves[index], weaponManifest);
   }
 
   disarm() {
