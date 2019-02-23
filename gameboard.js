@@ -201,33 +201,6 @@ function hideControlMessage() {
   message.style.display = 'none';
 }
 
-function getData() {
-  source = audioCtx.createBufferSource();
-  request = new XMLHttpRequest();
-
-  request.open('GET', './audio/Game_Loop_v.1.ogg', true);
-
-  request.responseType = 'arraybuffer';
-
-  request.onload = function() {
-    var audioData = request.response;
-
-    audioCtx.decodeAudioData(audioData, function(buffer) {
-        myBuffer = buffer;
-        source.buffer = myBuffer;
-        source.playbackRate.value = playbackControl.value;
-        source.connect(audioCtx.destination);
-        source.loop = true;
-      },
-
-      function(e){"Error with decoding audio data" + e.err});
-
-  }
-
-  request.send();
-}
-
-
 /**
  * Starts the game by spawning enemies, initializing the scoreboard lives and
  * setting the focus to the canvas

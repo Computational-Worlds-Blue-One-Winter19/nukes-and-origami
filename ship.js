@@ -148,7 +148,6 @@ class Ship extends Entity {
     this.initialDirection = this.config.initialDirection || 'south';
     this.snapLineSpeed = this.config.snapLineSpeed || 300;
     this.hitValue = this.config.hitValue;
-    this.powerUp = this.config.powerUp;
 
     // additional fields
     this.idleTrans = false;
