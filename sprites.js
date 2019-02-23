@@ -245,6 +245,39 @@ function loadSpriteSheets() {
     }
   }
 
+  sprite.pigeon = {
+    default: {
+      default: {
+        image: AM.getAsset('./img/pigeon.png'),
+        dimension: {
+          originX: 0,
+          originY: 0,
+          frameWidth: 530,
+          frameHeight: 460,
+          frameCount: 10,
+          timePerFrame: 0.1,
+          scale: 0.3,
+          flip: false,
+          loop: true
+        }
+      },
+      hit:  {
+        image: AM.getAsset('./img/pigeon.png'),
+        dimension: {
+          originX: 0,
+          originY: 460,
+          frameWidth: 530,
+          frameHeight: 460,
+          frameCount: 10,
+          timePerFrame: 0.2,
+          scale: 0.3,
+          flip: false,
+          loop: true
+        }
+      }
+    }
+  }
+
   sprite.bird = {
     default: {
       default: {
@@ -858,6 +891,22 @@ function loadSpriteSheets() {
           loop: false
         },
       },
+    },
+    lightBlue: {
+      default: {
+        image: AM.getAsset('./img/light_blue_plane.png'),
+        dimension: {
+          originX: 0,
+          originY: 0,
+          frameWidth: 60,
+          frameHeight: 66,
+          frameCount: 1,
+          timePerFrame: 0,
+          scale: 1.0,
+          flip: false,
+          loop: false
+        },
+      },        
       right: {
         image: AM.getAsset('./img/light_blue_plane.png'),
         dimension: {
@@ -912,6 +961,20 @@ function loadSpriteSheets() {
           scale: 1.0,
           flip: false,
           loop: true
+        },
+      },
+      hit:  {
+        image: AM.getAsset('./img/light_blue_plane.png'),
+        dimension: {
+          originX: 0,
+          originY: 0,
+          frameWidth: 60,
+          frameHeight: 66,
+          frameCount: 1,
+          timePerFrame: 0,
+          scale: 1.0,
+          flip: false,
+          loop: false
         },
       },
     },

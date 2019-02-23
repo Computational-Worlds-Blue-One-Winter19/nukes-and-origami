@@ -19,8 +19,7 @@ class Sprite {
     this.elapsedTime = 0; // Not set by user
     this.currentFrame = 0;
     this.hitDuration = 0.08;
-    this.remainingHitDuration = 0;
-    this.remainingHitInterval = 0;
+    this.remainingHitTime = 0;
 }
 
   drawFrame(tick, ctx, x, y) {
@@ -38,21 +37,12 @@ class Sprite {
       }
 
       // handle hit flickering
-      if (this.remainingHitDuration > 0) {
-        this.remainingHitInterval -= tick;
-        this.remainingHitDuration -= tick;
-        if (this.remainingHitInterval < 0 && this.oriY === 0) {
-          //this.remainingHitInterval = this.hit.interval;
-          this.remainingHitInterval = this.hitDuration;
-          this.oriY = this.height;
-        } else if (this.remainingHitInterval < 0) {
-          //this.remainingHitInterval = this.hit.interval;
-          this.remainingHitInterval = this.hitDuration;
-          this.oriY = 0;
+      if (this.remainingHitTime > 0) {
+        this.remainingHitTime -= tick;
+        if (this.remainingHitTime <= 0) {
+          // done with this hit so reset oriY
+          this.oriY = this.initialY;
         }
-      } else {
-        // done with this hit so reset oriY
-        this.oriY = this.initialY;
       }
     }
 
@@ -75,8 +65,7 @@ class Sprite {
   }
 
   onHit() {
-    this.remainingHitDuration = this.hitDuration;
-    this.remainingHitInterval = this.hitDuration;
+    this.remainingHitTime = this.hitDuration;
     this.oriY = this.height;
   }
 }
@@ -696,6 +685,11 @@ class Weapon {
 
     this.hasNuke = false;
 
+    this.fireSound = new Howl({
+      src: ['audio/laserShot.mp3'],
+      volume: 0.2,
+    });
+
     // This is to prevent duplicate homing missile weapons from being added to the inventory
     // We can decide how to handle this later
     this.hasRegularGun = true;
@@ -716,7 +710,7 @@ class Weapon {
           offset,
         });
       }
-    } else if (manifest) {
+    } else if (manifest && manifest.firing) {
       this.primaryRingManifest = manifest;
 
       // process the single-ring format
@@ -783,7 +777,11 @@ class Weapon {
       for (let i = 0; i < this.slot.length; i++) {
         const ready = this.slot[i].ring.status.isReady
         if (ready) {
-          this.slot[i].ring.fire()
+          this.slot[i].ring.fire();
+          
+          // changed to single object construction. if you fire two slots it gives a little
+          // overlap maybe that is good? it add's a little emphasis. if not we can only play on slot[0]
+          this.fireSound.play();
           if(this.hasNuke)  {
 
             this.slot[0] = Object.assign({}, this.saveGun);
@@ -999,7 +997,7 @@ class Ring {
 
     if (!this.payload.velocity) {
       this.payload.velocity = {
-        radial: this.payload.speed,
+        radial: this.payload.speed || 0,
         angular: 0,
       };
     } else {
@@ -1130,16 +1128,7 @@ class Ring {
     if (!this.status.isReady) {
       return;
     }
-
-    if (this.owner.isPlayer) {
-      var sound = new Howl({
-        src: ['audio/laserShot.mp3'],
-        volume: 0.2,
-      });
-
-      sound.play();
-    }
-
+    
     if (this.config.pattern && --this.status.round > -1) {
       this.fireLine(this.status.round);
       this.status.isReady = false;
@@ -1284,7 +1273,7 @@ class Projectile extends Entity {
     this.local = Object.assign({}, this.payload.local);
 
     // support for origin format
-    if (!this.current.angle) {
+    if (this.current.angle === undefined) {
       this.current.angle = manifest.angle;
       this.current.velocity = {
         radial: manifest.payload.speed,
