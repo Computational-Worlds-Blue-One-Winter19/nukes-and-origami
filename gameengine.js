@@ -203,6 +203,15 @@ class Entity {
       this.game.ctx.arc(this.current.x, this.current.y, this.config.radius, 0, Math.PI * 2, false);
       this.game.ctx.stroke();
       this.game.ctx.closePath();
+      if(this.slaves) {
+        for(let i = 0; i < this.slaves.length; i++) {
+          this.game.ctx.beginPath();
+          this.game.ctx.strokeStyle = 'red';
+          this.game.ctx.arc(this.slaves[i].current.x, this.slaves[i].current.y, this.slaves[i].config.radius, 0, Math.PI * 2, false);
+          this.game.ctx.stroke();
+          this.game.ctx.closePath();
+        }
+      }
     }
   }
 

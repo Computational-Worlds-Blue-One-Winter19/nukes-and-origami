@@ -76,23 +76,21 @@ class NukesAndOrigami extends GameEngine {
         path: './audio/Game_Loop_v.1.ogg',
         // Two instances of a howler are needed to loop sounds, so we'll need
         // references of these instances to stop or pause music
-        instances: []
+        instances: [],
+        volume: 0.09,
       }
     }
 
-    // Initilize the game board
-
-    initializeScoreBoardLives(this.lives);
     this.sceneManager = new SceneManager(this);
   }
 
   initializeSceneManager() {
     // load completed levels
-    this.sceneManager.scenes.push(scene.gamma);
-    this.sceneManager.scenes.push(scene.mikeLevel);
-    this.sceneManager.scenes.push(scene.oneWaveTest);
-    this.sceneManager.scenes.push(scene.waveBank);
-    this.sceneManager.scenes.push(scene.easyPaper);
+    // this.sceneManager.scenes.push(scene.gamma);
+    // this.sceneManager.scenes.push(scene.mikeLevel);
+    // this.sceneManager.scenes.push(scene.oneWaveTest);
+    // this.sceneManager.scenes.push(scene.waveBank);
+    // this.sceneManager.scenes.push(scene.easyPaper);
     this.sceneManager.scenes.push(scene.bossTest);
     this.sceneManager.scenes.push(scene.endingScene);
   }
@@ -108,9 +106,9 @@ class NukesAndOrigami extends GameEngine {
   }
 
   //Override
-  draw()  {
+  draw() {
     super.draw();
-    if(this.player) {
+    if (this.player) {
       this.player.draw(); //Player over everything
     }
   }
@@ -128,7 +126,7 @@ class NukesAndOrigami extends GameEngine {
     this.increaseScoreBy(hitValue);
 
     // Generate a powerUp
-    const powerUp = getRandomPowerUp(this.player.weapon);
+    const powerUp = getPowerUp(enemy.powerup)|| getRandomPowerUp(this.player.weapon);
     if (powerUp && powerUp.shouldDrop()) {
       this.addEntity(new Projectile(this, {
         origin: {
@@ -192,7 +190,7 @@ class NukesAndOrigami extends GameEngine {
       player.invincTime += this.clockTick;
     }
     if (this.lives === 0) { // game over
-      // this.gameOver()
+      this.gameOver()
     }
   }
 
@@ -521,25 +519,27 @@ class SceneManager {
               manifestCopy.weapon.payload = {};
             }
             Object.assign(manifestCopy.weapon.payload, wave.shipManifestOverride[i].weapon.payload);
-          } 
-        } else {
-          if (!Array.isArray(wave.ships[i].weapon)) {
-            // sprites/images don't copy over when you parse a stringified JSON object,
-            // directly link them here.
-            if (wave.ships[i].weapon.payload && wave.ships[i].weapon.payload.type.sprite) {
-              manifestCopy.weapon.payload.type.sprite = wave.ships[i].weapon.payload.type.sprite
-            }
-            if (wave.ships[i].weapon.payload && wave.ships[i].weapon.payload.type.image) {
-              manifestCopy.weapon.payload.type.image = wave.ships[i].weapon.payload.type.image
-            }
-          } else {
-            // weapon is an array, copy over everything
-            manifestCopy.weapon = new Array(wave.ships[i].weapon.length);
-            for (let j = 0; j < wave.ships[i].weapon.length; j++) {
-              manifestCopy.weapon[j] = Object.assign({}, wave.ships[i].weapon[j]);
-            }
           }
         }
+      }
+
+      if (!Array.isArray(wave.ships[i].weapon)) {
+        // sprites/images don't copy over when you parse a stringified JSON object,
+        // directly link them here.
+        if (wave.ships[i].weapon.payload && wave.ships[i].weapon.payload.type.sprite) {
+          manifestCopy.weapon.payload.type.sprite = wave.ships[i].weapon.payload.type.sprite;
+        }
+        if (wave.ships[i].weapon.payload && wave.ships[i].weapon.payload.type.image) {
+          manifestCopy.weapon.payload.type.image = wave.ships[i].weapon.payload.type.image;
+        }
+      } else {
+        // weapon is an array, copy over everything
+        manifestCopy.weapon = new Array(wave.ships[i].weapon.length);
+        for (let j = 0; j < wave.ships[i].weapon.length; j++) {
+          manifestCopy.weapon[j] = Object.assign({}, wave.ships[i].weapon[j]);
+        }
+
+
       }
 
       // The ship constructor **should** copy data; try without Object.assign() here
@@ -549,8 +549,8 @@ class SceneManager {
       // Was the location overriden?
       if (wave.initialXPoints) {
         ship.current.x = wave.initialXPoints[i];
-      } else if (ship.initialDirection === 'north'
-        || ship.initialDirection === 'south') {
+      } else if (ship.initialDirection === 'north' ||
+        ship.initialDirection === 'south') {
         ship.current.x = horizontalLocationCounter;
         horizontalLocationCounter += horizontalSpacing;
       }
@@ -558,8 +558,8 @@ class SceneManager {
 
       if (wave.initialYPoints) {
         ship.current.y = wave.initialYPoints[i];
-      } else if (ship.initialDirection === 'west'
-        || ship.initialDirection === 'east') {
+      } else if (ship.initialDirection === 'west' ||
+        ship.initialDirection === 'east') {
         ship.current.y = verticalLocationCounter;
         verticalLocationCounter += verticalSpacing;
       }
@@ -738,6 +738,12 @@ class SceneManager {
         // If it exists,
         if (this.entitiesInWave[currentChor.enemyIndex]) {
           this.entitiesInWave[currentChor.enemyIndex].initializeWeapon(currentChor.ring);
+        }
+        this.choreography.shift();
+        break;
+      case 'swapSlaveRing':
+        if(this.entitiesInWave[currentChor.enemyIndex].slaves)  {
+          this.entitiesInWave[currentChor.enemyIndex].initializeSlaveWeapon(currentChor.slaveIndex, currentChor.ring);
         }
         this.choreography.shift();
         break;
