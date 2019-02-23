@@ -108,9 +108,9 @@ class NukesAndOrigami extends GameEngine {
   }
 
   //Override
-  draw()  {
+  draw() {
     super.draw();
-    if(this.player) {
+    if (this.player) {
       this.player.draw(); //Player over everything
     }
   }
@@ -521,25 +521,27 @@ class SceneManager {
               manifestCopy.weapon.payload = {};
             }
             Object.assign(manifestCopy.weapon.payload, wave.shipManifestOverride[i].weapon.payload);
-          } 
-        } else {
-          if (!Array.isArray(wave.ships[i].weapon)) {
-            // sprites/images don't copy over when you parse a stringified JSON object,
-            // directly link them here.
-            if (wave.ships[i].weapon.payload && wave.ships[i].weapon.payload.type.sprite) {
-              manifestCopy.weapon.payload.type.sprite = wave.ships[i].weapon.payload.type.sprite
-            }
-            if (wave.ships[i].weapon.payload && wave.ships[i].weapon.payload.type.image) {
-              manifestCopy.weapon.payload.type.image = wave.ships[i].weapon.payload.type.image
-            }
-          } else {
-            // weapon is an array, copy over everything
-            manifestCopy.weapon = new Array(wave.ships[i].weapon.length);
-            for (let j = 0; j < wave.ships[i].weapon.length; j++) {
-              manifestCopy.weapon[j] = Object.assign({}, wave.ships[i].weapon[j]);
-            }
           }
         }
+      }
+
+      if (!Array.isArray(wave.ships[i].weapon)) {
+        // sprites/images don't copy over when you parse a stringified JSON object,
+        // directly link them here.
+        if (wave.ships[i].weapon.payload && wave.ships[i].weapon.payload.type.sprite) {
+          manifestCopy.weapon.payload.type.sprite = wave.ships[i].weapon.payload.type.sprite;
+        }
+        if (wave.ships[i].weapon.payload && wave.ships[i].weapon.payload.type.image) {
+          manifestCopy.weapon.payload.type.image = wave.ships[i].weapon.payload.type.image;
+        }
+      } else {
+        // weapon is an array, copy over everything
+        manifestCopy.weapon = new Array(wave.ships[i].weapon.length);
+        for (let j = 0; j < wave.ships[i].weapon.length; j++) {
+          manifestCopy.weapon[j] = Object.assign({}, wave.ships[i].weapon[j]);
+        }
+
+
       }
 
       // The ship constructor **should** copy data; try without Object.assign() here
@@ -549,8 +551,8 @@ class SceneManager {
       // Was the location overriden?
       if (wave.initialXPoints) {
         ship.current.x = wave.initialXPoints[i];
-      } else if (ship.initialDirection === 'north'
-        || ship.initialDirection === 'south') {
+      } else if (ship.initialDirection === 'north' ||
+        ship.initialDirection === 'south') {
         ship.current.x = horizontalLocationCounter;
         horizontalLocationCounter += horizontalSpacing;
       }
@@ -558,8 +560,8 @@ class SceneManager {
 
       if (wave.initialYPoints) {
         ship.current.y = wave.initialYPoints[i];
-      } else if (ship.initialDirection === 'west'
-        || ship.initialDirection === 'east') {
+      } else if (ship.initialDirection === 'west' ||
+        ship.initialDirection === 'east') {
         ship.current.y = verticalLocationCounter;
         verticalLocationCounter += verticalSpacing;
       }
