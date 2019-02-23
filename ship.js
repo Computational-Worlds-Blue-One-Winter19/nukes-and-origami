@@ -751,7 +751,7 @@ class Weapon {
 
     this.fireSound = new Howl({
       src: ['audio/laserShot.mp3'],
-      volume: 0.2,
+      volume: 0.1,
     });
 
     // This is to prevent duplicate homing missile weapons from being added to the inventory

@@ -76,13 +76,11 @@ class NukesAndOrigami extends GameEngine {
         path: './audio/Game_Loop_v.1.ogg',
         // Two instances of a howler are needed to loop sounds, so we'll need
         // references of these instances to stop or pause music
-        instances: []
+        instances: [],
+        volume: 0.09,
       }
     }
 
-    // Initilize the game board
-
-    initializeScoreBoardLives(this.lives);
     this.sceneManager = new SceneManager(this);
   }
 
@@ -192,7 +190,7 @@ class NukesAndOrigami extends GameEngine {
       player.invincTime += this.clockTick;
     }
     if (this.lives === 0) { // game over
-      // this.gameOver()
+      this.gameOver()
     }
   }
 
