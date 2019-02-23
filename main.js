@@ -61,7 +61,7 @@ AM.queueDownload('./img/rapid-bullet-horizontal.png');
 class NukesAndOrigami extends GameEngine {
   constructor() {
     super();
-    this.lives = 5;
+    this.lives = 15;
     this.hits = 0;
     this.score = 0;
 
