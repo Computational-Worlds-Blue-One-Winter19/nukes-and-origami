@@ -6,27 +6,44 @@ class Sprite {
     this.sheet = config.image; // Source spritesheet
     this.oriX = config.dimension.originX; // Top left X point of where to start on the spritesheet
     this.oriY = config.dimension.originY; // Top left Y point of where to start on the spritesheet
+    this.initialY = this.oriY;
     this.width = config.dimension.frameWidth; // Pixel width of each frame
     this.height = config.dimension.frameHeight; // Pixel height of each frame
     this.len = config.dimension.frameCount; // # of frames in this sprite (to let user pick
     // certain frames from a sheet containing multiple animations)
-    this.time = config.dimension.timePerFrame; // time each frame should be displayed. If time = 0, don't loop
+    this.time = config.dimension.timePerFrame; // time each frame should be displayed.
+    this.loop = config.dimension.loop;
     this.scale = config.dimension.scale; // Size scale
     this.flip = config.dimension.flip; // BOOLEAN. Flip image over Y axis?
     this.totalTime = config.dimension.timePerFrame * config.dimension.frameCount; // Not set by user
     this.elapsedTime = 0; // Not set by user
     this.currentFrame = 0;
-  }
+    this.hitDuration = 0.08;
+    this.remainingHitTime = 0;
+}
 
   drawFrame(tick, ctx, x, y) {
     this.elapsedTime += tick;
     if (this.time !== 0) {
-      if (this.elapsedTime >= this.totalTime) { // The isDone() function does exactly this. Use either.
+      if (this.elapsedTime >= this.totalTime && this.loop) { // The isDone() function does exactly this. Use either.
         // All frames used. Start over to loop.
         this.elapsedTime = 0;
       }
-      this.currentFrame = (Math.floor(this.elapsedTime / this.time)) % this.len;
-      // console.log(this.currentFrame);
+
+      if (this.loop) {
+        this.currentFrame = (Math.floor(this.elapsedTime / this.time)) % this.len;
+      } else {
+        this.currentFrame = Math.floor(this.elapsedTime / this.time);
+      }
+
+      // handle hit flickering
+      if (this.remainingHitTime > 0) {
+        this.remainingHitTime -= tick;
+        if (this.remainingHitTime <= 0) {
+          // done with this hit so reset oriY
+          this.oriY = this.initialY;
+        }
+      }
     }
 
     const locX = x - (this.width / 2) * this.scale;
@@ -41,14 +58,15 @@ class Sprite {
       locY,
       this.width * this.scale,
       this.height * this.scale);
-    // }
-    if (this.time !== 0) {
-      this.currentFrame += 1;
-    }
   }
 
   isDone() {
     return this.elapsedTime >= this.totalTime;
+  }
+
+  onHit() {
+    this.remainingHitTime = this.hitDuration;
+    this.oriY = this.height;
   }
 }
 
@@ -119,21 +137,43 @@ class Ship extends Entity {
   constructor(game, manifest) {
     super(game, Ship.getInitPoint(game, manifest));
     this.sprite = new Sprite(manifest.config.sprite.default);
-
+    this.defaultSprite = new Sprite(manifest.config.sprite.default);
+    this.hitSprite = new Sprite(manifest.config.sprite.hit);
+    //this.deathAnimation = new Sprite(sprite.explosion.default);
     // store class constants in config
     this.config = Object.assign({}, manifest.config);
     this.config.radius = this.config.radius || 50;
     this.config.hitValue = this.config.hitValue || 1;
     this.snapLine = this.config.snapLine || 100;
+    this.initialDirection = this.config.initialDirection || 'south';
     this.snapLineSpeed = this.config.snapLineSpeed || 300;
     this.hitValue = this.config.hitValue;
-    this.powerUp = getRandomPowerUp();
 
     // additional fields
     this.idleTrans = false;
     this.idleCount = 0;
     this.lastFired = 0;
+    this.timeSinceHit = 0;
     this.health = manifest.config.health;
+
+    //A slave is the "slave" to another ship. The other ship is the master
+    //and any hits the slave takes will be inflicted on the master.
+    //Slaves are also currently set to not be drawn.
+    //Example: The wings of the eagle are slaves.
+    if(manifest.config.slave) {
+      this.slaves = [];
+      for(let i = 0; i < manifest.config.slave.length; i++)  {
+        this.slaves[i] = Object.assign({}, manifest.config.slave[i]);
+        this.slaves[i].current = {
+          x: this.current.x + this.slaves[i].config.xDifference,
+          y: this.current.y + this.slaves[i].config.yDifference
+        }
+        this.slaves[i].hitValue = this.slaves[i].config.hitValue;
+        this.slaves[i].game = this.game;
+        this.slaves[i].ctx = this.ctx;
+        this.initializeSlaveWeapon(i, this.slaves[i].weapon);
+      }
+    }
 
     // initialize any included weapon and path
     if (manifest.path) {
@@ -153,22 +193,77 @@ class Ship extends Entity {
       // check all systems
       this.updateHelm();
       this.updateCollisionDetection();
-      this.updateWeapons();
+      this.weapon.update();
+      this.updateSlaves();
+    }
+    // sprite change when hit:
+    if (this.timeSinceHit != 0) {
+      this.timeSinceHit += this.game.clockTick;
+    }
+    if (this.timeSinceHit >= 0.1) {
+      // this.defaultSprite.currentFrame = this.sprite.currentFrame - 1;
+      this.sprite = this.defaultSprite;
+      this.timeSinceHit = 0;
+    }
+    if (this.health <= 0) {
+      this.disarm();
+      this.game.onEnemyDestruction(this);
+      this.game.addEntity(new Death(this.game, this.current.x, this.current.y));
+      this.removeFromWorld = true;
+
     }
     super.update();
   }
 
   draw() {
-    this.sprite.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
-    this.drawWeapon();   
+    //if (this.health > 0) { // alive
+      this.sprite.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
+    // }
+    // if (this.health <= 0) { // dead, draw my explosion
+    //   this.deathAnimation.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
+    // }
+    this.weapon.draw();
     super.draw();
   }
 
-  drawWeapon() {
-    for (let i = 0; i < this.weapon.length; i++) {
-      this.weapon[i].ring.draw();
+  updateSlaves()  {
+    if(this.slaves) {
+      for(let i = 0; i < this.slaves.length; i++) {
+        this.slaves[i].current.x = this.current.x + this.slaves[i].config.xDifference;
+        this.slaves[i].current.y = this.current.y + this.slaves[i].config.yDifference;
+        this.slaves[i].weapon.update();
+        if(this.slaves[i].config.health <= 0) {
+          this.game.onEnemyDestruction(this.slaves[i]);
+          this.game.addEntity(new Death(this.game, this.slaves[i].current.x, this.slaves[i].current.y));
+          this.slaves.splice(i, 1);
+          i--;
+        }
+      }
     }
   }
+
+  slaveCollision(e)  {
+    if(this.slaves) {
+      for(let i = 0; i < this.slaves.length; i++) {
+        if(this.slaveCollided(this.slaves[i], e))  {
+          this.slaves[i].config.health -= e.config.hitValue;
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  slaveCollided(slave, other)  {
+    let hasCollided = false;
+    if (slave.config.radius && other instanceof Entity && other.config.radius) {
+      const distanceSquared = Math.pow(slave.current.x - other.current.x, 2) + Math.pow(slave.current.y - other.current.y, 2);
+      const radiiSquared = Math.pow(slave.config.radius + other.config.radius, 2);
+      hasCollided = distanceSquared < radiiSquared;
+    }
+    return hasCollided;
+  }
+
 
   /**
    * Collisions: detection checks bounds along canvas, collision with
@@ -192,31 +287,16 @@ class Ship extends Entity {
 
     // Check for hit from player bullets
     for (const e of this.game.entities) {
-      if (e instanceof Projectile && e.playerShot && this.isCollided(e)) {
-        e.onHit(this); //notify projectile
+      if (e instanceof Projectile && e.playerShot && (this.isCollided(e) || this.slaveCollision(e))) {
+        e.onHit(this); // notify projectile
         this.health -= e.config.hitValue;
-
-        if (this.health <= 0) {
-          this.disarm();
-          this.removeFromWorld = true;
-          this.game.onEnemyDestruction(this);
-        }
+        //manifest.config.sprite.hit
+        //this.sprite.currentFrame
+        //this.hitSprite.currentFrame = this.sprite.currentFrame + 1;
+        //this.sprite = this.hitSprite;
+        //this.timeSinceHit += this.game.clockTick;
+        this.sprite.onHit();
       }
-    }
-  }
-
-  /**
-   * Weapons: manage turret initialization, rotation, firing and cooldown.
-   */
-  updateWeapons() {
-    // assume that this.current has been updated to Ship's x,y postion
-    for (let i = 0; i < this.weapon.length; i++) {
-      let weapon = this.weapon[i];
-
-      weapon.ring.current.x = this.current.x + weapon.offset.x;
-      weapon.ring.current.y = this.current.y + weapon.offset.y;
-
-      weapon.ring.update();
     }
   }
 
@@ -264,11 +344,32 @@ class Ship extends Entity {
    * SnapPath: manage the transition to the starting point.
    */
   updateSnapPath() {
-    this.current.y += this.snapLineSpeed * this.game.clockTick;
-
-    // check for arrival at snapLine
-    if (this.current.y >= this.snapLine) {
-      this.snapLine = null;
+    switch (this.initialDirection) {
+      case 'north':
+        this.current.y -= this.snapLineSpeed * this.game.clockTick;
+        // check for arrival at snapLine
+        if (this.current.y <= this.snapLine) {
+          this.snapLine = null;
+        }
+        break;
+      case 'south':
+        this.current.y += this.snapLineSpeed * this.game.clockTick;
+        if (this.current.y >= this.snapLine) {
+          this.snapLine = null;
+        }
+        break;
+      case 'west':
+        this.current.x -= this.snapLineSpeed * this.game.clockTick;
+        if (this.current.x <= this.snapLine) {
+          this.snapLine = null;
+        }
+        break;
+      case 'east':
+        this.current.x += this.snapLineSpeed * this.game.clockTick;
+        if (this.current.x >= this.snapLine) {
+          this.snapLine = null;
+        }
+        break;
     }
   }
 
@@ -280,31 +381,19 @@ class Ship extends Entity {
   }
 
   initializeWeapon(weaponManifest) {
-    this.weapon = new Array();
-    
-    if (weaponManifest instanceof Array) {
-      // process the multi-ring format
-      for (let i = 0; i < weaponManifest.length; i++) {
-        var r = new Ring(this, weaponManifest[i].ring);
-        var offset = weaponManifest[i].offset || { x: 0, y: 0 };
+    this.weapon = new Weapon(this, weaponManifest);
+  }
 
-        this.weapon.push({
-          ring: r,
-          offset: offset,
-        });
-      }
-    } else if (weaponManifest) {
-      // process the single-ring format  
-      var r = new Ring(this, weaponManifest);
-      
-      this.weapon.push({
-        ring: r,
-        offset: { x: 0, y: 0 },
-      });
+  initializeSlaveWeapon(index, weaponManifest) {
+    if(this.slaves[index])  {
+      this.slaves[index].weapon = new Weapon(this.slaves[index], weaponManifest);
     }
   }
 
-  /** Helpers for repeated work. */
+  disarm() {
+    this.weapon = new Weapon(this);
+  }
+
   // Idle hover effect
   idle() {
     if (this.idleTrans) {
@@ -329,27 +418,40 @@ class Ship extends Entity {
     }
   }
 
-  disarm() {
-    // for (const projectile of this.weapon.bay) {
-    //   projectile.removeFromWorld = true;
-    // }
-    // bullets are not added to world until after launch, so just remove bays.
-    this.weapon.bay = [];
-  }
-
-  //
   static getInitPoint(game, manifest) {
     let x;
     let y;
+
+    // Handle cases for all directions to snap line
+    // Start it in the middle off the screen it will be coming from.
+    switch (manifest.config.initialDirection) {
+      case 'north':
+        x = 512;
+        y = game.surfaceHeight + manifest.config.sprite.default.dimension.frameHeight / 2;
+        break;
+      case 'south':
+        x = 512;
+        y = -manifest.config.sprite.default.dimension.frameHeight / 2;
+        break;
+      case 'west':
+        x = game.surfaceWidth + manifest.config.sprite.default.dimension.frameWidth / 2;
+        y = 768 / 2;
+        break;
+      case 'east':
+        x = -manifest.config.sprite.default.dimension.frameWidth / 2;
+        y = 768 / 2;
+        break;
+      default:
+        // top middle
+        x = 512;
+        y = -manifest.config.sprite.default.dimension.frameHeight / 2;
+        break;
+    }
+
     // Is origin specified?
     if (manifest.config.origin) {
-      // Use one or both parameters specified
-      x = manifest.config.origin.x || 512;
-      y = manifest.config.origin.y || -manifest.config.sprite.default.dimension.frameHeight / 2;
-    } else {
-      // Start it above screen in the middle
-      x = 512;
-      y = -manifest.config.sprite.default.dimension.frameHeight / 2;
+      x = manifest.config.origin.x || x;
+      y = manifest.config.origin.y || y;
     }
 
     return {
@@ -357,7 +459,7 @@ class Ship extends Entity {
       y,
     };
   }
-}
+} // end of Ship class
 
 /**
  * The Player is an entity. Some of the configuration is similar
@@ -392,7 +494,7 @@ class Plane extends Ship {
     this.rollTimer = 0;
     this.rolling = false;
     this.timeSinceLastRoll = 0;
-    this.rollCooldown = 5; // seconds
+    this.rollCooldown = 2.5; // seconds
     this.canRoll = true;
     // specific to shooting
     this.timeSinceLastSpacePress = 0;
@@ -414,7 +516,7 @@ class Plane extends Ship {
       duration: 10,
     };
   }
-  
+
   /** @override
    *  The Ship calls this method first on every update cycle.
    */
@@ -445,7 +547,7 @@ class Plane extends Ship {
         this.canRoll = true;
       }
     }
-        
+
     // This makes me worry about an overflow, or slowing our game down.
     // But it works great for what we need.
     // this.timeSinceLastSpacePress += this.game.clockTick;
@@ -474,7 +576,6 @@ class Plane extends Ship {
           this.sprite = this.left;
         }
       }
-
 
       if ((this.controls.hasInvertedControls && leftKeyCheck)
       || (!this.controls.hasInvertedControls && rightKeyCheck)) {
@@ -505,7 +606,7 @@ class Plane extends Ship {
       this.performManeuver();
     }
 
-    if (!this.game.keysDown.ArrowLeft 
+    if (!this.game.keysDown.ArrowLeft
       && !this.game.keysDown.ArrowRight
       && !this.game.keysDown.ArrowUp
       && !this.game.keysDown.ArrowDown
@@ -577,7 +678,7 @@ class Plane extends Ship {
       this.sprite.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
     }
 
-    this.drawWeapon();
+    this.weapon.draw();
   }
 
   /**
@@ -598,6 +699,11 @@ class Plane extends Ship {
           this.shield.entities[0].removeShield();
         } else { // hit by enemy bullet
           this.game.onPlayerHit(this);
+
+          // Call the weapon.onHit method to remove turrets if needed
+          if (!this.weapon.hasRegularGun) {
+            this.weapon.onHit();
+          }
         }
         entity.onHit(this); // notify projectile
       }
@@ -620,6 +726,277 @@ class Plane extends Ship {
       x,
       y,
     };
+  }
+} // end of Plane class
+
+
+/**
+ * The weapon class holds and controls a collection of rings.
+ */
+class Weapon {
+  constructor(owner, manifest) {
+    this.owner = owner;
+    this.slot = new Array();
+
+    this.saveGun = null;
+
+    // Used to keep track of any weapons that the player may have picked up, for now
+    // the first one is activated
+    this.inventory = [];
+    this.timer = null;
+    this.lastTimeAPressed = 0;
+    this.originalManifest = null;
+
+    this.hasNuke = false;
+
+    this.fireSound = new Howl({
+      src: ['audio/laserShot.mp3'],
+      volume: 0.1,
+    });
+
+    // This is to prevent duplicate homing missile weapons from being added to the inventory
+    // We can decide how to handle this later
+    this.hasRegularGun = true;
+
+    // construct and mount the rings
+    if (manifest instanceof Array) {
+      this.primaryRingManifest = manifest[0].ring;
+      // Save a reference of the original manifest
+      this.originalManifest = this.primaryRingManifest;
+
+      // process the multi-ring format
+      for (let i = 0; i < manifest.length; i++) {
+        var r = new Ring(owner, manifest[i].ring);
+        const offset = manifest[i].offset || { x: 0, y: 0 };
+
+        this.slot.push({
+          ring: r,
+          offset,
+        });
+      }
+    } else if (manifest && manifest.firing) {
+      this.primaryRingManifest = manifest;
+
+      // process the single-ring format
+      var r = new Ring(owner, manifest);
+
+      this.slot.push({
+        ring: r,
+        offset: { x: 0, y: 0 },
+      });
+    }
+
+    // ring[0] is the primary ring for the player
+    // ring[1] is mounted to the left
+  }
+
+  /**
+   * Weapons: manage turret initialization, rotation, firing and cooldown.
+   */
+  update() {
+    // assume that this.current has been updated to Ship's x,y postion
+    const {
+      x,
+      y,
+    } = this.owner.current;
+
+    for (let i = 0; i < this.slot.length; i++) {
+      const weapon = this.slot[i];
+
+      weapon.ring.current.x = x + weapon.offset.x;
+      weapon.ring.current.y = y + weapon.offset.y;
+
+      weapon.ring.update();
+    }
+
+    // Check if the player is activating a weapon from their inventory
+    if (this.owner.game.keysDown.KeyA) {
+
+      if (this.lastTimeAPressed === 0) { // record the time the key was pressed
+        this.lastTimeAPressed = this.owner.game.timer.gameTime;
+
+        // Activate the weapon
+        // Get the first item in the inventory
+        const weaponActivation = this.inventory.shift();
+        if (weaponActivation) {
+          weaponActivation();
+        }
+      } else if (this.owner.game.timer.gameTime - this.lastTimeAPressed >= 1) {
+        // Activate the weapon
+        // Get the first item in the inventory
+        const weaponActivation = this.inventory.shift();
+        if (weaponActivation) {
+          weaponActivation();
+        }
+      }
+
+    }
+
+    // evaluate firing decision
+    if (this.owner.isPlayer && this.owner.game.keysDown.Space) {
+      // you could separate these mappings here or just fire all
+      // or check if one is ready to play sound.
+      // let ready = this.slot[0].ring.isReady;
+
+      for (let i = 0; i < this.slot.length; i++) {
+        const ready = this.slot[i].ring.status.isReady
+        if (ready) {
+          this.slot[i].ring.fire();
+          
+          // changed to single object construction. if you fire two slots it gives a little
+          // overlap maybe that is good? it add's a little emphasis. if not we can only play on slot[0]
+          this.fireSound.play();
+          
+          // this works, but it shorts the cooldown when we instantly swap back to primary,
+          // and on the next update it is ready to fire. maybe use a counter to allow one full cycle?
+          if(this.hasNuke)  {
+
+            this.slot[0] = Object.assign({}, this.saveGun);
+            this.hasNuke = false;
+            this.saveGun = null;
+          }
+        }
+      }
+    } else if (!this.owner.isPlayer) {
+      // an enemy always fires when ready
+      for (let i = 0; i < this.slot.length; i++) {
+        this.slot[i].ring.fire();
+      }
+    }
+  }
+
+  loadHomingMissile(type, callback) {
+    // we can load this and keep count of how many times it has been fired
+    console.log("Loading the missile type");
+    const maxUse = 1;
+
+    if (this.slot.length !== 1) {
+      // Remove the current missile loaded
+      this.slot.pop();
+      stopTimer(this.timer);
+    }
+
+    // if (this.slot.length === 1) {
+    // mount the homing missle
+    const r = new Ring(this.owner, type);
+    const offset = { x: -12, y: 44 };
+
+    this.slot.push({
+      ring: r,
+      offset,
+    });
+
+
+    callback();
+  }
+
+  loadNuke(callback)  {
+    this.saveGun = Object.assign({}, this.slot[0]);
+    this.slot[0].ring = new Ring(this.owner, ring.nuke);
+    this.hasNuke = true;
+    callback();
+  }
+
+  // loadChainGun(type, callback) {
+  //   // we can load this and keep count of how many times it has been fired
+  //   const maxUse = 1;
+
+  //   if (this.slot.length !== 1) {
+  //     // Remove the current missile loaded
+  //     this.slot.pop();
+  //     stopTimer(this.timer);
+  //   }
+
+  //   // if (this.slot.length === 1) {
+  //   // mount the chain gun
+  //   const r = new Ring(this.owner, type);
+  //   const offset = { x: -12, y: 44 };
+
+  //   this.slot.push({
+  //     ring: r,
+  //     offset,
+  //   });
+
+  //   callback();
+  // }
+
+  /**
+   * Removes the homing missile from the given weapon
+   * @param {Weapon} weapon The weapon whose homing missile will be removed
+   */
+  removeHomingMissile(weapon) {
+    weapon.slot.pop();
+  }
+
+  decreaseCoolDown() {
+    // already works inside the powerUp. decrement primary ring cooldown
+    // until it reaches a minimum value
+
+  }
+
+  addTurret() {
+    if (this.hasRegularGun) {
+      // Reset the firing count, this is needed because the object is mutuable and won't be reset from
+      // the last time the player had the mutli gun object
+      ring.multiGun.firing.count = 1;
+      ring.multiGun.firing.spread = 0;
+
+
+      // We need to switch it out to the multiGun
+      // ring.multiGun
+      this.primaryRingManifest = Object.assign({}, ring.multiGun);
+      // Update bool to indicate gun was switched out
+      this.hasRegularGun = false;
+    }
+    const maxCount = 5;
+    const primary = this.slot[0];
+    const manifest = this.primaryRingManifest;
+
+    if (manifest.firing.count < maxCount) {
+      manifest.firing.count += 1;
+      manifest.firing.spread += 50.5;
+
+      primary.ring = new Ring(this.owner, manifest);
+    }
+
+    // the damage value is in the Ship, so we may want to move that to the projectile
+    // or is it already there? i'm not sure there is some inconsistency...
+
+    // add an additional turret to the primary weapon.
+    // this will require constructing a new Ring with the new count
+    // and we can also scale down the damage value
+  }
+
+  removeTurret() {
+    const primary = this.slot[0];
+
+    // Decrease the turret count
+    this.primaryRingManifest.firing.count -= 1;
+
+    // If the firing count is equal to one we need to switch back to the regular gun
+    if (this.primaryRingManifest.firing.count === 1) {
+      this.primaryRingManifest = this.originalManifest;
+      this.hasRegularGun = true;
+    }
+
+
+    // Update the players ring
+    primary.ring = new Ring(this.owner, this.primaryRingManifest);
+
+  }
+
+  onHit() {
+    // remove a turret. we could hold on to the previous ones and then swap
+    // out and call update again. or just build a new one?
+    // for now this can use the ship's hit box. maybe in the future use the ring's?
+
+    this.removeTurret();
+  }
+
+  draw() {
+    for (let i = 0; i < this.slot.length; i++) {
+      this.slot[i].ring.draw();
+    }
   }
 }
 
@@ -646,7 +1023,7 @@ class Ring {
     // check for pattern
     const pattern = manifest.firing.pattern;
     const count = pattern ? pattern.sequence[0].length : manifest.firing.count || 1;
-    
+
     // compute spacing and adjust base angle
     let baseAngle = toRadians(manifest.firing.angle) || 0;
     let spacing = 0;
@@ -672,8 +1049,8 @@ class Ring {
 
     // convert acceleration and velocity to radians
     if (!this.payload.acceleration) {
-      this.payload.acceleration = { 
-        radial: 0, 
+      this.payload.acceleration = {
+        radial: 0,
         angular: 0,
       };
     } else if (!(this.payload.acceleration instanceof Object)) {
@@ -686,8 +1063,8 @@ class Ring {
     }
 
     if (!this.payload.velocity) {
-      this.payload.velocity = { 
-        radial: this.payload.speed,
+      this.payload.velocity = {
+        radial: this.payload.speed || 0,
         angular: 0,
       };
     } else {
@@ -740,17 +1117,13 @@ class Ring {
 
   update() {
     const game = this.owner.game;
-    //this.status.elapsedTime += game.clockTick;
     this.status.elapsedTime += game.clockTick;
 
     // update active time counter; used for the pulse delay
     this.status.elapsedActiveTime += game.clockTick;
-    //console.log("update=" + ++this.status.count + " interval=" + game.clockTick + " elapsed=" + this.status.elapsedTime);
-    
 
-    // ring center position is updated by the Ship before calling Ring.update()
-
-    // adjust angle for bay[0] if this ring is rotating
+    // ring center position is updated by the Ship before calling this method.
+    // we only need to adjust the angle for bay[0] if this ring is rotating.
     if (this.fixedRotation) {
       const doublePI = 2 * Math.PI;
       const delta = doublePI * this.fixedRotation * game.clockTick;
@@ -759,7 +1132,7 @@ class Ring {
       const delta = game.timer.getWave(this.sineAmplitude, this.sineFrequency);
       this.current.angle = this.config.baseAngle + delta;
     } else if (this.current.isLeadShot || this.config.targetPlayer) {
-      // moved target logic to here. this will aim the 
+      // moved target logic to here. this will aim the
       const target = game.getPlayerLocation(this.current);
       this.current.angle = target.angle - this.config.spread / 2;
       this.current.isLeadShot = false;
@@ -768,15 +1141,14 @@ class Ring {
     for (let i = 0; i < this.bay.length; i++) {
       const projectile = this.bay[i];
       projectile.current.angle = this.current.angle + i * this.config.spacing;
-      
+
       // TEST: only update x,y if turret is visible THIS WON'T WORK UNLESS WE CHECK AGAIN AT fireAll() :(
       const currentPosition = getXandY(this.current, {
-        radius: this.config.radius, 
+        radius: this.config.radius,
         angle: projectile.current.angle,
       });
       projectile.current.x = currentPosition.x;
       projectile.current.y = currentPosition.y;
-      
     }
 
     // now that all projectiles have been updated we can evaluate the next
@@ -792,29 +1164,6 @@ class Ring {
         this.bay.push(this.loadNext());
         this.status.elapsedTime = 0;
       }
-    } else if (this.status.isReady) {
-      // Ready state
-      // a player only fires on command, all others fire on ready
-      if (!this.owner.isPlayer || game.keysDown.Space) {
-        if (this.config.pattern && --this.status.round > -1) {
-          this.fireLine(this.status.round);
-          this.status.isReady = false;
-          this.status.isCooling = true;
-          this.status.elapsedTime = 0;
-        } else if (this.config.pattern) {
-          // end pattern proceed to wait
-          this.status.round = this.status.roundLength;
-          this.status.isReady = false;
-          this.status.isWaiting = true;
-          this.status.elapsedTime = 0;
-        } else {
-          this.fireAll();
-          // update state
-          this.status.isReady = false;
-          this.status.isCooling = true;
-          this.status.elapsedTime = 0;
-        }
-      }
     } else if (this.status.isCooling && this.status.elapsedTime > this.config.cooldownTime) {
       // Cooldown state
       this.status.isCooling = false;
@@ -825,7 +1174,7 @@ class Ring {
       } else {
         this.status.isLoading = !this.config.rapidReload;
         this.status.isReady = this.config.rapidReload;
-      }    
+      }
     } else if (this.status.isWaiting && this.status.elapsedTime > this.config.waitTime) {
       // Waiting state
       this.status.isWaiting = false;
@@ -836,6 +1185,34 @@ class Ring {
 
       // if tracking then set flag to track next shot
       this.current.isLeadShot = this.config.targetLeadShot;
+    }
+  }
+
+  // this method is used by the weapon controller to fire the ring.
+  // pre-condition: ring.isReady = true
+  // post-condition: one round is fired, and the ring is in cooldown state
+  fire() {
+    if (!this.status.isReady) {
+      return;
+    }
+    
+    if (this.config.pattern && --this.status.round > -1) {
+      this.fireLine(this.status.round);
+      this.status.isReady = false;
+      this.status.isCooling = true;
+      this.status.elapsedTime = 0;
+    } else if (this.config.pattern) {
+      // end pattern proceed to wait
+      this.status.round = this.status.roundLength;
+      this.status.isReady = false;
+      this.status.isWaiting = true;
+      this.status.elapsedTime = 0;
+    } else {
+      this.fireAll();
+      // update state
+      this.status.isReady = false;
+      this.status.isCooling = true;
+      this.status.elapsedTime = 0;
     }
   }
 
@@ -851,8 +1228,7 @@ class Ring {
   fireAll() {
     // the projectiles have been updated so just add to game and replace again
     // this previously fired all and then looped back to reload. was that better?
-    // console.log("fire");
-    
+
     for (let i = 0; i < this.bay.length; i++) {
       const projectile = this.bay[i];
       projectile.init();
@@ -875,15 +1251,14 @@ class Ring {
 
     for (let i = 0; i < this.bay.length; i++) {
       const projectile = this.bay[i];
-      
+
       if (row[last - i] === 1) {
         projectile.init();
         this.owner.game.addEntity(projectile);
-      
+
         if (this.config.rapidReload) {
           this.bay[i] = this.loadNext(projectile);
         }
-      
       }
     }
 
@@ -911,8 +1286,8 @@ class Ring {
       };
       const acceleration = this.payload.acceleration;
 
-      const point = getXandY(this.current, { 
-        radius: this.config.radius, 
+      const point = getXandY(this.current, {
+        radius: this.config.radius,
         angle,
       });
       origin = {
@@ -938,8 +1313,8 @@ class Ring {
 
     // return a configured projectile
     return new Projectile(this.owner.game, manifest);
-  }  
-} //end of Ring class
+  }
+} // end of Ring class
 
 /**
  * The projectile class manages its own path given a velocity and acceleration.
@@ -947,7 +1322,7 @@ class Ring {
  */
 class Projectile extends Entity {
   constructor(game, manifest) {
-    super(game, { 
+    super(game, {
       x: manifest.origin.x,
       y: manifest.origin.y,
     });
@@ -955,24 +1330,24 @@ class Projectile extends Entity {
     this.owner = manifest.owner;
     this.current = Object.assign({}, manifest.origin);
     this.payload = manifest.payload.type;
-    
+
     this.config = {
       radius: this.payload.radius,
       baseAngle: this.current.angle || manifest.angle || 0,
       hitValue: this.payload.hitValue || 1,
     };
-    
+
     this.local = Object.assign({}, this.payload.local);
 
     // support for origin format
-    if (!this.current.angle) {
+    if (this.current.angle === undefined) {
       this.current.angle = manifest.angle;
-      this.current.velocity = { 
-        radial: manifest.payload.speed, 
+      this.current.velocity = {
+        radial: manifest.payload.speed,
         angular: 0,
       };
-      this.current.acceleration = { 
-        radial: 0, 
+      this.current.acceleration = {
+        radial: 0,
         angular: 0,
       };
       this.payload.powerUp = manifest.payload.powerUp;
@@ -985,9 +1360,13 @@ class Projectile extends Entity {
     if (this.payload.init) {
       this.init = this.payload.init;
     }
-    
+
     if (this.payload.onHit) {
       this.onHit = this.payload.onHit;
+    }
+
+    if (this.payload.draw) {
+      this.draw = this.payload.draw;
     }
 
     // check for sprite or image and set desired function
@@ -1000,6 +1379,7 @@ class Projectile extends Entity {
       this.drawImage = this.drawSpriteFrame;
     } else {
       this.drawImage = this.drawCircle;
+      this.colorFill = manifest.payload.type.colorFill;
     }
 
     this.config.rotate = this.payload.rotate || false;
@@ -1062,7 +1442,6 @@ class Projectile extends Entity {
       y,
       angle,
     } = this.current;
-
     if (this.config.rotate) {
       ctx.translate(x, y);
       ctx.rotate(angle + Math.PI / 2);
@@ -1090,7 +1469,29 @@ class Projectile extends Entity {
     ctx.beginPath();
     ctx.arc(x, y, this.config.radius, 0 * Math.PI, 2 * Math.PI);
     ctx.stroke();
+    ctx.fillStyle = this.colorFill;
+    // console.log(this.colorFill);
     ctx.fill();
+  }
+}
+
+class Death  {
+  constructor(game, x, y) {
+    this.game = game;
+    this.ctx = game.ctx;
+    this.x = x;
+    this.y = y;
+    this.sprite = new Sprite(sprite.explosion.default);
+  }
+
+  draw()  {
+    this.sprite.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+  }
+
+  update() {
+    if(this.sprite.isDone())  {
+      this.removeFromWorld = true;
+    }
   }
 }
 
@@ -1101,8 +1502,8 @@ class Projectile extends Entity {
 function getXandY(origin, current) {
   const x = origin.x + current.radius * Math.cos(current.angle);
   const y = origin.y + current.radius * Math.sin(current.angle);
-  return { 
-    x, 
+  return {
+    x,
     y,
   };
 }

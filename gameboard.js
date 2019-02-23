@@ -1,5 +1,63 @@
 const lifeColor = ['red', 'blue', 'aqua', 'oragne', 'green'];
 
+// ---- START Sound related function
+
+function crossfadedLoop(enteringInstance, leavingInstance, soundLevel) {
+  const volume = soundLevel;
+  const crossfadeDuration = 1000;
+
+   // Get the sound duration in ms from the Howler engine
+  const soundDuration = Math.floor(enteringInstance._duration * 1000);
+
+
+  // Fade in entering instance
+  const audio = enteringInstance.pos(10).play();
+  enteringInstance.fade(0, volume, crossfadeDuration);
+
+  // Wait for the audio end to fade out entering instance
+  // white fading in leaving instance
+  setTimeout(() => {
+    enteringInstance.fade(volume, 0, crossfadeDuration);
+    crossfadedLoop(leavingInstance, enteringInstance);
+  }, soundDuration - crossfadeDuration);
+}
+
+/**
+ * Helper to build similar instances
+ * @param {String} urls The source path for the audio files
+ * @param {Function} onload Call back method for then the sound is loaded
+ */
+function createHowlerInstance(urls, onload) {
+  return new Howl({
+    src: urls,
+    loop: false,
+    volume: 0,
+    onload,
+  });
+};
+
+function playLoop(soundObject) {
+
+  // Create "slave" instance. This instance is meant
+  // to be played after the first one is done.
+  soundObject.instances.push(createHowlerInstance(['./audio/Game_Loop_v.1.ogg']))
+
+    // Create "master" instance. The onload function passed to
+  // the singleton creator will coordinate the crossfaded loop
+  soundObject.instances.push(createHowlerInstance(['./audio/Game_Loop_v.1.ogg'], () => {
+
+    crossfadedLoop(soundObject.instances[1], soundObject.instances[0], soundObject.volume);
+  }));
+
+}
+
+function pauseLoop(soundObject) {
+  for(let i = 0; i < soundObject.instances.length; i++) {
+    soundObject.instances[i].pause();
+  }
+}
+
+// ---- END Sound related function
 /**
  * Updates the score board to reflect the user's current score
  * @param {Int} currentScore
@@ -72,16 +130,18 @@ function initializeScoreBoardLives(lives) {
   for (let i = 0; i < lives; i += 1) {
     addLife(lifeColor[i]);
   }
-  // addPowerUp('./img/shield-icon.png');
-  // addPowerUp('./img/rapid-bullet.png');
 }
 
 /**
  * This function shows a 2 line message to the player.
  */
-function showMessage(line1, line2) {
+function showMessage(line1, line2, isBlinking) {
   const message = document.getElementById('message-overlay');
   message.style.display = 'block';
+
+  if (isBlinking) {
+    message.className += ' blinking';
+  }
   document.getElementById('message-line1').innerHTML = line1;
   document.getElementById('message-line2').innerHTML = line2;
 }
@@ -100,6 +160,7 @@ function showStaticMessage(type) {
 function hideMessage(type) {
   const message = document.getElementById(`${type}`);
   message.style.display = 'none';
+  message.classList.remove('blinking');
 }
 
 
@@ -148,12 +209,27 @@ function hideControlMessage() {
 function startGame(game) {
   game.initializeSceneManager();
 
+  // playLoop(game.sounds.gameLoop);
+let loop = new SeamlessLoop();
+loop.addUri("audio/Game_Loop_v.1.ogg", 9590, 'sound1');
+loop._volume = 0.09;
+loop.callback(soundsLoaded);
+
+function soundsLoaded() {
+    let n = 1;
+    loop._volume = 0.09;
+    loop.start('sound' + n);
+}
+
+
+
   // Initilize the game board
   initializeScoreBoardLives(game.lives);
 
   hideMessage('intro-message');
   document.getElementById('gameWorld').focus();
 }
+
 
 function addEvent(element, evnt, funct) {
   if (element.attachEvent) { return element.attachEvent(`on${evnt}`, funct); }
@@ -177,7 +253,6 @@ function initIntroMessage(game) {
 
 // Inventory related functions
 function addPowerUp(src, type) {
-  console.log('Inside the addPowerUp');
   const img = new Image();
   img.src = src;
   img.className = type;
@@ -186,6 +261,17 @@ function addPowerUp(src, type) {
 
   container.appendChild(img);
 }
+
+function addItem(src, type, container) {
+  const img = new Image();
+  img.src = src;
+  img.className = type;
+
+  const elementContainer = document.getElementById(container);
+
+  elementContainer.appendChild(img);
+}
+
 
 function removePowerUp(type) {
   // Need to get the parent element to be able to remove the power up icons
@@ -199,4 +285,67 @@ function removePowerUp(type) {
   if (container.length) {
     parent.removeChild(container[container.length - 1]);
   }
+}
+
+/**
+ * Removes an item from the dom.
+ *
+ * @param {String} type The type of item that will be removed from the dom.
+ * @param {String} container The container holding the item that will be removed.
+ */
+function removeItem(type, container) {
+  // Need to get the parent element to be able to remove the power up icons
+  const parent = document.getElementById(container);
+
+
+  // Find all the images with the respective class type
+  const containerElement = document.getElementsByClassName(type);
+  // If we find any go ahead and remove the last one
+  if (containerElement.length) {
+    parent.removeChild(containerElement[containerElement.length - 1]);
+  }
+}
+
+/**
+ * Starts a timer that will last the given time, once the timer has finished
+ * the callBack will be called
+ * A reference of the given weapon will be passed to the callback
+ * @param {} time
+ * @param {*} callBack
+ * @param {*} weapon
+ */
+function startTimer(time, callBack, weapon) {
+  // Get the svg element
+  const circleElement = document.getElementById('circle');
+  circleElement.style.display = 'block';
+
+  // Get the element that will show the numbers
+  const countdownNumberElement = document.getElementById('countdown-number');
+  let countdown = time;
+
+  countdownNumberElement.textContent = countdown;
+
+  // const timer = null;
+
+  // When we active the callBack we'll need to remove the time as well
+  const finished = (timer) => {
+    stopTimer(timer);
+    callBack(weapon);
+  };
+  // Sets the number being shown in the timer
+  weapon.timer = setInterval(() => {
+    countdown = --countdown <= 0 ? finished(weapon.timer) : countdown;
+
+    countdownNumberElement.textContent = countdown;
+  }, 1000);
+}
+
+function stopTimer(timer) {
+  const circleElement = document.getElementById('circle');
+  const countdownNumberElement = document.getElementById('countdown-number');
+
+  circleElement.style.display = 'none';
+  countdownNumberElement.textContent = '';
+  // Stop the intercal from running
+  clearInterval(timer);
 }

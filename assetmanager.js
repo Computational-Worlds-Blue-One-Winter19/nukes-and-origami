@@ -7,7 +7,6 @@ class AssetManager {
   }
 
   queueDownload(path) {
-    console.log(`Queueing ${path}`);
     this.downloadQueue.push(path);
   }
 
@@ -21,16 +20,13 @@ class AssetManager {
       const img = new Image();
 
       const path = this.downloadQueue[i];
-      console.log(path);
 
-      img.addEventListener('load', function eventListener() {
-        console.log(`Loaded ${this.src}`);
+      img.addEventListener('load', () => {
         that.successCount += 1;
         if (that.isDone()) callback();
       });
 
       img.addEventListener('error', function eventListener() {
-        console.log(`Error loading ${this.src}`);
         that.errorCount += 1;
         if (that.isDone()) callback();
       });

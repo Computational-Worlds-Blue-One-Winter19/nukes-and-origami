@@ -2,12 +2,12 @@
 // IO talk in 2011
 
 window.requestAnimFrame = (function requestAnimFrame() {
-  return window.requestAnimationFrame ||
-    window.webkitRequestAnimationFrame ||
-    window.mozRequestAnimationFrame ||
-    window.oRequestAnimationFrame ||
-    window.msRequestAnimationFrame ||
-    function animFrame( /* function */ callback) {
+  return window.requestAnimationFrame
+    || window.webkitRequestAnimationFrame
+    || window.mozRequestAnimationFrame
+    || window.oRequestAnimationFrame
+    || window.msRequestAnimationFrame
+    || function animFrame(/* function */ callback) {
       window.setTimeout(callback, 1000 / 60);
     };
 }());
@@ -56,6 +56,7 @@ class Timer {
 
 class GameEngine {
   constructor() {
+    this.currentBackground = [];
     this.entities = [];
     this.showOutlines = false;
     this.isPaused = false;
@@ -67,6 +68,7 @@ class GameEngine {
     this.surfaceHeight = null;
     this.keysDown = [];
     this.stats = new Stats();
+    this.player;
   }
 
   init(ctx) {
@@ -80,7 +82,6 @@ class GameEngine {
   }
 
   start() {
-    // console.log('starting game');
     const that = this;
     (function gameLoop() {
       that.loop();
@@ -202,6 +203,15 @@ class Entity {
       this.game.ctx.arc(this.current.x, this.current.y, this.config.radius, 0, Math.PI * 2, false);
       this.game.ctx.stroke();
       this.game.ctx.closePath();
+      if(this.slaves) {
+        for(let i = 0; i < this.slaves.length; i++) {
+          this.game.ctx.beginPath();
+          this.game.ctx.strokeStyle = 'red';
+          this.game.ctx.arc(this.slaves[i].current.x, this.slaves[i].current.y, this.slaves[i].config.radius, 0, Math.PI * 2, false);
+          this.game.ctx.stroke();
+          this.game.ctx.closePath();
+        }
+      }
     }
   }
 
@@ -218,8 +228,8 @@ class Entity {
   isOutsideScreen() {
     let hasLeftScreen = false;
     if (this.config.radius) {
-      hasLeftScreen = (this.current.x < 0 - this.config.radius || this.current.x > this.game.surfaceWidth + this.config.radius ||
-        this.current.y < 0 - this.config.radius || this.current.y > this.game.surfaceHeight + this.config.radius);
+      hasLeftScreen = (this.current.x < 0 - this.config.radius || this.current.x > this.game.surfaceWidth + this.config.radius
+        || this.current.y < 0 - this.config.radius || this.current.y > this.game.surfaceHeight + this.config.radius);
     }
     return hasLeftScreen;
   }

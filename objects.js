@@ -1,25 +1,27 @@
+/* eslint-disable no-console */
+
 function loadTemplates() {
   /**
    * Standard projectile values are:
    *   radius: the hitbox for this Projectile
    *   hitValue: the amount of destruction (default=1)
    *   rotate: if true then image/sprite will be adjusted to the current angle
-   *   
+   *
    *   image: use an image directly from the Asset Manager
    *   scale: used to scale down an image only (sprites do this on their own)
-   *     --OR--  
+   *     --OR--
    *   sprite: use to show a sprite instead of an image
    *     --OR--
    *   if no image or sprite is given then a solid circle is drawn
-   * 
+   *
    * A custom projectile can use the following methods to produce unique behavior.
    *   init() is called one time immediately prior to launch
    *   update() to customize the trajectory/behavior\
    *   onHit(ship) is called when struck by an opposing Ship
-   * 
+   *
    *   {local} values stored here are accessible in this.local and can be used
    *           to manage state for custom trajectory/behavior.
-   * 
+   *
    * pre-conditions:
    *   1. the projectile has a valid this.current.{ x, y, angle }
    *   2. init() has been called
@@ -31,11 +33,11 @@ function loadTemplates() {
   /** This tracks the player. So only load it on an Enemy! */
   projectile.homing = {
     radius: 3,
-    
+
     local: {
       isHoming: true,
-      limit: 250, // minimum distance to stop tracking
-    },    
+      limit: 100, // minimum distance to stop tracking
+    },
 
     update() {
       // update angle if projectile is beyond the limit
@@ -49,8 +51,36 @@ function loadTemplates() {
       }
 
       // update r
-      this.current.velocity.radial += this.current.acceleration.radial * this.game.clockTick;
-      this.current.r = this.current.velocity.radial * this.game.clockTick
+      this.current.velocity.radial += this.current.acceleration.radial * this.current.elapsedTime;
+      this.current.r = this.current.velocity.radial * this.current.elapsedTime;
+    },
+  };
+
+  projectile.homingCrane = {
+    radius: 3,
+    sprite: sprite.miniCrane.default,
+    rotate: true,
+
+    local: {
+      isHoming: true,
+      limit: 50, // minimum distance to stop tracking
+    },
+
+
+    update() {
+      // update angle if projectile is beyond the limit
+      if (this.local.isHoming) {
+        const target = this.game.getPlayerLocation(this.current);
+        if (target.radius < this.local.limit) {
+          this.local.isHoming = false;
+        }
+
+        this.current.angle = target.angle;
+      }
+
+      // update r
+      this.current.velocity.radial += this.current.acceleration.radial * this.current.elapsedTime;
+      this.current.r = this.current.velocity.radial * this.current.elapsedTime;
     },
   };
 
@@ -62,32 +92,32 @@ function loadTemplates() {
     // image: AM.getAsset('./img/bullet.png'),
     // scale: .04,
     sprite: sprite.laser.bigOrange,
-    
+
     local: {
       range: 400, // maximum
-    },    
+    },
 
     update() {
       const hitList = this.game.getEnemiesInRange(this.current, this.local.range);
-      
+
       // sorted list; closest enemy at index 0
       if (hitList.length > 0) {
         const {
           x,
           y,
         } = hitList[0].ship.current;
-        
+
         // set target angle
         const deltaX = x - this.current.x;
         const deltaY = y - this.current.y;
         this.current.angle = Math.atan2(deltaY, deltaX);
       }
-    
+
       // update r
-      this.current.velocity.radial += this.current.acceleration.radial * this.game.clockTick;
-      this.current.r = this.current.velocity.radial * this.game.clockTick
+      this.current.velocity.radial += this.current.acceleration.radial * this.current.elapsedTime;
+      this.current.r = this.current.velocity.radial * this.current.elapsedTime;
     },
-  }
+  };
 
   /** Prototype for sine wave */
   projectile.sine = {
@@ -97,18 +127,123 @@ function loadTemplates() {
 
     local: {
       time: 0,
-      amp: 3 * 2 * Math.PI
+      amp: 3 * 2 * Math.PI,
     },
-    
+
     update() {
-      this.local.time += this.game.clockTick;
-      this.current.r = this.current.velocity.radial * this.game.clockTick;
+      this.local.time += this.current.elapsedTime;
+      this.current.r = this.current.velocity.radial * this.current.elapsedTime;
 
       const deltaAngle = Math.cos(this.local.amp * this.local.time);
       this.current.angle = this.config.baseAngle + deltaAngle;
     },
   };
-  
+
+  /** This tracks an enemy. */
+  projectile.modifiedChainGun = {
+    radius: 3,
+    hitValue: 30,
+    rotate: true,
+    // image: AM.getAsset('./img/bullet.png'),
+    // scale: .04,
+    sprite: sprite.laser.bigOrange,
+
+    local: {
+      range: 600, // maximum
+    },
+
+    update() {
+      const hitList = this.game.getEnemiesInRange(this.current, this.local.range);
+
+      // sorted list; closest enemy at index 0
+      if (hitList.length > 0) {
+        const {
+          x,
+          y,
+        } = hitList[0].ship.current;
+
+        // set target angle
+        const deltaX = x - this.current.x;
+        const deltaY = y - this.current.y;
+        this.current.angle = Math.atan2(deltaY, deltaX);
+      }
+
+      // update r
+      this.current.velocity.radial += this.current.acceleration.radial * this.current.elapsedTime;
+      this.current.r = this.current.velocity.radial * this.current.elapsedTime;
+    },
+
+    onHit() {
+      // this.local.count += 1;
+      // this.current.velocity.radial *= 1.4;
+      // stay alive
+    },
+  };
+
+  projectile.nuke = {
+    radius: 3,
+    hitValue: 3,
+    rotate: true,
+    image: AM.getAsset('./img/rainbow_ball.png'),
+    scale: 0.1,
+    drawNuke: false,
+    //sprite: sprite.laser.bigOrange,
+
+    local: {
+      range: 1200, // maximum
+    },
+
+    init() {
+      this.current.angle = toRadians(270);
+      this.local.target = this.current.y / 2;
+    },
+
+    update() {
+      if (this.local.target < this.current.y) {
+        this.current.velocity.radial += this.current.acceleration.radial * this.current.elapsedTime;
+        this.current.r = this.current.velocity.radial * this.current.elapsedTime;
+      } else if (this.config.radius < this.local.range || this.coll) {
+        this.drawNuke = true;
+        this.config.radius += 30;
+        //this.scale += 0.035;
+      } else {
+        this.removeFromWorld = true;
+      }
+
+      for (const e of this.game.entities) {
+        if (e instanceof Projectile && this.isCollided(e) && !e.playerShot && !e.payload.powerUp) {
+          e.removeFromWorld = true;
+        }
+      }
+
+    },
+
+    draw() {
+      if (!this.drawNuke) {
+        this.drawImage(this.ctx, this.current.x, this.current.y);
+      } else {
+        this.ctx.fillStyle = "#ffe900";
+        this.ctx.beginPath();
+        this.ctx.arc(this.current.x, this.current.y, this.config.radius + 100, 0 * Math.PI, 2 * Math.PI);
+        this.ctx.stroke();
+        this.ctx.fill();
+        this.ctx.fillStyle = "#ea3209";
+        this.ctx.beginPath();
+        this.ctx.arc(this.current.x, this.current.y, this.config.radius + 50, 0 * Math.PI, 2 * Math.PI);
+        this.ctx.stroke();
+        this.ctx.fill();
+        this.ctx.fillStyle = "#d6a400";
+        this.ctx.beginPath();
+        this.ctx.arc(this.current.x, this.current.y, this.config.radius, 0 * Math.PI, 2 * Math.PI);
+        this.ctx.stroke();
+        this.ctx.fill();
+      }
+    },
+
+    onHit() {},
+  };
+
+
   /** This tracks an enemy. */
   projectile.chainGun = {
     radius: 3,
@@ -117,31 +252,30 @@ function loadTemplates() {
     // image: AM.getAsset('./img/bullet.png'),
     // scale: .04,
     sprite: sprite.laser.bigOrange,
-    
+
     local: {
       count: 0,
-      range: 400, // maximum
-    },    
+      range: 600, // maximum
+    },
 
     onHit() {
       this.local.count += 1;
-      this.current.velocity.radial *= 1.4;
+      this.current.velocity.radial *= 1.1;
       // stay alive
     },
 
     update() {
-      
       // only track after the first hit
       if (this.local.count > 0) {
         const hitList = this.game.getEnemiesInRange(this.current, this.local.range);
-      
+
         // sorted list; closest enemy at index 0
         if (hitList.length > 0) {
           const {
             x,
             y,
           } = hitList[0].ship.current;
-          
+
           // set target angle
           const deltaX = x - this.current.x;
           const deltaY = y - this.current.y;
@@ -150,8 +284,8 @@ function loadTemplates() {
       }
 
       // update r
-      this.current.velocity.radial += this.current.acceleration.radial * this.game.clockTick;
-      this.current.r = this.current.velocity.radial * this.game.clockTick
+      this.current.velocity.radial += this.current.acceleration.radial * this.current.elapsedTime;
+      this.current.r = this.current.velocity.radial * this.current.elapsedTime;
     },
   };
 
@@ -160,17 +294,49 @@ function loadTemplates() {
     radius: 6,
     // a circle is now drawn by default if you don't include an image or sprite
   };
-  
+
+  projectile.redCircleBullet = {
+    radius: 6,
+    colorFill: 'red'
+    // a circle is now drawn by default if you don't include an image or sprite
+  };
+
+  projectile.whiteCircleBullet = {
+    radius: 6,
+    colorFill: 'white'
+    // a circle is now drawn by default if you don't include an image or sprite
+  };
+
+  projectile.greenCircleBullet = {
+    radius: 6,
+    colorFill: 'green'
+    // a circle is now drawn by default if you don't include an image or sprite
+  };
+
+  projectile.purple = {
+    radius: 6,
+    colorFill: 'purple'
+    // a circle is now drawn by default if you don't include an image or sprite
+  };
+
   projectile.microBullet = {
     radius: 3,
-    
+    // use init() for any pre-processing immediately prior to launch.
+    // for player bullets we can easily say "only travel up"
+  };
+
+  projectile.multiGun = {
+    radius: 3,
+
     // use init() for any pre-processing immediately prior to launch.
     // for player bullets we can easily say "only travel up"
     init() {
       this.current.angle = toRadians(270);
-    }
+    },
+    image: AM.getAsset('./img/rapid-bullet-horizontal.png'),
+    scale: 0.1,
   };
-    
+
   projectile.paperBall = {
     radius: 15,
     rotate: false,
@@ -231,27 +397,30 @@ function loadTemplates() {
    *  overrides:count,pulse,rapidReload //don't use rotation//
    */
   pattern.simple = {
-    sequence: [ [ 1, 1, 1, 0, 0, 0, 1, 1, 1],
-                [ 0, 1, 1, 1, 0, 1, 1, 1, 0],
-                [ 0, 0, 1, 1, 1, 1, 1, 0, 0],
-                [ 0, 0, 0, 1, 1, 1, 0, 0, 0],
-                [ 0, 0, 0, 0, 1, 0, 0, 0, 0],
-              ],
+    sequence: [
+      [1, 1, 1, 0, 0, 0, 1, 1, 1],
+      [0, 1, 1, 1, 0, 1, 1, 1, 0],
+      [0, 0, 1, 1, 1, 1, 1, 0, 0],
+      [0, 0, 0, 1, 1, 1, 0, 0, 0],
+      [0, 0, 0, 0, 1, 0, 0, 0, 0],
+    ],
     delay: 2, // seconds between rounds
-  }
+  };
 
   pattern.j = {
-    sequence: [ [ 1, 1, 1, 1 ],
-                [ 0, 0, 1, 0 ],
-                [ 0, 0, 1, 0 ],
-                [ 0, 0, 1, 0 ],
-                [ 0, 0, 1, 0 ],
-                [ 1, 0, 1, 0 ],
-                [ 1, 1, 1, 0 ],
-                [ 0, 1, 0, 0 ] ],
+    sequence: [
+      [1, 1, 1, 1],
+      [0, 0, 1, 0],
+      [0, 0, 1, 0],
+      [0, 0, 1, 0],
+      [0, 0, 1, 0],
+      [1, 0, 1, 0],
+      [1, 1, 1, 0],
+      [0, 1, 0, 0],
+    ],
     delay: 2,
-  }
-  
+  };
+
   /** *** RING: FIRING PATTERNS **** */
   ring.patternTest = {
     payload: {
@@ -269,7 +438,24 @@ function loadTemplates() {
       viewTurret: true,
     },
   };
-    
+
+  ring.patternTestCircleBullet = {
+    payload: {
+      type: projectile.circleBullet,
+      speed: 350
+    },
+    firing: {
+      pattern: pattern.simple,
+      radius: 20,
+      angle: 90,
+      spread: 35,
+      loadTime: 0.2,
+      cooldownTime: 0.05,
+      targetPlayer: false,
+      viewTurret: true,
+    },
+  }
+
   ring.linearTest = {
     payload: {
       type: projectile.homing,
@@ -327,10 +513,10 @@ function loadTemplates() {
       pulse: {
         duration: 0.4,
         delay: 3.0,
-      }
+      },
     },
   };
-  
+
   ring.spiralAlphaReverse = {
     payload: {
       type: projectile.circleBullet,
@@ -350,7 +536,7 @@ function loadTemplates() {
       pulse: {
         duration: 0.4,
         delay: 2.0,
-      }
+      },
     },
   };
 
@@ -420,9 +606,30 @@ function loadTemplates() {
     },
   };
 
+  ring.spiralAlpha4Circle = {
+    payload: {
+      type: projectile.circleBullet,
+      speed: 300,
+      acceleration: 1,
+    },
+    rotation: {
+      angle: 180,
+      frequency: 20,
+    },
+    firing: {
+      angle: 90,
+      count: 10,
+      loadTime: 0.05,
+      cooldownTime: 0.45,
+      rapidReload: true,
+      targetPlayer: true,
+      viewTurret: true,
+    },
+  }
+
   ring.fixedSpeed = {
     payload: {
-      type: projectile.microBullet,
+      type: projectile.glassBall,
       speed: 350,
       acceleration: 1,
     },
@@ -588,17 +795,75 @@ function loadTemplates() {
       acceleration: 1,
     },
     firing: {
-      spread: 330,
+      spread: 300,
       radius: 100,
       angle: 270,
       count: 50,
-      loadTime: 0.1,
+      loadTime: 0.01,
       cooldownTime: 0.2,
       rapidReload: true,
       targetPlayer: false,
       viewTurret: true,
     },
   };
+
+  ring.laserGapDown = {
+    payload: {
+      type: projectile.testLaser,
+      speed: 100,
+      acceleration: 1,
+    },
+    firing: {
+      spread: 330,
+      radius: 100,
+      angle: 270,
+      count: 100,
+      loadTime: 0.01,
+      cooldownTime: 0.2,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: true,
+    },
+  };
+
+  ring.laserGapLeft = {
+    payload: {
+      type: projectile.testLaser,
+      speed: 100,
+      acceleration: 1,
+    },
+    firing: {
+      spread: 330,
+      radius: 100,
+      angle: 180,
+      count: 100,
+      loadTime: 0.01,
+      cooldownTime: 0.2,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: true,
+    },
+  };
+
+  ring.laserGapRight = {
+    payload: {
+      type: projectile.orangeLaser,
+      speed: 100,
+      acceleration: 1,
+    },
+    firing: {
+      spread: 330,
+      radius: 100,
+      angle: 0,
+      count: 100,
+      loadTime: 0.01,
+      cooldownTime: 0.2,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: true,
+    },
+  };
+
 
   ring.singleDown = {
     payload: {
@@ -610,15 +875,15 @@ function loadTemplates() {
       angle: 90,
       count: 1,
       loadTime: 0.05,
-      cooldownTime: 0.5,
+      cooldownTime: 2,
       rapidReload: true,
-      targetPlayer: true,
+      targetPlayer: false,
     },
   };
 
   ring.doubleStraightDownPulse = {
     payload: {
-      type: projectile.microBullet,
+      type: projectile.circleBullet,
       speed: 250,
       acceleration: 1,
     },
@@ -638,6 +903,47 @@ function loadTemplates() {
       },
     },
   };
+
+  ring.singleTargetPlayer = {
+    payload: {
+      type: projectile.circleBullet,
+      speed: 100,
+    },
+    firing: {
+      radius: 40,
+      count: 1,
+      angle: 90,
+      loadTime: 0,
+      cooldownTime: 5,
+      rapidReload: true,
+      targetPlayer: true,
+      viewTurret: false,
+    },
+  };
+
+  ring.slowLaserTargetPlayer = {
+    payload: {
+      type: projectile.testLaser,
+      velocity: {
+        radial: 200,
+        angular: 0,
+      },
+      acceleration: {
+        radial: 0,
+        angular: 0,
+      },
+    },
+    firing: {
+      radius: 40,
+      count: 1,
+      angle: 90,
+      loadTime: 0,
+      cooldownTime: 3,
+      rapidReload: true,
+      targetPlayer: true,
+      viewTurret: false,
+    },
+  }
 
   ring.jaredAlpha1 = {
     payload: {
@@ -791,6 +1097,40 @@ function loadTemplates() {
     },
   };
 
+  ring.trackingTest1CircleBullet = {
+    payload: {
+      type: projectile.testLaser,
+      velocity: {
+        radial: 500,
+        angular: 0,
+      },
+      acceleration: {
+        radial: 0,
+        angular: 0,
+      },
+    },
+    rotation: {
+      angle: 0,
+      frequency: 0,
+    },
+    firing: {
+      radius: 1,
+      angle: 90,
+      spread: 0,
+      count: 1,
+      loadTime: 0.005,
+      cooldownTime: 0.001,
+      rapidReload: true,
+      targetPlayer: false,
+      targetLeadShot: true,
+      viewTurret: false,
+      pulse: {
+        duration: 0.1,
+        delay: 1,
+      },
+    },
+  }
+
   ring.slowPulseSpiral = {
     payload: {
       type: projectile.microBullet,
@@ -805,7 +1145,7 @@ function loadTemplates() {
       angle: 0,
       count: 1,
       loadTime: 0.05,
-      cooldownTime: 0.01,
+      cooldownTime: 0.1,
       rapidReload: true,
       targetPlayer: false,
       viewTurret: false,
@@ -841,7 +1181,28 @@ function loadTemplates() {
     },
   };
 
-  /** 
+  ring.homingCrane = {
+    payload: {
+      type: projectile.homingCrane,
+      speed: 100,
+      acceleration: 1,
+    },
+    firing: {
+      angle: 0,
+      count: 1,
+      loadTime: 0.05,
+      cooldownTime: 0.5,
+      rapidReload: true,
+      targetPlayer: true,
+      viewTurret: true,
+      // pulse: {
+      //   duration: 2,
+      //   delay: 1
+      // }
+    },
+  }
+
+  /**
    *  Uni Bullet Hell patterns
    *  https://www.youtube.com/watch?v=xbQ9e0zYuj4
    */
@@ -866,8 +1227,8 @@ function loadTemplates() {
       viewTurret: true,
       pulse: {
         duration: 2,
-        delay: 1
-      }
+        delay: 1,
+      },
     },
   };
 
@@ -893,8 +1254,8 @@ function loadTemplates() {
       viewTurret: true,
       pulse: {
         duration: 2,
-        delay: 1
-      }
+        delay: 1,
+      },
     },
   };
 
@@ -919,8 +1280,8 @@ function loadTemplates() {
       viewTurret: true,
       pulse: {
         duration: 2,
-        delay: 1
-      }
+        delay: 1,
+      },
     },
   };
 
@@ -945,14 +1306,14 @@ function loadTemplates() {
       viewTurret: true,
       pulse: {
         duration: 2,
-        delay: 1
-      }
+        delay: 1,
+      },
     },
   };
 
   ring.uniLinearAccelAiming = {
     payload: {
-      type: projectile.microBullet,
+      type: projectile.circleBullet,
       speed: 180,
       acceleration: 200,
     },
@@ -971,8 +1332,8 @@ function loadTemplates() {
       viewTurret: true,
       pulse: {
         duration: 2,
-        delay: 1
-      }
+        delay: 1,
+      },
     },
   };
 
@@ -983,7 +1344,7 @@ function loadTemplates() {
       acceleration: 0,
     },
     rotation: {
-      speed: .4,
+      speed: 0.4,
     },
     firing: {
       radius: 1,
@@ -996,8 +1357,8 @@ function loadTemplates() {
       viewTurret: true,
       pulse: {
         duration: 4,
-        delay: 1
-      }
+        delay: 1,
+      },
     },
   };
 
@@ -1008,7 +1369,7 @@ function loadTemplates() {
       acceleration: 0,
     },
     rotation: {
-      speed: -.4,
+      speed: -0.4,
     },
     firing: {
       radius: 1,
@@ -1021,8 +1382,8 @@ function loadTemplates() {
       viewTurret: true,
       pulse: {
         duration: 4,
-        delay: 1
-      }
+        delay: 1,
+      },
     },
   };
 
@@ -1036,11 +1397,11 @@ function loadTemplates() {
       acceleration: {
         radial: 0,
         angular: 0,
-      }
+      },
 
     },
     rotation: {
-      speed: .4,
+      speed: 0.4,
     },
     firing: {
       radius: 1,
@@ -1053,8 +1414,8 @@ function loadTemplates() {
       viewTurret: true,
       pulse: {
         duration: 4,
-        delay: 1
-      }
+        delay: 1,
+      },
     },
   };
 
@@ -1068,11 +1429,11 @@ function loadTemplates() {
       acceleration: {
         radial: 200,
         angular: 0,
-      }
+      },
 
     },
     rotation: {
-      speed: .4,
+      speed: 0.4,
     },
     firing: {
       radius: 1,
@@ -1085,8 +1446,8 @@ function loadTemplates() {
       viewTurret: true,
       pulse: {
         duration: 4,
-        delay: 1
-      }
+        delay: 1,
+      },
     },
   };
 
@@ -1100,7 +1461,7 @@ function loadTemplates() {
       acceleration: {
         radial: 0,
         angular: 0,
-      }
+      },
 
     },
     rotation: {
@@ -1118,8 +1479,8 @@ function loadTemplates() {
       viewTurret: true,
       pulse: {
         duration: 2,
-        delay: 1
-      }
+        delay: 1,
+      },
     },
   };
 
@@ -1133,7 +1494,7 @@ function loadTemplates() {
       acceleration: {
         radial: 0,
         angular: 0,
-      }
+      },
 
     },
     rotation: {
@@ -1150,8 +1511,8 @@ function loadTemplates() {
       viewTurret: true,
       pulse: {
         duration: 2,
-        delay: 1
-      }
+        delay: 1,
+      },
     },
   };
 
@@ -1165,11 +1526,11 @@ function loadTemplates() {
       acceleration: {
         radial: 0,
         angular: 0,
-      }
+      },
 
     },
     rotation: {
-      speed: .2,
+      speed: 0.2,
     },
     firing: {
       radius: 5,
@@ -1183,8 +1544,8 @@ function loadTemplates() {
       viewTurret: true,
       pulse: {
         duration: 2,
-        delay: 1
-      }
+        delay: 1,
+      },
     },
   };
 
@@ -1198,11 +1559,11 @@ function loadTemplates() {
       acceleration: {
         radial: 0,
         angular: 0,
-      }
+      },
 
     },
     rotation: {
-      speed: .2,
+      speed: 0.2,
     },
     firing: {
       radius: 5,
@@ -1216,8 +1577,8 @@ function loadTemplates() {
       viewTurret: true,
       pulse: {
         duration: 2,
-        delay: 1
-      }
+        delay: 1,
+      },
     },
   };
 
@@ -1267,6 +1628,25 @@ function loadTemplates() {
     weapon: ring.angularTest,
   };
 
+  ship.testEagleBoss = {
+    config: {
+      health: 10,
+      hitValue: 1000,
+      radius: 100,
+      sprite: sprite.eagleBoss.default,
+      snapLine: 150,
+      snapLineSpeed: 100,
+      snapLineWait: 0,
+      origin: {
+        x: 500,
+        y: -50
+      },
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0
+    },
+    weapon: ring.spiralAlpha4,
+  }
+
 
   // Default trimmed down versions of enemies for the scene manager to use as
   // a starting point.
@@ -1278,6 +1658,16 @@ function loadTemplates() {
       hitValue: 5,
       radius: 50,
       sprite: sprite.bat.default,
+    },
+    weapon: ring.singleDown,
+  };
+
+  ship.bird = {
+    config: {
+      health: 3,
+      hitValue: 5,
+      radius: 50,
+      sprite: sprite.bird.default,
     },
     weapon: ring.singleDown,
   };
@@ -1299,7 +1689,7 @@ function loadTemplates() {
       radius: 70,
       sprite: sprite.owl.default,
     },
-    weapon: ring.jaredAlpha1,
+    weapon: ring.singleDown,
   };
 
   ship.dove = {
@@ -1321,6 +1711,81 @@ function loadTemplates() {
     },
     weapon: ring.gap1,
   };
+
+  ship.goose = {
+    config: {
+      health: 5,
+      hitValue: 5,
+      radius: 70,
+      sprite: sprite.goose.default,
+    },
+    weapon: ring.singleTargetPlayer,
+  }
+
+  ship.hummer = {
+    config: {
+      health: 5,
+      hitValue: 5,
+      radius: 70,
+      sprite: sprite.hummer.default,
+    },
+    weapon: ring.singleDown,
+  }
+
+
+  ship.pigeon = {
+    config: {
+      health: 5,
+      hitValue: 5,
+      radius: 70,
+      sprite: sprite.pigeon.default,
+    },
+    weapon: ring.singleDown,
+  }
+
+  ship.eagle = {
+    config: {
+      health: 150,
+      hitValue: 5,
+      radius: 150,
+      sprite: sprite.eagleBoss.default,
+      slave: [
+        {
+        config: {
+          health: 30,
+          hitValue: 50,
+          radius: 150,
+          xDifference: -350, //Difference in X value from master
+          yDifference: -20, //Difference in Y value from master
+        },
+        weapon: ring.patternTestCircleBullet,
+        powerup: 'nuke',
+        },
+        {
+        config: {
+          health: 30,
+          hitValue: 50,
+          radius: 150,
+          xDifference: 350, 
+          yDifference: -20, 
+        },
+        weapon: ring.patternTestCircleBullet,
+        powerup: 'rapidFire',
+        }
+      ]
+    },
+    weapon: ring.spiralAlpha4Circle,
+  }
+
+  // ship.eagleSlave = {
+  //   config: {
+  //     health: 100,
+  //     hitValue: 50,
+  //     radius: 50,
+  //     slave: true
+  //   },
+  //   weapon: ring.spreadBeta2
+  // }
 
   ship.dodgeOwl = {
     config: {
@@ -1465,7 +1930,7 @@ function loadTemplates() {
 
   ship.testDove = {
     config: {
-      health: 1,
+      health: 10,
       hitValue: 5,
       radius: 60,
       sprite: sprite.dove.default,
@@ -1492,6 +1957,134 @@ function loadTemplates() {
     // ],
   };
 
+  /** *** BACKGROUNDS *** */
+  background.paper = {
+    layers: [{
+        layer: AM.getAsset('./img/notebook.png'),
+        offset: -768,
+        verticalPixels: 768,
+      },
+      {
+        layer: AM.getAsset('./img/notebook.png'),
+        offset: -768 * 2,
+        verticalPixels: 768,
+      },
+      {
+        layer: AM.getAsset('./img/clouds.png'),
+        offset: -2304,
+        verticalPixels: 2304,
+        parallaxMult: 1.25,
+      },
+      {
+        layer: AM.getAsset('./img/clouds.png'),
+        offset: -4608,
+        verticalPixels: 2304,
+        parallaxMult: 1.25,
+      },
+    ],
+  };
+
+  background.beach = {
+    layers: [{
+        layer: AM.getAsset('./img/verticalscrollingbeach.png'),
+        offset: -1766,
+        verticalPixels: 1766,
+      },
+      {
+        layer: AM.getAsset('./img/verticalscrollingbeach.png'),
+        offset: -1766 * 2,
+        verticalPixels: 1766,
+      },
+    ],
+  };
+
+  background.desert = {
+    layers: [{
+        layer: AM.getAsset('./img/verticalscrollingdesert.png'),
+        offset: -1766,
+        verticalPixels: 1766,
+      },
+      {
+        layer: AM.getAsset('./img/verticalscrollingdesert.png'),
+        offset: -1766 * 2,
+        verticalPixels: 1766,
+      },
+    ],
+  };
+
+  background.trees = {
+    layers: [{
+        layer: AM.getAsset('./img/verticalscrollingtrees.png'),
+        offset: -1766,
+        verticalPixels: 1766,
+      },
+      {
+        layer: AM.getAsset('./img/verticalscrollingtrees.png'),
+        offset: -1766 * 2,
+        verticalPixels: 1766,
+      },
+    ],
+  };
+
+  background.pattern = {
+    layers: [{
+        layer: AM.getAsset('./img/seamless_pattern.png'),
+        offset: -1023 + 768,
+        verticalPixels: 1023,
+      },
+      {
+        layer: AM.getAsset('./img/seamless_pattern.png'),
+        offset: -1023 * 2,
+        verticalPixels: 1023,
+      },
+    ],
+  };
+
+  background.white = {
+    layers: [{
+        layer: AM.getAsset('./img/white_background.jpg'),
+        offset: -768,
+        verticalPixels: 768,
+      },
+      {
+        layer: AM.getAsset('./img/white_background.jpg'),
+        offset: -768 * 2,
+        verticalPixels: 768,
+      },
+    ],
+  };
+
+  ship.doubleRingTest = {
+    config: {
+      health: 3,
+      hitValue: 3,
+      radius: 70,
+      sprite: sprite.dove.default,
+      snapLine: 40,
+      snapLineSpeed: 250,
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0,
+    },
+    path: [
+      [90, 175, 30],
+    ],
+    weapon: [{
+        ring: ring.singleTargetPlayer,
+        offset: {
+          x: -30,
+          y: 20,
+        },
+      },
+      {
+        ring: ring.singleTargetPlayer,
+        offset: {
+          x: 30,
+          y: 20,
+        },
+      },
+    ],
+  };
+
   ship.testCrane = {
     config: {
       hitValue: 5,
@@ -1508,6 +2101,21 @@ function loadTemplates() {
       weaponsAdvantage: 0,
     },
     weapon: ring.trackingTest1,
+  };
+
+  ship.gooseHoming = {
+    config: {
+      health: 5,
+      hitValue: 5,
+      radius: 50,
+      sprite: sprite.goose.default,
+      snapLine: 150,
+      snapLineSpeed: 150,
+      snapLineWait: 0,
+      weaponsOnEntrance: false,
+      weaponsAdvantage: 0,
+    },
+    weapon: ring.homingCrane,
   };
 
   /** *** PATHS **** */
@@ -1540,17 +2148,935 @@ function loadTemplates() {
 
   // Advanced straight to bottom
   path.straightDown = [
-    [90, 250, 30]
+    [90, 250, 30],
   ];
 
   path.backAndForth = [
     [0, 25, 5],
-    [180, 25, 5]
+    [180, 25, 5],
+  ];
+
+  // sawtooth pattern back and forth starting right
+  path.sawtoothRightStop = [
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    // almost centered
+  ]
+
+  // sawtooth pattern back and forth starting left
+  path.sawtoothLeftStop = [
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    // almost centerd
+  ]
+
+  path.rightUTurn = [
+    [0, 200, 4],
+    [90, 150, 0.5],
+    [180, 150, 10],
+  ]
+
+  path.leftUTurn = [
+    [180, 200, 4],
+    [270, 150, 0.5],
+    [0, 150, 10],
+  ]
+
+  path.leftSawToothUTurn = [
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+
+
+    [90, 200, 0.25],
+
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+  ]
+
+  path.rightSawToothUTurn = [
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+
+    [90, 200, 0.25],
+
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+  ]
+
+  path.northEast = [
+    [45, 100, 50]
+  ]
+
+  path.northWest = [
+    [45, 100, 50]
+  ]
+
+  path.downSlow = [
+    [90, 30, 100],
   ]
 
   /** *** SCENES **** */
+  scene.waveBank = {
+    waves: [
+      {
+        numOfEnemies: 6,
+        ships: new Array(6).fill(ship.gooseHoming),
+        paths: new Array(6).fill(path.downSlow),
+        initialXPoints: [ // omit to evenly space enemies.
+          100, 300, 600, 120, 700, 550,
+        ],
+        shipManifestOverride: [
+          { config: { waitOffScreen: 5 } },
+          { config: { waitOffScreen: 9 } },
+          { config: { waitOffScreen: 11 } },
+          { config: { waitOffScreen: 13 } },
+          { config: { waitOffScreen: 17 } },
+          { config: { waitOffScreen: 20 } },
+        ],
+        waitUntilEnemiesGone: true,
+      },
+      // four hummingbirds fly left then come down
+      {
+        numOfEnemies: 4,
+        ships: new Array(4).fill(ship.hummer),
+        paths: new Array(4).fill(path.downSlow),
+        shipManifestOverride: [{
+            config: {
+              initialDirection: 'west',
+              snapLine: 100,
+            },
+          },
+          {
+            config: {
+              initialDirection: 'west',
+              snapLine: 374,
+              waitOffScreen: 1
+            },
+          },
+          {
+            config: {
+              initialDirection: 'west',
+              snapLine: 648,
+              waitOffScreen: 2
+            },
+          },
+          {
+            config: {
+              initialDirection: 'west',
+              snapLine: 922,
+              waitOffScreen: 3
+            },
+          },
+        ],
+        waitUntilEnemiesGone: true,
+        initialYPoints: [
+          50, 50, 50, 50,
+        ]
+      },
+
+      // geese zig zag in and stop, others just enter from left and right, all shooting
+      // lasers at player
+      {
+        numOfEnemies: 4,
+        ships: [
+          ship.goose,
+          ship.goose,
+          ship.bat,
+          ship.bat,
+        ],
+        paths: [
+          path.sawtoothLeftStop,
+          path.sawtoothRightStop,
+          path.doNothing,
+          path.doNothing,
+        ],
+        shipManifestOverride: [{
+            config: {
+              initialDirection: 'west',
+              snapLine: 924,
+            },
+            weapon: ring.slowLaserTargetPlayer,
+          },
+          {
+            config: {
+              initialDirection: 'east',
+              snapLine: 100,
+            },
+            weapon: ring.slowLaserTargetPlayer,
+          },
+          {
+            config: {
+              initialDirection: 'west',
+              snapLine: 824,
+            },
+            weapon: ring.slowLaserTargetPlayer,
+          },
+          {
+            config: {
+              initialDirection: 'east',
+              snapLine: 200,
+            },
+            weapon: ring.slowLaserTargetPlayer,
+          },
+        ],
+        waitUntilEnemiesGone: true,
+        initialYPoints: [
+          100, 100, 300, 300,
+        ]
+      },
+    ]
+  }
+
+  scene.oneWaveTest = {
+    waves: [{
+        choreography: [{
+            id: 'accelerateToWarpspeed',
+          },
+          {
+            id: 'loadBackground',
+            bg: background.white,
+          },
+          {
+            id: 'wait',
+            duration: 0.25,
+          },
+          {
+            id: 'showMessage',
+            text: ['LEVEL 1', 'START'],
+          },
+          {
+            id: 'wait',
+            duration: 3,
+          },
+          {
+            id: 'loadBackground',
+            bg: background.desert,
+          },
+          {
+            id: 'decelerateFromWarpSpeed',
+          },
+          {
+            id: 'hideMessage',
+          },
+        ],
+      },
+      {
+        numOfEnemies: 7,
+        ships: new Array(7).fill(ship.bat),
+        paths: [
+          path.strafeRight,
+          path.strafeLeft,
+          path.strafeRight,
+          path.strafeLeft,
+          path.strafeRight,
+          path.strafeLeft,
+          path.strafeRight,
+        ],
+        shipManifestOverride: [{
+            config: {
+              initialDirection: 'east',
+              snapLine: 100,
+            },
+          },
+          {
+            config: {
+              initialDirection: 'west',
+              snapLine: 924,
+            },
+          },
+          {
+            config: {
+              initialDirection: 'east',
+              snapLine: 100,
+            },
+          },
+          {
+            config: {
+              initialDirection: 'west',
+              snapLine: 924,
+            },
+          },
+          {
+            config: {
+              initialDirection: 'east',
+              snapLine: 100,
+            },
+          },
+          {
+            config: {
+              initialDirection: 'west',
+              snapLine: 924,
+            },
+          },
+          {
+            config: {
+              initialDirection: 'east',
+              snapLine: 100,
+            },
+          },
+        ],
+        waitUntilEnemiesGone: true,
+      },
+    ],
+  }
+
+  // scene.bossTest = {
+  //   waves: [{
+  //       choreography: [{
+  //           id: 'accelerateToWarpspeed',
+  //         },
+  //         {
+  //           id: 'wait',
+  //           duration: 0.25,
+  //         },
+  //         {
+  //           id: 'showMessage',
+  //           type: 'warning',
+  //           text: ['WARNING', 'A BOSS APPROACHES'],
+  //         },
+  //         {
+  //           id: 'wait',
+  //           duration: 3,
+  //         },
+  //         {
+  //           id: 'decelerateFromWarpSpeed',
+  //         },
+  //         {
+  //           id: 'hideMessage',
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       choreography: [{
+  //           id: 'spawnEnemies'
+  //         },
+  //         {
+  //           id: 'wait',
+  //           duration: 15,
+  //         },
+  //         {
+  //           id: 'swapRing',
+  //           enemyIndex: 0,
+  //           ring: ring.slowLaserTargetPlayer,
+  //         },
+  //         {
+  //           id: 'wait',
+  //           duration: 7,
+  //         },
+  //         {
+  //           id: 'swapRing',
+  //           enemyIndex: 0,
+  //           ring: ring.laserGapRight,
+  //         },
+  //         {
+  //           id: 'wait',
+  //           duration: 7,
+  //         },
+  //         {
+  //           id: 'swapRing',
+  //           enemyIndex: 0,
+  //           ring: ring.slowLaserTargetPlayer,
+  //         },
+  //         {
+  //           id: 'wait',
+  //           duration: 7,
+  //         },
+  //         {
+  //           id: 'swapRing',
+  //           enemyIndex: 0,
+  //           ring: ring.laserGapLeft,
+  //         },
+  //         {
+  //           id: 'wait',
+  //           duration: 7,
+  //         },
+  //         {
+  //           id: 'swapRing',
+  //           enemyIndex: 0,
+  //           ring: ring.slowLaserTargetPlayer,
+  //         },
+  //         {
+  //           id: 'wait',
+  //           duration: 7,
+  //         },
+  //         {
+  //           id: 'swapRing',
+  //           enemyIndex: 0,
+  //           ring: ring.laserGapRight,
+  //         },
+  //         {
+  //           id: 'wait',
+  //           duration: 7,
+  //         },
+  //         {
+  //           id: 'swapRing',
+  //           enemyIndex: 0,
+  //           ring: ring.slowLaserTargetPlayer,
+  //         },
+  //         {
+  //           id: 'wait',
+  //           duration: 7,
+  //         },
+  //         {
+  //           id: 'swapRing',
+  //           enemyIndex: 0,
+  //           ring: ring.laserGapLeft,
+  //         },
+  //         {
+  //           id: 'wait',
+  //           duration: 7,
+  //         },
+  //         {
+  //           id: 'swapRing',
+  //           enemyIndex: 0,
+  //           ring: ring.slowLaserTargetPlayer,
+  //         },
+  //         {
+  //           id: 'wait',
+  //           duration: 7,
+  //         },
+  //         {
+  //           id: 'swapRing',
+  //           enemyIndex: 0,
+  //           ring: ring.laserGapRight,
+  //         },
+  //         {
+  //           id: 'wait',
+  //           duration: 7,
+  //         },
+  //         {
+  //           id: 'swapRing',
+  //           enemyIndex: 0,
+  //           ring: ring.slowLaserTargetPlayer,
+  //         },
+  //       ],
+  //       numOfEnemies: 1,
+  //       ships: [ship.eagle],
+  //       paths: [
+  //         path.doNothing,
+  //       ],
+  //       shipManifestOverride: [{
+  //         config: {
+  //           health: 500,
+  //           snapLineSpeed: 50,
+  //           hitValue: 2000,
+  //           snapLine: 250,
+  //           radius: 200,
+  //         },
+  //       }],
+  //       waitUntilEnemiesGone: true,
+  //     },
+  //   ],
+  // }
+
+  scene.bossTest = {
+    waves: [{
+        choreography: [{
+            id: 'accelerateToWarpspeed',
+          },
+          {
+            id: 'wait',
+            duration: 0.25,
+          },
+          {
+            id: 'showMessage',
+            type: 'warning',
+            text: ['WARNING', 'A BOSS APPROACHES'],
+          },
+          {
+            id: 'loadBackground',
+            bg: background.paper
+          },
+          {
+            id: 'wait',
+            duration: 3,
+          },
+          {
+            id: 'decelerateFromWarpSpeed',
+          },
+          {
+            id: 'hideMessage',
+          },
+        ],
+      },
+      {
+        choreography: [{
+          id: 'spawnEnemies'
+        },
+        {
+          id: 'wait',
+          duration: 15,
+        },
+        {
+          id: 'wait',
+          duration: 10
+        },
+        {
+          id: 'swapRing',
+          enemyIndex: 0,
+          ring: ring.uniFiveWay
+        },
+        {
+          id: 'swapSlaveRing',
+          enemyIndex: 0,
+          slaveIndex: 0,
+          ring: ring.uniLinearAccelAiming
+        },
+        {
+          id: 'swapSlaveRing',
+          enemyIndex: 0,
+          slaveIndex: 1,
+          ring: ring.uniLinearAccelAiming
+        },
+        {
+          id: 'wait',
+          duration: 10
+        },
+        {
+          id: 'swapRing',
+          enemyIndex: 0,
+          ring: ring.doubleStraightDownPulse
+        },
+        {
+          id: 'swapSlaveRing',
+          enemyIndex: 0,
+          slaveIndex: 0,
+          ring: ring.trackingTest1CircleBullet
+        },
+        {
+          id: 'swapSlaveRing',
+          enemyIndex: 0,
+          slaveIndex: 1,
+          ring: ring.trackingTest1CircleBullet
+        },
+        {
+          id: 'wait',
+          duration: 10
+        },
+        {
+          id: 'swapRing',
+          enemyIndex: 0,
+          ring: ring.spiralAlpha4Circle
+        },
+        {
+          id: 'swapSlaveRing',
+          enemyIndex: 0,
+          slaveIndex: 0,
+          ring: ring.patternTestCircleBullet
+        },
+        {
+          id: 'swapSlaveRing',
+          enemyIndex: 0,
+          slaveIndex: 1,
+          ring: ring.patternTestCircleBullet
+        },
+        {
+          id: 'wait',
+          duration: 15,
+        },
+        {
+          id: 'wait',
+          duration: 10
+        },
+        {
+          id: 'swapRing',
+          enemyIndex: 0,
+          ring: ring.uniFiveWay
+        },
+        {
+          id: 'swapSlaveRing',
+          enemyIndex: 0,
+          slaveIndex: 0,
+          ring: ring.uniLinearAccelAiming
+        },
+        {
+          id: 'swapSlaveRing',
+          enemyIndex: 0,
+          slaveIndex: 1,
+          ring: ring.uniLinearAccelAiming
+        },
+        {
+          id: 'wait',
+          duration: 10
+        },
+        {
+          id: 'swapRing',
+          enemyIndex: 0,
+          ring: ring.doubleStraightDownPulse
+        },
+        {
+          id: 'swapSlaveRing',
+          enemyIndex: 0,
+          slaveIndex: 0,
+          ring: ring.trackingTest1CircleBullet
+        },
+        {
+          id: 'swapSlaveRing',
+          enemyIndex: 0,
+          slaveIndex: 1,
+          ring: ring.trackingTest1CircleBullet
+        },
+        {
+          id: 'wait',
+          duration: 10
+        },
+        {
+          id: 'swapRing',
+          enemyIndex: 0,
+          ring: ring.spiralAlpha4Circle
+        },
+        {
+          id: 'swapSlaveRing',
+          enemyIndex: 0,
+          slaveIndex: 0,
+          ring: ring.patternTestCircleBullet
+        },
+        {
+          id: 'swapSlaveRing',
+          enemyIndex: 0,
+          slaveIndex: 1,
+          ring: ring.patternTestCircleBullet
+        },
+        {
+          id: 'wait',
+          duration: 15,
+        },
+        {
+          id: 'wait',
+          duration: 10
+        },
+        {
+          id: 'swapRing',
+          enemyIndex: 0,
+          ring: ring.uniFiveWay
+        },
+        {
+          id: 'swapSlaveRing',
+          enemyIndex: 0,
+          slaveIndex: 0,
+          ring: ring.uniLinearAccelAiming
+        },
+        {
+          id: 'swapSlaveRing',
+          enemyIndex: 0,
+          slaveIndex: 1,
+          ring: ring.uniLinearAccelAiming
+        },
+        {
+          id: 'wait',
+          duration: 10
+        },
+        {
+          id: 'swapRing',
+          enemyIndex: 0,
+          ring: ring.doubleStraightDownPulse
+        },
+        {
+          id: 'swapSlaveRing',
+          enemyIndex: 0,
+          slaveIndex: 0,
+          ring: ring.trackingTest1CircleBullet
+        },
+        {
+          id: 'swapSlaveRing',
+          enemyIndex: 0,
+          slaveIndex: 1,
+          ring: ring.trackingTest1CircleBullet
+        },
+        {
+          id: 'wait',
+          duration: 10
+        },
+        {
+          id: 'swapRing',
+          enemyIndex: 0,
+          ring: ring.spiralAlpha4Circle
+        },
+        {
+          id: 'swapSlaveRing',
+          enemyIndex: 0,
+          slaveIndex: 0,
+          ring: ring.patternTestCircleBullet
+        },
+        {
+          id: 'swapSlaveRing',
+          enemyIndex: 0,
+          slaveIndex: 1,
+          ring: ring.patternTestCircleBullet
+        },
+],
+        numOfEnemies: 1,
+        ships: [ship.eagle],
+        paths: [
+          path.doNothing,
+        ],
+        shipManifestOverride: [{
+          config: {
+            health: 230,
+            snapLineSpeed: 50,
+            hitValue: 2000,
+            snapLine: 250,
+            radius: 200,
+          },
+        }],
+        waitUntilEnemiesGone: true,
+      },
+    ],
+  }
+
+  scene.firstScene = {
+    waves: [
+      // {
+      //   choreography: [{
+      //       id: 'accelerateToWarpspeed',
+      //     },
+      //     {
+      //       id: 'loadBackground',
+      //       bg: background.white,
+      //     },
+      //     {
+      //       id: 'wait',
+      //       duration: 0.25,
+      //     },
+      //     {
+      //       id: 'showMessage',
+      //       text: ['FIRST LEVEL', 'START'],
+      //     },
+      //     {
+      //       id: 'wait',
+      //       duration: 3,
+      //     },
+      //     {
+      //       id: 'loadBackground',
+      //       bg: background.paper,
+      //     },
+      //     {
+      //       id: 'decelerateFromWarpSpeed',
+      //     },
+      //     {
+      //       id: 'hideMessage',
+      //     },
+      //   ],
+      // },
+      {
+        numOfEnemies: 2,
+        ships: new Array(2).fill(ship.bat),
+        paths: [
+          path.strafeRight,
+          path.strafeLeft,
+        ],
+        shipManifestOverride: [
+          {
+            weapon: {
+              payload: {
+                type: projectile.redCircleBullet
+              }
+            }
+          },
+          {
+            weapon: {
+              payload: {
+                type: projectile.redCircleBullet
+              }
+            }
+          }
+        ],
+        waitUntilEnemiesGone: true,
+      },
+      {
+        numOfEnemies: 2,
+        ships: new Array(2).fill(ship.easyIdleSpiralCrane),
+        paths: [
+          path.doNothing,
+          path.doNothing,
+        ],
+        waitUntilEnemiesGone: true,
+      },
+      {
+        numOfEnemies: 3,
+        ships: new Array(3).fill(ship.dodgeOwl),
+        paths: new Array(3).fill(path.doNothing),
+        initialXPoints: [
+          400, 500, 600
+        ],
+        waitUntilEnemiesGone: true,
+      },
+      {
+        numOfEnemies: 1,
+        ships: [ship.denseDove],
+        paths: [path.doNothing],
+        waitUntilEnemiesGone: true,
+      },
+      {
+        numOfEnemies: 1,
+        ships: [ship.denseDove],
+        paths: [path.doNothing],
+        waitUntilEnemiesGone: true,
+      },
+      {
+        choreography: [{
+            id: 'spawnEnemies'
+          },
+        ],
+        numOfEnemies: 1,
+        ships: [ship.swallow],
+        paths: [
+          path.doNothing,
+        ],
+        shipManifestOverride: [{
+          config: {
+            sprite: sprite.swallow.boss,
+            health: 100,
+            snapLineSpeed: 50,
+            hitValue: 2000,
+            snapLine: 250,
+            radius: 200,
+          },
+          weapon: {
+            rotation: {
+              angle: 40,
+              frequency: 10,
+            },
+            firing: {
+              count: 100,
+              radius: 230,
+              loadTime: 0.005,
+            },
+          },
+        }],
+        waitUntilEnemiesGone: true,
+      },
+    ]
+  }
+
   scene.easyPaper = {
     waves: [
+      // {
+      //   choreography: [{
+      //       id: 'accelerateToWarpspeed',
+      //     },
+      //     {
+      //       id: 'loadBackground',
+      //       bg: background.white,
+      //     },
+      //     {
+      //       id: 'wait',
+      //       duration: 0.25,
+      //     },
+      //     {
+      //       id: 'showMessage',
+      //       text: ['WELL DONE', 'LEVEL 2 START'],
+      //     },
+      //     {
+      //       id: 'wait',
+      //       duration: 3,
+      //     },
+      //     {
+      //       id: 'loadBackground',
+      //       bg: background.paper,
+      //     },
+      //     {
+      //       id: 'decelerateFromWarpSpeed',
+      //     },
+      //     {
+      //       id: 'hideMessage',
+      //     },
+      //   ],
+      // },
       // wave 1
       {
         numOfEnemies: 2,
@@ -1595,60 +3121,120 @@ function loadTemplates() {
         waitUntilEnemiesGone: true,
       },
       {
-        warpSpeed: true,
-        message: {
-          type: 'warning',
-          text: ['Waves complete!', 'Get Ready...'],
-          duration: 6,
-        },
+        choreography: [{
+            id: 'showMessage',
+            type: 'warning',
+            text: ['Waves complete!', 'Get Ready...'],
+          },
+          {
+            id: 'accelerateToWarpspeed',
+          },
+          {
+            id: 'wait',
+            duration: 3,
+          },
+          {
+            id: 'decelerateFromWarpSpeed',
+          },
+          {
+            id: 'hideMessage',
+          },
+        ],
       },
       // BOSS SWALLOW!!
       {
+        choreography: [{
+            id: 'spawnEnemies'
+          },
+        ],
         numOfEnemies: 1,
         ships: [ship.swallow],
         paths: [
           path.doNothing,
         ],
-        shipManifestOverride: [
-          {
-            config: {
-              sprite: sprite.swallow.boss,
-              health: 100,
-              snapLineSpeed: 50,
-              hitValue: 2000,
-              snapLine: 250,
-              radius: 200,
+        shipManifestOverride: [{
+          config: {
+            sprite: sprite.swallow.boss,
+            health: 100,
+            snapLineSpeed: 50,
+            hitValue: 2000,
+            snapLine: 250,
+            radius: 200,
+          },
+          weapon: {
+            rotation: {
+              angle: 40,
+              frequency: 10,
             },
-            weapon: {
-              rotation: {
-                angle: 20,
-                frequency: 6,
-              },
-              firing: {
-                count: 100,
-                radius: 250,
-                loadTime: 0.005,
-              },
+            firing: {
+              count: 100,
+              radius: 230,
+              loadTime: 0.005,
             },
           },
-        ],
+        }],
         waitUntilEnemiesGone: true,
       },
     ],
   };
 
+  scene.endingScene = {
+    waves: [{
+      choreography: [{
+          id: 'showMessage',
+          text: ['Well done!', 'YOU WIN!'],
+        },
+        {
+          id: 'wait',
+          duration: 5
+        },
+        {
+          id: 'showMessage',
+          text: ['You could do better.', 'Try again for a higher score!'],
+        },
+        {
+          id: 'wait',
+          duration: 5
+        },
+
+      ]
+    }]
+  }
+
+  scene.Nathan = {
+    waves: [{
+      numOfEnemies: 1,
+      ships: [ship.eagle],
+      paths: [
+        path.doNothing,
+      ],
+      shipManifestOverride: [{
+        config: {
+          health: 500,
+          snapLineSpeed: 50,
+          hitValue: 2000,
+          snapLine: 250,
+          radius: 200,
+        },
+      }],
+      waitUntilEnemiesGone: true,
+    },
+  ],
+
+  }
 
 
   /** *** ALL PLAYER THINGS **** */
   projectile.player1 = {
     radius: 8,
-    
+
     init() {
       this.current.angle = toRadians(270);
-    }
+    },
 
   };
 
+  // Default player ring
   ring.player = {
     payload: {
       type: projectile.paperBall,
@@ -1661,7 +3247,25 @@ function loadTemplates() {
       spread: 0,
       count: 1,
       loadTime: 0.01,
-      cooldownTime: 0.25, 
+      cooldownTime: 0.25,
+      rapidReload: true,
+      viewTurret: false,
+    },
+  };
+
+  ring.multiGun = {
+    payload: {
+      type: projectile.multiGun,
+      speed: 500,
+      rotate: true,
+    },
+    firing: {
+      angle: 270,
+      radius: 30,
+      spread: 0,
+      count: 1,
+      loadTime: 0.01,
+      cooldownTime: 0.25,
       rapidReload: true,
       viewTurret: false,
     },
@@ -1678,34 +3282,68 @@ function loadTemplates() {
       radius: 0,
       count: 1,
       loadTime: 0,
-      cooldownTime: 5, 
+      cooldownTime: 5,
       rapidReload: false,
       viewTurret: true,
     },
   };
 
+  ring.chainGun = {
+    payload: {
+      type: projectile.modifiedChainGun,
+      speed: 500,
+      rotate: true,
+    },
+
+    firing: {
+      angle: 270,
+      radius: 0,
+      count: 1,
+      loadTime: 0,
+      cooldownTime: 5,
+      rapidReload: false,
+      viewTurret: true,
+    },
+  };
+
+  ring.nuke = {
+    payload: {
+      type: projectile.nuke,
+      speed: 500,
+      rotate: true,
+    },
+    firing: {
+      angle: 270,
+      radius: 30,
+      spread: 0,
+      count: 1,
+      loadTime: 0.01,
+      cooldownTime: 0.25,
+      rapidReload: true,
+      viewTurret: false,
+    },
+  }
+
   ship.player = {
     config: {
       radius: 15,
       sprite: sprite.plane.purple,
-      speed: 300,
+      speed: 360,
       origin: {
         x: 1024 / 2, // omit x to get random position
         y: 700,
       },
     },
-    weapon: [
-      {
+    weapon: [{
         ring: ring.player,
       },
-      {
-        ring: ring.enemyHoming,
-        offset: { x: -12, y: 44}
-      }
+      // {
+      //   ring: ring.enemyHoming,
+      //   offset: { x: -12, y: 44}
+      // }
     ],
   };
   /** End of PLAYER configuration */
-
 
 
   /** Jared Test Scene --IN PROGRESS-- */
@@ -1745,7 +3383,7 @@ function loadTemplates() {
 
   ring.jaredStinger = {
     payload: {
-      type: projectile.microBullet,
+      type: projectile.glassBall,
       velocity: {
         radial: 800,
         angular: 0,
@@ -1825,18 +3463,7 @@ function loadTemplates() {
       },
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
-    },
-    // weapon: [
-    //   {
-    //     ring: ring.jaredTest3,
-    //     //offset: {x:-30,y:23},
-    //   },
-
-    //   // {
-    //   //   ring: ring.uniSpiralFourWay180,
-    //   //   //offset: {x:30,y:23},
-    //   // },
-    // ],
+    }
   };
 
   ship.jaredTestCrane = {
@@ -1868,17 +3495,10 @@ function loadTemplates() {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
     },
-    path: [ [90,175,30]],
-    weapon: [
-      {
-        ring: ring.gammaOne,
-        offset: { x: -30, y: 20}
-      },
-      {
-        ring: ring.gammaOne,
-        offset: { x: 30, y: 20}
-      }
+    path: [
+      [90, 175, 30],
     ],
+    weapon: ring.jaredStinger,
   };
 
   ship.jaredTestCrane2 = {
@@ -1892,78 +3512,74 @@ function loadTemplates() {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
     },
-    weapon: [
-      {
-        ring: ring.gammaTwo,
-      }
-    ],
+    weapon: [{
+      ring: ring.gammaTwo,
+    }],
   };
+
+  ring.jaredPlayerRing = {
+    payload: {
+      type: projectile.microBullet,
+      speed: 500,
+      rotate: true,
+    },
+    firing: {
+      angle: 270,
+      radius: 30,
+      spread: 30,
+      count: 4,
+      loadTime: 0.01,
+      cooldownTime: 0.25,
+      rapidReload: true,
+      viewTurret: false,
+    },
+  }
 
   ship.jaredTestPlane = {
     config: {
       radius: 15,
       sprite: sprite.plane.lightBlue,
-      speed: 300,
+      speed: 400,
       origin: {
         x: 1024 / 2, // omit x to get random position
         y: 700,
       },
     },
-    weapon: [
-      // {
-      //   ring: ring.player,
-      // },
-      {
-        ring: ring.enemyHoming,
-        offset: { x: -12, y: 30}
-      }
-    ],
+    weapon: [{
+      ring: ring.jaredPlayerRing,
+    }],
   };
-  
-  // ship.testDove.config.origin = {x: 200, y: -50};
-  // this.addEntity(new Ship(this, ship.testDove));
-  // ship.testDove.config.origin = {x: 500, y: -50};
-  // this.addEntity(new Ship(this, ship.testDove));
-  // ship.testDove.config.origin = {x: 800, y: -50};
-  // ship.testDove.config.snapLine = 380
-  // this.addEntity(new Ship(this, ship.testDove));
+
 
   scene.jaredTestScene = {
     player: ship.jaredTestPlane,
-
     waves: [
       {
         numOfEnemies: 3,
-        ships: new Array(3).fill(ship.jaredTestDove),
-        paths: new Array(10).fill(path.straightDown),
+        ships: new Array(3).fill(ship.jaredTestDove2),
+        paths: new Array(3).fill(path.straightDown),
         initialXPoints: [ // omit to evenly space enemies.
-          600, 400, 700, 250, 400, 850, 450, 380, 770, 650
+          600, 400, 700
         ],
         shipManifestOverride: [
-          { config: { waitOffScreen: 0 } },
-          { config: { waitOffScreen: 2 } }, 
+          { config: { waitOffScreen: 0 }, weapon: ring.jaredWavy1 },
+          { config: { waitOffScreen: 2 } },
           { config: { waitOffScreen: 3 } },
-          { config: { waitOffScreen: 5 } },
-          { config: { waitOffScreen: 8 } },
-          { config: { waitOffScreen: 9 } },
-          { config: { waitOffScreen: 11 } },
-          { config: { waitOffScreen: 15 } },
-          { config: { waitOffScreen: 18 } },
-          { config: { waitOffScreen: 19 } },
         ],
         waitUntilEnemiesGone: true,
       },
       {
-        warpSpeed: true,
-        message: {
-          type: 'warning',
-          text: ['Jared Test Scene','--CUT--'],
-          duration: 6,
-        }
-      },
+        choreography: [
+          {
+            id: 'showMessage',
+            text: ['Jared Test Scene', '--CUT--'],
+            duration: 6,
+          },
+        ],
+      },//cut
     ],
   };
-  
+
   /** JaredLevel: Templates for a Level --IN PLACE ASSETS-- */
   ring.gammaOne = {
     payload: {
@@ -1982,7 +3598,7 @@ function loadTemplates() {
       pulse: {
         duration: 0.5,
         delay: 1.5,
-      }
+      },
     },
   };
 
@@ -2004,13 +3620,13 @@ function loadTemplates() {
       pulse: {
         duration: 1.0,
         delay: 2.5,
-      }
+      },
     },
   };
 
   ship.gammaDove = {
     config: {
-      health: 3,
+      health: 2,
       hitValue: 3,
       radius: 70,
       sprite: sprite.dove.default,
@@ -2019,22 +3635,29 @@ function loadTemplates() {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
     },
-    path: [ [90,175,30]],
-    weapon: [
-      {
+    path: [
+      [90, 175, 30],
+    ],
+    weapon: [{
         ring: ring.gammaOne,
-        offset: { x: -30, y: 20}
+        offset: {
+          x: -30,
+          y: 20,
+        },
       },
       {
         ring: ring.gammaOne,
-        offset: { x: 30, y: 20}
-      }
+        offset: {
+          x: 30,
+          y: 20,
+        },
+      },
     ],
   };
 
   ship.gammaCrane = {
     config: {
-      health: 12,
+      health: 5,
       hitValue: 3,
       radius: 70,
       sprite: sprite.crane.default,
@@ -2043,25 +3666,24 @@ function loadTemplates() {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
     },
-    weapon: [
-      {
-        ring: ring.gammaTwo,
-      }
-    ],
+    weapon: [{
+      ring: ring.gammaTwo,
+    }],
   };
-  
+
   scene.gamma = {
+    //player: ship.jaredTestPlane,
     waves: [
       {
         numOfEnemies: 10,
-        ships: new Array(10).fill(ship.jaredTestDove),
+        ships: new Array(10).fill(ship.gammaDove),
         paths: new Array(10).fill(path.straightDown),
         initialXPoints: [ // omit to evenly space enemies.
-          600, 400, 700, 250, 400, 850, 450, 380, 770, 650
+          600, 400, 700, 250, 400, 850, 450, 380, 770, 650,
         ],
         shipManifestOverride: [
           { config: { waitOffScreen: 0 } },
-          { config: { waitOffScreen: 2 } }, 
+          { config: { waitOffScreen: 2 } },
           { config: { waitOffScreen: 3 } },
           { config: { waitOffScreen: 5 } },
           { config: { waitOffScreen: 8 } },
@@ -2075,29 +3697,30 @@ function loadTemplates() {
       },
       {
         numOfEnemies: 6,
-        ships: new Array(10).fill(ship.jaredTestCrane),
-        paths: new Array(10).fill(path.backAndForth),
+        ships: new Array(6).fill(ship.gammaCrane),
+        paths: new Array(6).fill(path.backAndForth),
         initialXPoints: [ // omit to evenly space enemies.
-          100, 300, 600, 120, 700, 550
+          100, 300, 600, 120, 700, 550,
         ],
         shipManifestOverride: [
           { config: { waitOffScreen: 5 } },
-          { config: { waitOffScreen: 9 } }, 
+          { config: { waitOffScreen: 9 } },
           { config: { waitOffScreen: 11 } },
           { config: { waitOffScreen: 13 } },
           { config: { waitOffScreen: 17 } },
-          { config: { waitOffScreen: 20} },
+          { config: { waitOffScreen: 20 } },
         ],
         waitUntilEnemiesGone: true,
       },
       {
-        warpSpeed: true,
-        message: {
-          type: 'warning',
-          text: ['First Wave Complete','--CUT--'],
-          duration: 6,
-        }
-      },
+        choreography: [
+          {
+            id: 'showMessage',
+            text: ['Gamma Scene', '--CUT--'],
+            duration: 6,
+          },
+        ],
+      },//cut
       // BOSS SWALLOW!!
       // {
       //   numOfEnemies: 1,
@@ -2133,9 +3756,195 @@ function loadTemplates() {
     ],
   };
   /** end of jared level */
-  
 
+  scene.mikeLevel = {
+    waves: [{
+        choreography: [{
+            id: 'accelerateToWarpspeed',
+          },
+          {
+            id: 'loadBackground',
+            bg: background.white,
+          },
+          {
+            id: 'wait',
+            duration: 0.25,
+          },
+          {
+            id: 'showMessage',
+            text: ['GET READY', 'LEVEL 1 START'],
+          },
+          {
+            id: 'wait',
+            duration: 3,
+          },
+          {
+            id: 'loadBackground',
+            bg: background.paper,
+          },
+          {
+            id: 'decelerateFromWarpSpeed',
+          },
+          {
+            id: 'hideMessage',
+          },
+        ],
+      },
+      // four hummingbirds fly left then come down
+      {
+        numOfEnemies: 4,
+        ships: [
+          ship.hummer,
+          ship.owl,
+          ship.pigeon,
+          ship.bird,
+        ],
+        paths: new Array(4).fill(path.downSlow),
+        shipManifestOverride: [{
+            config: {
+              initialDirection: 'west',
+              snapLine: 100,
+            },
+          },
+          {
+            config: {
+              initialDirection: 'west',
+              snapLine: 374,
+              waitOffScreen: 1
+            },
+          },
+          {
+            config: {
+              initialDirection: 'west',
+              snapLine: 648,
+              waitOffScreen: 2
+            },
+          },
+          {
+            config: {
+              initialDirection: 'west',
+              snapLine: 922,
+              waitOffScreen: 3
+            },
+          },
+        ],
+        waitUntilEnemiesGone: true,
+        initialYPoints: [
+          50, 50, 50, 50,
+        ]
+      },
+      // geese zig zag in and stop, others just enter from left and right, all shooting
+      // lasers at player
+      {
+        numOfEnemies: 4,
+        ships: [
+          ship.goose,
+          ship.swallow,
+          ship.crane,
+          ship.bat,
+        ],
+        paths: [
+          path.sawtoothLeftStop,
+          path.sawtoothRightStop,
+          path.doNothing,
+          path.doNothing,
+        ],
+        shipManifestOverride: [{
+            config: {
+              initialDirection: 'west',
+              snapLine: 924,
+            },
+            weapon: ring.slowLaserTargetPlayer,
+          },
+          {
+            config: {
+              initialDirection: 'east',
+              snapLine: 100,
+            },
+            weapon: ring.slowLaserTargetPlayer,
+          },
+          {
+            config: {
+              initialDirection: 'west',
+              snapLine: 824,
+            },
+            weapon: ring.slowLaserTargetPlayer,
+          },
+          {
+            config: {
+              initialDirection: 'east',
+              snapLine: 200,
+            },
+            weapon: ring.slowLaserTargetPlayer,
+          },
+        ],
+        waitUntilEnemiesGone: true,
+        initialYPoints: [
+          100, 100, 300, 300,
+        ]
+      },
+      {
+        numOfEnemies: 10,
+        waitUntilEnemiesGone: true,
+        ships: new Array(10).fill(ship.gammaDove),
+        paths: new Array(10).fill(path.straightDown),
+        initialXPoints: [ // omit to evenly space enemies.
+          600, 400, 700, 250, 400, 850, 450, 380, 770, 650,
+        ],
+        shipManifestOverride: [{
+            config: {
+              waitOffScreen: 0,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 2,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 3,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 5,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 8,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 9,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 11,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 15,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 18,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 19,
+            },
+          },
+        ],
+      },
 
-
-
+    ]
+  }
+  /** end of jared level */
 } // end of objects.js
