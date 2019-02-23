@@ -81,9 +81,6 @@ class NukesAndOrigami extends GameEngine {
       }
     }
 
-    // Initilize the game board
-
-    initializeScoreBoardLives(this.lives);
     this.sceneManager = new SceneManager(this);
   }
 
@@ -193,7 +190,7 @@ class NukesAndOrigami extends GameEngine {
       player.invincTime += this.clockTick;
     }
     if (this.lives === 0) { // game over
-      // this.gameOver()
+      this.gameOver()
     }
   }
 
