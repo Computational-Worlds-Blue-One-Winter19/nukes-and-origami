@@ -267,6 +267,30 @@ function loadTemplates() {
     // a circle is now drawn by default if you don't include an image or sprite
   };
 
+  projectile.redCircleBullet = {
+    radius: 6,
+    colorFill: 'red'
+    // a circle is now drawn by default if you don't include an image or sprite
+  };
+
+  projectile.whiteCircleBullet = {
+    radius: 6,
+    colorFill: 'white'
+    // a circle is now drawn by default if you don't include an image or sprite
+  };
+
+  projectile.greenCircleBullet = {
+    radius: 6,
+    colorFill: 'green'
+    // a circle is now drawn by default if you don't include an image or sprite
+  };
+
+  projectile.purple = {
+    radius: 6,
+    colorFill: 'purple'
+    // a circle is now drawn by default if you don't include an image or sprite
+  };
+
   projectile.microBullet = {
     radius: 3,
     // use init() for any pre-processing immediately prior to launch.
@@ -2487,70 +2511,70 @@ function loadTemplates() {
       //     },
       //   ],
       // },
-      // // wave 1
-      // {
-      //   numOfEnemies: 2,
-      //   ships: new Array(2).fill(ship.bat),
-      //   paths: [
-      //     path.strafeRight,
-      //     path.strafeLeft,
-      //   ],
-      //   waitUntilEnemiesGone: true,
-      // },
-      // {
-      //   numOfEnemies: 3,
-      //   ships: new Array(3).fill(ship.crane),
-      //   waitUntilEnemiesGone: true,
-      // },
-      // {
-      //   numOfEnemies: 3,
-      //   ships: [ship.bat, ship.dove, ship.bat],
-      //   paths: [
-      //     // first bat cornerleft
-      //     path.cornerLeft,
-      //     // dove do nothing
-      //     path.doNothing,
-      //     // second bat cornerright
-      //     path.cornerRight,
-      //   ],
-      //   shipManifestOverride: [
-      //     // change first bat to tracking test
-      //     {
-      //       weapon: ring.trackingTest1,
-      //     },
-      //     // don't do anything to dove
-      //     {},
-      //     // change second bat to tracking test
-      //     {
-      //       weapon: ring.trackingTest1,
-      //     },
-      //   ],
-      //   initialXPoints: [ // omit to evenly space enemies.
-      //     400, 500, 600,
-      //   ],
-      //   waitUntilEnemiesGone: true,
-      // },
-      // {
-      //   choreography: [{
-      //       id: 'showMessage',
-      //       type: 'warning',
-      //       text: ['Waves complete!', 'Get Ready...'],
-      //     },
-      //     {
-      //       id: 'accelerateToWarpspeed',
-      //     },
-      //     {
-      //       id: 'wait',
-      //       duration: 3,
-      //     },
-      //     {
-      //       id: 'decelerateFromWarpSpeed',
-      //     },
-      //     {
-      //       id: 'hideMessage',
-      //     },
-      //   ],
-      // },
+      // wave 1
+      {
+        numOfEnemies: 2,
+        ships: new Array(2).fill(ship.bat),
+        paths: [
+          path.strafeRight,
+          path.strafeLeft,
+        ],
+        waitUntilEnemiesGone: true,
+      },
+      {
+        numOfEnemies: 3,
+        ships: new Array(3).fill(ship.crane),
+        waitUntilEnemiesGone: true,
+      },
+      {
+        numOfEnemies: 3,
+        ships: [ship.bat, ship.dove, ship.bat],
+        paths: [
+          // first bat cornerleft
+          path.cornerLeft,
+          // dove do nothing
+          path.doNothing,
+          // second bat cornerright
+          path.cornerRight,
+        ],
+        shipManifestOverride: [
+          // change first bat to tracking test
+          {
+            weapon: ring.trackingTest1,
+          },
+          // don't do anything to dove
+          {},
+          // change second bat to tracking test
+          {
+            weapon: ring.trackingTest1,
+          },
+        ],
+        initialXPoints: [ // omit to evenly space enemies.
+          400, 500, 600,
+        ],
+        waitUntilEnemiesGone: true,
+      },
+      {
+        choreography: [{
+            id: 'showMessage',
+            type: 'warning',
+            text: ['Waves complete!', 'Get Ready...'],
+          },
+          {
+            id: 'accelerateToWarpspeed',
+          },
+          {
+            id: 'wait',
+            duration: 3,
+          },
+          {
+            id: 'decelerateFromWarpSpeed',
+          },
+          {
+            id: 'hideMessage',
+          },
+        ],
+      },
       // BOSS SWALLOW!!
       {
         choreography: [{
