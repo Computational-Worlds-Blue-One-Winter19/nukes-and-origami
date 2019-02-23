@@ -72,7 +72,7 @@ function SeamlessLoop() {
 	this.actual = new Array();
 	this.dropOld = new Boolean();
 	this.old;
-	this._volume = 1;
+	this._volume = 0.3;
 	
 	var t = this;
 	this._eventCanplaythrough = function(audBool) {
