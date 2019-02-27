@@ -3382,7 +3382,7 @@ function loadTemplates() {
   /**                                                                                       **
    * ************************** JARED TEST SCENE --IN PROGRESS-- *************************** *
    **                                                                                       **/
-  ring.jaredOldTest2 = {
+  ring.lineTest = {
     payload: {
       type: projectile.microBullet,
       velocity: {
@@ -3395,14 +3395,14 @@ function loadTemplates() {
       },
     },
     rotation: {
-      angle: 10,
-      frequency: 2.0,
-      // speed: .1,
+      angle: 0,
+      frequency: 0,
+      //speed: .1,
     },
     firing: {
-      radius: 1,
+      radius: 0,
       angle: 90,
-      spread: 2,
+      width: 100,
       count: 4,
       loadTime: 0.005,
       cooldownTime: 0.05,
@@ -3431,7 +3431,8 @@ function loadTemplates() {
       },
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
-    }
+    },
+    weapon: ring.lineTest
   };
 
   ship.jaredTestCrane = {
@@ -3489,41 +3490,24 @@ function loadTemplates() {
     config: {
       radius: 15,
       sprite: sprite.plane.lightBlue,
-      speed: 400,
+      speed: 450,
       origin: {
-        x: 1024 / 2, // omit x to get random position
+        x: 900, // omit x to get random position
         y: 700,
       },
     },
-    weapon: [{
-      ring: ring.jaredPlayerRing,
-    }],
+    // weapon: [{
+    //   ring: ring.jaredPlayerRing,
+    // }],
   };
 
   scene.jaredTestScene = {
     player: ship.jaredTestPlane,
     waves: [{
-        numOfEnemies: 3,
-        ships: new Array(3).fill(ship.jaredTestDove2),
-        paths: new Array(3).fill(path.straightDown),
+        numOfEnemies: 1,
+        ships: new Array(1).fill(ship.jaredTestDove),
         initialXPoints: [ // omit to evenly space enemies.
-          600, 400, 700
-        ],
-        shipManifestOverride: [{
-            config: {
-              waitOffScreen: 0
-            }
-          },
-          {
-            config: {
-              waitOffScreen: 2
-            }
-          },
-          {
-            config: {
-              waitOffScreen: 3
-            }
-          },
+          1024/2
         ],
         waitUntilEnemiesGone: true,
       },
