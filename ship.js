@@ -766,7 +766,13 @@ class Weapon {
 
       // process the multi-ring format
       for (let i = 0; i < manifest.length; i++) {
-        var r = new Line(owner, manifest[i].ring);
+        var r;
+        if (manifest[i].ring.firing.width) {
+          // identify Line by the width field
+          var r = new Line(owner, manifest[i].ring);
+        } else {
+          var r = new Ring(owner, manifest[i].ring);
+        }
         const offset = manifest[i].offset || { x: 0, y: 0 };
 
         this.slot.push({
@@ -778,7 +784,13 @@ class Weapon {
       this.primaryRingManifest = manifest;
 
       // process the single-ring format
-      var r = new Line(owner, manifest);
+      var r;
+      if (manifest.firing.width) {
+        // identify Line by the width field
+        var r = new Line(owner, manifest);
+      } else {
+        var r = new Ring(owner, manifest);
+      }
 
       this.slot.push({
         ring: r,
@@ -1109,8 +1121,8 @@ class Ring {
     // update active time counter; used for the pulse delay
     this.status.elapsedActiveTime += game.clockTick;
 
-    // ring center position is updated by the Ship before calling this method.
-    // we only need to adjust the angle for bay[0] if this ring is rotating.
+    // origin is updated by the Ship before calling this method.
+    // we only need to adjust the base angle if this ring is rotating.
     if (this.fixedRotation) {
       const doublePI = 2 * Math.PI;
       const delta = doublePI * this.fixedRotation * game.clockTick;
@@ -1165,8 +1177,7 @@ class Ring {
     } else if (this.status.isWaiting && this.status.elapsedTime > this.config.waitTime) {
       // Waiting state
       this.status.isWaiting = false;
-      this.status.isLoading = !this.config.rapidReload;
-      this.status.isReady = this.config.rapidReload;
+      this.status.isLoading = true;
       this.status.elapsedActiveTime = 0;
       this.status.elapsedTime = 0;
 
@@ -1482,8 +1493,6 @@ class Death  {
   }
 }
 
-
-
 /**
  * TEST: modification of Ring class to hold/fire projectiles in a Line.
  */
@@ -1605,8 +1614,8 @@ class Line {
     // update active time counter; used for the pulse delay
     this.status.elapsedActiveTime += game.clockTick;
 
-    // ring center position is updated by the Ship before calling this method.
-    // we only need to adjust the angle for bay[0] if this ring is rotating.
+    // origin is updated by the Ship before calling this method.
+    // we only need to adjust the base angle if this ring is rotating.
     if (this.fixedRotation) {
       const doublePI = 2 * Math.PI;
       const delta = doublePI * this.fixedRotation * game.clockTick;
@@ -1697,8 +1706,7 @@ class Line {
     } else if (this.status.isWaiting && this.status.elapsedTime > this.config.waitTime) {
       // Waiting state
       this.status.isWaiting = false;
-      this.status.isLoading = !this.config.rapidReload;
-      this.status.isReady = this.config.rapidReload;
+      this.status.isLoading = true;
       this.status.elapsedActiveTime = 0;
       this.status.elapsedTime = 0;
 
@@ -1874,16 +1882,7 @@ class Line {
     // return a configured projectile
     return new Projectile(this.owner.game, manifest);
   }
-} // end of Ring class
-
-
-
-
-
-
-
-
-
+} // end of Line class
 
 /**
  *  Returns {x,y} position of polar coordinates given the

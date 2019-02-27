@@ -3400,7 +3400,7 @@ function loadTemplates() {
       //speed: .1,
     },
     firing: {
-      pattern: pattern.simple,
+      //pattern: pattern.simple,
       radius: 32,
       angle: 90,
       width: 100,
@@ -3408,10 +3408,10 @@ function loadTemplates() {
       loadTime: 0,
       cooldownTime: 0.02,
       rapidReload: true,
-      targetLeadShot: true,
-      viewTurret: false,
+      targetPlayer: false,
+      viewTurret: true,
       pulse: {
-        duration: 4.5,
+        duration: 0.5,
         delay: 1.5,
       },
     },
@@ -3497,9 +3497,9 @@ function loadTemplates() {
         y: 700,
       },
     },
-    // weapon: [{
-    //   ring: ring.jaredPlayerRing,
-    // }],
+    weapon: [{
+      ring: ring.jaredPlayerRing,
+    }],
   };
 
   scene.jaredTestScene = {
