@@ -1494,7 +1494,7 @@ class Death  {
 }
 
 /**
- * TEST: modification of Ring class to hold/fire projectiles in a Line.
+ * Modification of Ring class to hold/fire projectiles in a Line.
  */
 class Line {
   constructor(owner, manifest) {
@@ -1518,16 +1518,9 @@ class Line {
 
     // compute spacing
     let baseAngle = toRadians(manifest.firing.angle) || 0;
-    let width = manifest.firing.width || 10;
+    let width = (count > 1) ? manifest.firing.width : 0;
     let spacing = (count > 1) ? width / (count - 1) : 0;
-    let offset = 0;
-    
-    if (count % 2 === 0) {
-      offset = spacing / 2;
-    }
-
-    let halfCount = (count % 2 === 0) ? (count/2 - 1) : (Math.floor(count/2));
-
+        
     // set activeTime and waitTime for pulse delay
     let activeTime = Infinity;
     let waitTime = 0;
@@ -1566,8 +1559,6 @@ class Line {
       activeTime,
       baseAngle,
       count,
-      halfCount,
-      offset,
       pattern,
       spacing,
       waitTime,
@@ -1630,50 +1621,34 @@ class Line {
       this.current.isLeadShot = false;
     }
 
-    // compute position of center point
-    this.current.center = getXandY(this.current, { radius: this.config.radius, angle: this.current.angle });
-    let center = this.current.center;
-    let count = this.config.count;
-    let halfCount = this.config.halfCount;
-    let offset = this.config.offset;
-    let spacing = this.config.spacing;
-
-    // update each turret using the offset and spacing from the center point
-    for (let i = 0; i < this.bay.length; i++) {
-      const projectile = this.bay[i];
-      projectile.current.angle = this.current.angle;
+    // compute position of each turret
+    if (this.bay.length > 0) {    
+      let center = getXandY(this.current, { radius: this.config.radius, angle: this.current.angle });
+    
+      let angle = this.current.angle;
+      let halfWidth = this.config.width / 2;
+      let spacing = this.config.spacing;
       
-      if (i < halfCount) {
-        // handle positive side
-        let radius = offset + (halfCount - i) * spacing;
+      // update bay[0] turret using the distance from the center point
+      let first = this.bay[0];
 
-        const currentPosition = getXandY(center, {
-          radius: radius,
-          angle: this.current.angle - Math.PI/2,
+      first.current.angle = angle;
+      const currentPosition = getXandY(center, {
+        radius: halfWidth,
+        angle: angle - Math.PI/2,
+      });
+      first.current.x = currentPosition.x;
+      first.current.y = currentPosition.y;
+      
+      // update all other turrets using the distance from bay[0]
+      for (let i = 1; i < this.bay.length; i++) {
+        const projectile = this.bay[i];
+        projectile.current.angle = angle;
+      
+        const currentPosition = getXandY(first.current, {
+          radius: i * spacing,
+          angle: angle + Math.PI/2,
         });
-
-        projectile.current.x = currentPosition.x;
-        projectile.current.y = currentPosition.y;
-      } else if (count % 2 === 0) {
-        // handle negative side
-        let radius = offset + (i - 1 - halfCount) * spacing;
-
-        const currentPosition = getXandY(center, {
-          radius: radius,
-          angle: this.current.angle + Math.PI/2,
-        });
-
-        projectile.current.x = currentPosition.x;
-        projectile.current.y = currentPosition.y;
-      } else {
-        // handle negative side
-        let radius = offset + (i - halfCount) * spacing;
-
-        const currentPosition = getXandY(center, {
-          radius: radius,
-          angle: this.current.angle + Math.PI/2,
-        });
-
         projectile.current.x = currentPosition.x;
         projectile.current.y = currentPosition.y;
       }
@@ -1811,52 +1786,32 @@ class Line {
         radial: this.payload.speed,
         angular: 0,
       };
-      const acceleration = this.payload.acceleration;
+      const acceleration = this.payload.acceleration;    
 
-      // compute position of center point
-      let center = this.current.center;
-      let count = this.config.count;
-      let halfCount = this.config.halfCount;
-      let offset = this.config.offset;
-      let spacing = this.config.spacing;
-
-      let i = this.bay.length;
       let point = {};
-
-      if (i < halfCount) {
-        // handle positive side
-        let radius = offset + (halfCount - i) * spacing;
-
+              
+      if (this.bay.length === 0) {
+        let center = getXandY(this.current, { radius: this.config.radius, angle: this.current.angle });
+        let halfWidth = this.config.width / 2;
+                
         const currentPosition = getXandY(center, {
-          radius: radius,
-          angle: this.current.angle - Math.PI/2,
+          radius: halfWidth,
+          angle: angle - Math.PI/2,
         });
-
-        point.x = currentPosition.x;
-        point.y = currentPosition.y;
-      } else if (count & 2 === 0) {
-        // handle negative side
-        let radius = offset + (i - 1 - halfCount) * spacing;
-
-        const currentPosition = getXandY(center, {
-          radius: radius,
-          angle: this.current.angle + Math.PI/2,
-        });
-
         point.x = currentPosition.x;
         point.y = currentPosition.y;
       } else {
-        // handle negative side
-        let radius = offset + (i - halfCount) * spacing;
-
-        const currentPosition = getXandY(center, {
-          radius: radius,
-          angle: this.current.angle + Math.PI/2,
+        // compute position from bay[0]
+        let first = this.bay[0].current;
+        let spacing = this.config.spacing;
+        
+        const currentPosition = getXandY(first, {
+          radius: this.bay.length * spacing,
+          angle: angle + Math.PI/2,
         });
-
         point.x = currentPosition.x;
         point.y = currentPosition.y;
-      }
+      }      
       
       origin = {
         angle,
