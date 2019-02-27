@@ -2,8 +2,8 @@ const lifeColor = ['red', 'blue', 'aqua', 'oragne', 'green'];
 
 // ---- START Sound related function
 
-function crossfadedLoop(enteringInstance, leavingInstance) {
-  const volume = 0.09;
+function crossfadedLoop(enteringInstance, leavingInstance, soundLevel) {
+  const volume = soundLevel;
   const crossfadeDuration = 1000;
 
    // Get the sound duration in ms from the Howler engine
@@ -11,7 +11,7 @@ function crossfadedLoop(enteringInstance, leavingInstance) {
 
 
   // Fade in entering instance
-  const audio = enteringInstance.pos(100).play();
+  const audio = enteringInstance.pos(10).play();
   enteringInstance.fade(0, volume, crossfadeDuration);
 
   // Wait for the audio end to fade out entering instance
@@ -46,7 +46,7 @@ function playLoop(soundObject) {
   // the singleton creator will coordinate the crossfaded loop
   soundObject.instances.push(createHowlerInstance(['./audio/Game_Loop_v.1.ogg'], () => {
 
-    crossfadedLoop(soundObject.instances[1], soundObject.instances[0]);
+    crossfadedLoop(soundObject.instances[1], soundObject.instances[0], soundObject.volume);
   }));
 
 }
@@ -201,8 +201,6 @@ function hideControlMessage() {
   message.style.display = 'none';
 }
 
-
-
 /**
  * Starts the game by spawning enemies, initializing the scoreboard lives and
  * setting the focus to the canvas
@@ -211,7 +209,19 @@ function hideControlMessage() {
 function startGame(game) {
   game.initializeSceneManager();
 
-  playLoop(game.sounds.gameLoop);
+  // playLoop(game.sounds.gameLoop);
+let loop = new SeamlessLoop();
+loop.addUri("audio/Game_Loop_v.1.ogg", 9590, 'sound1');
+loop._volume = 0.09;
+loop.callback(soundsLoaded);
+
+function soundsLoaded() {
+    let n = 1;
+    loop._volume = 0.09;
+    loop.start('sound' + n);
+}
+
+
 
   // Initilize the game board
   initializeScoreBoardLives(game.lives);

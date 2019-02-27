@@ -744,14 +744,14 @@ class Weapon {
     // the first one is activated
     this.inventory = [];
     this.timer = null;
-    this.lastTimeAPressed = 0;
+    this.lastTimeAPressed = this.owner.game.timer.gameTime;
     this.originalManifest = null;
 
     this.hasNuke = false;
 
     this.fireSound = new Howl({
       src: ['audio/laserShot.mp3'],
-      volume: 0.2,
+      volume: 0.1,
     });
 
     // This is to prevent duplicate homing missile weapons from being added to the inventory
@@ -810,26 +810,13 @@ class Weapon {
     }
 
     // Check if the player is activating a weapon from their inventory
-    if (this.owner.game.keysDown.KeyA) {
-
-      if (this.lastTimeAPressed === 0) { // record the time the key was pressed
+    if (this.owner.game.keysDown.KeyA && this.inventory[0] && this.owner.game.timer.gameTime - this.lastTimeAPressed >= 1) {
+        // Update the time for the last time the A key was pressed
         this.lastTimeAPressed = this.owner.game.timer.gameTime;
-
-        // Activate the weapon
+        
         // Get the first item in the inventory
         const weaponActivation = this.inventory.shift();
-        if (weaponActivation) {
-          weaponActivation();
-        }
-      } else if (this.owner.game.timer.gameTime - this.lastTimeAPressed >= 1) {
-        // Activate the weapon
-        // Get the first item in the inventory
-        const weaponActivation = this.inventory.shift();
-        if (weaponActivation) {
-          weaponActivation();
-        }
-      }
-
+        weaponActivation();
     }
 
     // evaluate firing decision
