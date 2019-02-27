@@ -1510,12 +1510,14 @@ class Line {
     // compute spacing
     let baseAngle = toRadians(manifest.firing.angle) || 0;
     let width = manifest.firing.width || 10;
-    let spacing = width / (count - 1) || 0;
+    let spacing = (count > 1) ? width / (count - 1) : 0;
     let offset = 0;
     
     if (count % 2 === 0) {
       offset = spacing / 2;
     }
+
+    let halfCount = (count % 2 === 0) ? (count/2 - 1) : (Math.floor(count/2));
 
     // set activeTime and waitTime for pulse delay
     let activeTime = Infinity;
@@ -1555,6 +1557,7 @@ class Line {
       activeTime,
       baseAngle,
       count,
+      halfCount,
       offset,
       pattern,
       spacing,
@@ -1619,9 +1622,10 @@ class Line {
     }
 
     // compute position of center point
-    let center = getXandY(this.current, { radius: this.config.radius, angle: this.current.angle });
+    this.current.center = getXandY(this.current, { radius: this.config.radius, angle: this.current.angle });
+    let center = this.current.center;
     let count = this.config.count;
-    let halfCount = count / 2;
+    let halfCount = this.config.halfCount;
     let offset = this.config.offset;
     let spacing = this.config.spacing;
 
@@ -1632,11 +1636,22 @@ class Line {
       
       if (i < halfCount) {
         // handle positive side
-        let radius = offset + (halfCount - 1 - i) * spacing;
+        let radius = offset + (halfCount - i) * spacing;
 
         const currentPosition = getXandY(center, {
           radius: radius,
           angle: this.current.angle - Math.PI/2,
+        });
+
+        projectile.current.x = currentPosition.x;
+        projectile.current.y = currentPosition.y;
+      } else if (count % 2 === 0) {
+        // handle negative side
+        let radius = offset + (i - 1 - halfCount) * spacing;
+
+        const currentPosition = getXandY(center, {
+          radius: radius,
+          angle: this.current.angle + Math.PI/2,
         });
 
         projectile.current.x = currentPosition.x;
@@ -1791,9 +1806,9 @@ class Line {
       const acceleration = this.payload.acceleration;
 
       // compute position of center point
-      let center = getXandY(this.current, { radius: this.config.radius, angle: this.current.angle });
+      let center = this.current.center;
       let count = this.config.count;
-      let halfCount = count / 2;
+      let halfCount = this.config.halfCount;
       let offset = this.config.offset;
       let spacing = this.config.spacing;
 
@@ -1802,11 +1817,22 @@ class Line {
 
       if (i < halfCount) {
         // handle positive side
-        let radius = offset + (halfCount - 1 - i) * spacing;
+        let radius = offset + (halfCount - i) * spacing;
 
         const currentPosition = getXandY(center, {
           radius: radius,
           angle: this.current.angle - Math.PI/2,
+        });
+
+        point.x = currentPosition.x;
+        point.y = currentPosition.y;
+      } else if (count & 2 === 0) {
+        // handle negative side
+        let radius = offset + (i - 1 - halfCount) * spacing;
+
+        const currentPosition = getXandY(center, {
+          radius: radius,
+          angle: this.current.angle + Math.PI/2,
         });
 
         point.x = currentPosition.x;
