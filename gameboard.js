@@ -245,7 +245,7 @@ function addEvent(element, evnt, funct) {
 function initIntroMessage(game) {
   showStaticMessage('intro-message');
   addEvent(
-    document.getElementById('button'),
+    document.getElementById('start-button'),
     'click',
     () => { startGame(game); },
   );
