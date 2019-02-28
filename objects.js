@@ -416,7 +416,7 @@ function loadTemplates() {
       [0, 0, 0, 1, 1, 1, 0, 0, 0],
       [0, 0, 0, 0, 1, 0, 0, 0, 0],
     ],
-    delay: 2, // seconds between rounds
+    delay: 0.5, // seconds between rounds
   };
 
   pattern.j = {
@@ -3386,6 +3386,41 @@ function loadTemplates() {
     payload: {
       type: projectile.microBullet,
       velocity: {
+        radial: 525,
+        angular: 0,
+      },
+      acceleration: {
+        radial: 0,
+        angular: 0,
+      },
+    },
+    rotation: {
+      //angle: 10,
+      //frequency: 1,
+      //speed: .1,
+    },
+    firing: {
+      pattern: pattern.simple,
+      radius: 32,
+      angle: 90,
+      width: 100,
+      count: 6,
+      loadTime: 0,
+      cooldownTime: 0.02,
+      rapidReload: true,
+      targetLeadShot: true,
+      viewTurret: false,
+      // pulse: {
+      //   duration: 4.5,
+      //   delay: 1.5,
+      // },
+    },
+  };
+
+  ring.lineTestDownward = {
+    payload: {
+      type: projectile.microBullet,
+      velocity: {
         radial: 450,
         angular: 0,
       },
@@ -3400,7 +3435,7 @@ function loadTemplates() {
       //speed: .1,
     },
     firing: {
-      //pattern: pattern.simple,
+      pattern: undefined,
       radius: 32,
       angle: 90,
       width: 100,
@@ -3408,10 +3443,10 @@ function loadTemplates() {
       loadTime: 0,
       cooldownTime: 0.02,
       rapidReload: true,
-      targetPlayer: false,
-      viewTurret: true,
+      targetLeadShot: false,
+      viewTurret: false,
       pulse: {
-        duration: 0.5,
+        duration: 4.5,
         delay: 1.5,
       },
     },
@@ -3419,7 +3454,7 @@ function loadTemplates() {
 
   ship.jaredTestDove = {
     config: {
-      health: 1,
+      health: 10,
       hitValue: 5,
       radius: 60,
       sprite: sprite.dove.default,
@@ -3505,12 +3540,17 @@ function loadTemplates() {
   scene.jaredTestScene = {
     player: ship.jaredTestPlane,
     waves: [{
-        numOfEnemies: 1,
-        ships: new Array(1).fill(ship.jaredTestDove),
+        numOfEnemies: 3,
+        ships: new Array(3).fill(ship.jaredTestDove),
         initialXPoints: [ // omit to evenly space enemies.
-          1024/2
+          1024/6, 1024/2, 1024 * 5/6
         ],
         waitUntilEnemiesGone: true,
+        shipManifestOverride: [
+          { weapon: ring.lineTestDownward },
+          { weapon: ring.lineTest },
+          { weapon: ring.lineTestDownward },
+        ],
       },
       {
         choreography: [{
