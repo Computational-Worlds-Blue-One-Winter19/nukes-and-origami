@@ -323,32 +323,28 @@ class InvertedControls extends PowerUp {
 
 // From the collection of implemented powerups, retrieves and return a random one
 function getRandomPowerUp(enemyDropItems) {
+    const POWERUPS  = enemyDropItems || [new InvertedControls(100), new Shield(100), new ExtraLife(100), new RapidFire(100)];
+  
+    // If enemy drop items are not specified we can continue adding random powerUps
+    if (!enemyDropItems) {
+      // No need to drop more missiles if the player already has one loaded, easy to modify if we decide to drop them
+      // down the road
+      if (!containsType('hommingMissile')) {
+        POWERUPS.push(new HomingMissile(100));
+      }
     
-  if (enemyDropItems) { // If defined we drop a powerUp defined in the enemies manifest
-
-  } else { // We generate a random powerUp
-
-  }
-  const POWERUPS  = [new InvertedControls(100), new Shield(100), new ExtraLife(100), new RapidFire(100)];
-  // const POWERUPS = [];
-
-  // No need to drop more missiles if the player already has one loaded, easy to modify if we decide to drop them
-  // down the road
-  if (!containsType('hommingMissile')) {
-    POWERUPS.push(new HomingMissile(100));
-  }
-
-  if (!containsType('chainGun')) {
-    POWERUPS.push(new ChainGun(100));
-  }
-
-  if (!containsType('nuke'))  {
-    POWERUPS.push(new Nuke(100));
-  }
-
-  if (ring.multiGun.firing.count < 5)  {
-    POWERUPS.push(new MultiGun(100));
-  }
+      if (!containsType('chainGun')) {
+        POWERUPS.push(new ChainGun(100));
+      }
+    
+      if (!containsType('nuke'))  {
+        POWERUPS.push(new Nuke(100));
+      }
+    
+      if (ring.multiGun.firing.count < 5)  {
+        POWERUPS.push(new MultiGun(100));
+      } 
+    }
 
   return POWERUPS[Math.floor(Math.random() * POWERUPS.length)];
 }

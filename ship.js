@@ -161,7 +161,7 @@ class Ship extends Entity {
     this.lastFired = 0;
     this.timeSinceHit = 0;
     this.health = manifest.config.health;
-    this.dropItems = manifest.config.health;
+    this.dropItems = manifest.config.dropItems;
 
     //A slave is the "slave" to another ship. The other ship is the master
     //and any hits the slave takes will be inflicted on the master.
