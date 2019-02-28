@@ -382,8 +382,8 @@ AM.downloadAll(() => {
   game.spawnPlayer();
 
   // view test stage
-  game.testScene();
-  //game.sceneManager.scenes.push(scene.jaredTestScene);
+  //game.testScene();
+  game.sceneManager.scenes.push(scene.jaredTestScene);
 
   // run completed levels
   //initIntroMessage(game);
@@ -523,16 +523,30 @@ class SceneManager {
             Object.assign(manifestCopy.weapon.payload, wave.shipManifestOverride[i].weapon.payload);
           }
         }
+      }
 
-
-      if (!Array.isArray(wave.ships[i].weapon)) {
+      if (!Array.isArray(wave.ships[i].weapon) && wave.ships[i].weapon.payload.type) {
+        let projectile = wave.ships[i].weapon.payload.type;
+        
         // sprites/images don't copy over when you parse a stringified JSON object,
         // directly link them here.
-        if (wave.ships[i].weapon.payload && wave.ships[i].weapon.payload.type.sprite) {
-          manifestCopy.weapon.payload.type.sprite = wave.ships[i].weapon.payload.type.sprite;
+        if (projectile.sprite) {
+          manifestCopy.weapon.payload.type.sprite = projectile.sprite;
         }
-        if (wave.ships[i].weapon.payload && wave.ships[i].weapon.payload.type.image) {
-          manifestCopy.weapon.payload.type.image = wave.ships[i].weapon.payload.type.image;
+        if (projectile.image) {
+          manifestCopy.weapon.payload.type.image = projectile.image;
+        }
+        if (projectile.update) {
+          manifestCopy.weapon.payload.type.update = projectile.update;
+        }
+        if (projectile.onHit) {
+          manifestCopy.weapon.payload.type.onHit = projectile.onHit;
+        }
+        if (projectile.draw) {
+          manifestCopy.weapon.payload.type.draw = projectile.draw;
+        }
+        if (projectile.init) {
+          manifestCopy.weapon.payload.type.init = projectile.init;
         }
       } else {
         // weapon is an array, copy over everything
@@ -541,8 +555,7 @@ class SceneManager {
           manifestCopy.weapon[j] = Object.assign({}, wave.ships[i].weapon[j]);
         }
       }
-    }
-
+    
       // The ship constructor **should** copy data; try without Object.assign() here
       // let ship = new Ship(this.game, Object.assign({}, manifestCopy));
       const ship = new Ship(this.game, manifestCopy);
