@@ -3430,8 +3430,8 @@ function loadTemplates() {
       },
     },
     rotation: {
-      //angle: 10,
-      //frequency: 1,
+      angle: 5,
+      frequency: 2,
       //speed: .1,
     },
     firing: {
