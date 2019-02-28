@@ -322,7 +322,13 @@ class InvertedControls extends PowerUp {
 
 
 // From the collection of implemented powerups, retrieves and return a random one
-function getRandomPowerUp(weapon) {
+function getRandomPowerUp(enemyDropItems) {
+    
+  if (enemyDropItems) { // If defined we drop a powerUp defined in the enemies manifest
+
+  } else { // We generate a random powerUp
+
+  }
   const POWERUPS  = [new InvertedControls(100), new Shield(100), new ExtraLife(100), new RapidFire(100)];
   // const POWERUPS = [];
 
