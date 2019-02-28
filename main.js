@@ -329,13 +329,13 @@ class NukesAndOrigami extends GameEngine {
     let count = 0;
     spawn(this);
 
-    // override onEnemyDestruction() to respawn scene
-    // this.onEnemyDestruction = function () {
-    //   count--;
-    //   if (count === 0) {
-    //     spawn(this);
-    //   }
-    // };
+    //override onEnemyDestruction() to respawn scene
+    this.onEnemyDestruction = function () {
+      count--;
+      if (count === 0) {
+        spawn(this);
+      }
+    };
 
     // introduce test player
     this.player = new Plane(this, ship.jaredTestPlane);
@@ -343,24 +343,24 @@ class NukesAndOrigami extends GameEngine {
 
     // introduce test enemies
     function spawn(that) {
-      count = 3;
+      count = 1;
 
       ship.testDove.config.origin = {
         x: 200,
         y: -50,
       };
-      that.addEntity(new Ship(that, ship.testDove));
-      ship.testDove.config.origin = {
-        x: 500,
-        y: -50,
-      };
-      that.addEntity(new Ship(that, ship.testDove));
-      ship.testDove.config.origin = {
-        x: 800,
-        y: -50,
-      };
-      ship.testDove.config.snapLine = 380;
-      that.addEntity(new Ship(that, ship.testDove));
+      that.addEntity(new Ship(that, ship.jaredTestDove));
+      // ship.testDove.config.origin = {
+      //   x: 500,
+      //   y: -50,
+      // };
+      // that.addEntity(new Ship(that, ship.testDove));
+      // ship.testDove.config.origin = {
+      //   x: 800,
+      //   y: -50,
+      // };
+      // ship.testDove.config.snapLine = 380;
+      // that.addEntity(new Ship(that, ship.testDove));
     }
   } // end test scene
 }
@@ -382,8 +382,8 @@ AM.downloadAll(() => {
   //game.spawnPlayer();
 
   // view test stage
-  //game.testScene();
-  game.sceneManager.scenes.push(scene.jaredTestScene);
+  game.testScene();
+  //game.sceneManager.scenes.push(scene.jaredTestScene);
 
   // run completed levels
   //initIntroMessage(game);
