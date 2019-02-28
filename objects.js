@@ -56,6 +56,39 @@ function loadTemplates() {
     },
   };
 
+  /**
+   * Different homing behavior for enemy to player engagement.
+   * Travel a minimum distance and then attempt to lock player. The missle can only see
+   * some max distance. It will lock onto the player's position a single time, alter
+   * its heading, and then continue along a direct path.
+   */
+  projectile.singleLockHoming = {
+    radius: 3,
+
+    local: {
+      initialDistance: 150, // distance before activating
+      maxRange: 600, // max distance to spot player
+      totalDistance: 0,
+      isLocked: false,
+    },
+
+    update() {
+      // update angle if projectile is beyond the limit
+      if (!this.local.isLocked && this.local.totalDistance > this.local.initialDistance) {
+        const target = this.game.getPlayerLocation(this.current);
+        if (target.radius < this.local.maxRange) {
+          this.current.angle = target.angle;
+          this.local.isLocked = true;
+        }
+      }
+
+      // update r
+      this.current.velocity.radial += this.current.acceleration.radial * this.current.elapsedTime;
+      this.current.r = this.current.velocity.radial * this.current.elapsedTime;
+      this.local.totalDistance += this.current.r;
+    },
+  };
+
   projectile.homingCrane = {
     radius: 3,
     sprite: sprite.miniCrane.default,
@@ -3384,7 +3417,7 @@ function loadTemplates() {
    **                                                                                       **/
   ring.lineTest = {
     payload: {
-      type: projectile.microBullet,
+      type: projectile.singleLockHoming,
       velocity: {
         radial: 450,
         angular: 0,
@@ -3403,16 +3436,16 @@ function loadTemplates() {
       //pattern: pattern.simple,
       radius: 32,
       angle: 90,
-      width: 100,
-      count: 6,
+      spread: 100,
+      count: 1,
       loadTime: 0,
-      cooldownTime: 0.02,
+      cooldownTime: 0.1,
       rapidReload: true,
       targetPlayer: false,
       viewTurret: true,
       pulse: {
         duration: 0.5,
-        delay: 1.5,
+        delay: 2.5,
       },
     },
   };
@@ -3427,7 +3460,7 @@ function loadTemplates() {
       snapLineSpeed: 400,
       snapLineWait: 1,
       origin: {
-        x: 500, // omit x to get random position
+        x: 100, // omit x to get random position
         y: -50,
       },
       weaponsOnEntrance: false,
@@ -3472,7 +3505,7 @@ function loadTemplates() {
 
   ring.jaredPlayerRing = {
     payload: {
-      type: projectile.paperBall,
+      type: projectile.homingOnEnemy,
       speed: 500,
       rotate: true,
     },
@@ -3508,7 +3541,7 @@ function loadTemplates() {
         numOfEnemies: 1,
         ships: new Array(1).fill(ship.jaredTestDove),
         initialXPoints: [ // omit to evenly space enemies.
-          1024/2
+          200
         ],
         waitUntilEnemiesGone: true,
       },
