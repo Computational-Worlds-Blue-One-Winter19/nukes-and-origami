@@ -21,10 +21,12 @@ class Editor {
               this.game.resume();
             },
         );
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log("Initing all collapse");
             var elems = document.querySelectorAll('.dropdown-trigger');
+            const options = {};
             var instances = M.Dropdown.init(elems, options);
-          });
+        });
 
     }
 }
