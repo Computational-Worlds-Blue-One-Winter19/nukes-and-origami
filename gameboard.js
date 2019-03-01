@@ -257,8 +257,8 @@ function initIntroMessage(game) {
       container.style.display = 'none';
       const editor = document.getElementById('editor');
       editor.style.display = 'block';
-      const fps = document.getElementById('fps')
-      fps.style.display = 'none';
+      // const fps = document.getElementById('fps')
+      // fps.style.display = 'none';
       //game.pause();
       const levelEditor = new Editor(game);
     },

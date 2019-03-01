@@ -1,9 +1,12 @@
 class Editor {
     constructor(game)   {
-        this.game = game;
+        this.originalGame = game;
+        this.game = new NukesAndOrigami();
         this.previewGame = new Preview();
         this.ctx = game.ctx;
-        this.game.editorPause();
+        this.game.init(this.ctx);
+        this.game.start();
+        this.originalGame.editorPause();
         this.ctx.clearRect(0, 0, 2000, 2000);    
         this.init();
     }
@@ -23,7 +26,7 @@ class Editor {
               editor.style.display = 'none';
               const fps = document.getElementById('fps')
               fps.style.display = 'initial';
-              this.game.resume();
+              this.originalGame.resume();
             },
         );
         // var elems = document.querySelectorAll('.dropdown-trigger');
@@ -43,18 +46,19 @@ class Editor {
                 // add.sprite.scale -= 0.2;
                 add.current.x = 100;
                 add.current.y = 0;
-                if(this.instances[1].el.value != 'None')    {
-                    add.initializeWeapon(eval(this.instances[1].el.value));
+                if(this.instances[2].el.value != 'None')    {
+                    add.initializeWeapon(eval(this.instances[2].el.value));
                 }
                 this.previewGame.addEntity(add);
+                this.game.sceneManager.loadBackground(eval(this.instances[0].el.value));
                 //this.previewGame.addEntity(getEnemySelection());
                 // console.log(val.getSelectedValues());
             },
         );
     }
 
-    getEnemySelection() {
-        switch(this.instances[0].el.value)  {
+    getEnemySelection() { //TODO: REMOVE ME + REFACTOR HTML AND USE eval() INSTEAD!!
+        switch(this.instances[1].el.value)  {
             case 'Bat':
                 return ship.bat;
             case 'Bird':

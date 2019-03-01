@@ -30,6 +30,13 @@ body {
     display: flex;
 }
 
+.bg-select {
+    position: relative;
+    margin-left: 15px;
+    margin-top: 5px;
+    display: flex;
+}
+
 #preview {
     margin-left: 400px;
     margin-top: -150px;

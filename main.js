@@ -390,7 +390,7 @@ AM.downloadAll(() => {
 
   // run first prototype level
   //game.spawnEnemies();
-
+  console.log("called");
   canvas.focus();
   game.sceneManager.loadBackground(background.beach, 1);
 });
