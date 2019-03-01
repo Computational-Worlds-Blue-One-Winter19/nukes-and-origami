@@ -13,6 +13,7 @@
   .one .button {
     width: 122px;
     padding: 6px;
+    box-sizing: initial;
     /* This margin is so there is space between the buttons */
     margin-bottom: 25px;
     height: 50px;

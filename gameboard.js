@@ -249,6 +249,20 @@ function initIntroMessage(game) {
     'click',
     () => { startGame(game); },
   );
+  addEvent(
+    document.getElementById('other-button'),
+    'click',
+    () => {
+      const container = document.getElementById('scoreboard');
+      container.style.display = 'none';
+      const editor = document.getElementById('editor');
+      editor.style.display = 'block';
+      const fps = document.getElementById('fps')
+      fps.style.display = 'none';
+      //game.pause();
+      const levelEditor = new Editor(game);
+    },
+  );
 }
 
 // Inventory related functions

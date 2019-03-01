@@ -2,6 +2,20 @@ body {
     margin: 0px;
     display: flex;
 }
+/* Editor styles */
+.editor {
+    display: none;
+}
+
+.topContainer {
+    display: flex;
+    flex-direction: row;
+}
+
+#goBack {
+    margin-left: 15px;
+    margin-top: 15px;
+}
 
 .overlay {
     background-color: transparent;
@@ -18,7 +32,7 @@ body {
 h1 {
     font-size: 4em;
     font-family: 'VT323', monospace;
-    margin: 0px 0px 15px;
+    margin: 0px 0px 15px !important;
 }
 
 h2 {

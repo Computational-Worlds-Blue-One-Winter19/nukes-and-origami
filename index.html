@@ -5,6 +5,7 @@
     <title>Game Project Shell</title>
     <link rel="stylesheet" href="./index.css">
     <link rel="stylesheet" href="./button.css">
+    <link rel="stylesheet" href="./materialize.min.css">
     <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
     <script type="text/javascript" src="./lodash.js"></script>
@@ -20,10 +21,12 @@
     <script type="text/javascript" src="./objects.js"></script>
     <script type="text/javascript" src="./ship.js"></script>
     <script type="text/javascript" src="./main.js"></script>
+    <script type="text/javascript" src="./editor.js"></script>
+    <script type="text/javascript" src="./materialize.min.js"></script>
 </head>
 <body>
     <canvas id="gameWorld" tabindex="1" width="1024" height="768" style="background: lightskyblue"></canvas>
-    <div class="scoreBoard">
+    <div class="scoreBoard" id="scoreboard">
         <h1>Nukes and Origami</h1>
         <div class="lives">
             <h2>Lives: </h2>
@@ -137,7 +140,7 @@
                    <div class="ring four"></div>
                 </div>
                 <div class="button" id="other-button">
-                    Start Game
+                    LevelEditor
                     <div class="ring one"></div>
                     <div class="ring two"></div>
                     <div class="ring three"></div>
@@ -146,6 +149,14 @@
              </div>
             </div>
         </div>
+    </div>
+    <div class="editor" id="editor">
+        <div class="topContainer">
+            <h1>Level Editor</h1>
+
+            <a class="waves-effect waves-light btn" id="goBack">Return to Main Menu</a>
+        </div>
+
     </div>
 </body>
 </html>

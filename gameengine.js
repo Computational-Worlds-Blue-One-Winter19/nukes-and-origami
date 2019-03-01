@@ -77,6 +77,7 @@ class GameEngine {
     this.surfaceHeight = this.ctx.canvas.height;
     this.startInput();
 
+    this.stats.domElement.setAttribute('id', 'fps');
     this.timer = new Timer();
     document.body.appendChild(this.stats.domElement);
   }
@@ -174,6 +175,16 @@ class GameEngine {
       this.isPaused = true;
       showMessage('Paused', 'Press P to Resume Game');
     }
+  }
+
+  editorPause() {
+    this.isPaused = true;
+  }
+
+  resume()  {
+    this.isPaused = false;
+    this.click = null;
+    this.mouse = null;
   }
 
   /**
