@@ -110,9 +110,15 @@ class Sprite {
  *     rotationWait: time to wait before next rotation
  *     rotationAlternate: true to reverse direction on each stop
  *
- * PowerUp (optional) will increase size of weapons array at specified interval.
- *     powerStepMult: on each step increase turretCount by this factor
- *     powerStepTime: the amount of time to elapse before each step
+ * DropItems (optional) [PowerUp] Drop items can be specifies in the manifest of an enemy ship that will be dropped,
+ * when the enemy is destroyed. An array of powerup(s) can be provided with a predetermined drop rate or the
+ * powerUps default dropRate will be used
+ *
+ * Ex:
+ * [new ExtraLife(100)] // Will only drop an extra life with a dropRate of 100%
+ * [new ExtraLife(50), new ChainGun(100)] // A powerUp item will be randomly chosen and then using it's predetermined
+ *  drop rate of 50 and 100 for the ExtraLife and Chaingun respectively the drop item will be dropped.
+ *
  *
  * Parameters:
  *     hitValue: value that the user's score will increase by when the ship is destoryed.
@@ -155,6 +161,7 @@ class Ship extends Entity {
     this.lastFired = 0;
     this.timeSinceHit = 0;
     this.health = manifest.config.health;
+    this.dropItems = manifest.config.dropItems;
 
     //A slave is the "slave" to another ship. The other ship is the master
     //and any hits the slave takes will be inflicted on the master.
@@ -825,7 +832,7 @@ class Weapon {
     if (this.owner.game.keysDown.KeyA && this.inventory[0] && this.owner.game.timer.gameTime - this.lastTimeAPressed >= 1) {
         // Update the time for the last time the A key was pressed
         this.lastTimeAPressed = this.owner.game.timer.gameTime;
-        
+
         // Get the first item in the inventory
         const weaponActivation = this.inventory.shift();
         weaponActivation();
@@ -841,11 +848,11 @@ class Weapon {
         const ready = this.slot[i].ring.status.isReady
         if (ready) {
           this.slot[i].ring.fire();
-          
+
           // changed to single object construction. if you fire two slots it gives a little
           // overlap maybe that is good? it add's a little emphasis. if not we can only play on slot[0]
           this.fireSound.play();
-          
+
           // this works, but it shorts the cooldown when we instantly swap back to primary,
           // and on the next update it is ready to fire. maybe use a counter to allow one full cycle?
           if(this.hasNuke)  {
@@ -1193,7 +1200,7 @@ class Ring {
     if (!this.status.isReady) {
       return;
     }
-    
+
     if (this.config.pattern && --this.status.round > -1) {
       this.fireLine(this.status.round);
       this.status.isReady = false;

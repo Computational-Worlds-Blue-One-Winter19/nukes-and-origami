@@ -4006,7 +4006,7 @@ function loadTemplates() {
             config: {
               initialDirection: 'west',
               snapLine: 374,
-              waitOffScreen: 1
+              waitOffScreen: 1,
             },
             weapon: {
               payload: {
@@ -4018,7 +4018,7 @@ function loadTemplates() {
             config: {
               initialDirection: 'west',
               snapLine: 648,
-              waitOffScreen: 2
+              waitOffScreen: 2,
             },
             weapon: {
               payload: {
@@ -4030,7 +4030,7 @@ function loadTemplates() {
             config: {
               initialDirection: 'west',
               snapLine: 922,
-              waitOffScreen: 3
+              waitOffScreen: 3,
             },
             weapon: {
               payload: {
