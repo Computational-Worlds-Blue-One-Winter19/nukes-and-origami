@@ -30,6 +30,10 @@ body {
     display: flex;
 }
 
+.editorLabel {
+    margin-left: 5px;
+}
+
 .bg-select {
     position: relative;
     margin-left: 15px;
@@ -56,6 +60,13 @@ body {
     position: absolute;
     display: flex;
     margin-top: -55px;
+}
+
+.range-field   {
+    position: relative;
+    width: 250px;
+    margin-top: -20px;
+    margin-left: 5px;
 }
 
 .timelineElement {

@@ -10,6 +10,8 @@ class Editor {
         this.ctx.clearRect(0, 0, 2000, 2000);    
         this.init();
         this.myScenes = [];
+        this.myScenes.push(new Scene());
+        this.currentScene = 0;
     }
 
     init()  {
@@ -28,6 +30,8 @@ class Editor {
               editor.style.display = 'none';
               const fps = document.getElementById('fps')
               fps.style.display = 'initial';
+              this.game = null;
+              this.previewGame = null;
               this.originalGame.resume();
             },
         );
@@ -93,6 +97,71 @@ class Editor {
         }
     }
 
+}
+
+class Scene {
+    constructor()   {
+        this.choreography = [];
+        this.enemies = [];
+        this.initialXPoints = []
+        this.paths = []; 
+        this.enemyWeaponOveride = [];
+    }
+
+    addEnemy(enemy, initial, path, overide) {
+        this.enemies.push(enemy);
+        this.paths.push(path);
+        if(override)    {
+            this.enemyWeaponOveride.push(overide);
+        } else {
+            this.enemyWeaponOveride.push('None');
+        }
+        if(initial) {
+            this.initialXPoints.push(initial);
+        }
+    }
+
+    getJSON()   {
+        let obj = {
+            waves: [{
+                    choreography: [
+                        {
+                        //intro choreography. Doesn't always exist.
+                        }
+                    ],
+                },
+                {
+                    choreography: [
+                        {
+                            id: 'spawnEnemies' //should always be here
+                        },
+                        {
+                            //enemy choreography. Should always exist.
+                        }
+                    ],
+                //     numOfEnemies:
+                //     ships: []
+                //     paths: []
+                //     shipManifestOverride: [{
+                //             config: {
+
+                //             },
+                //             weapon: {
+                //                 payload: {
+
+                //                 }
+                //             }
+                //         },
+                //         {...all configs}
+                //     ],
+                //     waitUntilEnemiesGone:
+                // },
+            // ]
+                },
+            ]
+        };
+        return obj;
+    }
 }
 
 class Preview extends GameEngine    {

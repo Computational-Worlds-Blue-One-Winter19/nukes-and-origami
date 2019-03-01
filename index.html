@@ -22,7 +22,7 @@
     <script type="text/javascript" src="./ship.js"></script>
     <script type="text/javascript" src="./main.js"></script>
     <script type="text/javascript" src="./editor.js"></script>
-    <script type="text/javascript" src="./materialize.min.js"></script>
+    <!-- <script type="text/javascript" src="./materialize.min.js"></script> -->
 </head>
 <body>
     <canvas id="gameWorld" tabindex="1" width="1024" height="768" style="background: lightskyblue"></canvas>
@@ -158,6 +158,13 @@
         </div>
         <div class="sideContainer">
                 <div class="firstRow">
+                    <div class="switch">
+                            <label>
+                                <input type="checkbox">
+                                <span class="lever"></span>
+                                Load new background? (Should be done for Scene 1!)
+                            </label>
+                    </div>
                     <div class="bg-select">
                             <select> 
                                 <option value="background.paper">Paper</option>
@@ -167,7 +174,7 @@
                                 <option value="background.pattern">LSD</option>
                                 <option value="background.white">White</option>
                             </select>
-                            <label>Load Background</label>
+                            <!-- <label>Load Background (This should be done for your first scene at minimum)</label> -->
                     </div>
                     <div class="input-field col s12">
                             <select> 
@@ -226,6 +233,43 @@
                                 </select>
                                 <label>Choose A Weapon (Preview Them!)</label>
                     </div>
+                    <div class="input-field col s12">
+                            <select> 
+                                <option value="path.doNothing">Do Nothing</option>
+                                <option value="path.strafeRight">Strafe Right</option>
+                                <option value="path.strafeLeft">Strafe Left</option>
+                                <option value="path.cornerRight">Corner Right</option>
+                                <option value="path.cornerLeft">Corner Left</option>
+                                <option value="path.straightDown">Straight Down</option>
+                                <option value="path.backAndForth">Back and Forth</option>
+                                <option value="path.sawtoothRightStop">Sawtooth Right Stop</option>
+                                <option value="path.sawtoothLeftStop">Sawtooth Left Stop</option>
+                                <option value="path.rightUTurn">Right U Turn</option>
+                                <option value="path.leftUTurn">Left U Turn</option>
+                                <option value="path.leftSawToothUTurn">Left Sawtooth U Turn</option>
+                                <option value="path.rightSawToothUTurn">Right Sawtooth U Turn</option>
+                                <option value="path.northEast">North East</option>
+                                <option value="path.northWest">North West</option>
+                                <option value="path.downSlow">Down Slow</option>
+
+                            </select>
+                            <label>Choose Enemy Path</label>
+                    </div>
+                    <div class="switch">
+                            <label>
+                                <input type="checkbox">
+                                <span class="lever"></span>
+                                Custom starting X Value? (No = evenly space enemies)
+                            </label>
+                    </div>
+                    <form action="#">
+                            <label class="editorLabel">Enemy Starting X Value:</label>
+                            <p class="range-field">
+                              <input type="range" id="test5" min="0" max="768" />
+                            </p>
+                            
+                    </form>
+                    <a class="waves-effect waves-light btn">Add Enemy to Current Scene</a>
                     <canvas id="preview" width="200" height="400" style="background: lightskyblue"></canvas>
                 </div>
                
@@ -241,4 +285,5 @@
             </div>
     </div>
 </body>
+<script type="text/javascript" src="./materialize.min.js"></script> <!-- This needs to be down here for some reason... -->
 </html>
