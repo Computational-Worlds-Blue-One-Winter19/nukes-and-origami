@@ -489,59 +489,11 @@ class SceneManager {
     for (let i = 0; i < wave.numOfEnemies; i++) {
       // Make shallow copies to not modify the objects.js defaults
       // If path was overridden, put that in the manifestCopy
-      const manifestCopy = JSON.parse(JSON.stringify(wave.ships[i]));
-      manifestCopy.path = wave.paths ? JSON.parse(JSON.stringify(wave.paths[i])) : 0;
-      Object.assign(manifestCopy.config.sprite, wave.ships[i].config.sprite);
-
+      let manifestCopy = _.cloneDeep(wave.ships[i]);
+      manifestCopy.path = wave.paths ? _.cloneDeep(wave.paths[i]) : 0;
       if (wave.shipManifestOverride) {
-        // do a recursive merge
-        if (wave.shipManifestOverride[i].config) {
-          Object.assign(manifestCopy.config, wave.shipManifestOverride[i].config);
-          if (wave.shipManifestOverride[i].config.sprite) {
-            Object.assign(manifestCopy.config.sprite, wave.shipManifestOverride[i].config.sprite);
-          } else {
-            Object.assign(manifestCopy.config.sprite, wave.ships[i].config.sprite);
-          }
-        }
-        if (wave.shipManifestOverride[i].weapon) {
-          if (wave.shipManifestOverride[i].weapon.firing) {
-            if (!manifestCopy.weapon.firing) {
-              manifestCopy.weapon.firing = {};
-            }
-            Object.assign(manifestCopy.weapon.firing, wave.shipManifestOverride[i].weapon.firing);
-          }
-          if (wave.shipManifestOverride[i].weapon.rotation) {
-            if (!manifestCopy.weapon.rotation) {
-              manifestCopy.weapon.rotation = {};
-            }
-            Object.assign(manifestCopy.weapon.rotation, wave.shipManifestOverride[i].weapon.rotation);
-          }
-          if (wave.shipManifestOverride[i].weapon.payload) {
-            if (!manifestCopy.weapon.payload) {
-              manifestCopy.weapon.payload = {};
-            }
-            Object.assign(manifestCopy.weapon.payload, wave.shipManifestOverride[i].weapon.payload);
-          }
-        }
-
-
-      if (!Array.isArray(wave.ships[i].weapon)) {
-        // sprites/images don't copy over when you parse a stringified JSON object,
-        // directly link them here.
-        if (wave.ships[i].weapon.payload && wave.ships[i].weapon.payload.type.sprite) {
-          manifestCopy.weapon.payload.type.sprite = wave.ships[i].weapon.payload.type.sprite;
-        }
-        if (wave.ships[i].weapon.payload && wave.ships[i].weapon.payload.type.image) {
-          manifestCopy.weapon.payload.type.image = wave.ships[i].weapon.payload.type.image;
-        }
-      } else {
-        // weapon is an array, copy over everything
-        manifestCopy.weapon = new Array(wave.ships[i].weapon.length);
-        for (let j = 0; j < wave.ships[i].weapon.length; j++) {
-          manifestCopy.weapon[j] = Object.assign({}, wave.ships[i].weapon[j]);
-        }
+        _.merge(manifestCopy, wave.shipManifestOverride[i]);
       }
-    }
 
       // The ship constructor **should** copy data; try without Object.assign() here
       // let ship = new Ship(this.game, Object.assign({}, manifestCopy));
