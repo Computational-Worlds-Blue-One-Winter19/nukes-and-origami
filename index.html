@@ -156,27 +156,77 @@
             <a class="waves-effect waves-light btn" id="goBack">Return to Main Menu</a>
         </div>
         <div class="sideContainer">
-                <a class='dropdown-trigger btn' href='#' data-target='dropdown1'>Drop Me!</a>
-
-                <!-- Dropdown Structure -->
-                <ul id='dropdown1' class='dropdown-content'>
-                  <li><a href="#!">one</a></li>
-                  <li><a href="#!">two</a></li>
-                  <li class="divider" tabindex="-1"></li>
-                  <li><a href="#!">three</a></li>
-                  <li><a href="#!"><i class="material-icons">view_module</i>four</a></li>
-                  <li><a href="#!"><i class="material-icons">cloud</i>five</a></li>
-                </ul>
+                <div class="firstRow">
+                    <div class="input-field col s12">
+                            <select> 
+                                <option value="Bat">Bat</option>
+                                <option value="Bird">Bird</option>
+                                <option value="Crane">Crane</option>
+                                <option value="Dove">Dove</option>
+                                <option value="Eagle">Eagle Boss</option>
+                                <option value="Goose">Goose</option>
+                                <option value="Hummer">Hummer</option>
+                                <option value="Owl">Owl</option>
+                                <option value="Pigeon">Pigeon</option>
+                                <option value="Swallow">Swallow</option>
+                            </select>
+                            <label>Choose An Enemy</label>
+                    </div>
+                    <div class="weapon-select">
+                            <select> 
+                                    <option value="None">Default</option>
+                                    <option value="ring.fourFixedSpeedCircle">4 Fixed Speed Circle</option>
+                                    <option value="ring.spreadBeta1">Burst Shot (Tracks)</option>
+                                    <option value="ring.jaredAlpha1">Left Right Sweep</option>
+                                    <option value="ring.jaredTest1">MultiShot (Tracks)</option>
+                                    <option value="ring.jaredTest3">Wiggly MultiShot</option>
+                                    <option value="ring.patternTest">V Pattern</option>
+                                    <option value="ring.linearTest">Slowly Shoot</option>
+                                    <option value="ring.spiralAlpha1">Spiral</option>
+                                    <option value="ring.spiralAlphaReverse">Reverse Spiral</option>
+                                    <option value="ring.spiralAlpha3">Outward Circle Shot</option>
+                                    <option value="ring.spiralAlpha4">Orbiting Shoot Outward</option>
+                                    <option value="ring.fixedSpeed">4 Prong Spiral Left</option>
+                                    <option value="ring.fixedSpeedReverse">4 Prong Spiral Right</option>
+                                    <option value="ring.fourFixedSpeedCircle">4 Prong Slow Spiral Left</option>
+                                    <option value="ring.spreadBeta2">MultiShot</option>
+                                    <option value="ring.spreadBeta4">4 Spread (Initial Tracking)</option>
+                                    <option value="ring.laserGapDown">Laggy Laser Down</option>
+                                    <option value="ring.laserGapRight">Laggy Laser Right</option>
+                                    <option value="ring.laserGapLeft">Laggy Laser Left</option>
+                                    <option value="ring.doubleStraightDownPulse">4 Spread Burst</option>
+                                    <option value="ring.singleTargetPlayer">Slow Targeting</option>
+                                    <option value="ring.slowLaserTargetPlayer">Slow Targeting Laser</option>
+                                    <option value="ring.jaredBeta1">Slow Rotation</option>
+                                    <option value="ring.trackingTest1">Quick Targeting</option>
+                                    <option value="ring.slowPulseSpiral">Orbiting Spiral</option>
+                                    <option value="ring.uniLinear">Constant Shot</option>
+                                    <option value="ring.uniLinearLockOn">Constant Shot (Initial Tracking)</option>
+                                    <option value="ring.uniLinearAccel">Constant Faster Shot</option>
+                                    <option value="ring.uniLinearDecel">Constant Slower U-Turn Shot</option>
+                                    <option value="ring.uniLinearAccelAiming">Constant Shot (Tracks)</option>
+                                    <option value="ring.uniLinearSpiralLeft">Dense Left Spiral (Hard)</option>
+                                    <option value="ring.uniLinearSpiralRight">Dense Right Spiral (Hard)</option>
+                                    <option value="ring.uniLinearSpiralRightTurn">Chaos</option>
+                                    <option value="ring.uniFiveWay">MultiShot v2</option>
+                                    <option value="ring.uniTwentyWayTurn">Slow Big Spiral</option>
+                                    <option value="ring.uniSpiralFourWay180">Dense 4 Prong Rotating Spiral</option>
+                                </select>
+                                <label>Choose A Weapon (Preview Them!)</label>
+                    </div>
+                    <canvas id="preview" width="200" height="400" style="background: lightskyblue"></canvas>
+                </div>
+               
         </div>
     </div>
     <script type="text/javascript" src="./materialize.min.js"></script>
-    <script>
+    <!-- <script>
     document.addEventListener('DOMContentLoaded', function () {
       console.log("Initing all collapse");
       var elems = document.querySelectorAll('.dropdown-trigger');
       const options = {};
       var instances = M.Dropdown.init(elems, options);
   });
-    </script>
+    </script> -->
 </body>
 </html>

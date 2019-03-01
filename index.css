@@ -17,6 +17,25 @@ body {
     margin-top: 15px;
 }
 
+.input-field {
+    position: relative;
+    margin-left: 15px;
+    display: inline-flex;
+}
+
+.weapon-select {
+    position: relative;
+    margin-left: 15px;
+    margin-top: 5px;
+    display: flex;
+}
+
+#preview {
+    margin-left: 400px;
+    margin-top: -150px;
+    display: flex;
+}
+
 .overlay {
     background-color: transparent;
     position: absolute;

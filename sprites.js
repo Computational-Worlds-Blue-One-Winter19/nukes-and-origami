@@ -345,6 +345,23 @@ function loadSpriteSheets() {
           loop: true
         }
       }
+    },
+    preview: {
+      default: {
+        image: AM.getAsset('./img/eagle.png'),
+        dimension:  {
+          originX: 0,
+          originY: 0,
+          frameWidth: 1000,
+          frameHeight: 500,
+          frameCount: 8,
+          timePerFrame: 0.2,
+          scale: 0.3,
+          flip: false,
+          loop: true
+        }
+      },
+      hit: {dimension:{}}
     }
   }
 

@@ -1793,6 +1793,16 @@ function loadTemplates() {
     weapon: ring.spiralAlpha4Circle,
   }
 
+  ship.previewEagle = {
+    config: {
+      health: 150,
+      hitValue: 5,
+      radius: 150,
+      sprite: sprite.eagleBoss.preview,
+    },
+    weapon: ring.spiralAlpha4Circle,
+  }
+
   // ship.eagleSlave = {
   //   config: {
   //     health: 100,
