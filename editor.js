@@ -9,9 +9,11 @@ class Editor {
         this.originalGame.editorPause();
         this.ctx.clearRect(0, 0, 2000, 2000);    
         this.init();
+        this.myScenes = [];
     }
 
     init()  {
+
         this.previewCanvas = document.getElementById('preview');
         this.preview = this.previewCanvas.getContext('2d');
         this.previewGame.init(this.preview);
@@ -53,8 +55,15 @@ class Editor {
                 this.game.sceneManager.loadBackground(eval(this.instances[0].el.value));
                 //this.previewGame.addEntity(getEnemySelection());
                 // console.log(val.getSelectedValues());
+                var div = document.createElement('div');
+                div.setAttribute('class', 'timelineElement');
+                div.style.marginLeft = '105px';
+                // div.style.marginTop = '-100px';
+                document.getElementById('timelineBorder').appendChild(div);
             },
         );
+        document.querySelectorAll('#fps').forEach(e => e.style.display = 'none');
+        //console.log(fps);
     }
 
     getEnemySelection() { //TODO: REMOVE ME + REFACTOR HTML AND USE eval() INSTEAD!!

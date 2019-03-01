@@ -39,8 +39,32 @@ body {
 
 #preview {
     margin-left: 400px;
-    margin-top: -150px;
+    margin-top: -200px;
     display: flex;
+}
+
+#timelineBorder {
+    width:1600px;
+    height:100px;
+    position: absolute;
+    margin-top: 815px;
+    border: solid black 2px;
+    margin-left: 5px;
+}
+
+#timelineHeader {
+    position: absolute;
+    display: flex;
+    margin-top: -55px;
+}
+
+.timelineElement {
+    width: 100px;
+    height: 90px;
+    position: absolute;
+    border: solid black 2px;
+    margin-top: 3px;
+    margin-left: 3px;
 }
 
 .overlay {
