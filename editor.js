@@ -5,6 +5,8 @@ class Editor {
         this.game.editorPause();
         this.ctx.clearRect(0, 0, 2000, 2000);    
         this.init();
+
+        
     }
 
     init()  {
@@ -21,12 +23,6 @@ class Editor {
               this.game.resume();
             },
         );
-        document.addEventListener('DOMContentLoaded', function () {
-            console.log("Initing all collapse");
-            var elems = document.querySelectorAll('.dropdown-trigger');
-            const options = {};
-            var instances = M.Dropdown.init(elems, options);
-        });
 
     }
 }
