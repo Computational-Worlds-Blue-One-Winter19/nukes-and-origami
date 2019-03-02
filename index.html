@@ -166,7 +166,7 @@
                             </label>
                     </div>
                     <div class="bg-select">
-                            <select> 
+                            <select id="chooseBackground"> 
                                 <option value="background.paper">Paper</option>
                                 <option value="background.beach">Beach</option>
                                 <option value="background.desert">Desert</option>
@@ -177,22 +177,22 @@
                             <!-- <label>Load Background (This should be done for your first scene at minimum)</label> -->
                     </div>
                     <div class="input-field col s12">
-                            <select> 
-                                <option value="Bat">Bat</option>
-                                <option value="Bird">Bird</option>
-                                <option value="Crane">Crane</option>
-                                <option value="Dove">Dove</option>
-                                <option value="Eagle">Eagle Boss</option>
-                                <option value="Goose">Goose</option>
-                                <option value="Hummer">Hummer</option>
-                                <option value="Owl">Owl</option>
-                                <option value="Pigeon">Pigeon</option>
-                                <option value="Swallow">Swallow</option>
+                            <select id="chooseEnemy"> 
+                                <option value="ship.bat">Bat</option>
+                                <option value="ship.bird">Bird</option>
+                                <option value="ship.crane">Crane</option>
+                                <option value="ship.dove">Dove</option>
+                                <option value="ship.previewEagle">Eagle Boss</option>
+                                <option value="ship.goose">Goose</option>
+                                <option value="ship.hummer">Hummer</option>
+                                <option value="ship.owl">Owl</option>
+                                <option value="ship.pigeon">Pigeon</option>
+                                <option value="ship.swallow">Swallow</option>
                             </select>
                             <label>Choose An Enemy</label>
                     </div>
                     <div class="weapon-select">
-                            <select> 
+                            <select id="chooseWeapon"> 
                                     <option value="None">Default</option>
                                     <option value="ring.fourFixedSpeedCircle">4 Fixed Speed Circle</option>
                                     <option value="ring.spreadBeta1">Burst Shot (Tracks)</option>
@@ -234,7 +234,7 @@
                                 <label>Choose A Weapon (Preview Them!)</label>
                     </div>
                     <div class="input-field col s12">
-                            <select> 
+                            <select id="choosePath"> 
                                 <option value="path.doNothing">Do Nothing</option>
                                 <option value="path.strafeRight">Strafe Right</option>
                                 <option value="path.strafeLeft">Strafe Left</option>
@@ -251,7 +251,6 @@
                                 <option value="path.northEast">North East</option>
                                 <option value="path.northWest">North West</option>
                                 <option value="path.downSlow">Down Slow</option>
-
                             </select>
                             <label>Choose Enemy Path</label>
                     </div>
@@ -274,15 +273,14 @@
                 </div>
                
         </div>
+        
     </div>
+
 </body>
 <body> <!-- Timeline -->
-    
     <div id="timelineBorder">
             <h2 id="timelineHeader">Level Timeline:</h2>
-            <div class="timelineElement">
-
-            </div>
+            <div class="timelineElement"></div>
     </div>
 </body>
 <script type="text/javascript" src="./materialize.min.js"></script> <!-- This needs to be down here for some reason... -->
