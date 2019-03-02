@@ -158,119 +158,174 @@
         </div>
         <div class="sideContainer">
                 <div class="firstRow">
-                    <div class="switch">
-                            <label>
-                                <input type="checkbox">
-                                <span class="lever"></span>
-                                Load new background? (Should be done for Scene 1!)
-                            </label>
-                    </div>
-                    <div class="bg-select">
-                            <select id="chooseBackground"> 
-                                <option value="background.paper">Paper</option>
-                                <option value="background.beach">Beach</option>
-                                <option value="background.desert">Desert</option>
-                                <option value="background.trees">Trees</option>
-                                <option value="background.pattern">LSD</option>
-                                <option value="background.white">White</option>
-                            </select>
-                            <!-- <label>Load Background (This should be done for your first scene at minimum)</label> -->
-                    </div>
-                    <div class="input-field col s12">
-                            <select id="chooseEnemy"> 
-                                <option value="ship.bat">Bat</option>
-                                <option value="ship.bird">Bird</option>
-                                <option value="ship.crane">Crane</option>
-                                <option value="ship.dove">Dove</option>
-                                <option value="ship.previewEagle">Eagle Boss</option>
-                                <option value="ship.goose">Goose</option>
-                                <option value="ship.hummer">Hummer</option>
-                                <option value="ship.owl">Owl</option>
-                                <option value="ship.pigeon">Pigeon</option>
-                                <option value="ship.swallow">Swallow</option>
-                            </select>
-                            <label>Choose An Enemy</label>
-                    </div>
-                    <div class="weapon-select">
-                            <select id="chooseWeapon"> 
-                                    <option value="None">Default</option>
-                                    <option value="ring.fourFixedSpeedCircle">4 Fixed Speed Circle</option>
-                                    <option value="ring.spreadBeta1">Burst Shot (Tracks)</option>
-                                    <option value="ring.jaredAlpha1">Left Right Sweep</option>
-                                    <option value="ring.jaredTest1">MultiShot (Tracks)</option>
-                                    <option value="ring.jaredTest3">Wiggly MultiShot</option>
-                                    <option value="ring.patternTest">V Pattern</option>
-                                    <option value="ring.linearTest">Slowly Shoot</option>
-                                    <option value="ring.spiralAlpha1">Spiral</option>
-                                    <option value="ring.spiralAlphaReverse">Reverse Spiral</option>
-                                    <option value="ring.spiralAlpha3">Outward Circle Shot</option>
-                                    <option value="ring.spiralAlpha4">Orbiting Shoot Outward</option>
-                                    <option value="ring.fixedSpeed">4 Prong Spiral Left</option>
-                                    <option value="ring.fixedSpeedReverse">4 Prong Spiral Right</option>
-                                    <option value="ring.fourFixedSpeedCircle">4 Prong Slow Spiral Left</option>
-                                    <option value="ring.spreadBeta2">MultiShot</option>
-                                    <option value="ring.spreadBeta4">4 Spread (Initial Tracking)</option>
-                                    <option value="ring.laserGapDown">Laggy Laser Down</option>
-                                    <option value="ring.laserGapRight">Laggy Laser Right</option>
-                                    <option value="ring.laserGapLeft">Laggy Laser Left</option>
-                                    <option value="ring.doubleStraightDownPulse">4 Spread Burst</option>
-                                    <option value="ring.singleTargetPlayer">Slow Targeting</option>
-                                    <option value="ring.slowLaserTargetPlayer">Slow Targeting Laser</option>
-                                    <option value="ring.jaredBeta1">Slow Rotation</option>
-                                    <option value="ring.trackingTest1">Quick Targeting</option>
-                                    <option value="ring.slowPulseSpiral">Orbiting Spiral</option>
-                                    <option value="ring.uniLinear">Constant Shot</option>
-                                    <option value="ring.uniLinearLockOn">Constant Shot (Initial Tracking)</option>
-                                    <option value="ring.uniLinearAccel">Constant Faster Shot</option>
-                                    <option value="ring.uniLinearDecel">Constant Slower U-Turn Shot</option>
-                                    <option value="ring.uniLinearAccelAiming">Constant Shot (Tracks)</option>
-                                    <option value="ring.uniLinearSpiralLeft">Dense Left Spiral (Hard)</option>
-                                    <option value="ring.uniLinearSpiralRight">Dense Right Spiral (Hard)</option>
-                                    <option value="ring.uniLinearSpiralRightTurn">Chaos</option>
-                                    <option value="ring.uniFiveWay">MultiShot v2</option>
-                                    <option value="ring.uniTwentyWayTurn">Slow Big Spiral</option>
-                                    <option value="ring.uniSpiralFourWay180">Dense 4 Prong Rotating Spiral</option>
-                                </select>
-                                <label>Choose A Weapon (Preview Them!)</label>
-                    </div>
-                    <div class="input-field col s12">
-                            <select id="choosePath"> 
-                                <option value="path.doNothing">Do Nothing</option>
-                                <option value="path.strafeRight">Strafe Right</option>
-                                <option value="path.strafeLeft">Strafe Left</option>
-                                <option value="path.cornerRight">Corner Right</option>
-                                <option value="path.cornerLeft">Corner Left</option>
-                                <option value="path.straightDown">Straight Down</option>
-                                <option value="path.backAndForth">Back and Forth</option>
-                                <option value="path.sawtoothRightStop">Sawtooth Right Stop</option>
-                                <option value="path.sawtoothLeftStop">Sawtooth Left Stop</option>
-                                <option value="path.rightUTurn">Right U Turn</option>
-                                <option value="path.leftUTurn">Left U Turn</option>
-                                <option value="path.leftSawToothUTurn">Left Sawtooth U Turn</option>
-                                <option value="path.rightSawToothUTurn">Right Sawtooth U Turn</option>
-                                <option value="path.northEast">North East</option>
-                                <option value="path.northWest">North West</option>
-                                <option value="path.downSlow">Down Slow</option>
-                            </select>
-                            <label>Choose Enemy Path</label>
-                    </div>
-                    <div class="switch">
-                            <label>
-                                <input type="checkbox">
-                                <span class="lever"></span>
-                                Custom starting X Value? (No = evenly space enemies)
-                            </label>
-                    </div>
-                    <form action="#">
-                            <label class="editorLabel">Enemy Starting X Value:</label>
-                            <p class="range-field">
-                              <input type="range" id="test5" min="0" max="768" />
-                            </p>
-                            
-                    </form>
-                    <a class="waves-effect waves-light btn">Add Enemy to Current Scene</a>
-                    <canvas id="preview" width="200" height="400" style="background: lightskyblue"></canvas>
+                        <ul class="collapsible">
+                                <li>
+                                  <div class="collapsible-header"><i class="material-icons">Introduction</i></div>
+                                  <div class="collapsible-body"><span>
+                                        <div class="switch">
+                                                <label>
+                                                    <input type="checkbox">
+                                                    <span class="lever"></span>
+                                                    Load new background? (Should be done for Scene 1!)
+                                                </label>
+                                        </div>
+                                        <div class="bg-select">
+                                                <select id="chooseBackground"> 
+                                                    <option value="background.paper">Paper</option>
+                                                    <option value="background.beach">Beach</option>
+                                                    <option value="background.desert">Desert</option>
+                                                    <option value="background.trees">Trees</option>
+                                                    <option value="background.pattern">LSD</option>
+                                                    <option value="background.white">White</option>
+                                                </select>
+                                        </div>
+                                        <div class="switch">
+                                                <label>
+                                                    <input type="checkbox">
+                                                    <span class="lever"></span>
+                                                    Warp speed during introduction
+                                                </label>
+                                        </div>
+                                        <div class="row">
+                                                <div class="input-field col s6">
+                                                  <input value="(none)" id="first_name2" type="text" class="validate">
+                                                  <label class="active" for="first_name2">Scene Intro Message</label>
+                                                </div>
+                                              </div>
+                                        <form action="#">
+                                            <label class="editorLabel">Time to wait between each component (ms)</label>
+                                            <p class="range-field">
+                                                <input type="range" id="test5" min="0" max="5000" />
+                                            </p>
+                                        </form>
+                                  </span></div>
+                                </li>
+                                <li>
+                                  <div class="collapsible-header"><i class="material-icons">Enemy</i></div>
+                                  <div class="collapsible-body"><span>
+                                        <div class="input-field col s12">
+                                                <select id="chooseEnemy"> 
+                                                    <option value="ship.bat">Bat</option>
+                                                    <option value="ship.bird">Bird</option>
+                                                    <option value="ship.crane">Crane</option>
+                                                    <option value="ship.dove">Dove</option>
+                                                    <option value="ship.previewEagle">Eagle Boss</option>
+                                                    <option value="ship.goose">Goose</option>
+                                                    <option value="ship.hummer">Hummer</option>
+                                                    <option value="ship.owl">Owl</option>
+                                                    <option value="ship.pigeon">Pigeon</option>
+                                                    <option value="ship.swallow">Swallow</option>
+                                                </select>
+                                                <label>Choose An Enemy</label>
+                                        </div>
+                                        <div class="weapon-select">
+                                                <select id="chooseWeapon"> 
+                                                        <option value="ring.singleTargetPlayer">Default</option>
+                                                        <option value="ring.fourFixedSpeedCircle">4 Fixed Speed Circle</option>
+                                                        <option value="ring.spreadBeta1">Burst Shot (Tracks)</option>
+                                                        <option value="ring.jaredAlpha1">Left Right Sweep</option>
+                                                        <option value="ring.jaredTest1">MultiShot (Tracks)</option>
+                                                        <option value="ring.jaredTest3">Wiggly MultiShot</option>
+                                                        <option value="ring.patternTest">V Pattern</option>
+                                                        <option value="ring.linearTest">Slowly Shoot</option>
+                                                        <option value="ring.spiralAlpha1">Spiral</option>
+                                                        <option value="ring.spiralAlphaReverse">Reverse Spiral</option>
+                                                        <option value="ring.spiralAlpha3">Outward Circle Shot</option>
+                                                        <option value="ring.spiralAlpha4">Orbiting Shoot Outward</option>
+                                                        <option value="ring.fixedSpeed">4 Prong Spiral Left</option>
+                                                        <option value="ring.fixedSpeedReverse">4 Prong Spiral Right</option>
+                                                        <option value="ring.fourFixedSpeedCircle">4 Prong Slow Spiral Left</option>
+                                                        <option value="ring.spreadBeta2">MultiShot</option>
+                                                        <option value="ring.spreadBeta4">4 Spread (Initial Tracking)</option>
+                                                        <option value="ring.laserGapDown">Laggy Laser Down</option>
+                                                        <option value="ring.laserGapRight">Laggy Laser Right</option>
+                                                        <option value="ring.laserGapLeft">Laggy Laser Left</option>
+                                                        <option value="ring.doubleStraightDownPulse">4 Spread Burst</option>
+                                                        <option value="ring.singleTargetPlayer">Slow Targeting</option>
+                                                        <option value="ring.slowLaserTargetPlayer">Slow Targeting Laser</option>
+                                                        <option value="ring.jaredBeta1">Slow Rotation</option>
+                                                        <option value="ring.trackingTest1">Quick Targeting</option>
+                                                        <option value="ring.slowPulseSpiral">Orbiting Spiral</option>
+                                                        <option value="ring.uniLinear">Constant Shot</option>
+                                                        <option value="ring.uniLinearLockOn">Constant Shot (Initial Tracking)</option>
+                                                        <option value="ring.uniLinearAccel">Constant Faster Shot</option>
+                                                        <option value="ring.uniLinearDecel">Constant Slower U-Turn Shot</option>
+                                                        <option value="ring.uniLinearAccelAiming">Constant Shot (Tracks)</option>
+                                                        <option value="ring.uniLinearSpiralLeft">Dense Left Spiral (Hard)</option>
+                                                        <option value="ring.uniLinearSpiralRight">Dense Right Spiral (Hard)</option>
+                                                        <option value="ring.uniLinearSpiralRightTurn">Chaos</option>
+                                                        <option value="ring.uniFiveWay">MultiShot v2</option>
+                                                        <option value="ring.uniTwentyWayTurn">Slow Big Spiral</option>
+                                                        <option value="ring.uniSpiralFourWay180">Dense 4 Prong Rotating Spiral</option>
+                                                    </select>
+                                                    <label>Choose A Weapon (Preview Them!)</label>
+                                        </div>
+                                        <div class="input-field col s12">
+                                                <select id="choosePath"> 
+                                                    <option value="path.doNothing">Do Nothing</option>
+                                                    <option value="path.strafeRight">Strafe Right</option>
+                                                    <option value="path.strafeLeft">Strafe Left</option>
+                                                    <option value="path.cornerRight">Corner Right</option>
+                                                    <option value="path.cornerLeft">Corner Left</option>
+                                                    <option value="path.straightDown">Straight Down</option>
+                                                    <option value="path.backAndForth">Back and Forth</option>
+                                                    <option value="path.sawtoothRightStop">Sawtooth Right Stop</option>
+                                                    <option value="path.sawtoothLeftStop">Sawtooth Left Stop</option>
+                                                    <option value="path.rightUTurn">Right U Turn</option>
+                                                    <option value="path.leftUTurn">Left U Turn</option>
+                                                    <option value="path.leftSawToothUTurn">Left Sawtooth U Turn</option>
+                                                    <option value="path.rightSawToothUTurn">Right Sawtooth U Turn</option>
+                                                    <option value="path.northEast">North East</option>
+                                                    <option value="path.northWest">North West</option>
+                                                    <option value="path.downSlow">Down Slow</option>
+                                                </select>
+                                                <label>Choose Enemy Path</label>
+                                        </div>
+                                        <div class="switch">
+                                                <label>
+                                                    <input type="checkbox" id="customX">
+                                                    <span class="lever"></span>
+                                                    Custom X Coordinate? (No = evenly space enemies)
+                                                </label>
+                                        </div>
+                                        <form action="#">
+                                                <label class="editorLabel">Enemy Starting X Value:</label>
+                                                <p class="range-field">
+                                                  <input type="range" id="xRange" min="0" max="768" />
+                                                </p>
+                                                
+                                        </form>
+                                        <a class="waves-effect waves-light btn" id="addEnemy">Add Enemy to Current Scene</a>
+                                        <canvas id="preview" width="200" height="400" style="background: lightskyblue"></canvas>
+                                  </span></div>
+                                </li>
+                                <li>
+                                  <div class="collapsible-header"><i class="material-icons">whatshot</i></div>
+                                  <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
+                                </li>
+                              </ul>
                 </div>
+               
+                <!-- <ul class="collection with-header" id="enemyList">
+                        <li class="collection-header"><h4>Added Enemies</h4></li>
+                        <li class="collection-item active">Current Enemy<a class="waves-effect waves-light btn">Add Enemy to Current Scene</a></li>
+                      </ul> -->
+                      <table id="currentEnemies">
+                            <tr>
+                             <th>Enemy Type</th>
+                             <th>Weapon</th>
+                             <th>Path</th>
+                             <th>X</th>
+                             <th></th>
+                            </tr>
+                            <!-- <tr>
+                             <td>Bob</td>
+                             <td>Yellow</td>
+                             <td>Nope</td>
+                             <td>Yup</td>
+                             <td><a class="waves-effect waves-light btn">Remove</a></td>
+                            </tr> -->
+                           </table>
                
         </div>
         
@@ -283,5 +338,5 @@
             <div class="timelineElement"></div>
     </div>
 </body>
-<script type="text/javascript" src="./materialize.min.js"></script> <!-- This needs to be down here for some reason... -->
+<script type="text/javascript" src="./materialize.min.js"></script> <!-- This needs to be down here for reasons -->
 </html>

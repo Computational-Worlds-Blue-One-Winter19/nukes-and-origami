@@ -41,9 +41,16 @@ body {
     display: flex;
 }
 
+.switch {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+}
+
+
 #preview {
-    margin-left: 400px;
-    margin-top: -200px;
+    margin-left: 380px;
+    margin-top: -380px;
     display: flex;
 }
 

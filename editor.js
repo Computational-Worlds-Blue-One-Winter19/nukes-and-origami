@@ -8,10 +8,12 @@ class Editor {
         this.game.start();
         this.originalGame.editorPause();
         this.ctx.clearRect(0, 0, 2000, 2000);    
-        this.init();
         this.myScenes = [];
         this.myScenes.push(new Scene());
         this.currentScene = 0;
+        this.selected = new EnemyInstance();
+        this.selected.addX('No');
+        this.init();
     }
 
     init()  {
@@ -37,55 +39,101 @@ class Editor {
         );
         var elems = document.querySelectorAll('select');
         this.instances = M.FormSelect.init(elems, options);
-        var gameReference = this.game;
-        var previewReference = this.previewGame;
+
+        var collapsibles = document.querySelectorAll('.collapsible');
+        var collapsibleInstances = M.Collapsible.init(collapsibles, options);
+
+        var _this = this;
         document.addEventListener('change', function(event) {
             switch(event.target.id) {
                 case 'chooseBackground':
-                    gameReference.sceneManager.loadBackground(eval(event.target.value));
+                    _this.game.sceneManager.loadBackground(eval(event.target.value));
                     break;
                 case 'chooseEnemy':
-                    previewReference.clearEntities();
-                    let add = new Ship(previewReference, eval(event.target.value));
+                    _this.previewGame.clearEntities();
+                    let add = new Ship(_this.previewGame, eval(event.target.value));
                     add.current.x = 100;
                     add.current.y = 0;
-                    previewReference.addEntity(add);
+                    _this.previewGame.addEntity(add);
+                    _this.selected.addShip(event.target.value);
                     break;
                 case 'chooseWeapon':
-                    previewReference.ship.initializeWeapon(eval(event.target.value));
+                    _this.previewGame.ship.initializeWeapon(eval(event.target.value));
+                    _this.selected.addWeapon(event.target.value);
                     break;
                 case 'choosePath':
-                    console.log("Path chosen: " + event.target.value);
+                    _this.selected.addPath(event.target.value);
+                    break;
+                case 'xRange':
+                    if(document.getElementById('customX').checked)  {
+                        _this.selected.addX(event.target.value);
+                    } else {
+                        _this.selected.addX('No');
+                    }
+                    break;
+                case 'customX':
+                    if(!event.target.checked)    {
+                        _this.selected.addX('No');
+                    } else {
+                        _this.selected.addX(document.getElementById('xRange').value);
+                        // _this.selected.addX()
+                    }
                     break;
             }
         });
-        // addEvent(
-        //     document.getElementById('preview'),
-        //     'click',
-        //     () => {
-        //         this.previewGame.clearEntities();
-        //         let manifest = this.getEnemySelection();
-        //         let add = new Ship(this.previewGame, manifest);
-        //         // add.sprite.scale -= 0.2;
-        //         add.current.x = 100;
-        //         add.current.y = 0;
-        //         if(this.instances[2].el.value != 'None')    {
-        //             add.initializeWeapon(eval(this.instances[2].el.value));
-        //         }
-        //         this.previewGame.addEntity(add);
-        //         this.game.sceneManager.loadBackground(eval(this.instances[0].el.value));
-        //         //this.previewGame.addEntity(getEnemySelection());
-        //         // console.log(val.getSelectedValues());
-        //         var div = document.createElement('div');
-        //         div.setAttribute('class', 'timelineElement');
-        //         div.style.marginLeft = '105px';
-        //         // div.style.marginTop = '-100px';
-        //         document.getElementById('timelineBorder').appendChild(div);
-        //     },
-        // );
+
+        var addEnemyBtn = document.getElementById('addEnemy');
+        addEnemyBtn.addEventListener('click', function(event) {
+            console.log("activated my trap card");
+            let table = document.getElementById('currentEnemies');
+            let row = table.insertRow(-1);
+            let val1 = row.insertCell(0);
+            let val2 = row.insertCell(1);
+            let val3 = row.insertCell(2);
+            let val4 = row.insertCell(3);
+            let remove = row.insertCell(4);
+            val1.innerHTML = _this.selected.ship;
+            val2.innerHTML = _this.selected.weapon;
+            val3.innerHTML = _this.selected.path;
+            val4.innerHTML = _this.selected.x;
+            remove.innerHTML = `<td><a class="waves-effect waves-light btn">Remove</a></td>`;
+        });
+
         document.querySelectorAll('#fps').forEach(e => e.style.display = 'none');
+        document.getElementById('customX').checked = false;
+        document.getElementById('chooseWeapon').value = 'ring.singleTargetPlayer';
+        let shipManifest = document.getElementById('chooseEnemy').value;
+        let add = new Ship(this.previewGame, eval(shipManifest));
+        add.current.x = 100;
+        add.current.y = 0;
+        this.previewGame.addEntity(add);
+        this.selected.addShip(shipManifest);
+        this.selected.addWeapon(document.getElementById('chooseWeapon').value);
+        this.selected.addPath(document.getElementById('choosePath').value);
     }
 
+    addEnemyToScene()   {
+
+    }
+
+}
+
+class EnemyInstance   {
+    addWeapon(wep)  {
+        this.weapon = wep;
+    }
+
+    addShip(ship)   {
+        this.ship = ship;
+    }
+
+    addPath(path)   {
+        this.path = path;
+    }
+
+    addX(x) {
+        this.x = x;
+    }
 }
 
 class Scene {
