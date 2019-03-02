@@ -78,8 +78,8 @@ class NukesAndOrigami extends GameEngine {
         // references of these instances to stop or pause music
         instances: [],
         volume: 0.09,
-      }
-    }
+      },
+    };
 
     this.sceneManager = new SceneManager(this);
   }
@@ -107,11 +107,11 @@ class NukesAndOrigami extends GameEngine {
     }
   }
 
-  //Override
+  // Override
   draw() {
     super.draw();
     if (this.player) {
-      this.player.draw(); //Player over everything
+      this.player.draw(); // Player over everything
     }
   }
 
@@ -128,7 +128,7 @@ class NukesAndOrigami extends GameEngine {
     this.increaseScoreBy(hitValue);
 
     // Generate a powerUp
-    const powerUp = getPowerUp(enemy.powerup)|| getRandomPowerUp(enemy.dropItems);
+    const powerUp = getPowerUp(enemy.powerup) || getRandomPowerUp(enemy.dropItems);
     if (powerUp && powerUp.shouldDrop()) {
       this.addEntity(new Projectile(this, {
         origin: {
@@ -192,7 +192,7 @@ class NukesAndOrigami extends GameEngine {
       player.invincTime += this.clockTick;
     }
     if (this.lives === 0) { // game over
-      this.gameOver()
+      this.gameOver();
     }
   }
 
@@ -382,14 +382,14 @@ AM.downloadAll(() => {
   game.spawnPlayer();
 
   // view test stage
-  //game.testScene();
-  //game.sceneManager.scenes.push(scene.gamma);
+  // game.testScene();
+  // game.sceneManager.scenes.push(scene.gamma);
 
   // run completed levels
   initIntroMessage(game);
 
   // run first prototype level
-  //game.spawnEnemies();
+  // game.spawnEnemies();
 
   canvas.focus();
   game.sceneManager.loadBackground(background.beach, 1);
@@ -525,23 +525,23 @@ class SceneManager {
         }
 
 
-      if (!Array.isArray(wave.ships[i].weapon)) {
+        if (!Array.isArray(wave.ships[i].weapon)) {
         // sprites/images don't copy over when you parse a stringified JSON object,
         // directly link them here.
-        if (wave.ships[i].weapon.payload && wave.ships[i].weapon.payload.type.sprite) {
-          manifestCopy.weapon.payload.type.sprite = wave.ships[i].weapon.payload.type.sprite;
-        }
-        if (wave.ships[i].weapon.payload && wave.ships[i].weapon.payload.type.image) {
-          manifestCopy.weapon.payload.type.image = wave.ships[i].weapon.payload.type.image;
-        }
-      } else {
+          if (wave.ships[i].weapon.payload && wave.ships[i].weapon.payload.type.sprite) {
+            manifestCopy.weapon.payload.type.sprite = wave.ships[i].weapon.payload.type.sprite;
+          }
+          if (wave.ships[i].weapon.payload && wave.ships[i].weapon.payload.type.image) {
+            manifestCopy.weapon.payload.type.image = wave.ships[i].weapon.payload.type.image;
+          }
+        } else {
         // weapon is an array, copy over everything
-        manifestCopy.weapon = new Array(wave.ships[i].weapon.length);
-        for (let j = 0; j < wave.ships[i].weapon.length; j++) {
-          manifestCopy.weapon[j] = Object.assign({}, wave.ships[i].weapon[j]);
+          manifestCopy.weapon = new Array(wave.ships[i].weapon.length);
+          for (let j = 0; j < wave.ships[i].weapon.length; j++) {
+            manifestCopy.weapon[j] = Object.assign({}, wave.ships[i].weapon[j]);
+          }
         }
       }
-    }
 
       // The ship constructor **should** copy data; try without Object.assign() here
       // let ship = new Ship(this.game, Object.assign({}, manifestCopy));
@@ -550,8 +550,8 @@ class SceneManager {
       // Was the location overriden?
       if (wave.initialXPoints) {
         ship.current.x = wave.initialXPoints[i];
-      } else if (ship.initialDirection === 'north' ||
-        ship.initialDirection === 'south') {
+      } else if (ship.initialDirection === 'north'
+        || ship.initialDirection === 'south') {
         ship.current.x = horizontalLocationCounter;
         horizontalLocationCounter += horizontalSpacing;
       }
@@ -559,8 +559,8 @@ class SceneManager {
 
       if (wave.initialYPoints) {
         ship.current.y = wave.initialYPoints[i];
-      } else if (ship.initialDirection === 'west' ||
-        ship.initialDirection === 'east') {
+      } else if (ship.initialDirection === 'west'
+        || ship.initialDirection === 'east') {
         ship.current.y = verticalLocationCounter;
         verticalLocationCounter += verticalSpacing;
       }
@@ -743,7 +743,7 @@ class SceneManager {
         this.choreography.shift();
         break;
       case 'swapSlaveRing':
-        if(this.entitiesInWave[currentChor.enemyIndex].slaves)  {
+        if (this.entitiesInWave[currentChor.enemyIndex].slaves) {
           this.entitiesInWave[currentChor.enemyIndex].initializeSlaveWeapon(currentChor.slaveIndex, currentChor.ring);
         }
         this.choreography.shift();
