@@ -16,12 +16,7 @@ class Editor {
         this.init();
     }
 
-    init()  {
-        const options = {};
-        this.previewCanvas = document.getElementById('preview');
-        this.preview = this.previewCanvas.getContext('2d');
-        this.previewGame.init(this.preview);
-        this.previewGame.start();
+    initGoBackButton() {
         addEvent(
             document.getElementById('goBack'),
             'click',
@@ -37,53 +32,11 @@ class Editor {
               this.originalGame.resume();
             },
         );
-        var elems = document.querySelectorAll('select');
-        this.instances = M.FormSelect.init(elems, options);
-
-        var collapsibles = document.querySelectorAll('.collapsible');
-        var collapsibleInstances = M.Collapsible.init(collapsibles, options);
-
-        var _this = this;
-        document.addEventListener('change', function(event) {
-            switch(event.target.id) {
-                case 'chooseBackground':
-                    _this.game.sceneManager.loadBackground(eval(event.target.value));
-                    break;
-                case 'chooseEnemy':
-                    _this.previewGame.clearEntities();
-                    let add = new Ship(_this.previewGame, eval(event.target.value));
-                    add.current.x = 100;
-                    add.current.y = 0;
-                    _this.previewGame.addEntity(add);
-                    _this.selected.addShip(event.target.value);
-                    break;
-                case 'chooseWeapon':
-                    _this.previewGame.ship.initializeWeapon(eval(event.target.value));
-                    _this.selected.addWeapon(event.target.value);
-                    break;
-                case 'choosePath':
-                    _this.selected.addPath(event.target.value);
-                    break;
-                case 'xRange':
-                    if(document.getElementById('customX').checked)  {
-                        _this.selected.addX(event.target.value);
-                    } else {
-                        _this.selected.addX('No');
-                    }
-                    break;
-                case 'customX':
-                    if(!event.target.checked)    {
-                        _this.selected.addX('No');
-                    } else {
-                        _this.selected.addX(document.getElementById('xRange').value);
-                        // _this.selected.addX()
-                    }
-                    break;
-            }
-        });
-
+    }
+    
+    initAddEnemyButton() {
         var addEnemyBtn = document.getElementById('addEnemy');
-        addEnemyBtn.addEventListener('click', function(event) {
+        addEnemyBtn.addEventListener('click', () => {
             console.log("activated my trap card");
             let table = document.getElementById('currentEnemies');
             let row = table.insertRow(-1);
@@ -92,17 +45,84 @@ class Editor {
             let val3 = row.insertCell(2);
             let val4 = row.insertCell(3);
             let remove = row.insertCell(4);
-            val1.innerHTML = _this.selected.ship;
-            val2.innerHTML = _this.selected.weapon;
-            val3.innerHTML = _this.selected.path;
-            val4.innerHTML = _this.selected.x;
+            val1.innerHTML = this.selected.ship;
+            val2.innerHTML = this.selected.weapon;
+            val3.innerHTML = this.selected.path;
+            val4.innerHTML = this.selected.x;
             remove.innerHTML = `<td><a class="waves-effect waves-light btn" id="removeTableRow">Remove</a></td>`;
-            remove.addEventListener('click', function(event) {
+            remove.addEventListener('click', (event) => {
                 // console.log("Removing row:" + e.parentElement.parentElement.rowIndex);
-                // table.deleteRow(event.target.parentElement.parentElement.rowIndex - 1);
+                // If we remove rowIndex - 1 we'll be off by one
+                table.deleteRow(event.target.parentElement.parentElement.rowIndex);
                 console.log("test");
                 })
         });
+        // addEnemyBtn.addEventListener('click', function(event) {
+            
+        // });
+    }
+
+    init()  {
+        const options = {};
+        this.previewCanvas = document.getElementById('preview');
+        this.preview = this.previewCanvas.getContext('2d');
+        this.previewGame.init(this.preview);
+        this.previewGame.start();
+        
+        var elems = document.querySelectorAll('select');
+        this.instances = M.FormSelect.init(elems, options);
+
+        var collapsibles = document.querySelectorAll('.collapsible');
+        var collapsibleInstances = M.Collapsible.init(collapsibles, options);
+
+        // Originally the reason why this was needed is because you noticed that this was pointing to the correct this(element) right?
+        // That is because when you declare callbacks for event listeners using a function(event) 
+        // everything inside the score of that new function gets a new this, not the one you're expecting
+
+        // To avoid having to use _this when defining callbacks its best to use an anonymous function since they don't 
+        // override/create the this value, thus the one you get access to the correct one. In this case to the this that
+        // has access to the selected ships
+        // var _this = this;
+        document.addEventListener('change', (event) => {
+            switch(event.target.id) {
+                case 'chooseBackground':
+                    this.game.sceneManager.loadBackground(eval(event.target.value));
+                    break;
+                case 'chooseEnemy':
+                    this.previewGame.clearEntities();
+                    let add = new Ship(this.previewGame, eval(event.target.value));
+                    add.current.x = 100;
+                    add.current.y = 0;
+                    this.previewGame.addEntity(add);
+                    this.selected.addShip(event.target.value);
+                    break;
+                case 'chooseWeapon':
+                    this.previewGame.ship.initializeWeapon(eval(event.target.value));
+                    this.selected.addWeapon(event.target.value);
+                    break;
+                case 'choosePath':
+                    this.selected.addPath(event.target.value);
+                    break;
+                case 'xRange':
+                    if(document.getElementById('customX').checked)  {
+                        this.selected.addX(event.target.value);
+                    } else {
+                        this.selected.addX('No');
+                    }
+                    break;
+                case 'customX':
+                    if(!event.target.checked)    {
+                        this.selected.addX('No');
+                    } else {
+                        this.selected.addX(document.getElementById('xRange').value);
+                        // _this.selected.addX()
+                    }
+                    break;
+            }
+        });
+
+
+        
 
         document.querySelectorAll('#fps').forEach(e => e.style.display = 'none');
         document.getElementById('customX').checked = false;
@@ -115,6 +135,9 @@ class Editor {
         this.selected.addShip(shipManifest);
         this.selected.addWeapon(document.getElementById('chooseWeapon').value);
         this.selected.addPath(document.getElementById('choosePath').value);
+
+        this.initGoBackButton();
+        this.initAddEnemyButton();
     }
 
     addEnemyToScene()   {
