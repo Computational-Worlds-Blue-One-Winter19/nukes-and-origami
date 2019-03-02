@@ -6,7 +6,7 @@ function crossfadedLoop(enteringInstance, leavingInstance, soundLevel) {
   const volume = soundLevel;
   const crossfadeDuration = 1000;
 
-   // Get the sound duration in ms from the Howler engine
+  // Get the sound duration in ms from the Howler engine
   const soundDuration = Math.floor(enteringInstance._duration * 1000);
 
 
@@ -34,25 +34,22 @@ function createHowlerInstance(urls, onload) {
     volume: 0,
     onload,
   });
-};
+}
 
 function playLoop(soundObject) {
-
   // Create "slave" instance. This instance is meant
   // to be played after the first one is done.
-  soundObject.instances.push(createHowlerInstance(['./audio/Game_Loop_v.1.ogg']))
+  soundObject.instances.push(createHowlerInstance(['./audio/Game_Loop_v.1.ogg']));
 
-    // Create "master" instance. The onload function passed to
+  // Create "master" instance. The onload function passed to
   // the singleton creator will coordinate the crossfaded loop
   soundObject.instances.push(createHowlerInstance(['./audio/Game_Loop_v.1.ogg'], () => {
-
     crossfadedLoop(soundObject.instances[1], soundObject.instances[0], soundObject.volume);
   }));
-
 }
 
 function pauseLoop(soundObject) {
-  for(let i = 0; i < soundObject.instances.length; i++) {
+  for (let i = 0; i < soundObject.instances.length; i++) {
     soundObject.instances[i].pause();
   }
 }
@@ -208,19 +205,18 @@ function hideControlMessage() {
  */
 function startGame(game) {
   game.initializeSceneManager();
+  playAudio(1);
+  //   // playLoop(game.sounds.gameLoop);
+  // let loop = new SeamlessLoop();
+  // loop.addUri("audio/Game_Loop_v.1.ogg", 9590, 'sound1');
+  // loop._volume = 0.09;
+  // loop.callback(soundsLoaded);
 
-  // playLoop(game.sounds.gameLoop);
-let loop = new SeamlessLoop();
-loop.addUri("audio/Game_Loop_v.1.ogg", 9590, 'sound1');
-loop._volume = 0.09;
-loop.callback(soundsLoaded);
-
-function soundsLoaded() {
-    let n = 1;
-    loop._volume = 0.09;
-    loop.start('sound' + n);
-}
-
+  // function soundsLoaded() {
+  //     let n = 1;
+  //     loop._volume = 0.09;
+  //     loop.start('sound' + n);
+  // }
 
 
   // Initilize the game board
