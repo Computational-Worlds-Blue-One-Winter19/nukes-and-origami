@@ -96,9 +96,16 @@ class Editor {
             val2.innerHTML = _this.selected.weapon;
             val3.innerHTML = _this.selected.path;
             val4.innerHTML = _this.selected.x;
-            remove.innerHTML = `<td><a class="waves-effect waves-light btn">Remove</a></td>`;
+            remove.innerHTML = `<td><a class="waves-effect waves-light btn" id="removeTableRow">Remove</a></td>`;
+            var removeTableEntry = document.querySelectorAll('#removeTableRow');
+            removeTableEntry.forEach(e => 
+                e.addEventListener('click', function(event) {
+                    // console.log("Removing row:" + e.parentElement.parentElement.rowIndex);
+                    // table.deleteRow(event.target.parentElement.parentElement.rowIndex - 1);
+                    console.log("test");
+                    })
+            );
         });
-
         document.querySelectorAll('#fps').forEach(e => e.style.display = 'none');
         document.getElementById('customX').checked = false;
         document.getElementById('chooseWeapon').value = 'ring.singleTargetPlayer';
