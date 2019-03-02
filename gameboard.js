@@ -208,8 +208,8 @@ function hideControlMessage() {
       buffer: {},
       compatibility: {},
       files: [
-          'https://forestmist.org/share/web-audio-api-demo/audio/beat.wav',
-          // '/audio/Game_Loop_v.1.ogg',
+          // 'https://forestmist.org/share/web-audio-api-demo/audio/beat.wav',
+          '/audio/Game_Loop_v.15.wav',
           // 'beat.wav'
       ],
       proceed: true,
