@@ -31,7 +31,11 @@ body {
 }
 
 .editorLabel {
+    /* We need to set it's display to block so we can apply margin-bottom */
+    display: block;
     margin-left: 5px;
+    /* Not sure if we want to add enough space to clearly show the bubble from the slider */
+    margin-bottom: 50px;
 }
 
 .bg-select {
