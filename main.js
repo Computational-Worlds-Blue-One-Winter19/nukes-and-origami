@@ -46,6 +46,9 @@ AM.queueDownload('./img/verticalscrollingbeach.png');
 AM.queueDownload('./img/verticalscrollingcemetary.png');
 AM.queueDownload('./img/verticalscrollingtrees.png');
 AM.queueDownload('./img/verticalscrollingdesert.png');
+AM.queueDownload('./img/verticalscrollingfallcity.png');
+AM.queueDownload('./img/verticalscrollingvegascity.png');
+
 AM.queueDownload('./img/seamless_pattern.png');
 AM.queueDownload('./img/missile.png');
 AM.queueDownload('./img/gunup.png');
@@ -61,7 +64,7 @@ AM.queueDownload('./img/rapid-bullet-horizontal.png');
 class NukesAndOrigami extends GameEngine {
   constructor() {
     super();
-    this.lives = 15;
+    this.lives = 1;
     this.hits = 0;
     this.score = 0;
 
@@ -416,6 +419,15 @@ class SceneManager {
     this.waves = null;
     this.entitiesInWave = [];
 
+    // for checkpoints
+    this.waveCounter = 0;
+    this.sceneCounter = 0;
+    this.checkPointWaveState = null;
+    this.checkPointWaveCounter = 0;
+    this.checkPointSceneState = null;
+    this.checkPointSceneCounter = 0;
+    this.checkPointChoreographyState = null;
+
     // Used for keeping track of animation sequences (e.g. going to warp speed)
     this.cutsceneStack = [];
 
@@ -566,6 +578,7 @@ class SceneManager {
       // Hang here if we have no more scenes
       if (!(this.scenes.length === 0)) {
         this.loadScene(this.scenes.shift());
+        this.sceneCounter++;
       }
     } else {
       // No wave? load the next one and initialize them
@@ -577,6 +590,7 @@ class SceneManager {
             this.currentScene = 0;
           } else {
             this.loadWave(this.waves.shift());
+            this.waveCounter++;
             this.waveTimer = 0;
           }
         }
@@ -596,7 +610,6 @@ class SceneManager {
 
   // A choreographed wave calls this method to update.
   choreographyUpdate() {
-    console.log(this.choreography)
     // Is choreography over?
     if (this.choreography.length == 0) {
       // Are there enemies we are waiting for?
@@ -709,11 +722,33 @@ class SceneManager {
       case 'resetChoreography':
         this.choreography.shift();
         this.waveTimer = 0;
-        this.choreography = _.clone(this.loopChoreography).slice(currentChor.index,
+        this.choreography = _.cloneDeep(this.loopChoreography).slice(currentChor.index,
           this.loopChoreography.length);
         break;
 
+      case 'checkpoint':
+        // save the current states of waves the scene
+        this.checkPointWaveState = _.cloneDeep(this.waves);
+        this.checkPointSceneState = _.cloneDeep(this.scenes);
+        this.checkPointChoreographyState = _.cloneDeep(this.choreography);
+        this.choreography.shift();
+        break;
+
     }
+  }
+
+  loadCheckpoint() {
+    if (this.entitiesInWave) {
+      // remove all enemies on screen.
+      this.entitiesInWave.forEach(function(element) {
+        element.removeFromWorld = true;
+      })
+    }
+    this.scenes = this.checkPointSceneState;
+    this.waves = this.checkPointWaveState;
+    this.choreography = scene.restartFromCheckpoint.waves[0].choreography.concat(this.checkPointChoreographyState);
+    this.waveTimer = 0;
+    this.game.lives = 1;
   }
 
   handleEnemyWaveCompletion() {

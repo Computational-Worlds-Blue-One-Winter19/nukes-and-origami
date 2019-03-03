@@ -2042,6 +2042,48 @@ function loadTemplates() {
     ],
   };
 
+  background.cemetary = {
+    layers: [{
+        layer: AM.getAsset('./img/verticalscrollingcemetary.png'),
+        offset: -1766,
+        verticalPixels: 1766,
+      },
+      {
+        layer: AM.getAsset('./img/verticalscrollingcemetary.png'),
+        offset: -1766 * 2,
+        verticalPixels: 1766,
+      },
+    ],
+  };
+
+  background.vegas = {
+    layers: [{
+        layer: AM.getAsset('./img/verticalscrollingvegascity.png'),
+        offset: -1766,
+        verticalPixels: 1766,
+      },
+      {
+        layer: AM.getAsset('./img/verticalscrollingvegascity.png'),
+        offset: -1766 * 2,
+        verticalPixels: 1766,
+      },
+    ],
+  }
+
+  background.fallCity = {
+    layers: [{
+        layer: AM.getAsset('./img/verticalscrollingfallcity.png'),
+        offset: -1507,
+        verticalPixels: 1507,
+      },
+      {
+        layer: AM.getAsset('./img/verticalscrollingfallcity.png'),
+        offset: -1507 * 2,
+        verticalPixels: 1507,
+      },
+    ],
+  }
+
   background.pattern = {
     layers: [{
         layer: AM.getAsset('./img/seamless_pattern.png'),
@@ -2457,6 +2499,32 @@ function loadTemplates() {
         ]
       },
     ]
+  }
+
+  scene.restartFromCheckpoint = {
+    waves: [{
+      choreography: [
+        {
+          id: 'loadBackground',
+          bg: background.cemetary,
+        },
+        {
+          id: 'wait',
+          duration: 3,
+        },
+        {
+          id: 'showMessage',
+          text: ['You suck...', 'Try again!']
+        },
+        {
+          id: 'wait',
+          duration: 3,
+        },
+        {
+          id: 'hideMessage'
+        },
+      ]
+    }]
   }
 
   scene.oneWaveTest = {
@@ -3965,7 +4033,11 @@ function loadTemplates() {
   scene.levelOne = {
     waves: [
       {
-        choreography: [{
+        choreography: [
+          {
+            id: 'checkpoint'
+          },
+          {
             id: 'accelerateToWarpspeed',
           },
           {
@@ -4224,7 +4296,8 @@ function loadTemplates() {
   scene.levelTwo = {
     waves: [
       {
-        choreography: [{
+        choreography: [
+          {
             id: 'accelerateToWarpspeed',
           },
           {
