@@ -492,6 +492,7 @@ class SceneManager {
       let manifestCopy = _.cloneDeep(wave.ships[i]);
       manifestCopy.path = wave.paths ? _.cloneDeep(wave.paths[i]) : 0;
       if (wave.shipManifestOverride) {
+        // use lodash
         _.merge(manifestCopy, wave.shipManifestOverride[i]);
       }
 
@@ -531,7 +532,8 @@ class SceneManager {
     this.wave = wave;
     // Set up cutscene stack for this wave.
     if (wave.choreography) {
-      this.choreography = wave.choreography;
+      this.choreography = _.clone(wave.choreography);
+      this.loopChoreography = _.clone(wave.choreography);
     } else {
       // No choreography specified? default is to just load enemies.
       this.loadEnemies(wave);
@@ -594,6 +596,7 @@ class SceneManager {
 
   // A choreographed wave calls this method to update.
   choreographyUpdate() {
+    console.log(this.choreography)
     // Is choreography over?
     if (this.choreography.length == 0) {
       // Are there enemies we are waiting for?
@@ -654,6 +657,7 @@ class SceneManager {
       case 'wait':
         if (currentChor.init) {
           if (this.waveTimer >= currentChor.duration) {
+            this.waveTimer = 0;
             this.choreography.shift();
           }
           // Also check if the enemies are dead
@@ -694,12 +698,21 @@ class SceneManager {
         }
         this.choreography.shift();
         break;
+
       case 'swapSlaveRing':
         if (this.entitiesInWave[currentChor.enemyIndex].slaves) {
           this.entitiesInWave[currentChor.enemyIndex].initializeSlaveWeapon(currentChor.slaveIndex, currentChor.ring);
         }
         this.choreography.shift();
         break;
+
+      case 'resetChoreography':
+        this.choreography.shift();
+        this.waveTimer = 0;
+        this.choreography = _.clone(this.loopChoreography).slice(currentChor.index,
+          this.loopChoreography.length);
+        break;
+
     }
   }
 
