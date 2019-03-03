@@ -4224,96 +4224,97 @@ function loadTemplates() {
   scene.levelTwo = {
     waves: [
       {
-        choreography: [{
-            id: 'accelerateToWarpspeed',
-          },
+        choreography: [
+    //       {
+    //         id: 'accelerateToWarpspeed',
+    //       },
+    //       {
+    //         id: 'loadBackground',
+    //         bg: background.paper,
+    //       },
+    //       {
+    //         id: 'wait',
+    //         duration: 0.25,
+    //       },
+    //       {
+    //         id: 'showMessage',
+    //         text: ['WELL DONE', 'LEVEL 2 START'],
+    //       },
+    //       {
+    //         id: 'wait',
+    //         duration: 3,
+    //       },
           {
             id: 'loadBackground',
-            bg: background.white,
+            bg: background.trees,
           },
-          {
-            id: 'wait',
-            duration: 0.25,
-          },
-          {
-            id: 'showMessage',
-            text: ['WELL DONE', 'LEVEL 2 START'],
-          },
-          {
-            id: 'wait',
-            duration: 3,
-          },
-          {
-            id: 'loadBackground',
-            bg: background.desert,
-          },
-          {
-            id: 'decelerateFromWarpSpeed',
-          },
-          {
-            id: 'hideMessage',
-          },
+      //     {
+      //       id: 'decelerateFromWarpSpeed',
+      //     },
+      //     {
+      //       id: 'hideMessage',
+      //     },
         ],
       },
+      // {
+      //   numOfEnemies: 3,
+      //   ships: new Array(3).fill(ship.bird),
+      //   waitUntilEnemiesGone: true,
+      //   shipManifestOverride: [
+      //     {
+      //       weapon: ring.fourFixedSpeedCircle
+      //     },
+      //     {
+      //       weapon: ring.fourFixedSpeedCircle
+      //     },
+      //     {
+      //       weapon: ring.fourFixedSpeedCircle
+      //     }
+      //   ]
+      // },
+      // {
+      //   numOfEnemies: 4,
+      //   ships: new Array(4).fill(ship.pigeon),
+      //   paths: new Array(4).fill(path.downSlow),
+      //   shipManifestOverride: [{
+      //       config: {
+      //         initialDirection: 'west',
+      //         snapLine: 100,
+      //       },
+      //       weapon: ring.gammaFour
+      //     },
+      //     {
+      //       config: {
+      //         initialDirection: 'west',
+      //         snapLine: 374,
+      //         waitOffScreen: 1
+      //       },
+      //       weapon: ring.gammaFour
+      //     },
+      //     {
+      //       config: {
+      //         initialDirection: 'west',
+      //         snapLine: 648,
+      //         waitOffScreen: 2
+      //       },
+      //       weapon: ring.gammaFour
+      //     },
+      //     {
+      //       config: {
+      //         initialDirection: 'west',
+      //         snapLine: 922,
+      //         waitOffScreen: 3
+      //       },
+      //       weapon: ring.gammaFour
+      //     },
+      //   ],
+      //   waitUntilEnemiesGone: true,
+      //   initialYPoints: [
+      //     50, 50, 50, 50,
+      //   ]
+      // },
       {
-        numOfEnemies: 3,
-        ships: new Array(3).fill(ship.bird),
-        waitUntilEnemiesGone: true,
-        shipManifestOverride: [
-          {
-            weapon: ring.fourFixedSpeedCircle
-          },
-          {
-            weapon: ring.fourFixedSpeedCircle
-          },
-          {
-            weapon: ring.fourFixedSpeedCircle
-          }
-        ]
-      },
-      {
-        numOfEnemies: 4,
-        ships: new Array(4).fill(ship.pigeon),
-        paths: new Array(4).fill(path.downSlow),
-        shipManifestOverride: [{
-            config: {
-              initialDirection: 'west',
-              snapLine: 100,
-            },
-            weapon: ring.gammaFour
-          },
-          {
-            config: {
-              initialDirection: 'west',
-              snapLine: 374,
-              waitOffScreen: 1
-            },
-            weapon: ring.gammaFour
-          },
-          {
-            config: {
-              initialDirection: 'west',
-              snapLine: 648,
-              waitOffScreen: 2
-            },
-            weapon: ring.gammaFour
-          },
-          {
-            config: {
-              initialDirection: 'west',
-              snapLine: 922,
-              waitOffScreen: 3
-            },
-            weapon: ring.gammaFour
-          },
-        ],
-        waitUntilEnemiesGone: true,
-        initialYPoints: [
-          50, 50, 50, 50,
-        ]
-      },
-      {
-        numOfEnemies: 7,
+        numOfEnemies: 1,
         ships: new Array(7).fill(ship.bat),
         paths: [
           path.strafeRight,
@@ -4328,6 +4329,7 @@ function loadTemplates() {
             config: {
               initialDirection: 'east',
               snapLine: 100,
+              dropItems: [new Nuke(100)]
             },
             weapon: {
               payload: {
@@ -4339,6 +4341,7 @@ function loadTemplates() {
             config: {
               initialDirection: 'west',
               snapLine: 924,
+              dropItems: [new MultiGun(100)]
             },
             weapon: {
               payload: {
@@ -4350,6 +4353,7 @@ function loadTemplates() {
             config: {
               initialDirection: 'east',
               snapLine: 100,
+              dropItems: [new MultiGun(100)]
             },
             weapon: {
               payload: {
@@ -4361,6 +4365,7 @@ function loadTemplates() {
             config: {
               initialDirection: 'west',
               snapLine: 924,
+              dropItems: [new RapidFire(100)]
             },
             weapon: {
               payload: {
@@ -4372,6 +4377,7 @@ function loadTemplates() {
             config: {
               initialDirection: 'east',
               snapLine: 100,
+              dropItems: [new RapidFire(100)]
             },
             weapon: {
               payload: {
@@ -4383,6 +4389,7 @@ function loadTemplates() {
             config: {
               initialDirection: 'west',
               snapLine: 924,
+              dropItems: [new RapidFire(100)]
             },
             weapon: {
               payload: {
@@ -4394,6 +4401,7 @@ function loadTemplates() {
             config: {
               initialDirection: 'east',
               snapLine: 100,
+              dropItems: [new MultiGun(100)]
             },
             weapon: {
               payload: {
@@ -4405,148 +4413,419 @@ function loadTemplates() {
         waitUntilEnemiesGone: true,
       },
       {
-        choreography: [{
-            id: 'accelerateToWarpspeed',
+        numOfEnemies: 6,
+        ships: new Array(6).fill(ship.gammaCrane),
+        paths: new Array(6).fill(path.backAndForth),
+        initialXPoints: [ // omit to evenly space enemies.
+          100, 300, 600, 120, 700, 550,
+        ],
+        shipManifestOverride: [{
+            config: {
+              waitOffScreen: 5
+            }
           },
           {
-            id: 'wait',
-            duration: 0.25,
+            config: {
+              waitOffScreen: 9
+            }
           },
           {
-            id: 'showMessage',
-            text: ['MINI BOSS 2', 'APPROACHING'],
+            config: {
+              waitOffScreen: 11
+            }
           },
           {
-            id: 'wait',
-            duration: 3,
+            config: {
+              waitOffScreen: 13
+            }
           },
           {
-            id: 'decelerateFromWarpSpeed',
+            config: {
+              waitOffScreen: 17
+            }
           },
           {
-            id: 'hideMessage',
-          }],
-        },
-
-        {
-          choreography: [{
-              id: 'spawnEnemies'
-            },
-            {
-              id: 'wait',
-              duration: 15,
-            },
-            {
-              id: 'swapRing',
-              enemyIndex: 0,
-              ring: ring.slowLaserTargetPlayer,
-            },
-            {
-              id: 'wait',
-              duration: 7,
-            },
-            {
-              id: 'swapRing',
-              enemyIndex: 0,
-              ring: ring.laserGapRight,
-            },
-            {
-              id: 'wait',
-              duration: 7,
-            },
-            {
-              id: 'swapRing',
-              enemyIndex: 0,
-              ring: ring.slowLaserTargetPlayer,
-            },
-            {
-              id: 'wait',
-              duration: 7,
-            },
-            {
-              id: 'swapRing',
-              enemyIndex: 0,
-              ring: ring.laserGapLeft,
-            },
-            {
-              id: 'wait',
-              duration: 7,
-            },
-            {
-              id: 'swapRing',
-              enemyIndex: 0,
-              ring: ring.slowLaserTargetPlayer,
-            },
-            {
-              id: 'wait',
-              duration: 7,
-            },
-            {
-              id: 'swapRing',
-              enemyIndex: 0,
-              ring: ring.laserGapRight,
-            },
-            {
-              id: 'wait',
-              duration: 7,
-            },
-            {
-              id: 'swapRing',
-              enemyIndex: 0,
-              ring: ring.slowLaserTargetPlayer,
-            },
-            {
-              id: 'wait',
-              duration: 7,
-            },
-            {
-              id: 'swapRing',
-              enemyIndex: 0,
-              ring: ring.laserGapLeft,
-            },
-            {
-              id: 'wait',
-              duration: 7,
-            },
-            {
-              id: 'swapRing',
-              enemyIndex: 0,
-              ring: ring.slowLaserTargetPlayer,
-            },
-            {
-              id: 'wait',
-              duration: 7,
-            },
-            {
-              id: 'swapRing',
-              enemyIndex: 0,
-              ring: ring.laserGapRight,
-            },
-            {
-              id: 'wait',
-              duration: 7,
-            },
-            {
-              id: 'swapRing',
-              enemyIndex: 0,
-              ring: ring.slowLaserTargetPlayer,
-            },
-          ],
-          numOfEnemies: 1,
-          ships: [ship.owl],
-          paths: [
-            path.doNothing,
+            config: {
+              waitOffScreen: 20
+            }
+          },
+        ],
+        waitUntilEnemiesGone: true,
+      },
+      // {
+      //   numOfEnemies: 7,
+      //   ships: new Array(7).fill(ship.bat),
+      //   paths: [
+      //     path.strafeRight,
+      //     path.strafeLeft,
+      //     path.strafeRight,
+      //     path.strafeLeft,
+      //     path.strafeRight,
+      //     path.strafeLeft,
+      //     path.strafeRight,
+      //   ],
+      //   shipManifestOverride: [{
+      //       config: {
+      //         initialDirection: 'east',
+      //         snapLine: 100,
+      //         dropItems: [new MultiGun(100)]
+      //       },
+      //       weapon: {
+      //         payload: {
+      //           type: projectile.sine
+      //         }
+      //       }
+      //     },
+      //     {
+      //       config: {
+      //         initialDirection: 'west',
+      //         snapLine: 924,
+      //         dropItems: [new MultiGun(100)]
+      //       },
+      //       weapon: {
+      //         payload: {
+      //           type: projectile.sine
+      //         }
+      //       }
+      //     },
+      //     {
+      //       config: {
+      //         initialDirection: 'east',
+      //         snapLine: 100,
+      //         dropItems: [new MultiGun(100)]
+      //       },
+      //       weapon: {
+      //         payload: {
+      //           type: projectile.sine
+      //         }
+      //       }
+      //     },
+      //     {
+      //       config: {
+      //         initialDirection: 'west',
+      //         snapLine: 924,
+      //         dropItems: [new RapidFire(100)]
+      //       },
+      //       weapon: {
+      //         payload: {
+      //           type: projectile.sine
+      //         }
+      //       }
+      //     },
+      //     {
+      //       config: {
+      //         initialDirection: 'east',
+      //         snapLine: 100,
+      //         dropItems: [new RapidFire(100)]
+      //       },
+      //       weapon: {
+      //         payload: {
+      //           type: projectile.sine
+      //         }
+      //       }
+      //     },
+      //     {
+      //       config: {
+      //         initialDirection: 'west',
+      //         snapLine: 924,
+      //         dropItems: [new RapidFire(100)]
+      //       },
+      //       weapon: {
+      //         payload: {
+      //           type: projectile.sine
+      //         }
+      //       }
+      //     },
+      //     {
+      //       config: {
+      //         initialDirection: 'east',
+      //         snapLine: 100,
+      //         dropItems: [new MultiGun(100)]
+      //       },
+      //       weapon: {
+      //         payload: {
+      //           type: projectile.sine
+      //         }
+      //       }
+      //     },
+      //   ],
+      //   waitUntilEnemiesGone: true,
+      // },
+      // {
+      //   numOfEnemies: 6,
+      //   ships: new Array(6).fill(ship.gammaCrane),
+      //   paths: new Array(6).fill(path.backAndForth),
+      //   initialXPoints: [ // omit to evenly space enemies.
+      //     100, 300, 600, 120, 700, 550,
+      //   ],
+      //   shipManifestOverride: [{
+      //       config: {
+      //         waitOffScreen: 5
+      //       }
+      //     },
+      //     {
+      //       config: {
+      //         waitOffScreen: 9
+      //       }
+      //     },
+      //     {
+      //       config: {
+      //         waitOffScreen: 11
+      //       }
+      //     },
+      //     {
+      //       config: {
+      //         waitOffScreen: 13
+      //       }
+      //     },
+      //     {
+      //       config: {
+      //         waitOffScreen: 17
+      //       }
+      //     },
+      //     {
+      //       config: {
+      //         waitOffScreen: 20
+      //       }
+      //     },
+      //   ],
+      //   waitUntilEnemiesGone: true,
+      // },
+      {
+          numOfEnemies: 6,
+          ships: new Array(6).fill(ship.gooseHoming),
+          paths: new Array(6).fill(path.downSlow),
+          initialXPoints: [ // omit to evenly space enemies.
+            100, 300, 600, 120, 700, 550,
           ],
           shipManifestOverride: [{
-            config: {
-              health: 150,
-              snapLineSpeed: 50,
-              hitValue: 2000,
-              snapLine: 300,
+              config: {
+                waitOffScreen: 5,
+                dropItems: [new Shield(100)]
+              }
             },
-          }],
+            {
+              config: {
+                waitOffScreen: 9
+              }
+            },
+            {
+              config: {
+                waitOffScreen: 11
+              }
+            },
+            {
+              config: {
+                waitOffScreen: 13
+              }
+            },
+            {
+              config: {
+                waitOffScreen: 17
+              }
+            },
+            {
+              config: {
+                waitOffScreen: 20
+              }
+            },
+          ],
           waitUntilEnemiesGone: true,
         },
+        {
+          numOfEnemies: 3,
+          ships: new Array(3).fill(ship.gammaDoveTwo),
+          paths: new Array(3).fill(path.straightDown),
+          initialXPoints: [ // omit to evenly space enemies.
+            600, 400, 700
+          ],
+          shipManifestOverride: [{
+              config: {
+                waitOffScreen: 0
+              }
+            },
+            {
+              config: {
+                waitOffScreen: 2
+              }
+            },
+            {
+              config: {
+                waitOffScreen: 3
+              }
+            },
+          ],
+          waitUntilEnemiesGone: true,
+        },
+        {
+          numOfEnemies: 3,
+          ships: new Array(3).fill(ship.gammaDoveTwo),
+          paths: new Array(3).fill(path.straightDown),
+          initialXPoints: [ // omit to evenly space enemies.
+            600, 400, 700
+          ],
+          shipManifestOverride: [{
+              config: {
+                waitOffScreen: 0
+              },
+              weapon: ring.gammaThree
+            },
+            {
+              config: {
+                waitOffScreen: 2
+              }
+            },
+            {
+              config: {
+                waitOffScreen: 3
+              }
+            },
+          ],
+          waitUntilEnemiesGone: true,
+        },
+      // {
+      //   choreography: [{
+      //       id: 'accelerateToWarpspeed',
+      //     },
+      //     {
+      //       id: 'wait',
+      //       duration: 0.25,
+      //     },
+      //     {
+      //       id: 'showMessage',
+      //       text: ['MINI BOSS 2', 'APPROACHING'],
+      //     },
+      //     {
+      //       id: 'wait',
+      //       duration: 3,
+      //     },
+      //     {
+      //       id: 'decelerateFromWarpSpeed',
+      //     },
+      //     {
+      //       id: 'hideMessage',
+      //     }],
+      //   },
+      //
+      //   {
+      //     choreography: [{
+      //         id: 'spawnEnemies'
+      //       },
+      //       {
+      //         id: 'wait',
+      //         duration: 15,
+      //       },
+      //       {
+      //         id: 'swapRing',
+      //         enemyIndex: 0,
+      //         ring: ring.slowLaserTargetPlayer,
+      //       },
+      //       {
+      //         id: 'wait',
+      //         duration: 7,
+      //       },
+      //       {
+      //         id: 'swapRing',
+      //         enemyIndex: 0,
+      //         ring: ring.laserGapRight,
+      //       },
+      //       {
+      //         id: 'wait',
+      //         duration: 7,
+      //       },
+      //       {
+      //         id: 'swapRing',
+      //         enemyIndex: 0,
+      //         ring: ring.slowLaserTargetPlayer,
+      //       },
+      //       {
+      //         id: 'wait',
+      //         duration: 7,
+      //       },
+      //       {
+      //         id: 'swapRing',
+      //         enemyIndex: 0,
+      //         ring: ring.laserGapLeft,
+      //       },
+      //       {
+      //         id: 'wait',
+      //         duration: 7,
+      //       },
+      //       {
+      //         id: 'swapRing',
+      //         enemyIndex: 0,
+      //         ring: ring.slowLaserTargetPlayer,
+      //       },
+      //       {
+      //         id: 'wait',
+      //         duration: 7,
+      //       },
+      //       {
+      //         id: 'swapRing',
+      //         enemyIndex: 0,
+      //         ring: ring.laserGapRight,
+      //       },
+      //       {
+      //         id: 'wait',
+      //         duration: 7,
+      //       },
+      //       {
+      //         id: 'swapRing',
+      //         enemyIndex: 0,
+      //         ring: ring.slowLaserTargetPlayer,
+      //       },
+      //       {
+      //         id: 'wait',
+      //         duration: 7,
+      //       },
+      //       {
+      //         id: 'swapRing',
+      //         enemyIndex: 0,
+      //         ring: ring.laserGapLeft,
+      //       },
+      //       {
+      //         id: 'wait',
+      //         duration: 7,
+      //       },
+      //       {
+      //         id: 'swapRing',
+      //         enemyIndex: 0,
+      //         ring: ring.slowLaserTargetPlayer,
+      //       },
+      //       {
+      //         id: 'wait',
+      //         duration: 7,
+      //       },
+      //       {
+      //         id: 'swapRing',
+      //         enemyIndex: 0,
+      //         ring: ring.laserGapRight,
+      //       },
+      //       {
+      //         id: 'wait',
+      //         duration: 7,
+      //       },
+      //       {
+      //         id: 'swapRing',
+      //         enemyIndex: 0,
+      //         ring: ring.slowLaserTargetPlayer,
+      //       },
+      //     ],
+      //     numOfEnemies: 1,
+      //     ships: [ship.owl],
+      //     paths: [
+      //       path.doNothing,
+      //     ],
+      //     shipManifestOverride: [{
+      //       config: {
+      //         health: 150,
+      //         snapLineSpeed: 50,
+      //         hitValue: 2000,
+      //         snapLine: 300,
+      //       },
+      //     }],
+      //     waitUntilEnemiesGone: true,
+      //   },
       ]
     }
 
