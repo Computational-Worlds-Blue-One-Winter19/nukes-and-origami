@@ -385,8 +385,8 @@ AM.downloadAll(() => {
   game.spawnPlayer();
 
   // view test stage
-  // game.testScene();
-  // game.sceneManager.scenes.push(scene.gamma);
+  //game.testScene();
+  //game.sceneManager.scenes.push(scene.jaredTestScene);
 
   // run completed levels
   initIntroMessage(game);
@@ -473,7 +473,7 @@ class SceneManager {
         this.game.player.removeFromWorld = true;
       }
 
-      this.game.player = new Plane(this.game, ship.player);
+      this.game.player = new Plane(this.game, scene.player);
       this.game.addEntity(this.game.player);
     }
   }

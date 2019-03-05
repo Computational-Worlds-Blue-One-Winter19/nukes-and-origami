@@ -773,7 +773,13 @@ class Weapon {
 
       // process the multi-ring format
       for (let i = 0; i < manifest.length; i++) {
-        var r = new Ring(owner, manifest[i].ring);
+        var r;
+        if (manifest[i].ring.firing.width) {
+          // identify Line by the width field
+          var r = new Line(owner, manifest[i].ring);
+        } else {
+          var r = new Ring(owner, manifest[i].ring);
+        }
         const offset = manifest[i].offset || { x: 0, y: 0 };
 
         this.slot.push({
@@ -785,7 +791,13 @@ class Weapon {
       this.primaryRingManifest = manifest;
 
       // process the single-ring format
-      var r = new Ring(owner, manifest);
+      var r;
+      if (manifest.firing.width) {
+        // identify Line by the width field
+        var r = new Line(owner, manifest);
+      } else {
+        var r = new Ring(owner, manifest);
+      }
 
       this.slot.push({
         ring: r,
@@ -1116,8 +1128,8 @@ class Ring {
     // update active time counter; used for the pulse delay
     this.status.elapsedActiveTime += game.clockTick;
 
-    // ring center position is updated by the Ship before calling this method.
-    // we only need to adjust the angle for bay[0] if this ring is rotating.
+    // origin is updated by the Ship before calling this method.
+    // we only need to adjust the base angle if this ring is rotating.
     if (this.fixedRotation) {
       const doublePI = 2 * Math.PI;
       const delta = doublePI * this.fixedRotation * game.clockTick;
@@ -1172,8 +1184,7 @@ class Ring {
     } else if (this.status.isWaiting && this.status.elapsedTime > this.config.waitTime) {
       // Waiting state
       this.status.isWaiting = false;
-      this.status.isLoading = !this.config.rapidReload;
-      this.status.isReady = this.config.rapidReload;
+      this.status.isLoading = true;
       this.status.elapsedActiveTime = 0;
       this.status.elapsedTime = 0;
 
@@ -1489,6 +1500,351 @@ class Death  {
   }
 }
 
+/**
+ * Modification of Ring class to hold/fire projectiles in a Line.
+ */
+class Line {
+  constructor(owner, manifest) {
+    this.owner = owner;
+    this.payload = manifest.payload;
+    this.rotation = manifest.rotation;
+    this.bay = [];
+
+    // first validate some input to set configuration
+    // support for constant and sine rotation
+    if (this.rotation && this.rotation.speed) {
+      this.fixedRotation = this.rotation.speed;
+    } else if (this.rotation && this.rotation.angle) {
+      this.sineAmplitude = toRadians(this.rotation.angle);
+      this.sineFrequency = this.rotation.frequency || 1;
+    }
+
+    // check for pattern
+    const pattern = manifest.firing.pattern;
+    const count = pattern ? pattern.sequence[0].length : manifest.firing.count || 1;
+
+    // compute spacing
+    let baseAngle = toRadians(manifest.firing.angle) || 0;
+    let width = (count > 1) ? manifest.firing.width : 0;
+    let spacing = (count > 1) ? width / (count - 1) : 0;
+        
+    // set activeTime and waitTime for pulse delay
+    let activeTime = Infinity;
+    let waitTime = 0;
+
+    if (manifest.firing.pulse) {
+      activeTime = manifest.firing.pulse.duration;
+      waitTime = manifest.firing.pulse.delay;
+    }
+
+    // convert acceleration and velocity to radians
+    if (!this.payload.acceleration) {
+      this.payload.acceleration = {
+        radial: 0,
+        angular: 0,
+      };
+    } else if (!(this.payload.acceleration instanceof Object)) {
+      this.payload.acceleration = {
+        radial: this.payload.acceleration,
+        angular: 0,
+      };
+    } else {
+      this.payload.acceleration.angular = toRadians(this.payload.acceleration.angular);
+    }
+
+    if (!this.payload.velocity) {
+      this.payload.velocity = {
+        radial: this.payload.speed || 0,
+        angular: 0,
+      };
+    } else {
+      this.payload.velocity.angular = toRadians(this.payload.velocity.angular);
+    }
+
+    // store configuration for this instance
+    this.config = {
+      activeTime,
+      baseAngle,
+      count,
+      pattern,
+      spacing,
+      waitTime,
+      width,
+      radius: manifest.firing.radius || this.owner.config.radius,
+      viewTurret: manifest.firing.viewTurret,
+      rapidReload: manifest.firing.rapidReload,
+      cooldownTime: manifest.firing.cooldownTime || 0,
+      loadTime: manifest.firing.loadTime || 0,
+      targetPlayer: manifest.firing.targetPlayer || false,
+      targetLeadShot: manifest.firing.targetLeadShot || false,
+    };
+
+    // store instance variables
+    this.current = {
+      x: this.owner.current.x,
+      y: this.owner.current.y,
+      angle: baseAngle,
+      isLeadShot: this.config.targetLeadShot,
+    };
+
+    // set firing conditionals
+    this.status = {
+      elapsedTime: 0,
+      elapsedActiveTime: 0,
+      isLoading: true,
+      isReady: false,
+      isCooling: false,
+      isWaiting: false,
+    };
+
+    if (pattern) {
+      this.status.roundLength = pattern.sequence.length;
+      this.status.round = this.status.roundLength;
+      this.config.waitTime = pattern.delay;
+      this.config.rapidReload = true;
+    }
+  }
+
+  update() {
+    const game = this.owner.game;
+    this.status.elapsedTime += game.clockTick;
+
+    // update active time counter; used for the pulse delay
+    this.status.elapsedActiveTime += game.clockTick;
+
+    // origin is updated by the Ship before calling this method.
+    // we only need to adjust the base angle if this ring is rotating.
+    if (this.fixedRotation) {
+      const doublePI = 2 * Math.PI;
+      const delta = doublePI * this.fixedRotation * game.clockTick;
+      this.current.angle += delta;
+    } else if (this.sineAmplitude) {
+      const delta = game.timer.getWave(this.sineAmplitude, this.sineFrequency);
+      this.current.angle = this.config.baseAngle + delta;
+    } else if (this.current.isLeadShot || this.config.targetPlayer) {
+      // moved target logic to here. this will aim the
+      const target = game.getPlayerLocation(this.current);
+      this.current.angle = target.angle;
+      this.current.isLeadShot = false;
+    }
+
+    // compute position of each turret
+    if (this.bay.length > 0) {    
+      let center = getXandY(this.current, { radius: this.config.radius, angle: this.current.angle });
+    
+      let angle = this.current.angle;
+      let halfWidth = this.config.width / 2;
+      let spacing = this.config.spacing;
+      
+      // update bay[0] turret using the distance from the center point
+      let first = this.bay[0];
+
+      first.current.angle = angle;
+      const currentPosition = getXandY(center, {
+        radius: halfWidth,
+        angle: angle - Math.PI/2,
+      });
+      first.current.x = currentPosition.x;
+      first.current.y = currentPosition.y;
+      
+      // update all other turrets using the distance from bay[0]
+      for (let i = 1; i < this.bay.length; i++) {
+        const projectile = this.bay[i];
+        projectile.current.angle = angle;
+      
+        const currentPosition = getXandY(first.current, {
+          radius: i * spacing,
+          angle: angle + Math.PI/2,
+        });
+        projectile.current.x = currentPosition.x;
+        projectile.current.y = currentPosition.y;
+      }
+    }
+
+    // now that all projectiles have been updated we can evaluate the next
+    // action based on elapsed time of the current state.
+    if (this.status.isLoading && this.status.elapsedTime > this.config.loadTime) {
+      // Loading state
+      // if loaded then advance state else push a projectile to the next empty bay
+      if (this.bay.length === this.config.count) {
+        this.status.isLoading = false;
+        this.status.isReady = true;
+        this.status.elapsedTime = 0;
+      } else {
+        this.bay.push(this.loadNext());
+        this.status.elapsedTime = 0;
+      }
+    } else if (this.status.isCooling && this.status.elapsedTime > this.config.cooldownTime) {
+      // Cooldown state
+      this.status.isCooling = false;
+      this.status.elapsedTime = 0;
+
+      if (this.status.elapsedActiveTime > this.config.activeTime) {
+        this.status.isWaiting = true;
+      } else {
+        this.status.isLoading = !this.config.rapidReload;
+        this.status.isReady = this.config.rapidReload;
+      }
+    } else if (this.status.isWaiting && this.status.elapsedTime > this.config.waitTime) {
+      // Waiting state
+      this.status.isWaiting = false;
+      this.status.isLoading = true;
+      this.status.elapsedActiveTime = 0;
+      this.status.elapsedTime = 0;
+
+      // if tracking then set flag to track next shot
+      this.current.isLeadShot = this.config.targetLeadShot;
+    }
+  }
+
+  // this method is used by the weapon controller to fire the ring.
+  // pre-condition: ring.isReady = true
+  // post-condition: one round is fired, and the ring is in cooldown state
+  fire() {
+    if (!this.status.isReady) {
+      return;
+    }
+    
+    if (this.config.pattern && --this.status.round > -1) {
+      this.fireLine(this.status.round);
+      this.status.isReady = false;
+      this.status.isCooling = true;
+      this.status.elapsedTime = 0;
+    } else if (this.config.pattern) {
+      // end pattern proceed to wait
+      this.status.round = this.status.roundLength;
+      this.status.isReady = false;
+      this.status.isWaiting = true;
+      this.status.elapsedTime = 0;
+    } else {
+      this.fireAll();
+      // update state
+      this.status.isReady = false;
+      this.status.isCooling = true;
+      this.status.elapsedTime = 0;
+    }
+  }
+
+  draw() {
+    if (this.config.viewTurret) {
+      const ctx = this.owner.game.ctx;
+      for (const projectile of this.bay) {
+        projectile.draw(ctx);
+      }
+    }
+  }
+
+  fireAll() {
+    // the projectiles have been updated so just add to game and replace again
+    // this previously fired all and then looped back to reload. was that better?
+
+    for (let i = 0; i < this.bay.length; i++) {
+      const projectile = this.bay[i];
+      projectile.init();
+      this.owner.game.addEntity(projectile);
+
+      if (this.config.rapidReload) {
+        this.bay[i] = this.loadNext(projectile);
+      }
+    }
+
+    // if we did not reload then clear-out the bay
+    if (!this.config.rapidReload) {
+      this.bay = [];
+    }
+  }
+
+  fireLine(line) {
+    const row = this.config.pattern.sequence[line];
+    const last = this.bay.length - 1;
+
+    for (let i = 0; i < this.bay.length; i++) {
+      const projectile = this.bay[i];
+
+      if (row[last - i] === 1) {
+        projectile.init();
+        this.owner.game.addEntity(projectile);
+
+        if (this.config.rapidReload) {
+          this.bay[i] = this.loadNext(projectile);
+        }
+      }
+    }
+
+    // if we did not reload then clear-out the bay
+    if (!this.config.rapidReload) {
+      this.bay = [];
+    }
+  }
+
+  /** this returns a new Projectile configured for launch. */
+  loadNext(previous) {
+    let origin;
+    
+    if (previous) {
+      // we can duplicate the state of the projectile that was just launched
+      origin = Object.assign({}, previous.current);
+      origin.velocity = Object.assign({}, previous.current.velocity);
+      origin.acceleration = Object.assign({}, previous.current.acceleration);
+    } else {
+      // compute new coordinates assuming we will push to the next ordered bay
+      const angle = this.current.angle;
+      const velocity = this.payload.velocity || {
+        radial: this.payload.speed,
+        angular: 0,
+      };
+      const acceleration = this.payload.acceleration;    
+
+      let point = {};
+              
+      if (this.bay.length === 0) {
+        let center = getXandY(this.current, { radius: this.config.radius, angle: this.current.angle });
+        let halfWidth = this.config.width / 2;
+                
+        const currentPosition = getXandY(center, {
+          radius: halfWidth,
+          angle: angle - Math.PI/2,
+        });
+        point.x = currentPosition.x;
+        point.y = currentPosition.y;
+      } else {
+        // compute position from bay[0]
+        let first = this.bay[0].current;
+        let spacing = this.config.spacing;
+        
+        const currentPosition = getXandY(first, {
+          radius: this.bay.length * spacing,
+          angle: angle + Math.PI/2,
+        });
+        point.x = currentPosition.x;
+        point.y = currentPosition.y;
+      }      
+      
+      origin = {
+        angle,
+        velocity: {
+          radial: velocity.radial,
+          angular: velocity.angular,
+        },
+        acceleration: {
+          radial: acceleration.radial,
+          angular: acceleration.angular,
+        },
+        x: point.x,
+        y: point.y,
+      };
+    }
+
+    const manifest = {
+      owner: this.owner,
+      origin,
+      payload: this.payload,
+    };
+
+    // return a configured projectile
+    return new Projectile(this.owner.game, manifest);
+  }
+} // end of Line class
 
 /**
  *  Returns {x,y} position of polar coordinates given the
