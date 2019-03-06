@@ -1842,6 +1842,96 @@ function loadTemplates() {
     weapon: ring.spiralAlpha4Circle,
   };
 
+  ship.beta = {
+    config: {
+      health: 5,
+      hitValue: 5,
+      radius: 70,
+      sprite: sprite.pigeon.default,
+    },
+    weapon: ring.singleTargetPlayer,
+  }
+
+  ship.crab = {
+    config: {
+      health: 5,
+      hitValue: 5,
+      radius: 70,
+      sprite: sprite.pigeon.default,
+    },
+    weapon: ring.singleTargetPlayer,
+  }
+
+  ship.dolphin = {
+    config: {
+      health: 5,
+      hitValue: 5,
+      radius: 70,
+      sprite: sprite.pigeon.default,
+    },
+    weapon: ring.singleTargetPlayer,
+  }
+
+  ship.eel = {
+    config: {
+      health: 5,
+      hitValue: 5,
+      radius: 70,
+      sprite: sprite.pigeon.default,
+    },
+    weapon: ring.singleTargetPlayer,
+  }
+
+  ship.fish = {
+    config: {
+      health: 5,
+      hitValue: 5,
+      radius: 70,
+      sprite: sprite.pigeon.default,
+    },
+    weapon: ring.singleTargetPlayer,
+  }
+
+  ship.frog = {
+    config: {
+      health: 5,
+      hitValue: 5,
+      radius: 70,
+      sprite: sprite.pigeon.default,
+    },
+    weapon: ring.singleTargetPlayer,
+  }
+
+  ship.manta = {
+    config: {
+      health: 5,
+      hitValue: 5,
+      radius: 70,
+      sprite: sprite.pigeon.default,
+    },
+    weapon: ring.singleTargetPlayer,
+  }
+
+  ship.seahorse = {
+    config: {
+      health: 5,
+      hitValue: 5,
+      radius: 70,
+      sprite: sprite.pigeon.default,
+    },
+    weapon: ring.singleTargetPlayer,
+  }
+
+  ship.turtle = {
+    config: {
+      health: 5,
+      hitValue: 5,
+      radius: 70,
+      sprite: sprite.pigeon.default,
+    },
+    weapon: ring.singleTargetPlayer,
+  }
+
   // ship.eagleSlave = {
   //   config: {
   //     health: 100,
