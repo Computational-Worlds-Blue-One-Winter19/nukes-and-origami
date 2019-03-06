@@ -89,7 +89,7 @@ function loadTemplates() {
     radius: 3,
     hitValue: 3,
     rotate: true,
-    // image: AM.getAsset('./img/bullet.png'),
+    // image: AM.getAsset('bullet.png'),
     // scale: .04,
     sprite: sprite.laser.bigOrange,
 
@@ -144,7 +144,7 @@ function loadTemplates() {
     radius: 3,
     hitValue: 30,
     rotate: true,
-    // image: AM.getAsset('./img/bullet.png'),
+    // image: AM.getAsset('bullet.png'),
     // scale: .04,
     sprite: sprite.laser.bigOrange,
 
@@ -184,7 +184,7 @@ function loadTemplates() {
     radius: 3,
     hitValue: 3,
     rotate: true,
-    image: AM.getAsset('./img/rainbow_ball.png'),
+    image: AM.getAsset('rainbow_ball.png'),
     scale: 0.1,
     drawNuke: false,
     //sprite: sprite.laser.bigOrange,
@@ -249,7 +249,7 @@ function loadTemplates() {
     radius: 3,
     hitValue: 3,
     rotate: true,
-    // image: AM.getAsset('./img/bullet.png'),
+    // image: AM.getAsset('bullet.png'),
     // scale: .04,
     sprite: sprite.laser.bigOrange,
 
@@ -345,28 +345,28 @@ function loadTemplates() {
     init() {
       this.current.angle = toRadians(270);
     },
-    image: AM.getAsset('./img/rapid-bullet-horizontal.png'),
+    image: AM.getAsset('rapid-bullet-horizontal.png'),
     scale: 0.1,
   };
 
   projectile.paperBall = {
     radius: 15,
     rotate: false,
-    image: AM.getAsset('./img/paper_ball.png'),
+    image: AM.getAsset('paper_ball.png'),
     scale: 0.1,
   };
 
   projectile.rainbowBall = {
     radius: 15,
     rotate: false,
-    image: AM.getAsset('./img/rainbow_ball.png'),
+    image: AM.getAsset('rainbow_ball.png'),
     scale: 0.1,
   };
 
   projectile.glassBall = {
     radius: 10,
     rotate: false,
-    image: AM.getAsset('./img/glass_ball.png'),
+    image: AM.getAsset('glass_ball.png'),
     scale: 1.0,
   };
 
@@ -1976,23 +1976,23 @@ function loadTemplates() {
   /** *** BACKGROUNDS *** */
   background.paper = {
     layers: [{
-        layer: AM.getAsset('./img/notebook.png'),
+        layer: AM.getAsset('notebook.png'),
         offset: -768,
         verticalPixels: 768,
       },
       {
-        layer: AM.getAsset('./img/notebook.png'),
+        layer: AM.getAsset('notebook.png'),
         offset: -768 * 2,
         verticalPixels: 768,
       },
       {
-        layer: AM.getAsset('./img/clouds.png'),
+        layer: AM.getAsset('clouds.png'),
         offset: -2304,
         verticalPixels: 2304,
         parallaxMult: 1.25,
       },
       {
-        layer: AM.getAsset('./img/clouds.png'),
+        layer: AM.getAsset('clouds.png'),
         offset: -4608,
         verticalPixels: 2304,
         parallaxMult: 1.25,
@@ -2002,12 +2002,12 @@ function loadTemplates() {
 
   background.beach = {
     layers: [{
-        layer: AM.getAsset('./img/verticalscrollingbeach.png'),
+        layer: AM.getAsset('verticalscrollingbeach.png'),
         offset: -1766,
         verticalPixels: 1766,
       },
       {
-        layer: AM.getAsset('./img/verticalscrollingbeach.png'),
+        layer: AM.getAsset('verticalscrollingbeach.png'),
         offset: -1766 * 2,
         verticalPixels: 1766,
       },
@@ -2016,12 +2016,12 @@ function loadTemplates() {
 
   background.desert = {
     layers: [{
-        layer: AM.getAsset('./img/verticalscrollingdesert.png'),
+        layer: AM.getAsset('verticalscrollingdesert.png'),
         offset: -1766,
         verticalPixels: 1766,
       },
       {
-        layer: AM.getAsset('./img/verticalscrollingdesert.png'),
+        layer: AM.getAsset('verticalscrollingdesert.png'),
         offset: -1766 * 2,
         verticalPixels: 1766,
       },
@@ -2030,12 +2030,12 @@ function loadTemplates() {
 
   background.trees = {
     layers: [{
-        layer: AM.getAsset('./img/verticalscrollingtrees.png'),
+        layer: AM.getAsset('verticalscrollingtrees.png'),
         offset: -1766,
         verticalPixels: 1766,
       },
       {
-        layer: AM.getAsset('./img/verticalscrollingtrees.png'),
+        layer: AM.getAsset('verticalscrollingtrees.png'),
         offset: -1766 * 2,
         verticalPixels: 1766,
       },
@@ -2044,12 +2044,12 @@ function loadTemplates() {
 
   background.pattern = {
     layers: [{
-        layer: AM.getAsset('./img/seamless_pattern.png'),
+        layer: AM.getAsset('seamless_pattern.png'),
         offset: -1023 + 768,
         verticalPixels: 1023,
       },
       {
-        layer: AM.getAsset('./img/seamless_pattern.png'),
+        layer: AM.getAsset('seamless_pattern.png'),
         offset: -1023 * 2,
         verticalPixels: 1023,
       },
@@ -2058,12 +2058,12 @@ function loadTemplates() {
 
   background.white = {
     layers: [{
-        layer: AM.getAsset('./img/white_background.jpg'),
+        layer: AM.getAsset('white_background.jpg'),
         offset: -768,
         verticalPixels: 768,
       },
       {
-        layer: AM.getAsset('./img/white_background.jpg'),
+        layer: AM.getAsset('white_background.jpg'),
         offset: -768 * 2,
         verticalPixels: 768,
       },

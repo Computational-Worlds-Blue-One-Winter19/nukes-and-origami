@@ -1,16 +1,16 @@
 
 // we should get back to the following code for narration and background...
 
-// const slippyArr = [AM.getAsset('./img/slippy_inbound.png'),
-//   AM.getAsset('./img/slippy_roll.png'),
-//   AM.getAsset('./img/slippy_greatjob.png'),
-//   AM.getAsset('./img/slippy_mission_done.png'),
-//   AM.getAsset('./img/slippy_end.png')];
-// gameEngine.addEntity(new Background(gameEngine, AM.getAsset('./img/spacebg.png'), 0, 0));
-// gameEngine.addEntity(new Background(gameEngine, AM.getAsset('./img/spacebg.png'), 0, -screenWidth));
+// const slippyArr = [AM.getAsset('slippy_inbound.png'),
+//   AM.getAsset('slippy_roll.png'),
+//   AM.getAsset('slippy_greatjob.png'),
+//   AM.getAsset('slippy_mission_done.png'),
+//   AM.getAsset('slippy_end.png')];
+// gameEngine.addEntity(new Background(gameEngine, AM.getAsset('spacebg.png'), 0, 0));
+// gameEngine.addEntity(new Background(gameEngine, AM.getAsset('spacebg.png'), 0, -screenWidth));
 // gameEngine.addEntity(new Slippy(gameEngine, slippyArr));
-// gameEngine.addEntity(new Nuke(gameEngine, AM.getAsset('./img/nuke_single.png')));
-// gameEngine.addEntity(new Bullet(gameEngine, AM.getAsset('./img/bullet.png')));
+// gameEngine.addEntity(new Nuke(gameEngine, AM.getAsset('nuke_single.png')));
+// gameEngine.addEntity(new Bullet(gameEngine, AM.getAsset('bullet.png')));
 
 // We should get back to this stuff for narration and background
 
