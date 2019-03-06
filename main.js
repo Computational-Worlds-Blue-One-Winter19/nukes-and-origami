@@ -393,6 +393,7 @@ AM.downloadAll(() => {
 
   canvas.focus();
   game.sceneManager.loadBackground(background.beach, 1);
+  Cookies.set('name', 'value');
 });
 
 class SceneManager {
