@@ -93,7 +93,7 @@ class Shield extends PowerUp {
         powerUp(entity) {
           // Add the power up to the screen inventory
 
-          addItem('shield-icon.png', 'shield', 'powerUp');
+          addItem('./img/shield-icon.png', 'shield', 'powerUp');
 
 
           const currentX = entity.game.player.current.x;
@@ -143,7 +143,7 @@ class RapidFire extends PowerUp {
           const ring = entity.weapon.slot[0].ring;
           if (ring.config.cooldownTime > 0.05) {
             ring.config.cooldownTime -= 0.1;
-            addItem('fire-rate.png', 'rapidFire', 'powerUp');
+            addItem('./img/fire-rate.png', 'rapidFire', 'powerUp');
           }
         },
       },
@@ -176,7 +176,7 @@ class HomingMissile extends PowerUp {
           // this.entity = entity;
           // this.activate();
           if (!containsType('hommingMissile')) {
-            addItem('missile.png', 'hommingMissile', 'weapon');
+            addItem('./img/missile.png', 'hommingMissile', 'weapon');
             // entity.weapon.hasHomingMissile = true;
             entity.weapon.inventory.push(() => {
               // Pushing the function that will be used to activate the powerUp by the player
@@ -216,7 +216,7 @@ class ChainGun extends PowerUp {
           // this.entity = entity;
           // this.activate();
           if (!containsType('chainGun')) {
-            addItem('chaingun.png', 'chainGun', 'weapon');
+            addItem('./img/chaingun.png', 'chainGun', 'weapon');
             // entity.weapon.hasChainGun = true;
             entity.weapon.inventory.push(() => {
 
@@ -253,7 +253,7 @@ class Nuke extends PowerUp {
         speed: 60,
         powerUp(entity) {
           if (!containsType('nuke'))  {
-            addItem('rainbow_ball.png', 'nuke', 'weapon');
+            addItem('./img/rainbow_ball.png', 'nuke', 'weapon');
             entity.weapon.inventory.push(() => {
               // Pushing the function that will be used to activate the powerUp by the player
               entity.weapon.loadNuke( () => {
