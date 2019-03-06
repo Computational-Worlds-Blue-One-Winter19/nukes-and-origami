@@ -3,7 +3,7 @@ function loadSpriteSheets() {
   sprite.crane = {
     default: {
       default: {
-        image: AM.getAsset('./img/crane.png'),
+        image: AM.getAsset('crane.png'),
         dimension: {
           originX: 0,
           originY: 0,
@@ -17,7 +17,7 @@ function loadSpriteSheets() {
         }
       },
       hit:  {
-        image: AM.getAsset('./img/crane.png'),
+        image: AM.getAsset('crane.png'),
         dimension: {
           originX: 1760,
           originY: 0,
@@ -37,7 +37,7 @@ function loadSpriteSheets() {
   sprite.miniCrane = {
     default: {
       default: {
-        image: AM.getAsset('./img/mini-crane-sheet.png'),
+        image: AM.getAsset('mini-crane-sheet.png'),
         dimension: {
           originX: 0,
           originY: 0,
@@ -56,7 +56,7 @@ function loadSpriteSheets() {
   sprite.bat = {
     default: {
       default: {
-        image: AM.getAsset('./img/bat.png'),
+        image: AM.getAsset('bat.png'),
         dimension: {
           originX: 0,
           originY: 0,
@@ -70,7 +70,7 @@ function loadSpriteSheets() {
         }
       },
       hit:  {
-        image: AM.getAsset('./img/bat.png'),
+        image: AM.getAsset('bat.png'),
         dimension: {
           originX: 1320,
           originY: 0,
@@ -89,7 +89,7 @@ function loadSpriteSheets() {
   sprite.swallow = {
     default: {
       default: {
-        image: AM.getAsset('./img/swallow.png'),
+        image: AM.getAsset('swallow.png'),
         dimension: {
           originX: 0,
           originY: 0,
@@ -103,7 +103,7 @@ function loadSpriteSheets() {
         },
       },
       hit:  {
-        image: AM.getAsset('./img/swallow.png'),
+        image: AM.getAsset('swallow.png'),
         dimension: {
           originX: 7389,
           originY: 0,
@@ -119,7 +119,7 @@ function loadSpriteSheets() {
     },
     boss: {
       default: {
-        image: AM.getAsset('./img/swallow.png'),
+        image: AM.getAsset('swallow.png'),
         dimension: {
           originX: 0,
           originY: 0,
@@ -133,7 +133,7 @@ function loadSpriteSheets() {
         }
       },
       hit:  {
-        image: AM.getAsset('./img/swallow.png'),
+        image: AM.getAsset('swallow.png'),
         dimension: {
           originX: 7389,
           originY: 0,
@@ -152,7 +152,7 @@ function loadSpriteSheets() {
   sprite.owl = {
     default: {
       default: {
-        image: AM.getAsset('./img/owl.png'),
+        image: AM.getAsset('owl.png'),
         dimension: {
           originX: 0,
           originY: 0,
@@ -166,7 +166,7 @@ function loadSpriteSheets() {
         },
       },
       hit:  {
-        image: AM.getAsset('./img/owl.png'),
+        image: AM.getAsset('owl.png'),
         dimension: {
           originX: 6196,
           originY: 0,
@@ -182,7 +182,7 @@ function loadSpriteSheets() {
     },
     boss: {
       default: {
-        image: AM.getAsset('./img/owl.png'),
+        image: AM.getAsset('owl.png'),
         dimension: {
           originX: 0,
           originY: 0,
@@ -196,7 +196,7 @@ function loadSpriteSheets() {
         }
       },
       hit:  {
-        image: AM.getAsset('./img/owl.png'),
+        image: AM.getAsset('owl.png'),
         dimension: {
           originX: 6196,
           originY: 0,
@@ -215,7 +215,7 @@ function loadSpriteSheets() {
   sprite.dove = {
     default: {
       default: {
-        image: AM.getAsset('./img/dove.png'),
+        image: AM.getAsset('dove.png'),
         dimension: {
           originX: 0,
           originY: 0,
@@ -229,7 +229,7 @@ function loadSpriteSheets() {
         }
       },
       hit:  {
-        image: AM.getAsset('./img/dove.png'),
+        image: AM.getAsset('dove.png'),
         dimension: {
           originX: 3705,
           originY: 0,
@@ -248,7 +248,7 @@ function loadSpriteSheets() {
   sprite.pigeon = {
     default: {
       default: {
-        image: AM.getAsset('./img/pigeon.png'),
+        image: AM.getAsset('pigeon.png'),
         dimension: {
           originX: 0,
           originY: 0,
@@ -262,7 +262,7 @@ function loadSpriteSheets() {
         }
       },
       hit:  {
-        image: AM.getAsset('./img/pigeon.png'),
+        image: AM.getAsset('pigeon.png'),
         dimension: {
           originX: 0,
           originY: 460,
@@ -281,7 +281,7 @@ function loadSpriteSheets() {
   sprite.bird = {
     default: {
       default: {
-        image: AM.getAsset('./img/bird.png'),
+        image: AM.getAsset('bird.png'),
         dimension:  {
           originX: 0,
           originY: 0,
@@ -295,7 +295,7 @@ function loadSpriteSheets() {
         }
       },
       hit:  {
-        image: AM.getAsset('./img/bird.png'),
+        image: AM.getAsset('bird.png'),
         dimension:  {
           originX: 6192,
           originY: 0,
@@ -314,7 +314,7 @@ function loadSpriteSheets() {
   sprite.eagleBoss = {
     default: {
       default: {
-        image: AM.getAsset('./img/eagle.png'),
+        image: AM.getAsset('eagle.png'),
         dimension:  {
           originX: 0,
           originY: 0,
@@ -332,7 +332,7 @@ function loadSpriteSheets() {
         // }
       },
       hit:  {
-        image: AM.getAsset('./img/eagle.png'),
+        image: AM.getAsset('eagle.png'),
         dimension:  {
           originX: 0,
           originY: 501,
@@ -351,7 +351,7 @@ function loadSpriteSheets() {
   sprite.goose = {
     default: {
       default: {
-        image: AM.getAsset('./img/goose.png'),
+        image: AM.getAsset('goose.png'),
         dimension:  {
           originX: 0,
           originY: 0,
@@ -365,7 +365,7 @@ function loadSpriteSheets() {
         }
       },
       hit:  {
-        image: AM.getAsset('./img/goose.png'),
+        image: AM.getAsset('goose.png'),
         dimension:  {
           originX: 5016,
           originY: 0,
@@ -384,7 +384,7 @@ function loadSpriteSheets() {
   sprite.hummer = {
     default: {
       default: {
-        image: AM.getAsset('./img/hummer.png'),
+        image: AM.getAsset('hummer.png'),
         dimension:  {
           originX: 0,
           originY: 0,
@@ -398,7 +398,7 @@ function loadSpriteSheets() {
         }
       },
       hit:  {
-        image: AM.getAsset('./img/hummer.png'),
+        image: AM.getAsset('hummer.png'),
         dimension:  {
           originX: 0,
           originY: 424,
@@ -419,7 +419,7 @@ function loadSpriteSheets() {
   sprite.rainbowBall = {
     default: {
       default: {
-        image: AM.getAsset('./img/rainbow_ball.png'),
+        image: AM.getAsset('rainbow_ball.png'),
         dimension: {
           originX: 0,
           originY: 0,
@@ -439,7 +439,7 @@ function loadSpriteSheets() {
   sprite.heartIcon = {
     default: {
       default: {
-        image: AM.getAsset('./img/heart.png'),
+        image: AM.getAsset('heart.png'),
         dimension: {
           originX: 0,
           originY: 0,
@@ -457,7 +457,7 @@ function loadSpriteSheets() {
   sprite.shieldIcon = {
     default: {
       default: {
-        image: AM.getAsset('./img/shield-icon.png'),
+        image: AM.getAsset('shield-icon.png'),
         dimension: {
           originX: 0,
           originY: 0,
@@ -475,7 +475,7 @@ function loadSpriteSheets() {
 
   sprite.shield = {
     default: {
-      image: AM.getAsset('./img/shield.png'),
+      image: AM.getAsset('shield.png'),
       dimension: {
         originX: 50,
         originY: 50,
@@ -493,7 +493,7 @@ function loadSpriteSheets() {
   sprite.rapidFire = {
     default: {
       default: {
-        image: AM.getAsset('./img/fire-rate.png'),
+        image: AM.getAsset('fire-rate.png'),
         dimension: {
           originX: 0,
           originY: 0,
@@ -511,7 +511,7 @@ function loadSpriteSheets() {
   sprite.reverseControls = {
     default: {
       default: {
-        image: AM.getAsset('./img/reverse.png'),
+        image: AM.getAsset('reverse.png'),
         dimension: {
           originX: 0,
           originY: 0,
@@ -530,7 +530,7 @@ function loadSpriteSheets() {
   sprite.homingMissile = {
     default: {
       default: {
-        image: AM.getAsset('./img/missile.png'),
+        image: AM.getAsset('missile.png'),
         dimension: {
           originX: 0,
           originY: 0,
@@ -548,7 +548,7 @@ function loadSpriteSheets() {
   sprite.gunUp = {
     default: {
       default: {
-        image: AM.getAsset('./img/gunup.png'),
+        image: AM.getAsset('gunup.png'),
         dimension: {
           originX: 0,
           originY: 0,
@@ -566,7 +566,7 @@ function loadSpriteSheets() {
   sprite.chainGun = {
     default: {
       default: {
-        image: AM.getAsset('./img/chaingun.png'),
+        image: AM.getAsset('chaingun.png'),
         dimension: {
           originX: 0,
           originY: 0,
@@ -584,7 +584,7 @@ function loadSpriteSheets() {
   /** Laser sprite */
   // sprite.testLaser = {
   //   default: {
-  //     image: AM.getAsset('./img/7_shoot_sheet.png'),
+  //     image: AM.getAsset('7_shoot_sheet.png'),
   //     dimension: {
   //       originX: 176,
   //       originY: 176,
@@ -601,7 +601,7 @@ function loadSpriteSheets() {
   sprite.testLaser = {
     default: {
       default: {
-        image: AM.getAsset('./img/laser_red.png'),
+        image: AM.getAsset('laser_red.png'),
         dimension: {
           originX: 0,
           originY: 0,
@@ -620,7 +620,7 @@ function loadSpriteSheets() {
   sprite.laser = {
     orange: {
       default: {
-        image: AM.getAsset('./img/7_shoot_sheet.png'),
+        image: AM.getAsset('7_shoot_sheet.png'),
         dimension: {
           originX: 176,
           originY: 177,
@@ -636,7 +636,7 @@ function loadSpriteSheets() {
     },
     yellow: {
       default: {
-        image: AM.getAsset('./img/7_shoot_sheet.png'),
+        image: AM.getAsset('7_shoot_sheet.png'),
         dimension: {
           originX: 176,
           originY: 283,
@@ -652,7 +652,7 @@ function loadSpriteSheets() {
     },
     white: {
       default: {
-        image: AM.getAsset('./img/7_shoot_sheet.png'),
+        image: AM.getAsset('7_shoot_sheet.png'),
         dimension: {
           originX: 176,
           originY: 389,
@@ -668,7 +668,7 @@ function loadSpriteSheets() {
     },
     bigGreen: {
       default: {
-        image: AM.getAsset('./img/7_shoot_sheet.png'),
+        image: AM.getAsset('7_shoot_sheet.png'),
         dimension: {
           originX: 8,
           originY: 282,
@@ -684,7 +684,7 @@ function loadSpriteSheets() {
     },
     bigOrange: {
       default: {
-        image: AM.getAsset('./img/7_shoot_sheet.png'),
+        image: AM.getAsset('7_shoot_sheet.png'),
         dimension: {
           originX: 0,
           originY: 0,
@@ -703,7 +703,7 @@ function loadSpriteSheets() {
   sprite.cutLaser = {
     default: {
       default: {
-        image: AM.getAsset('./img/cut_laser.png'),
+        image: AM.getAsset('cut_laser.png'),
         dimension: {
           originX: 0,
           originY: 0,
@@ -722,7 +722,7 @@ function loadSpriteSheets() {
   sprite.plane = {
     purple: {
       default: {
-        image: AM.getAsset('./img/purple-plane-small.png'),
+        image: AM.getAsset('purple-plane-small.png'),
         dimension: {
           originX: 0,
           originY: 0,
@@ -736,7 +736,7 @@ function loadSpriteSheets() {
         }
       },
       right: {
-        image: AM.getAsset('./img/purple-plane-small.png'),
+        image: AM.getAsset('purple-plane-small.png'),
         dimension: {
           originX: 60,
           originY: 0,
@@ -750,7 +750,7 @@ function loadSpriteSheets() {
         },
       },
       left: {
-        image: AM.getAsset('./img/purple-plane-small.png'),
+        image: AM.getAsset('purple-plane-small.png'),
         dimension: {
           originX: 120,
           originY: 0,
@@ -764,7 +764,7 @@ function loadSpriteSheets() {
         },
       },
       rollRight: {
-        image: AM.getAsset('./img/purple-plane-small.png'),
+        image: AM.getAsset('purple-plane-small.png'),
         dimension: {
           originX: 0,
           originY: 66,
@@ -778,7 +778,7 @@ function loadSpriteSheets() {
         },
       },
       rollLeft: {
-        image: AM.getAsset('./img/purple-plane-small.png'),
+        image: AM.getAsset('purple-plane-small.png'),
         dimension: {
           originX: 0,
           originY: 132,
@@ -792,7 +792,7 @@ function loadSpriteSheets() {
         }
       },
       hit:  {
-        image: AM.getAsset('./img/purple-plane-small.png'),
+        image: AM.getAsset('purple-plane-small.png'),
         dimension: {
           originX: 0,
           originY: 0,
@@ -808,7 +808,7 @@ function loadSpriteSheets() {
     },
     red: {
       default: {
-        image: AM.getAsset('./img/plane-small.png'),
+        image: AM.getAsset('plane-small.png'),
         dimension: {
           originX: 0,
           originY: 0,
@@ -822,7 +822,7 @@ function loadSpriteSheets() {
         },
       },
       right: {
-        image: AM.getAsset('./img/plane-small.png'),
+        image: AM.getAsset('plane-small.png'),
         dimension: {
           originX: 60,
           originY: 0,
@@ -836,7 +836,7 @@ function loadSpriteSheets() {
         },
       },
       left: {
-        image: AM.getAsset('./img/plane-small.png'),
+        image: AM.getAsset('plane-small.png'),
         dimension: {
           originX: 120,
           originY: 0,
@@ -850,7 +850,7 @@ function loadSpriteSheets() {
         },
       },
       rollRight: {
-        image: AM.getAsset('./img/plane-small.png'),
+        image: AM.getAsset('plane-small.png'),
         dimension: {
           originX: 0,
           originY: 66,
@@ -864,7 +864,7 @@ function loadSpriteSheets() {
         },
       },
       rollLeft: {
-        image: AM.getAsset('./img/plane-small.png'),
+        image: AM.getAsset('plane-small.png'),
         dimension: {
           originX: 0,
           originY: 132,
@@ -878,7 +878,7 @@ function loadSpriteSheets() {
         }
       },
       hit:  {
-        image: AM.getAsset('./img/plane-small.png'),
+        image: AM.getAsset('plane-small.png'),
         dimension: {
           originX: 0,
           originY: 0,
@@ -894,7 +894,7 @@ function loadSpriteSheets() {
     },
     lightBlue: {
       default: {
-        image: AM.getAsset('./img/light_blue_plane.png'),
+        image: AM.getAsset('light_blue_plane.png'),
         dimension: {
           originX: 0,
           originY: 0,
@@ -908,7 +908,7 @@ function loadSpriteSheets() {
         },
       },        
       right: {
-        image: AM.getAsset('./img/light_blue_plane.png'),
+        image: AM.getAsset('light_blue_plane.png'),
         dimension: {
           originX: 60,
           originY: 0,
@@ -922,7 +922,7 @@ function loadSpriteSheets() {
         },
       },
       left: {
-        image: AM.getAsset('./img/light_blue_plane.png'),
+        image: AM.getAsset('light_blue_plane.png'),
         dimension: {
           originX: 120,
           originY: 0,
@@ -936,7 +936,7 @@ function loadSpriteSheets() {
         },
       },
       rollRight: {
-        image: AM.getAsset('./img/light_blue_plane.png'),
+        image: AM.getAsset('light_blue_plane.png'),
         dimension: {
           originX: 0,
           originY: 66,
@@ -950,7 +950,7 @@ function loadSpriteSheets() {
         },
       },
       rollLeft: {
-        image: AM.getAsset('./img/light_blue_plane.png'),
+        image: AM.getAsset('light_blue_plane.png'),
         dimension: {
           originX: 0,
           originY: 132,
@@ -964,7 +964,7 @@ function loadSpriteSheets() {
         },
       },
       hit:  {
-        image: AM.getAsset('./img/light_blue_plane.png'),
+        image: AM.getAsset('light_blue_plane.png'),
         dimension: {
           originX: 0,
           originY: 0,
@@ -982,7 +982,7 @@ function loadSpriteSheets() {
 
   sprite.explosion = {
     default:  {
-        image: AM.getAsset('./img/explosion-sheet.png'),
+        image: AM.getAsset('explosion-sheet.png'),
         dimension:  {
           originX: 0,
           originY: 0,

@@ -1,9 +1,11 @@
 class AssetManager {
-  constructor() {
+  constructor(source) {
     this.successCount = 0;
     this.errorCount = 0;
     this.cache = [];
     this.downloadQueue = [];
+
+    this.bucket = 'https://storage.googleapis.com/nukes-and-origami/static/';
   }
 
   queueDownload(path) {
@@ -31,7 +33,7 @@ class AssetManager {
         if (that.isDone()) callback();
       });
 
-      img.src = path;
+      img.src = this.bucket + path;
       this.cache[path] = img;
     }
   }
