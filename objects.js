@@ -56,6 +56,39 @@ function loadTemplates() {
     },
   };
 
+  /**
+   * Different homing behavior for enemy to player engagement.
+   * Travel a minimum distance and then attempt to lock player. The missle can only see
+   * some max distance. It will lock onto the player's position a single time, alter
+   * its heading, and then continue along a direct path.
+   */
+  projectile.singleLockHoming = {
+    radius: 3,
+
+    local: {
+      initialDistance: 150, // distance before activating
+      maxRange: 600, // max distance to spot player
+      totalDistance: 0,
+      isLocked: false,
+    },
+
+    update() {
+      // update angle if projectile is beyond the limit
+      if (!this.local.isLocked && this.local.totalDistance > this.local.initialDistance) {
+        const target = this.game.getPlayerLocation(this.current);
+        if (target.radius < this.local.maxRange) {
+          this.current.angle = target.angle;
+          this.local.isLocked = true;
+        }
+      }
+
+      // update r
+      this.current.velocity.radial += this.current.acceleration.radial * this.current.elapsedTime;
+      this.current.r = this.current.velocity.radial * this.current.elapsedTime;
+      this.local.totalDistance += this.current.r;
+    },
+  };
+
   projectile.homingCrane = {
     radius: 3,
     sprite: sprite.miniCrane.default,
@@ -3384,7 +3417,7 @@ function loadTemplates() {
    **                                                                                       **/
   ring.lineTest = {
     payload: {
-      type: projectile.microBullet,
+      type: projectile.singleLockHoming,
       velocity: {
         radial: 450,
         angular: 0,
