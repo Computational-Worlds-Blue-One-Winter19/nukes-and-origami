@@ -205,7 +205,7 @@ function hideControlMessage() {
  */
 function startGame(game) {
   game.initializeSceneManager();
-  // playAudio(1);
+  playAudio(1);
   //   // playLoop(game.sounds.gameLoop);
   // let loop = new SeamlessLoop();
   // loop.addUri("audio/Game_Loop_v.1.ogg", 9590, 'sound1');
