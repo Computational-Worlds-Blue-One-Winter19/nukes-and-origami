@@ -344,7 +344,7 @@ function initLeaderboard() {
  * Attaches an on click listener to the submit name button
  * @param {NukesAndOrgami} game The game that will be started after the user clicks submit
  */
-function initSumbitNameButton(game) {
+function initSubmitNameButton(game) {
   addEvent(
     document.getElementById('submit'),
     'click',
@@ -374,7 +374,7 @@ function initSumbitNameButton(game) {
 
 function initStartGameButton(game) {
   addEvent(
-    document.getElementById('button'),
+    document.getElementById('start-button'),
     'click',
     () => {
       // Check if we have the user's name saved
@@ -406,7 +406,7 @@ function initStartGameButton(game) {
 function initIntroMessage(game) {
   showStaticMessage('intro-message');
   // Add an event click listener for the submit name button
-  initSumbitNameButton(game);
+  initSubmitNameButton(game);
 
   // Add an event click listener for the start game button
   initStartGameButton(game);
