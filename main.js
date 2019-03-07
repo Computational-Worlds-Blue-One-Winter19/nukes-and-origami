@@ -109,7 +109,7 @@ class NukesAndOrigami extends GameEngine {
   }
 
   startWaterLevel() {
-    this.sceneManager.scenes.push(scene.waterOne);
+    this.sceneManager.scenes.push(scene.waterTwo);
   }
 
   // Override

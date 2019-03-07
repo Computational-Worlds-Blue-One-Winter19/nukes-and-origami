@@ -3496,7 +3496,7 @@ function loadTemplates() {
               initialDirection: 'east',
               snapLine: 1100,
               waitOffScreen: 3,
-              snapLineSpeed: 200,
+              snapLineSpeed: 400,
             },
             weapon: ring.spreadBeta2
           },       
@@ -3514,7 +3514,7 @@ function loadTemplates() {
               initialDirection: 'east',
               snapLine: 1100,
               waitOffScreen: 3,
-              snapLineSpeed: 200,
+              snapLineSpeed: 400,
             },
             weapon: ring.spreadBeta2
           },          
@@ -3532,7 +3532,7 @@ function loadTemplates() {
               initialDirection: 'west',
               // snapLine: 500,
               waitOffScreen: 3,
-              snapLineSpeed: 200,
+              snapLineSpeed: 400,
             },
             weapon: ring.spreadBeta2
           },
@@ -3549,6 +3549,71 @@ function loadTemplates() {
             weapon: ring.fourFixedSpeedCircle,
           }
         ]
+      },
+    ]
+  }
+
+  scene.waterTwo = {
+    waves: [
+      {
+        numOfEnemies: 10,
+        ships: new Array(10).fill(ship.beta),
+        // ships: [ship.beta, ship.beta, ship.beta, ship.beta, ship.beta, ship.beta, ship.beta, ship.beta, ship.beta, ship.beta, 
+        //         ]
+        paths: new Array(10).fill(path.straightDown),
+        // initialXPoints: ,
+        initialYPoints: [-307, -116, -387, -233, -400, -600, -450, -187, -93, -250],
+        waitUntilEnemiesGone: true,
+        shipManifestOveride: [
+          {
+            config: {
+              snapLineSpeed: 400,
+            },
+            weapon: ring.uniFiveWay
+          },
+          {
+            config: {
+              snapLineSpeed: 100
+            },
+            weapon: ring.uniFiveWay
+          },
+          {
+            config: {
+              snapLineSpeed: 300
+            },
+            weapon: ring.uniFiveWay
+          },
+          {
+            config: {
+              snapLineSpeed: 600
+            },
+            weapon: ring.uniFiveWay
+          },
+          {
+            config: {
+              snapLineSpeed: 200
+            },
+            weapon: ring.uniFiveWay
+          },
+          {
+            config: {
+              snapLineSpeed: 250
+            },
+            weapon: ring.uniFiveWay
+          },
+          {
+            config: {
+              snapLineSpeed: 477
+            },
+            weapon: ring.uniFiveWay
+          },
+          {
+            config: {
+              snapLineSpeed: 400
+            },
+            weapon: ring.uniFiveWay
+          },
+        ],
       },
     ]
   }
