@@ -232,6 +232,112 @@ function addEvent(element, evnt, funct) {
   return element.addEventListener(evnt, funct, false);
 }
 
+const HttpClient = function () {
+  this.get = function (aUrl, aCallback) {
+    const anHttpRequest = new XMLHttpRequest();
+    anHttpRequest.onreadystatechange = function () {
+      if (anHttpRequest.readyState == 4 && anHttpRequest.status == 200) { aCallback(anHttpRequest.responseText); }
+    };
+
+    anHttpRequest.open('GET', aUrl, true);
+    anHttpRequest.send(null);
+  };
+};
+
+/**
+ * Initializes the modal containing the leaderboard
+ */
+function initModal() {
+  const client = new HttpClient();
+  client.get('https://us-central1-nukes-and-origami.cloudfunctions.net/getScores?name=Tom', (response) => {
+    // do something with response
+    console.log('Got a response');
+    console.log(`${JSON.stringify(response)}`);
+  });
+}
+
+/**
+ * Given a playerScore object creates a table row that is appended
+ * to the leaderboard table
+ *
+ * The HTML row resembles the following
+ * <tr>
+ *   <td>1</td>      // Rank
+ *   <td>Alvin</td>  // Player Name
+ *   <td>5000</td>   // Score
+ * </tr>
+ * @param {Object} playerScore
+ */
+function appendTableRow(playerScore) {
+  const {
+    name,
+    rank,
+    score,
+  } = playerScore;
+
+  console.log(`Name: ${name}, Rank: ${rank}, Score: ${score}`);
+
+  // Get a reference to the table
+  const tableRef = document.getElementById('leaderboard-table');
+
+  // Insert a row at the end of the table
+  const newRow = tableRef.insertRow(-1);
+
+  // Insert a cell in the row at index 0 (Position/Rank)
+  const rankCell = newRow.insertCell(0);
+
+  // Append a text node to the cell
+  const rankText = document.createTextNode(rank);
+  rankCell.appendChild(rankText);
+
+  // Insert a cell in the row at index 1 (Name)
+  const nameCell = newRow.insertCell(1);
+
+  // Append a text node to the cell
+  const nameText = document.createTextNode(name);
+  nameCell.appendChild(nameText);
+
+  // Insert a cell in the row at index 2 (Score)
+  const scoreCell = newRow.insertCell(2);
+
+  // Append a text node to the cell
+  const scoreText = document.createTextNode(score);
+  scoreCell.appendChild(scoreText);
+}
+
+// Makes an async call to the given URL
+
+/**
+ * Makes an asycn fetch call using the given URl
+ * @param {String} url
+ */
+async function fetchAsync(url) {
+  console.log('Inisde the fetch');
+  const response = await fetch(url);
+  // const data
+  return await response.json();
+}
+
+/**
+ * Using the given data object parses each player score and the userRank
+ * in order to load the data onto the leaderboard table
+ * @param {Object} data
+ */
+function loadLeaderboard(data) {
+  console.log(`${JSON.stringify(data.leaderboard)}`);
+  const {
+    leaderboard, userRank,
+  } = data;
+
+  for (let index = 0; index < leaderboard.length; index += 1) {
+    const playerScore = leaderboard[index];
+
+    appendTableRow(playerScore);
+    appendTableRow(playerScore);
+    appendTableRow(playerScore);
+  }
+}
+
 
 /**
  * Completes the initializes of the intro messge
@@ -240,11 +346,22 @@ function addEvent(element, evnt, funct) {
  */
 function initIntroMessage(game) {
   showStaticMessage('intro-message');
+  // Add an event click listener for the start game button
   addEvent(
     document.getElementById('button'),
     'click',
     () => { startGame(game); },
   );
+
+
+  // Initialize the modal
+  const elems = document.querySelectorAll('.modal');
+  const instances = M.Modal.init(elems, {});
+
+  console.log('Making the call');
+  fetchAsync('https://us-central1-nukes-and-origami.cloudfunctions.net/getScores?name=Tom').then((data) => {
+    loadLeaderboard(data);
+  });
 }
 
 // Inventory related functions
