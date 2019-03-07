@@ -232,30 +232,6 @@ function addEvent(element, evnt, funct) {
   return element.addEventListener(evnt, funct, false);
 }
 
-const HttpClient = function () {
-  this.get = function (aUrl, aCallback) {
-    const anHttpRequest = new XMLHttpRequest();
-    anHttpRequest.onreadystatechange = function () {
-      if (anHttpRequest.readyState == 4 && anHttpRequest.status == 200) { aCallback(anHttpRequest.responseText); }
-    };
-
-    anHttpRequest.open('GET', aUrl, true);
-    anHttpRequest.send(null);
-  };
-};
-
-/**
- * Initializes the modal containing the leaderboard
- */
-function initModal() {
-  const client = new HttpClient();
-  client.get('https://us-central1-nukes-and-origami.cloudfunctions.net/getScores?name=Tom', (response) => {
-    // do something with response
-    console.log('Got a response');
-    console.log(`${JSON.stringify(response)}`);
-  });
-}
-
 /**
  * Given a playerScore object creates a table row that is appended
  * to the leaderboard table
@@ -274,8 +250,6 @@ function appendTableRow(playerScore) {
     rank,
     score,
   } = playerScore;
-
-  console.log(`Name: ${name}, Rank: ${rank}, Score: ${score}`);
 
   // Get a reference to the table
   const tableRef = document.getElementById('leaderboard-table');
@@ -318,6 +292,14 @@ async function fetchAsync(url) {
   return await response.json();
 }
 
+function getUserName() {
+  Cookies.set('name', 'value');
+}
+
+function highlightUserScore(userRank) {
+  console.log(`${JSON.stringify(userRank)}`);
+}
+
 /**
  * Using the given data object parses each player score and the userRank
  * in order to load the data onto the leaderboard table
@@ -329,6 +311,13 @@ function loadLeaderboard(data) {
     leaderboard, userRank,
   } = data;
 
+  // Attach listener to the checkScore button that uses the userRank data
+  addEvent(
+    document.getElementById('checkScore'),
+    'click',
+    () => { highlightUserScore(userRank); },
+  );
+
   for (let index = 0; index < leaderboard.length; index += 1) {
     const playerScore = leaderboard[index];
 
@@ -338,30 +327,92 @@ function loadLeaderboard(data) {
   }
 }
 
+/**
+ * Initializes the leaderboard, modal, and the checkScore button
+ */
+function initLeaderboard() {
+  // Initialize the modal
+  const elems = document.querySelectorAll('.modal');
+  const instances = M.Modal.init(elems, {});
+
+  fetchAsync('https://us-central1-nukes-and-origami.cloudfunctions.net/getScores?name=Tom').then((data) => {
+    loadLeaderboard(data);
+  });
+}
 
 /**
- * Completes the initializes of the intro messge
+ * Attaches an on click listener to the submit name button
+ * @param {NukesAndOrgami} game The game that will be started after the user clicks submit
+ */
+function initSumbitNameButton(game) {
+  addEvent(
+    document.getElementById('submit'),
+    'click',
+    () => {
+      // Handle the submit button being clicked
+
+      // Get an instance of the modalName
+      const modalElem = document.getElementById('modalName');
+      const instance = M.Modal.getInstance(modalElem);
+
+      // Get the name entered by the user
+      const textInput = document.getElementById('user_name');
+      const userName = textInput.value;
+      if (userName) {
+        // Text is not empty save it onto the cookie
+        // Save the value onto a cookie
+        Cookies.set('name', userName);
+
+        // Close the modal
+        instance.close();
+
+        startGame(game);
+      }
+    },
+  );
+}
+
+function initStartGameButton(game) {
+  addEvent(
+    document.getElementById('button'),
+    'click',
+    () => {
+      // Check if we have the user's name saved
+      if (!Cookies.get('name')) {
+        const modalElem = document.getElementById('modalName');
+        const instance = M.Modal.getInstance(modalElem);
+        // Open the modal
+        instance.open();
+
+        // Autofocus the input field
+        const textInput = document.getElementById('user_name');
+
+        // Auto focus the text input field
+        textInput.focus();
+      } else {
+        // Returning user and we already have a named saved onto the cookie
+        startGame(game);
+      }
+    },
+  );
+}
+
+
+/**
+ * Initializes of the intro messge
  * @param {NukesAndOrigami} game The game that will be started after the user clicks on the
  * start button
  */
 function initIntroMessage(game) {
   showStaticMessage('intro-message');
+  // Add an event click listener for the submit name button
+  initSumbitNameButton(game);
+
   // Add an event click listener for the start game button
-  addEvent(
-    document.getElementById('button'),
-    'click',
-    () => { startGame(game); },
-  );
+  initStartGameButton(game);
 
-
-  // Initialize the modal
-  const elems = document.querySelectorAll('.modal');
-  const instances = M.Modal.init(elems, {});
-
-  console.log('Making the call');
-  fetchAsync('https://us-central1-nukes-and-origami.cloudfunctions.net/getScores?name=Tom').then((data) => {
-    loadLeaderboard(data);
-  });
+  // While we are initing the intro message we'll also init the leaderboard
+  initLeaderboard();
 }
 
 // Inventory related functions

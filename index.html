@@ -37,6 +37,20 @@
             <div id="lives-icon-container">
             </div>
         </div>
+        <!-- Get name modal -->
+        <div id="modalName" class="modal">
+            <div class="modal-content">
+                <h4>But first! What's your name?</h4>
+                <div class="input-field">
+                    <input placeholder="Name" id="user_name" type="text" class="validate" required="">
+                    <span class="helper-text" data-error="Field can't be empty" data-success=""></span>
+                    <!-- <label for="user_name">Name</label> -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="waves-effect waves-orange btn-flat" type="submit" name="action" id="submit">Submit</button>
+            </div>
+        </div>
         <!-- Leaderboard -->
         <div class="leaderboard">
             <a class="blue-grey darken-3 waves-effect waves-light btn modal-trigger" data-target="modal1"><i class="material-icons left">score</i>Leaderboard</a>
@@ -70,14 +84,14 @@
                             <tr>
                                 <td>100</td>
                                 <td>Alvin</td>
-                                <td>Eclair</td>
+                                <td>500000000</td>
                             </tr>
                         </tbody>
                 </table> -->
             </div>
             <div class="modal-footer">
-                <a href="#!" class="modal-close waves-effect waves-green btn-flat">Check Score</a>
-                <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
+                <a class="waves-effect waves-orange btn-flat" id="checkScore">Check My Score</a>
+                <a href="#!" class="modal-close waves-effect waves-orange btn-flat">Close</a>
             </div>
         </div>
         <!-- Score -->
