@@ -3480,23 +3480,12 @@ function loadTemplates() {
 
   scene.waterOne = {
     waves: [
-      // {
-      //   // choreography: [
-      //   //   {
-      //   //     id: 'spawnEnemies'
-      //   //   }
-      //   // ], //end choreo
-      //   numOfEnemies: 4,
-      //   ships: [ship.crab, ship.eel, ship.eel, ship.crab],
-      //   paths: [path.rightUTurn, path.straightDown, path.straightDown, path.leftUTurn],
-      //   waitUntilEnemiesGone: false
-      // }, //end wave 1
       {
-        numOfEnemies: 5,
-        ships: [ship.turtle, ship.dolphinRight, ship.dolphinLeft, ship.dolphinLeft, ship.turtle],
-        paths: [path.strafeRight, path.sawToothRight, path.sawtoothLeft, path.sawtoothLeft, path.strafeLeft],
-        initialXPoints: [125, -200, 1300, 1300, 900],
-        initialYPoints: [-10, 300, 550, 650, -10],
+        numOfEnemies: 8,
+        ships: [ship.turtle, ship.dolphinRight, ship.dolphinRight, ship.dolphinRight, ship.dolphinLeft, ship.dolphinLeft, ship.dolphinLeft, ship.turtle],
+        paths: [path.strafeRight, path.sawToothRight, path.sawToothRight, path.sawToothRight, path.sawtoothLeft, path.sawtoothLeft, path.sawtoothLeft, path.strafeLeft],
+        initialXPoints: [125, -200, -200, -200, 1300, 1300, 1300, 900],
+        initialYPoints: [-10, 450, 550, 650, 500, 600, 700, -10],
         waitUntilEnemiesGone: true,
         shipManifestOverride: [
           {
@@ -3505,129 +3494,61 @@ function loadTemplates() {
           {
             config: {
               initialDirection: 'east',
-              // snapLine: 500,
-              waitOffScreen: 3
+              snapLine: 1100,
+              waitOffScreen: 3,
+              snapLineSpeed: 200,
             },
-            // weapon: ring.spreadBeta2
+            weapon: ring.spreadBeta2
+          },       
+          {
+            config: {
+              initialDirection: 'east',
+              snapLine: 1100,
+              waitOffScreen: 3,
+              snapLineSpeed: 200,
+            },
+            weapon: ring.spreadBeta2
+          },       
+          {
+            config: {
+              initialDirection: 'east',
+              snapLine: 1100,
+              waitOffScreen: 3,
+              snapLineSpeed: 200,
+            },
+            weapon: ring.spreadBeta2
           },          
           {
             config: {
               initialDirection: 'west',
               // snapLine: 500,
-              waitOffScreen: 3
+              waitOffScreen: 3,
+              snapLineSpeed: 200,
             },
-            // weapon: ring.spreadBeta2
+            weapon: ring.spreadBeta2
           },
           {
             config: {
               initialDirection: 'west',
               // snapLine: 500,
-              waitOffScreen: 3
+              waitOffScreen: 3,
+              snapLineSpeed: 200,
             },
-            // weapon: ring.spreadBeta2
+            weapon: ring.spreadBeta2
+          },
+          {
+            config: {
+              initialDirection: 'west',
+              // snapLine: 500,
+              waitOffScreen: 3,
+              snapLineSpeed: 200,
+            },
+            weapon: ring.spreadBeta2
           },
           {
             weapon: ring.fourFixedSpeedCircle,
           }
         ]
-      },
-      {
-        // choreography: [
-        //   {
-        //     id: 'spawnEnemies'
-        //   }
-        // ], //end choreo
-        numOfEnemies: 7,
-        ships: [ship.dolphinRight, ship.dolphinLeft, ship.dolphinRight, ship.dolphinLeft, ship.dolphinRight, ship.dolphinLeft, ship.dolphinRight],
-        paths: [
-          path.sawtoothRight,
-          path.sawtoothLeft,
-          path.sawtoothRight,
-          path.sawtoothLeft,
-          path.sawtoothRight,
-          path.sawtoothLeft,
-          path.sawtoothRight,
-        ],
-        shipManifestOverride: [{
-            config: {
-              initialDirection: 'east',
-              snapLine: 100,
-            },
-            weapon: {
-              payload: {
-                type: projectile.sine
-              }
-            }
-          },
-          {
-            config: {
-              initialDirection: 'west',
-              snapLine: 924,
-              sprite: sprite.dolphinLeft.default
-            },
-            weapon: {
-              payload: {
-                type: projectile.sine
-              }
-            }
-          },
-          {
-            config: {
-              initialDirection: 'east',
-              snapLine: 100,
-            },
-            weapon: {
-              payload: {
-                type: projectile.sine
-              }
-            }
-          },
-          {
-            config: {
-              initialDirection: 'west',
-              snapLine: 924,
-            },
-            weapon: {
-              payload: {
-                type: projectile.sine
-              }
-            }
-          },
-          {
-            config: {
-              initialDirection: 'east',
-              snapLine: 100,
-            },
-            weapon: {
-              payload: {
-                type: projectile.sine
-              }
-            }
-          },
-          {
-            config: {
-              initialDirection: 'west',
-              snapLine: 924,
-            },
-            weapon: {
-              payload: {
-                type: projectile.sine
-              }
-            }
-          },
-          {
-            config: {
-              initialDirection: 'east',
-              snapLine: 100,
-            },
-            weapon: {
-              payload: {
-                type: projectile.sine
-              }
-            }
-          },
-        ],
-        waitUntilEnemiesGone: false,
       },
     ]
   }
