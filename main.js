@@ -44,6 +44,7 @@ AM.queueDownload('./img/shield.png');
 AM.queueDownload('./img/rapid-bullet.png');
 AM.queueDownload('./img/paper_ball.png');
 AM.queueDownload('./img/clouds.png');
+AM.queueDownload('./img/water-overlay.png');
 AM.queueDownload('./img/7_shoot_sheet.png');
 AM.queueDownload('./img/glass_ball.png');
 AM.queueDownload('./img/laser_red.png');
@@ -109,7 +110,8 @@ class NukesAndOrigami extends GameEngine {
   }
 
   startWaterLevel() {
-    this.sceneManager.scenes.push(scene.waterTwo);
+    // this.sceneManager.scenes.push(scene.waterTwo);
+    this.sceneManager.scenes.push(scene.waterThree);
   }
 
   // Override
@@ -407,7 +409,7 @@ AM.downloadAll(() => {
   //game.spawnEnemies();
 
   canvas.focus();
-  // game.sceneManager.loadBackground(background.beach, 1);
+  game.sceneManager.loadBackground(background.water, 1);
 });
 
 class SceneManager {
