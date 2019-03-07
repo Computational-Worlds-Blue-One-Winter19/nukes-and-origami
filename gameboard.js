@@ -363,8 +363,9 @@ function hideControlMessage() {
  * @param {NukesAndOrigami} game The game that will be started
  */
 function startGame(game) {
-  game.initializeSceneManager();
-  audio.play(1);
+  //game.initializeSceneManager();
+  game.startWaterLevel();
+  //audio.play(1);
 //   // playLoop(game.sounds.gameLoop);
 // let loop = new SeamlessLoop();
 // loop.addUri("audio/Game_Loop_v.1.ogg", 9590, 'sound1');

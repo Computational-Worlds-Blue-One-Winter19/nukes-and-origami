@@ -480,10 +480,10 @@ function loadSpriteSheets() {
     }
   }
 
-  sprite.dolphin = {
+  sprite.dolphinRight = {
     default: {
       default: {
-        image: AM.getAsset('./img/dolphin.png'),
+        image: AM.getAsset('./img/dolphinRight.png'),
         dimension: {
           originX: 0,
           originY: 0,
@@ -497,7 +497,7 @@ function loadSpriteSheets() {
         }
       },
       hit: {
-        image: AM.getAsset('./img/dolphin.png'),
+        image: AM.getAsset('./img/dolphinRight.png'),
         dimension: {
           originX: 0,
           originY: 210,
@@ -507,6 +507,39 @@ function loadSpriteSheets() {
           timePerFrame: 0.1,
           scale: 0.5,
           flip: false,
+          loop: true
+        }
+      }
+    }
+  }
+
+  sprite.dolphinLeft = {
+    default: {
+      default: {
+        image: AM.getAsset('./img/dolphinLeft.png'),
+        dimension: {
+          originX: 0,
+          originY: 0,
+          frameWidth: 420,
+          frameHeight: 210,
+          frameCount: 6,
+          timePerFrame: 0.1,
+          scale: 0.5,
+          flip: true,
+          loop: true
+        }
+      },
+      hit: {
+        image: AM.getAsset('./img/dolphinLeft.png'),
+        dimension: {
+          originX: 0,
+          originY: 210,
+          frameWidth: 420,
+          frameHeight: 210,
+          frameCount: 6,
+          timePerFrame: 0.1,
+          scale: 0.5,
+          flip: true,
           loop: true
         }
       }
@@ -638,6 +671,39 @@ function loadSpriteSheets() {
           frameCount: 8,
           timePerFrame: 0.1,
           scale: 0.5,
+          flip: false,
+          loop: true
+        }
+      }
+    } 
+  }
+
+  sprite.octopus = {
+    default: {
+      default: {
+        image: AM.getAsset('./img/octopus.png'),
+        dimension: {
+          originX: 0,
+          originY: 0,
+          frameWidth: 2500,
+          frameHeight: 1941,
+          frameCount: 6,
+          timePerFrame: 0.15,
+          scale: 0.3,
+          flip: false,
+          loop: true
+        }
+      },
+      hit: {
+        image: AM.getAsset('./img/octopus.png'),
+        dimension: {
+          originX: 0,
+          originY: 1941,
+          frameWidth: 2500,
+          frameHeight: 1941,
+          frameCount: 6,
+          timePerFrame: 0.15,
+          scale: 0.3,
           flip: false,
           loop: true
         }

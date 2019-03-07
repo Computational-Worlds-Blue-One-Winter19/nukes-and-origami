@@ -1798,7 +1798,7 @@ function loadTemplates() {
       health: 5,
       hitValue: 5,
       radius: 70,
-      sprite: sprite.pigeon.default,
+      sprite: sprite.beta.default,
     },
     weapon: ring.singleTargetPlayer,
   }
@@ -1808,17 +1808,27 @@ function loadTemplates() {
       health: 5,
       hitValue: 5,
       radius: 70,
-      sprite: sprite.pigeon.default,
+      sprite: sprite.crab.default,
     },
     weapon: ring.singleTargetPlayer,
   }
 
-  ship.dolphin = {
+  ship.dolphinRight = {
     config: {
       health: 5,
       hitValue: 5,
       radius: 70,
-      sprite: sprite.pigeon.default,
+      sprite: sprite.dolphinRight.default,
+    },
+    weapon: ring.singleTargetPlayer,
+  }
+
+  ship.dolphinLeft = {
+    config: {
+      health: 5,
+      hitValue: 5,
+      radius: 70,
+      sprite: sprite.dolphinLeft.default,
     },
     weapon: ring.singleTargetPlayer,
   }
@@ -1828,7 +1838,7 @@ function loadTemplates() {
       health: 5,
       hitValue: 5,
       radius: 70,
-      sprite: sprite.pigeon.default,
+      sprite: sprite.eel.default,
     },
     weapon: ring.singleTargetPlayer,
   }
@@ -1838,7 +1848,7 @@ function loadTemplates() {
       health: 5,
       hitValue: 5,
       radius: 70,
-      sprite: sprite.pigeon.default,
+      sprite: sprite.fish.default,
     },
     weapon: ring.singleTargetPlayer,
   }
@@ -1848,7 +1858,7 @@ function loadTemplates() {
       health: 5,
       hitValue: 5,
       radius: 70,
-      sprite: sprite.pigeon.default,
+      sprite: sprite.frog.default,
     },
     weapon: ring.singleTargetPlayer,
   }
@@ -1858,9 +1868,19 @@ function loadTemplates() {
       health: 5,
       hitValue: 5,
       radius: 70,
-      sprite: sprite.pigeon.default,
+      sprite: sprite.manta.default,
     },
     weapon: ring.singleTargetPlayer,
+  }
+
+  ship.octopusBoss = {
+    config: {
+      health: 3,
+      hitValue: 100,
+      radius: 100,
+      sprite: sprite.octopus.default,
+    },
+    weapon: ring.singleTargetPlayer
   }
 
   ship.seahorse = {
@@ -1868,7 +1888,7 @@ function loadTemplates() {
       health: 5,
       hitValue: 5,
       radius: 70,
-      sprite: sprite.pigeon.default,
+      sprite: sprite.seahorse.default,
     },
     weapon: ring.singleTargetPlayer,
   }
@@ -1878,7 +1898,7 @@ function loadTemplates() {
       health: 5,
       hitValue: 5,
       radius: 70,
-      sprite: sprite.pigeon.default,
+      sprite: sprite.turtle.default,
     },
     weapon: ring.singleTargetPlayer,
   }
@@ -2283,6 +2303,41 @@ function loadTemplates() {
     // almost centered
   ]
 
+  path.sawtoothRight = [
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+    [25, 200, 0.25],
+    [335, 200, 0.25],
+  ]
+
   // sawtooth pattern back and forth starting left
   path.sawtoothLeftStop = [
     [155, 200, 0.25],
@@ -2302,6 +2357,57 @@ function loadTemplates() {
     [155, 200, 0.25],
     [205, 200, 0.25],
     // almost centerd
+  ]
+
+  path.sawtoothLeft = [
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
+    [155, 200, 0.25],
+    [205, 200, 0.25],
   ]
 
   path.rightUTurn = [
@@ -3345,6 +3451,185 @@ function loadTemplates() {
       waitUntilEnemiesGone: true,
     }, ],
 
+  }
+
+  scene.waterIntro = {
+    waves: [{
+      choreography: [{
+          id: 'showMessage',
+          text: ['Everyone loves water levels', '...right?'],
+        },
+        {
+          id: 'wait',
+          duration: 3
+        },
+        {
+          id: 'showMessage',
+          text: ['Well you\'re in for a treat.', 'This level is much harder than the other :)'],
+        },
+        {
+          id: 'wait',
+          duration: 3
+        },
+        {
+          id: 'hideMessage'
+        }
+      ]
+    }]
+  }
+
+  scene.waterOne = {
+    waves: [
+      // {
+      //   // choreography: [
+      //   //   {
+      //   //     id: 'spawnEnemies'
+      //   //   }
+      //   // ], //end choreo
+      //   numOfEnemies: 4,
+      //   ships: [ship.crab, ship.eel, ship.eel, ship.crab],
+      //   paths: [path.rightUTurn, path.straightDown, path.straightDown, path.leftUTurn],
+      //   waitUntilEnemiesGone: false
+      // }, //end wave 1
+      {
+        numOfEnemies: 5,
+        ships: [ship.turtle, ship.dolphinRight, ship.dolphinLeft, ship.dolphinLeft, ship.turtle],
+        paths: [path.strafeRight, path.sawToothRight, path.sawtoothLeft, path.sawtoothLeft, path.strafeLeft],
+        initialXPoints: [125, -200, 1300, 1300, 900],
+        initialYPoints: [-10, 300, 550, 650, -10],
+        waitUntilEnemiesGone: true,
+        shipManifestOverride: [
+          {
+            weapon: ring.fourFixedSpeedCircle
+          },
+          {
+            config: {
+              initialDirection: 'east',
+              // snapLine: 500,
+              waitOffScreen: 3
+            },
+            // weapon: ring.spreadBeta2
+          },          
+          {
+            config: {
+              initialDirection: 'west',
+              // snapLine: 500,
+              waitOffScreen: 3
+            },
+            // weapon: ring.spreadBeta2
+          },
+          {
+            config: {
+              initialDirection: 'west',
+              // snapLine: 500,
+              waitOffScreen: 3
+            },
+            // weapon: ring.spreadBeta2
+          },
+          {
+            weapon: ring.fourFixedSpeedCircle,
+          }
+        ]
+      },
+      {
+        // choreography: [
+        //   {
+        //     id: 'spawnEnemies'
+        //   }
+        // ], //end choreo
+        numOfEnemies: 7,
+        ships: [ship.dolphinRight, ship.dolphinLeft, ship.dolphinRight, ship.dolphinLeft, ship.dolphinRight, ship.dolphinLeft, ship.dolphinRight],
+        paths: [
+          path.sawtoothRight,
+          path.sawtoothLeft,
+          path.sawtoothRight,
+          path.sawtoothLeft,
+          path.sawtoothRight,
+          path.sawtoothLeft,
+          path.sawtoothRight,
+        ],
+        shipManifestOverride: [{
+            config: {
+              initialDirection: 'east',
+              snapLine: 100,
+            },
+            weapon: {
+              payload: {
+                type: projectile.sine
+              }
+            }
+          },
+          {
+            config: {
+              initialDirection: 'west',
+              snapLine: 924,
+              sprite: sprite.dolphinLeft.default
+            },
+            weapon: {
+              payload: {
+                type: projectile.sine
+              }
+            }
+          },
+          {
+            config: {
+              initialDirection: 'east',
+              snapLine: 100,
+            },
+            weapon: {
+              payload: {
+                type: projectile.sine
+              }
+            }
+          },
+          {
+            config: {
+              initialDirection: 'west',
+              snapLine: 924,
+            },
+            weapon: {
+              payload: {
+                type: projectile.sine
+              }
+            }
+          },
+          {
+            config: {
+              initialDirection: 'east',
+              snapLine: 100,
+            },
+            weapon: {
+              payload: {
+                type: projectile.sine
+              }
+            }
+          },
+          {
+            config: {
+              initialDirection: 'west',
+              snapLine: 924,
+            },
+            weapon: {
+              payload: {
+                type: projectile.sine
+              }
+            }
+          },
+          {
+            config: {
+              initialDirection: 'east',
+              snapLine: 100,
+            },
+            weapon: {
+              payload: {
+                type: projectile.sine
+              }
+            }
+          },
+        ],
+        waitUntilEnemiesGone: false,
+      },
+    ]
   }
 
 

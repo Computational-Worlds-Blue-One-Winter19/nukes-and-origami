@@ -23,11 +23,13 @@ AM.queueDownload('./img/pigeon.png');
 AM.queueDownload('./img/swallow.png');
 AM.queueDownload('./img/beta.png');
 AM.queueDownload('./img/crab.png');
-AM.queueDownload('./img/dolphin.png');
+AM.queueDownload('./img/dolphinRight.png');
+AM.queueDownload('./img/dolphinLeft.png');
 AM.queueDownload('./img/eel.png');
 AM.queueDownload('./img/fish.png');
 AM.queueDownload('./img/frog.png');
 AM.queueDownload('./img/manta.png');
+AM.queueDownload('./img/octopus.png');
 AM.queueDownload('./img/seahorse.png');
 AM.queueDownload('./img/turtle.png');
 AM.queueDownload('./img/mini-crane-sheet.png');
@@ -104,6 +106,10 @@ class NukesAndOrigami extends GameEngine {
     this.sceneManager.scenes.push(scene.bossTest);
     this.sceneManager.scenes.push(scene.gamma);
     this.sceneManager.scenes.push(scene.endingScene);
+  }
+
+  startWaterLevel() {
+    this.sceneManager.scenes.push(scene.waterOne);
   }
 
   // Override
@@ -401,7 +407,7 @@ AM.downloadAll(() => {
   //game.spawnEnemies();
 
   canvas.focus();
-  game.sceneManager.loadBackground(background.beach, 1);
+  // game.sceneManager.loadBackground(background.beach, 1);
 });
 
 class SceneManager {
