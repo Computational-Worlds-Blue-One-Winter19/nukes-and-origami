@@ -3483,7 +3483,7 @@ function loadTemplates() {
       {
         numOfEnemies: 8,
         ships: [ship.turtle, ship.dolphinRight, ship.dolphinRight, ship.dolphinRight, ship.dolphinLeft, ship.dolphinLeft, ship.dolphinLeft, ship.turtle],
-        paths: [path.strafeRight, path.sawToothRight, path.sawToothRight, path.sawToothRight, path.sawtoothLeft, path.sawtoothLeft, path.sawtoothLeft, path.strafeLeft],
+        paths: [path.strafeRight, path.sawtoothRight, path.sawtoothRight, path.sawtoothRight, path.sawtoothLeft, path.sawtoothLeft, path.sawtoothLeft, path.strafeLeft],
         initialXPoints: [125, -200, -200, -200, 1300, 1300, 1300, 900],
         initialYPoints: [-10, 450, 550, 650, 500, 600, 700, -10],
         waitUntilEnemiesGone: true,
@@ -3494,7 +3494,7 @@ function loadTemplates() {
           {
             config: {
               initialDirection: 'east',
-              snapLine: 1100,
+              snapLine: 100,
               waitOffScreen: 3,
               snapLineSpeed: 400,
             },
@@ -3503,7 +3503,7 @@ function loadTemplates() {
           {
             config: {
               initialDirection: 'east',
-              snapLine: 1100,
+              snapLine: 100,
               waitOffScreen: 3,
               snapLineSpeed: 200,
             },
@@ -3512,7 +3512,7 @@ function loadTemplates() {
           {
             config: {
               initialDirection: 'east',
-              snapLine: 1100,
+              snapLine: 100,
               waitOffScreen: 3,
               snapLineSpeed: 400,
             },
@@ -3521,7 +3521,7 @@ function loadTemplates() {
           {
             config: {
               initialDirection: 'west',
-              // snapLine: 500,
+              snapLine: 924,
               waitOffScreen: 3,
               snapLineSpeed: 200,
             },
@@ -3530,7 +3530,7 @@ function loadTemplates() {
           {
             config: {
               initialDirection: 'west',
-              // snapLine: 500,
+              snapLine: 924,
               waitOffScreen: 3,
               snapLineSpeed: 400,
             },
@@ -3539,7 +3539,7 @@ function loadTemplates() {
           {
             config: {
               initialDirection: 'west',
-              // snapLine: 500,
+              snapLine: 924,
               waitOffScreen: 3,
               snapLineSpeed: 200,
             },
@@ -3556,63 +3556,114 @@ function loadTemplates() {
   scene.waterTwo = {
     waves: [
       {
-        numOfEnemies: 10,
-        ships: new Array(10).fill(ship.beta),
-        // ships: [ship.beta, ship.beta, ship.beta, ship.beta, ship.beta, ship.beta, ship.beta, ship.beta, ship.beta, ship.beta, 
-        //         ]
-        paths: new Array(10).fill(path.straightDown),
-        // initialXPoints: ,
-        initialYPoints: [-307, -116, -387, -233, -400, -600, -450, -187, -93, -250],
+        numOfEnemies: 14,
+        // ships: new Array(10).fill(ship.beta),
+        ships: [ship.beta, ship.beta, ship.beta, ship.beta, ship.beta, ship.beta, ship.beta, ship.beta, ship.beta, ship.beta, 
+                ship.seahorse, ship.seahorse, ship.seahorse, ship.seahorse],
+        // paths: new Array(10).fill(path.straightDown),
+        paths: [path.straightDown, path.straightDown, path.straightDown, path.straightDown, path.straightDown, path.straightDown, path.straightDown, path.straightDown, path.straightDown, path.straightDown, 
+                path.strafeLeft, path.strafeLeft, path.strafeRight, path.strafeRight],
+        initialXPoints: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1124, 1124, -100,-100],
+        initialYPoints: [-307, -116, -387, -233, -400, -600, -450, -187, -93, -250, 200, 500, 100, 400],
         waitUntilEnemiesGone: true,
-        shipManifestOveride: [
+        shipManifestOverride: [
           {
             config: {
               snapLineSpeed: 400,
             },
-            weapon: ring.uniFiveWay
+            weapon: ring.trackingTest1
           },
           {
             config: {
               snapLineSpeed: 100
             },
-            weapon: ring.uniFiveWay
+            weapon: ring.trackingTest1
           },
           {
             config: {
               snapLineSpeed: 300
             },
-            weapon: ring.uniFiveWay
+            weapon: ring.trackingTest1
           },
           {
             config: {
               snapLineSpeed: 600
             },
-            weapon: ring.uniFiveWay
+            weapon: ring.trackingTest1
           },
           {
             config: {
               snapLineSpeed: 200
             },
-            weapon: ring.uniFiveWay
+            weapon: ring.trackingTest1
           },
           {
             config: {
               snapLineSpeed: 250
             },
-            weapon: ring.uniFiveWay
+            weapon: ring.trackingTest1
           },
           {
             config: {
               snapLineSpeed: 477
             },
-            weapon: ring.uniFiveWay
+            weapon: ring.trackingTest1
           },
           {
             config: {
               snapLineSpeed: 400
             },
-            weapon: ring.uniFiveWay
+            weapon: ring.trackingTest1
           },
+          {
+            config: {
+              snapLineSpeed: 251
+            },
+            weapon: ring.trackingTest1
+          },
+          {
+            config: {
+              snapLineSpeed: 794
+            },
+            weapon: ring.trackingTest1
+          },
+          {
+            config: {
+              snapLineSpeed: 200,
+              initialDirection: 'west',
+              waitOffScreen: 3,
+              snapLine: 924
+            },
+            weapon: ring.spreadBeta2,
+          },
+          {
+            config: {
+              snapLineSpeed: 200,
+              initialDirection: 'west',
+              waitOffScreen: 5,
+              snapLine: 924
+            },
+            weapon: ring.jaredTest3,
+          },
+          {
+            config: {
+              snapLineSpeed: 200,
+              initialDirection: 'east',
+              waitOffScreen: 3,
+              snapLine: 100
+            },
+            weapon: ring.spreadBeta2,
+          },
+          {
+            config: {
+              snapLineSpeed: 200,
+              initialDirection: 'east',
+              waitOffScreen: 5,
+              snapLine: 100
+            },
+            weapon: ring.jaredTest3,
+          },
+          
         ],
       },
     ]
