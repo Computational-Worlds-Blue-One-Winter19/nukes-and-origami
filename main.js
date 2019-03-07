@@ -385,8 +385,8 @@ AM.downloadAll(() => {
   game.spawnPlayer();
 
   // view test stage
-  //game.testScene();
-  //game.sceneManager.scenes.push(scene.jaredTestScene);
+  // game.testScene();
+  // game.sceneManager.scenes.push(scene.jaredTestScene);
 
   // run completed levels
   initIntroMessage(game);
@@ -396,6 +396,7 @@ AM.downloadAll(() => {
 
   canvas.focus();
   game.sceneManager.loadBackground(background.beach, 1);
+  Cookies.set('name', 'value');
 });
 
 class SceneManager {
@@ -501,7 +502,7 @@ class SceneManager {
     for (let i = 0; i < wave.numOfEnemies; i++) {
       // Make shallow copies to not modify the objects.js defaults
       // If path was overridden, put that in the manifestCopy
-      let manifestCopy = _.cloneDeep(wave.ships[i]);
+      const manifestCopy = _.cloneDeep(wave.ships[i]);
       manifestCopy.path = wave.paths ? _.cloneDeep(wave.paths[i]) : 0;
       if (wave.shipManifestOverride) {
         // use lodash

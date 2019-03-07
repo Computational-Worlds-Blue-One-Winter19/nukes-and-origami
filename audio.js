@@ -6,7 +6,7 @@ const audio = {
   compatibility: {},
   files: [
     // 'https://forestmist.org/share/web-audio-api-demo/audio/beat.wav',
-    '/audio/Game_Loop_v.15.wav',
+    'https://storage.googleapis.com/nukes-and-origami/static/Game_Loop_v.15.wav',
     // 'beat.wav'
   ],
   proceed: true,
