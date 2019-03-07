@@ -64,7 +64,7 @@ AM.queueDownload('./img/rapid-bullet-horizontal.png');
 class NukesAndOrigami extends GameEngine {
   constructor() {
     super();
-    this.lives = 1;
+    this.lives = 3;
     this.hits = 0;
     this.score = 0;
 
@@ -89,6 +89,7 @@ class NukesAndOrigami extends GameEngine {
 
   initializeSceneManager() {
     // load completed levels
+
     this.sceneManager.scenes.push(scene.levelOne);
     this.sceneManager.scenes.push(scene.levelTwo);
     this.sceneManager.scenes.push(scene.levelThree);
@@ -749,7 +750,7 @@ class SceneManager {
     this.waves = this.checkPointWaveState;
     this.choreography = scene.restartFromCheckpoint.waves[0].choreography.concat(this.checkPointChoreographyState);
     this.waveTimer = 0;
-    this.game.lives = 1;
+    this.game.lives = 3;
   }
 
   handleEnemyWaveCompletion() {
