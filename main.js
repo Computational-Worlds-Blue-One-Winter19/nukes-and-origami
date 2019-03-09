@@ -458,14 +458,6 @@ class SceneManager {
     if (scene.audio) {
       console.log(`${JSON.stringify(scene.audio)}`);
       playAudio(introAudio, 1);
-    } else {
-      // const audio = generateAudioObject('./audio/Boss_Intro_Redone.mp3', 'Boss_loop_Redone.mp3');
-      console.log('Stoping audio');
-      introAudio.stop = true;
-      stopAudio(introAudio, 1);
-      stopAudio(introAudio, 2);
-
-      playAudio(bossAudio, 1);
     }
 
     this.currentScene = scene;
@@ -652,6 +644,12 @@ class SceneManager {
           }
         } else {
           if (currentChor.type === 'warning') {
+            console.log('Stoping audio');
+            introAudio.stop = true;
+            stopAudio(introAudio, 1);
+            stopAudio(introAudio, 2);
+
+            playAudio(bossAudio, 1);
             showMessage(currentChor.text[0], currentChor.text[1], 1);
           } else {
             showMessage(currentChor.text[0], currentChor.text[1]);
