@@ -254,12 +254,15 @@ center > h4 {
     height: 40px;
     width: 40px;
     text-align: center;
+    box-sizing: content-box;
+    margin-top:  1.37333rem;
   }
   
   #countdown-number {
     color: black;
     display: inline-block;
     line-height: 40px;
+    box-sizing: content-box;
   }
   
   .timer {
@@ -271,6 +274,7 @@ center > h4 {
     width: 40px;
     height: 40px;
     transform: rotateY(-180deg) rotateZ(-90deg);
+    box-sizing: content-box;
   }
   
   #circle {
@@ -281,6 +285,7 @@ center > h4 {
     stroke: black;
     fill: none;
     animation: countdown 20s linear infinite forwards;
+    box-sizing: content-box;
   }
 
   @keyframes countdown {

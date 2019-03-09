@@ -306,7 +306,7 @@ function highlightUserScore(userRank) {
  * @param {Object} data
  */
 function loadLeaderboard(data) {
-  console.log(`${JSON.stringify(data.leaderboard)}`);
+  console.log(`${JSON.stringify(data)}`);
   const {
     leaderboard, userRank,
   } = data;
@@ -335,7 +335,12 @@ function initLeaderboard() {
   const elems = document.querySelectorAll('.modal');
   const instances = M.Modal.init(elems, {});
 
-  fetchAsync('https://us-central1-nukes-and-origami.cloudfunctions.net/getScores?name=Tom').then((data) => {
+  // Get the users name from the cookie, we don't need to check if its undefined since the url can
+  // handle it just fine
+  const userName = Cookies.get('name');
+  console.log(`The name retrieved is ${userName}`);
+
+  fetchAsync(`https://us-central1-nukes-and-origami.cloudfunctions.net/getScores?name=${userName}`).then((data) => {
     loadLeaderboard(data);
   });
 }
