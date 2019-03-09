@@ -367,18 +367,39 @@ function startGame(game) {
   game.startWaterLevel();
   //audio.play(1);
 //   // playLoop(game.sounds.gameLoop);
-// let loop = new SeamlessLoop();
-// loop.addUri("audio/Game_Loop_v.1.ogg", 9590, 'sound1');
-// loop._volume = 0.09;
-// loop.callback(soundsLoaded);
+  // let loop = new SeamlessLoop();
+  // loop.addUri("audio/Game_Loop_v.1.ogg", 9590, 'sound1');
+  // loop._volume = 0.09;
+  // loop.callback(soundsLoaded);
 
-// function soundsLoaded() {
-//     let n = 1;
-//     loop._volume = 0.09;
-//     loop.start('sound' + n);
-// }
+  // function soundsLoaded() {
+  //     let n = 1;
+  //     loop._volume = 0.09;
+  //     loop.start('sound' + n);
+  // }
 
+  var mainLoop = new Howl({
+    src: ['./audio/Game_Loop_v.1.ogg'],
+    sprite: {
+      'one': [0, 10000],
+    },
+    loop: true,
+    volume: 0.3,
+  });
 
+  var intro = new Howl({
+    src: ['./audio/Intro_Redone.ogg'],
+    sprite: {
+      'one': [0, 7000]
+    },
+    loop: false,
+    volume: 0.3,
+    onend: function () {
+      mainLoop.play('one');
+    }
+  })
+
+  intro.play('one');
 
   // Initilize the game board
   initializeScoreBoardLives(game.lives);

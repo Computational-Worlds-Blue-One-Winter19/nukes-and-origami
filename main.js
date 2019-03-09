@@ -111,7 +111,8 @@ class NukesAndOrigami extends GameEngine {
 
   startWaterLevel() {
     // this.sceneManager.scenes.push(scene.waterTwo);
-    this.sceneManager.scenes.push(scene.waterThree);
+    // this.sceneManager.scenes.push(scene.waterThree);
+    this.sceneManager.scenes.push(scene.invertedDemo);
   }
 
   // Override
@@ -143,7 +144,7 @@ class NukesAndOrigami extends GameEngine {
       hitValue,
     } = enemy;
     this.increaseScoreBy(hitValue);
-
+    console.log(enemy.powerup);
     // Generate a powerUp
     const powerUp = getPowerUp(enemy.powerup)|| getRandomPowerUp(enemy.dropItems);
     if (powerUp && powerUp.shouldDrop()) {
@@ -409,7 +410,7 @@ AM.downloadAll(() => {
   //game.spawnEnemies();
 
   canvas.focus();
-  game.sceneManager.loadBackground(background.water, 1);
+  game.sceneManager.loadBackground(background.paper, 1);
 });
 
 class SceneManager {

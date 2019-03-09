@@ -2796,6 +2796,100 @@ function loadTemplates() {
     ],
   }
 
+  scene.multiGunDemo = {
+    waves: [
+      {
+        numOfEnemies: 7,
+        ships: [ship.hummer, ship.owl, ship.hummer, ship.owl, ship.pigeon, ship.bird, ship.pigeon],
+        paths: [path.strafeRight, path.strafeRight, path.strafeRight, path.strafeRight, path.strafeLeft, path.strafeLeft, path.strafeLeft],
+        initialYPoints: [100, 200, 300, 400, 150, 250, 350],
+        shipManifestOverride: [
+          {
+            config: {
+              initialDirection: 'east',
+              snapLine: 100,
+              dropItems: [new MultiGun(100)]
+            },
+          },
+          {
+            config: {
+              initialDirection: 'east',
+              snapLine: 100,
+              dropItems: [new MultiGun(100)]
+            },
+          },
+          {
+            config: {
+              initialDirection: 'east',
+              snapLine: 100,
+              dropItems: [new MultiGun(100)]
+            },
+          },
+          {
+            config: {
+              initialDirection: 'east',
+              snapLine: 100,
+              dropItems: [new MultiGun(100)]
+            },
+          },
+          {
+            config: {
+              initialDirection: 'west',
+              snapLine: 924,
+              dropItems: [new RapidFire(100)]
+            },
+          },
+          {
+            config: {
+              initialDirection: 'west',
+              snapLine: 924,
+              dropItems: [new RapidFire(100)]
+            },
+          },
+          {
+            config: {
+              initialDirection: 'west',
+              snapLine: 924,
+              dropItems: [new MultiGun(100)]
+            },
+          },
+        ],
+        waitUntilEnemiesGone: true,
+      }
+    ]
+  }
+
+  scene.invertedDemo = {
+    waves: [
+      {
+        numOfEnemies: 3,
+        ships: [ship.crane, ship.bird, ship.crane],
+        paths: [path.doNothing, path.doNothing, path.doNothing],
+        shipManifestOverride: [
+          {
+            config: {
+              dropItems: [new InvertedControls(100)]
+            },
+            weapon: ring.fourFixedSpeedCircle
+          },
+          {
+            config: {
+              dropItems: [new RapidFire(100)]
+            },
+            weapon: ring.slowLaserTargetPlayer
+          },
+          {
+            config: {
+              dropItems: [new MultiGun(100)]
+            },
+            weapon: ring.fourFixedSpeedCircle
+          }
+        ]
+      }
+    ]
+  }
+
+
   // scene.bossTest = {
   //   waves: [{
   //       choreography: [{

@@ -355,6 +355,8 @@ function getPowerUp(type)  {
       return new Nuke(100);
     case 'rapidFire':
       return new RapidFire(100);
+    case 'multiGun':
+      return new MultiGun(100);
   }
 }
 
