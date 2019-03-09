@@ -87,11 +87,11 @@ class NukesAndOrigami extends GameEngine {
   initializeSceneManager() {
     // load completed levels
     this.sceneManager.scenes.push(scene.levelOne);
-    this.sceneManager.scenes.push(scene.levelTwo);
-    this.sceneManager.scenes.push(scene.levelThree);
-    this.sceneManager.scenes.push(scene.oneWaveTest);
-    this.sceneManager.scenes.push(scene.waveBank);
-    this.sceneManager.scenes.push(scene.easyPaper);
+    // this.sceneManager.scenes.push(scene.levelTwo);
+    // this.sceneManager.scenes.push(scene.levelThree);
+    // this.sceneManager.scenes.push(scene.oneWaveTest);
+    // this.sceneManager.scenes.push(scene.waveBank);
+    // this.sceneManager.scenes.push(scene.easyPaper);
     this.sceneManager.scenes.push(scene.bossTest);
     this.sceneManager.scenes.push(scene.gamma);
     this.sceneManager.scenes.push(scene.endingScene);
@@ -453,6 +453,21 @@ class SceneManager {
   //
   // For right now just load the waves.
   loadScene(scene) {
+    console.log('Scene loaded');
+    // Check if the scene has any associated audio
+    if (scene.audio) {
+      console.log(`${JSON.stringify(scene.audio)}`);
+      playAudio(introAudio, 1);
+    } else {
+      // const audio = generateAudioObject('./audio/Boss_Intro_Redone.mp3', 'Boss_loop_Redone.mp3');
+      console.log('Stoping audio');
+      introAudio.stop = true;
+      stopAudio(introAudio, 1);
+      stopAudio(introAudio, 2);
+
+      playAudio(bossAudio, 1);
+    }
+
     this.currentScene = scene;
     this.waves = scene.waves;
 

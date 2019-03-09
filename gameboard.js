@@ -1,60 +1,5 @@
 const lifeColor = ['red', 'blue', 'aqua', 'oragne', 'green'];
 
-// ---- START Sound related function
-
-function crossfadedLoop(enteringInstance, leavingInstance, soundLevel) {
-  const volume = soundLevel;
-  const crossfadeDuration = 1000;
-
-  // Get the sound duration in ms from the Howler engine
-  const soundDuration = Math.floor(enteringInstance._duration * 1000);
-
-
-  // Fade in entering instance
-  const audio = enteringInstance.pos(10).play();
-  enteringInstance.fade(0, volume, crossfadeDuration);
-
-  // Wait for the audio end to fade out entering instance
-  // white fading in leaving instance
-  setTimeout(() => {
-    enteringInstance.fade(volume, 0, crossfadeDuration);
-    crossfadedLoop(leavingInstance, enteringInstance);
-  }, soundDuration - crossfadeDuration);
-}
-
-/**
- * Helper to build similar instances
- * @param {String} urls The source path for the audio files
- * @param {Function} onload Call back method for then the sound is loaded
- */
-function createHowlerInstance(urls, onload) {
-  return new Howl({
-    src: urls,
-    loop: false,
-    volume: 0,
-    onload,
-  });
-}
-
-function playLoop(soundObject) {
-  // Create "slave" instance. This instance is meant
-  // to be played after the first one is done.
-  soundObject.instances.push(createHowlerInstance(['./audio/Game_Loop_v.1.ogg']));
-
-  // Create "master" instance. The onload function passed to
-  // the singleton creator will coordinate the crossfaded loop
-  soundObject.instances.push(createHowlerInstance(['./audio/Game_Loop_v.1.ogg'], () => {
-    crossfadedLoop(soundObject.instances[1], soundObject.instances[0], soundObject.volume);
-  }));
-}
-
-function pauseLoop(soundObject) {
-  for (let i = 0; i < soundObject.instances.length; i++) {
-    soundObject.instances[i].pause();
-  }
-}
-
-// ---- END Sound related function
 /**
  * Updates the score board to reflect the user's current score
  * @param {Int} currentScore
@@ -205,18 +150,9 @@ function hideControlMessage() {
  */
 function startGame(game) {
   game.initializeSceneManager();
-  playAudio(1);
+  // playAudio(1);
+  // stopAudio(1);
   //   // playLoop(game.sounds.gameLoop);
-  // let loop = new SeamlessLoop();
-  // loop.addUri("audio/Game_Loop_v.1.ogg", 9590, 'sound1');
-  // loop._volume = 0.09;
-  // loop.callback(soundsLoaded);
-
-  // function soundsLoaded() {
-  //     let n = 1;
-  //     loop._volume = 0.09;
-  //     loop.start('sound' + n);
-  // }
 
 
   // Initilize the game board
