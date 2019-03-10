@@ -1,25 +1,34 @@
 /* Credit and thanks to: @punitweb for the base css */
 
   .section {  
+    /* Needed to override materialize css */
+    box-sizing: content-box;
     padding: 0;
+
+    /* Using flex layout so we can update the position of the buttons contained within */
+    display: flex;
+    /* We specify we want items organized by columns */
+    flex-direction: column;
+    /* Naturally the buttons are off to the left side so we need to center them */
+    align-items: center;
   }
 
-  .one #button {
+  .one .intro-button {
     width: 122px;
     padding: 6px;
     height: 50px;
     display: flex;
     align-items: center;
+    /* This margin is so there is space between the buttons */
+    margin-bottom: 25px;
+    /* Needed to center align text */
+    justify-content: center;
     color: rgb(67, 67, 67) 2px solid;
-    /* font-family: 'Montserrat', sans-serif; */
     font-size: 30px;
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    -webkit-transform: translate(-50%, -50%);
-    -moz-transform: translate(-50%, -50%);
-    -o-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
+    -webkit-transform: translate(0%, -50%);
+    -moz-transform: translate(0%, -50%);
+    -o-transform: translate(0%, -50%);
+    transform: translate(0%, -50%);
     border: rgb(67, 67, 67) 2px solid;
     overflow: hidden;
     -webkit-transition: all 0.6s cubic-bezier(0.55, 0, 0.1, 1);
@@ -29,25 +38,25 @@
     cursor: pointer;
     box-shadow: 0px 0px 0px #fff;
   }
-  .one #button:hover {
+  .one .intro-button:hover {
     text-shadow: 0px 8px 6px rgba(0, 0, 0, 0.9);
     box-shadow: 8px 8px 0px #fff, -8px -8px 0px #fff;
     color:  #f6f6f6;
   }
-  .one #button:hover .one {
+  .one .intro-button:hover .one {
     opacity: 1;
     transform: translate3d(0px, 0px, 0px);
   }
-  .one #button:hover .two {
+  .one .intro-button:hover .two {
     transform: translate3d(0px, 0px, 0px);
   }
-  .one #button:hover .three {
+  .one .intro-button:hover .three {
     transform: translate3d(0px, 0px, 0px);
   }
-  .one #button:hover .four {
+  .one .intro-button:hover .four {
     transform: translate3d(0px, 0px, 0px);
   }
-  .one #button .ring {
+  .one .intro-button .ring {
     width: 100%;
     height: 100%;
     position: absolute;
@@ -56,7 +65,7 @@
     left: 0;
     transform: translate3d(0px, 90px, 0px);
   }
-  .one #button .one {
+  .one .intro-button .one {
     background-color: #FE6B26;
     -webkit-transition: all 0.3s cubic-bezier(0.55, 0, 0.1, 1);
     -moz-transition: all 0.3s cubic-bezier(0.55, 0, 0.1, 1);
@@ -65,7 +74,7 @@
     z-index: -3;
     z-index: -4;
   }
-  .one #button .two {
+  .one .intro-button .two {
     background-color: #FE8EFE;
     -webkit-transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
     -moz-transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
@@ -73,7 +82,7 @@
     transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
     z-index: -3;
   }
-  .one #button .three {
+  .one .intro-button .three {
     background-color: rgb(242, 135, 4);
     z-index: -2;
     -webkit-transition: all 0.7s cubic-bezier(0.55, 0, 0.1, 1);
@@ -82,7 +91,7 @@
     transition: all 0.7s cubic-bezier(0.55, 0, 0.1, 1);
     z-index: -3;
   }
-  .one #button .four {
+  .one .intro-button .four {
     background-color: #3E12FD;
     z-index: -1;
     -webkit-transition: all 0.9s cubic-bezier(0.55, 0, 0.1, 1);

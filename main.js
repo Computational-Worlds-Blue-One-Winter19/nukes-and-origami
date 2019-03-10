@@ -397,7 +397,6 @@ AM.downloadAll(() => {
 
   canvas.focus();
   game.sceneManager.loadBackground(background.beach, 1);
-  Cookies.set('name', 'value');
 });
 
 class SceneManager {
@@ -658,6 +657,16 @@ class SceneManager {
           } else {
             showMessage(currentChor.text[0], currentChor.text[1]);
           }
+
+          // Post the score after the user has finished the game
+          if (currentChor.type === 'gameOver') {
+            const playerName = Cookies.get('name');
+            const playerScore = this.game.score;
+            if (playerName) {
+              saveLeaderBoardScore(playerName, playerScore);
+            }
+          }
+
           // If duration isn't specified, just move on
           if (!currentChor.duration) {
             this.choreography.shift();
@@ -751,6 +760,7 @@ class SceneManager {
     this.choreography = scene.restartFromCheckpoint.waves[0].choreography.concat(this.checkPointChoreographyState);
     this.waveTimer = 0;
     this.game.lives = 3;
+
   }
 
   handleEnemyWaveCompletion() {
