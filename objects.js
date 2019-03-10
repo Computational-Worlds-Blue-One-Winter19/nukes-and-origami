@@ -3994,6 +3994,7 @@ function loadTemplates() {
           config: {
             initialDirection: 'west',
             snapLine: 100,
+            dropItems: [new MultiGun(100)],
           },
           weapon: {
             payload: {
@@ -4006,6 +4007,7 @@ function loadTemplates() {
             initialDirection: 'west',
             snapLine: 374,
             waitOffScreen: 1,
+            dropItems: [new MultiGun(100)],
           },
           weapon: {
             payload: {
@@ -4018,6 +4020,7 @@ function loadTemplates() {
             initialDirection: 'west',
             snapLine: 648,
             waitOffScreen: 2,
+            dropItems: [new RapidFire(100)],
           },
           weapon: {
             payload: {
@@ -4030,6 +4033,7 @@ function loadTemplates() {
             initialDirection: 'west',
             snapLine: 922,
             waitOffScreen: 3,
+            dropItems: [new MultiGun(100)],
           },
           weapon: {
             payload: {
@@ -4063,6 +4067,7 @@ function loadTemplates() {
           config: {
             initialDirection: 'west',
             snapLine: 924,
+            dropItems: [new RapidFire(100)],
           },
           weapon: ring.slowLaserTargetPlayer,
         },
@@ -4070,6 +4075,7 @@ function loadTemplates() {
           config: {
             initialDirection: 'east',
             snapLine: 100,
+            dropItems: [new RapidFire(100)],
           },
           weapon: ring.slowLaserTargetPlayer,
         },
@@ -4077,6 +4083,7 @@ function loadTemplates() {
           config: {
             initialDirection: 'west',
             snapLine: 824,
+            dropItems: [new RapidFire(100)],
           },
           weapon: ring.slowLaserTargetPlayer,
         },
