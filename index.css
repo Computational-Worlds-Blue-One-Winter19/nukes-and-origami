@@ -11,6 +11,10 @@ body {
     /* pointer-events: none; */
 }
 
+.highlight {
+    background-color: aliceblue;
+}
+
 #gameWorld {
     border: 0px;
 }
@@ -75,7 +79,7 @@ h2 {
     width: 100%;
 }
 
-#modal1 .modal-content {
+#modalLeaderboard .modal-content {
     /* Need to remove the top padding otherwise the score will be seen above the title
        when the user scrolls
     */

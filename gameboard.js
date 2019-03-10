@@ -252,7 +252,7 @@ function appendTableRow(playerScore) {
   } = playerScore;
 
   // Get a reference to the table
-  const tableRef = document.getElementById('leaderboard-table');
+  const tableRef = document.getElementById('leaderboard-body');
 
   // Insert a row at the end of the table
   const newRow = tableRef.insertRow(-1);
@@ -279,7 +279,24 @@ function appendTableRow(playerScore) {
   scoreCell.appendChild(scoreText);
 }
 
-// Makes an async call to the given URL
+
+async function saveLeaderBoardScore(name, score) {
+  const requestData = {
+    name,
+    score,
+  };
+
+  await fetch('https://us-central1-nukes-and-origami.cloudfunctions.net/postScore', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(requestData),
+  })
+    .then(response => response.json())
+    .then(json => console.log(`Response ${JSON.stringify(json)}`))
+    .catch(e => console.log(`Error Posting Score: ${e}`));
+}
 
 /**
  * Makes an asycn fetch call using the given URl
@@ -289,15 +306,42 @@ async function fetchAsync(url) {
   console.log('Inisde the fetch');
   const response = await fetch(url);
   // const data
-  return await response.json();
+  return response.json();
 }
 
 function getUserName() {
   Cookies.set('name', 'value');
 }
 
+function resetLeaderBoard() {
+  // const new_tbody = document.createElement('tbody');
+  // populate_with_new_rows(new_tbody);
+  // const old_tbody = document.getElementById('leaderboard-body');
+  const node = document.getElementById('leaderboard-body');
+  while (node.hasChildNodes()) {
+    node.removeChild(node.lastChild);
+  }
+}
+
 function highlightUserScore(userRank) {
   console.log(`${JSON.stringify(userRank)}`);
+  const table = document.getElementById('leaderboard-table');
+  for (let i = 0, row; row = table.rows[i]; i++) {
+    // iterate through rows
+    // rows would be accessed using the "row" variable assigned in the for loop
+    for (let j = 0, col; col = row.cells[j]; j++) {
+      if (col.cellIndex === 0 && parseInt(col.innerHTML) === userRank.rank) {
+        console.log('Found the cell');
+        row.className = 'highlight';
+        row.scrollIntoView({ behavior: 'smooth' });
+        return;
+      }
+      console.log(`The col is ${col.innerText}`);
+      // iterate through columns
+      // columns would be accessed using the "col" variable assigned in the for loop
+    }
+  }
+  // Get all the rows in the table
 }
 
 /**
@@ -318,13 +362,30 @@ function loadLeaderboard(data) {
     () => { highlightUserScore(userRank); },
   );
 
+  addEvent(
+    document.getElementById('closeLeaderboard'),
+    'click',
+    () => { resetLeaderBoard(); },
+  );
+
   for (let index = 0; index < leaderboard.length; index += 1) {
     const playerScore = leaderboard[index];
 
     appendTableRow(playerScore);
-    appendTableRow(playerScore);
-    appendTableRow(playerScore);
+    // appendTableRow(playerScore);
+    // appendTableRow(playerScore);
   }
+
+  // Get an instance of the modalName
+  const modalElem = document.getElementById('modalLeaderboard');
+  const instance = M.Modal.getInstance(modalElem);
+  instance.open();
+}
+
+function getAndLoadLeaderboard(userName) {
+  fetchAsync(`https://us-central1-nukes-and-origami.cloudfunctions.net/getScores?name=${userName}`).then((data) => {
+    loadLeaderboard(data);
+  });
 }
 
 /**
@@ -340,10 +401,13 @@ function initLeaderboard() {
   const userName = Cookies.get('name');
   console.log(`The name retrieved is ${userName}`);
 
-  fetchAsync(`https://us-central1-nukes-and-origami.cloudfunctions.net/getScores?name=${userName}`).then((data) => {
-    loadLeaderboard(data);
-  });
+  addEvent(
+    document.getElementById('openLeaderboard'),
+    'click',
+    () => { getAndLoadLeaderboard(userName); },
+  );
 }
+
 
 /**
  * Attaches an on click listener to the submit name button

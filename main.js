@@ -640,6 +640,16 @@ class SceneManager {
           } else {
             showMessage(currentChor.text[0], currentChor.text[1]);
           }
+
+          // Post the score after the user has finished the game
+          if (currentChor.type === 'gameOver') {
+            const playerName = Cookies.get('name');
+            const playerScore = this.game.score;
+            if (playerName) {
+              saveLeaderBoardScore(playerName, playerScore);
+            }
+          }
+
           // If duration isn't specified, just move on
           if (!currentChor.duration) {
             this.choreography.shift();

@@ -4998,7 +4998,7 @@ function loadTemplates() {
         {
           id: 'showMessage',
           type: 'gameOver',
-          text: ['YOU WIN!', 'THANKS FOR PLAYING'],
+          text: ['YOU WIN!', 'THANKS FOR PLAYING, YOU\'RE SCORE HAS BEEN SAVED ON THE LEADERBOARD'],
         },
         {
           id: 'wait',

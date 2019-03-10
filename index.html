@@ -53,10 +53,10 @@
         </div>
         <!-- Leaderboard -->
         <div class="leaderboard">
-            <a class="blue-grey darken-3 waves-effect waves-light btn modal-trigger" data-target="modal1"><i class="material-icons left">score</i>Leaderboard</a>
+            <a class="blue-grey darken-3 waves-effect waves-light btn" data-target="modal1" id="openLeaderboard"><i class="material-icons left">score</i>Leaderboard</a>
         </div>
         <!-- Modal Structure -->
-        <div id="modal1" class="modal modal-fixed-footer">
+        <div id="modalLeaderboard" class="modal modal-fixed-footer">
             <div class="modal-content">
                 <h4 class="high-score">High Scores</h4>
                 <table class="table-leaderboard" id="leaderboard-table">
@@ -68,7 +68,7 @@
                             </tr>
                         </thead>
                 
-                        <tbody>
+                        <tbody id="leaderboard-body">
                         </tbody>
                 </table>
                 <!-- <table class="table-player-score">
@@ -91,7 +91,7 @@
             </div>
             <div class="modal-footer">
                 <a class="waves-effect waves-orange btn-flat" id="checkScore">Check My Score</a>
-                <a href="#!" class="modal-close waves-effect waves-orange btn-flat">Close</a>
+                <a href="#!" class="modal-close waves-effect waves-orange btn-flat" id="closeLeaderboard">Close</a>
             </div>
         </div>
         <!-- Score -->
