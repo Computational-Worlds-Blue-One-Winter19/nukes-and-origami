@@ -87,18 +87,36 @@ class NukesAndOrigami extends GameEngine {
     this.sceneManager = new SceneManager(this);
   }
 
-  initializeSceneManager() {
-    // load completed levels
+  /**
+    Loads all stages into scenemanager.
 
-    this.sceneManager.scenes.push(scene.levelOne);
-    this.sceneManager.scenes.push(scene.levelTwo);
-    this.sceneManager.scenes.push(scene.levelThree);
-    this.sceneManager.scenes.push(scene.oneWaveTest);
-    this.sceneManager.scenes.push(scene.waveBank);
-    this.sceneManager.scenes.push(scene.easyPaper);
-    this.sceneManager.scenes.push(scene.bossTest);
-    this.sceneManager.scenes.push(scene.gamma);
-    this.sceneManager.scenes.push(scene.endingScene);
+    @param startScene an optional scene name to start from, if provided the game
+                      will start from the specified scene
+  */
+  initializeSceneManager(startScene) {
+    // load completed levels
+    let levelOrder = [
+      scene.levelOne,
+      scene.levelTwo,
+      scene.levelThree,
+      scene.oneWaveTest,
+      scene.waveBank,
+      scene.easyPaper,
+      scene.bossTest,
+      scene.gamma,
+      scene.endingScene,
+    ];
+
+    if (startScene) {
+      console.log(scene[startScene]);
+      while (levelOrder[0] != scene[startScene]) {
+        console.log(levelOrder[0])
+        levelOrder.shift();
+      }
+    }
+
+    this.sceneManager.scenes = levelOrder;
+
   }
 
   // Override
@@ -516,8 +534,8 @@ class SceneManager {
       // Was the location overriden?
       if (wave.initialXPoints) {
         ship.current.x = wave.initialXPoints[i];
-      } else if (ship.initialDirection === 'north'
-        || ship.initialDirection === 'south') {
+      } else if (ship.initialDirection === 'north' ||
+        ship.initialDirection === 'south') {
         ship.current.x = horizontalLocationCounter;
         horizontalLocationCounter += horizontalSpacing;
       }
@@ -525,8 +543,8 @@ class SceneManager {
 
       if (wave.initialYPoints) {
         ship.current.y = wave.initialYPoints[i];
-      } else if (ship.initialDirection === 'west'
-        || ship.initialDirection === 'east') {
+      } else if (ship.initialDirection === 'west' ||
+        ship.initialDirection === 'east') {
         ship.current.y = verticalLocationCounter;
         verticalLocationCounter += verticalSpacing;
       }
@@ -743,12 +761,16 @@ class SceneManager {
         this.checkPointSceneState = _.cloneDeep(this.scenes);
         this.checkPointChoreographyState = _.cloneDeep(this.choreography);
         this.choreography.shift();
+        // Create a cookie for this level (the user unlocked this point to start
+        // from in the future)
+        Cookies.set(currentChor.prettyName, currentChor.sceneName);
         break;
 
     }
   }
 
   loadCheckpoint() {
+    // load last saved checkpoint state
     if (this.entitiesInWave) {
       // remove all enemies on screen.
       this.entitiesInWave.forEach(function(element) {
@@ -760,6 +782,9 @@ class SceneManager {
     this.choreography = scene.restartFromCheckpoint.waves[0].choreography.concat(this.checkPointChoreographyState);
     this.waveTimer = 0;
     this.game.lives = 3;
+    for (let i = 0; i < this.game.lives; i++) {
+      addLife();
+    }
 
   }
 

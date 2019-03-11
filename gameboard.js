@@ -203,8 +203,8 @@ function hideControlMessage() {
  * setting the focus to the canvas
  * @param {NukesAndOrigami} game The game that will be started
  */
-function startGame(game) {
-  game.initializeSceneManager();
+function startGame(game, sceneName) {
+  game.initializeSceneManager(sceneName);
   playAudio(1);
   //   // playLoop(game.sounds.gameLoop);
   // let loop = new SeamlessLoop();
@@ -460,7 +460,7 @@ function initStartGameButton(game) {
         textInput.focus();
       } else {
         // Returning user and we already have a named saved onto the cookie
-        startGame(game);
+        startGame(game, 'levelThree');
       }
     },
   );

@@ -4122,7 +4122,9 @@ function loadTemplates() {
       {
         choreography: [
           {
-            id: 'checkpoint'
+            id: 'checkpoint',
+            prettyName: 'Level One',
+            sceneName: 'levelOne'
           },
           {
             id: 'accelerateToWarpspeed',
@@ -4393,6 +4395,8 @@ function loadTemplates() {
         choreography: [
           {
             id: 'checkpoint',
+            prettyName: 'Level Two',
+            sceneName: 'levelTwo'
           },
           {
             id: 'accelerateToWarpspeed',
@@ -4671,6 +4675,8 @@ function loadTemplates() {
         choreography: [
         {
           id: 'checkpoint',
+          prettyName: 'Level Three',
+          sceneName: 'levelThree'
         },
         {
           id: 'accelerateToWarpspeed',
