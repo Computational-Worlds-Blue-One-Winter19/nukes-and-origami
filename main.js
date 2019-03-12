@@ -21,6 +21,17 @@ AM.queueDownload('./img/hummer.png');
 AM.queueDownload('./img/owl.png');
 AM.queueDownload('./img/pigeon.png');
 AM.queueDownload('./img/swallow.png');
+AM.queueDownload('./img/beta.png');
+AM.queueDownload('./img/crab.png');
+AM.queueDownload('./img/dolphinRight.png');
+AM.queueDownload('./img/dolphinLeft.png');
+AM.queueDownload('./img/eel.png');
+AM.queueDownload('./img/fish.png');
+AM.queueDownload('./img/frog.png');
+AM.queueDownload('./img/manta.png');
+AM.queueDownload('./img/octopus.png');
+AM.queueDownload('./img/seahorse.png');
+AM.queueDownload('./img/turtle.png');
 AM.queueDownload('./img/mini-crane-sheet.png');
 AM.queueDownload('./img/plane-small.png');
 AM.queueDownload('./img/purple-plane-small.png');
@@ -33,6 +44,7 @@ AM.queueDownload('./img/shield.png');
 AM.queueDownload('./img/rapid-bullet.png');
 AM.queueDownload('./img/paper_ball.png');
 AM.queueDownload('./img/clouds.png');
+AM.queueDownload('./img/water-overlay.png');
 AM.queueDownload('./img/7_shoot_sheet.png');
 AM.queueDownload('./img/glass_ball.png');
 AM.queueDownload('./img/laser_red.png');
@@ -46,6 +58,9 @@ AM.queueDownload('./img/verticalscrollingbeach.png');
 AM.queueDownload('./img/verticalscrollingcemetary.png');
 AM.queueDownload('./img/verticalscrollingtrees.png');
 AM.queueDownload('./img/verticalscrollingdesert.png');
+AM.queueDownload('./img/verticalscrollingfallcity.png');
+AM.queueDownload('./img/verticalscrollingvegascity.png');
+
 AM.queueDownload('./img/seamless_pattern.png');
 AM.queueDownload('./img/missile.png');
 AM.queueDownload('./img/gunup.png');
@@ -61,7 +76,7 @@ AM.queueDownload('./img/rapid-bullet-horizontal.png');
 class NukesAndOrigami extends GameEngine {
   constructor() {
     super();
-    this.lives = 15;
+    this.lives = 3;
     this.hits = 0;
     this.score = 0;
 
@@ -84,17 +99,45 @@ class NukesAndOrigami extends GameEngine {
     this.sceneManager = new SceneManager(this);
   }
 
-  initializeSceneManager() {
+  /**
+    Loads all stages into scenemanager.
+
+    @param startScene an optional scene name to start from, if provided the game
+                      will start from the specified scene
+  */
+  initializeSceneManager(startScene) {
     // load completed levels
-    this.sceneManager.scenes.push(scene.levelOne);
-    this.sceneManager.scenes.push(scene.levelTwo);
-    this.sceneManager.scenes.push(scene.levelThree);
-    this.sceneManager.scenes.push(scene.oneWaveTest);
-    this.sceneManager.scenes.push(scene.waveBank);
-    this.sceneManager.scenes.push(scene.easyPaper);
-    this.sceneManager.scenes.push(scene.bossTest);
-    this.sceneManager.scenes.push(scene.gamma);
-    this.sceneManager.scenes.push(scene.endingScene);
+    let levelOrder = [
+      scene.waterIntro,
+      scene.waterOne,
+      scene.waterTwo,
+      scene.waterThree,
+      scene.levelOne,
+      scene.levelTwo,
+      scene.levelThree,
+      scene.oneWaveTest,
+      scene.waveBank,
+      scene.easyPaper,
+      scene.bossTest,
+      scene.gamma,
+      scene.endingScene,
+    ];
+
+    if (startScene) {
+      console.log(scene[startScene]);
+      while (levelOrder[0] != scene[startScene]) {
+        console.log(levelOrder[0])
+        levelOrder.shift();
+      }
+    }
+
+    this.sceneManager.scenes = levelOrder;
+
+  }
+
+  startWaterLevel() {
+    // this.sceneManager.scenes.push(scene.waterTwo);
+    this.sceneManager.scenes.push(scene.waterThree);
   }
 
   // Override
@@ -392,7 +435,7 @@ AM.downloadAll(() => {
   // game.spawnEnemies();
 
   canvas.focus();
-  game.sceneManager.loadBackground(background.beach, 1);
+  game.sceneManager.loadBackground(background.water, 1);
 });
 
 class SceneManager {
@@ -415,6 +458,15 @@ class SceneManager {
     this.wave = null;
     this.waves = null;
     this.entitiesInWave = [];
+
+    // for checkpoints
+    this.waveCounter = 0;
+    this.sceneCounter = 0;
+    this.checkPointWaveState = null;
+    this.checkPointWaveCounter = 0;
+    this.checkPointSceneState = null;
+    this.checkPointSceneCounter = 0;
+    this.checkPointChoreographyState = null;
 
     // Used for keeping track of animation sequences (e.g. going to warp speed)
     this.cutsceneStack = [];
@@ -492,6 +544,7 @@ class SceneManager {
       const manifestCopy = _.cloneDeep(wave.ships[i]);
       manifestCopy.path = wave.paths ? _.cloneDeep(wave.paths[i]) : 0;
       if (wave.shipManifestOverride) {
+        // use lodash
         _.merge(manifestCopy, wave.shipManifestOverride[i]);
       }
 
@@ -502,8 +555,8 @@ class SceneManager {
       // Was the location overriden?
       if (wave.initialXPoints) {
         ship.current.x = wave.initialXPoints[i];
-      } else if (ship.initialDirection === 'north'
-        || ship.initialDirection === 'south') {
+      } else if (ship.initialDirection === 'north' ||
+        ship.initialDirection === 'south') {
         ship.current.x = horizontalLocationCounter;
         horizontalLocationCounter += horizontalSpacing;
       }
@@ -511,8 +564,8 @@ class SceneManager {
 
       if (wave.initialYPoints) {
         ship.current.y = wave.initialYPoints[i];
-      } else if (ship.initialDirection === 'west'
-        || ship.initialDirection === 'east') {
+      } else if (ship.initialDirection === 'west' ||
+        ship.initialDirection === 'east') {
         ship.current.y = verticalLocationCounter;
         verticalLocationCounter += verticalSpacing;
       }
@@ -531,7 +584,8 @@ class SceneManager {
     this.wave = wave;
     // Set up cutscene stack for this wave.
     if (wave.choreography) {
-      this.choreography = wave.choreography;
+      this.choreography = _.clone(wave.choreography);
+      this.loopChoreography = _.clone(wave.choreography);
     } else {
       // No choreography specified? default is to just load enemies.
       this.loadEnemies(wave);
@@ -564,6 +618,7 @@ class SceneManager {
       // Hang here if we have no more scenes
       if (!(this.scenes.length === 0)) {
         this.loadScene(this.scenes.shift());
+        this.sceneCounter++;
       }
     } else {
       // No wave? load the next one and initialize them
@@ -575,6 +630,7 @@ class SceneManager {
             this.currentScene = 0;
           } else {
             this.loadWave(this.waves.shift());
+            this.waveCounter++;
             this.waveTimer = 0;
           }
         }
@@ -664,6 +720,7 @@ class SceneManager {
       case 'wait':
         if (currentChor.init) {
           if (this.waveTimer >= currentChor.duration) {
+            this.waveTimer = 0;
             this.choreography.shift();
           }
           // Also check if the enemies are dead
@@ -704,6 +761,7 @@ class SceneManager {
         }
         this.choreography.shift();
         break;
+
       case 'swapSlaveRing':
         if (this.entitiesInWave[currentChor.enemyIndex].slaves) {
           this.entitiesInWave[currentChor.enemyIndex].initializeSlaveWeapon(currentChor.slaveIndex, currentChor.ring);
@@ -711,9 +769,44 @@ class SceneManager {
         this.choreography.shift();
         break;
 
-      default:
+      case 'resetChoreography':
+        this.choreography.shift();
+        this.waveTimer = 0;
+        this.choreography = _.cloneDeep(this.loopChoreography).slice(currentChor.index,
+          this.loopChoreography.length);
         break;
+
+      case 'checkpoint':
+        // save the current states of waves the scene
+        this.checkPointWaveState = _.cloneDeep(this.waves);
+        this.checkPointSceneState = _.cloneDeep(this.scenes);
+        this.checkPointChoreographyState = _.cloneDeep(this.choreography);
+        this.choreography.shift();
+        // Create a cookie for this level (the user unlocked this point to start
+        // from in the future)
+        Cookies.set(currentChor.prettyName, currentChor.sceneName);
+        break;
+
     }
+  }
+
+  loadCheckpoint() {
+    // load last saved checkpoint state
+    if (this.entitiesInWave) {
+      // remove all enemies on screen.
+      this.entitiesInWave.forEach(function(element) {
+        element.removeFromWorld = true;
+      })
+    }
+    this.scenes = this.checkPointSceneState;
+    this.waves = this.checkPointWaveState;
+    this.choreography = scene.restartFromCheckpoint.waves[0].choreography.concat(this.checkPointChoreographyState);
+    this.waveTimer = 0;
+    this.game.lives = 3;
+    for (let i = 0; i < this.game.lives; i++) {
+      addLife();
+    }
+
   }
 
   handleEnemyWaveCompletion() {

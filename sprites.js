@@ -414,6 +414,369 @@ function loadSpriteSheets() {
     }
   }
 
+  sprite.beta = {
+    default: {
+      default: {
+        image: AM.getAsset('./img/beta.png'),
+        dimension: {
+          originX: 0,
+          originY: 0,
+          frameWidth: 300,
+          frameHeight: 430,
+          frameCount: 8,
+          timePerFrame: 0.1,
+          scale: 0.5,
+          flip: false,
+          loop: true
+        }
+      },
+      hit: {
+        image: AM.getAsset('./img/beta.png'),
+        dimension: {
+          originX: 0,
+          originY: 430,
+          frameWidth: 300,
+          frameHeight: 430,
+          frameCount: 8,
+          timePerFrame: 0.1,
+          scale: 0.5,
+          flip: false,
+          loop: true
+        }
+      }
+    }
+  }
+
+  sprite.crab = {
+    default: {
+      default: {
+        image: AM.getAsset('./img/crab.png'),
+        dimension: {
+          originX: 0,
+          originY: 0,
+          frameWidth: 320,
+          frameHeight: 230,
+          frameCount: 2,
+          timePerFrame: 0.1,
+          scale: 0.5,
+          flip: false,
+          loop: true
+        }
+      },
+      hit: {
+        image: AM.getAsset('./img/crab.png'),
+        dimension: {
+          originX: 0,
+          originY: 230,
+          frameWidth: 320,
+          frameHeight: 230,
+          frameCount: 2,
+          timePerFrame: 0.1,
+          scale: 0.5,
+          flip: false,
+          loop: true
+        }
+      }
+    }
+  }
+
+  sprite.dolphinRight = {
+    default: {
+      default: {
+        image: AM.getAsset('./img/dolphinRight.png'),
+        dimension: {
+          originX: 0,
+          originY: 0,
+          frameWidth: 420,
+          frameHeight: 210,
+          frameCount: 6,
+          timePerFrame: 0.1,
+          scale: 0.5,
+          flip: false,
+          loop: true
+        }
+      },
+      hit: {
+        image: AM.getAsset('./img/dolphinRight.png'),
+        dimension: {
+          originX: 0,
+          originY: 210,
+          frameWidth: 420,
+          frameHeight: 210,
+          frameCount: 6,
+          timePerFrame: 0.1,
+          scale: 0.5,
+          flip: false,
+          loop: true
+        }
+      }
+    }
+  }
+
+  sprite.dolphinLeft = {
+    default: {
+      default: {
+        image: AM.getAsset('./img/dolphinLeft.png'),
+        dimension: {
+          originX: 0,
+          originY: 0,
+          frameWidth: 420,
+          frameHeight: 210,
+          frameCount: 6,
+          timePerFrame: 0.1,
+          scale: 0.5,
+          flip: true,
+          loop: true
+        }
+      },
+      hit: {
+        image: AM.getAsset('./img/dolphinLeft.png'),
+        dimension: {
+          originX: 0,
+          originY: 210,
+          frameWidth: 420,
+          frameHeight: 210,
+          frameCount: 6,
+          timePerFrame: 0.1,
+          scale: 0.5,
+          flip: true,
+          loop: true
+        }
+      }
+    }
+  }
+
+  sprite.eel = {
+    default: {
+      default: {
+        image: AM.getAsset('./img/eel.png'),
+        dimension: {
+          originX: 0,
+          originY: 0,
+          frameWidth: 80,
+          frameHeight: 450,
+          frameCount: 2,
+          timePerFrame: 0.1,
+          scale: 0.5,
+          flip: false,
+          loop: true
+        }
+      },
+      hit: {
+        image: AM.getAsset('./img/eel.png'),
+        dimension: {
+          originX: 0,
+          originY: 80,
+          frameWidth: 80,
+          frameHeight: 450,
+          frameCount: 2,
+          timePerFrame: 0.1,
+          scale: 0.5,
+          flip: false,
+          loop: true
+        }
+      }
+    }
+  }
+
+  sprite.fish = {
+    default: {
+      default: {
+        image: AM.getAsset('./img/fish.png'),
+        dimension: {
+          originX: 0,
+          originY: 0,
+          frameWidth: 200,
+          frameHeight: 210,
+          frameCount: 2,
+          timePerFrame: 0.1,
+          scale: 0.5,
+          flip: false,
+          loop: true
+        }
+      },
+      hit: {
+        image: AM.getAsset('./img/fish.png'),
+        dimension: {
+          originX: 0,
+          originY: 210,
+          frameWidth: 200,
+          frameHeight: 210,
+          frameCount: 2,
+          timePerFrame: 0.1,
+          scale: 0.5,
+          flip: false,
+          loop: true
+        }
+      }
+    }
+  }
+
+  sprite.frog = {
+    default: {
+      default: {
+        image: AM.getAsset('./img/frog.png'),
+        dimension: {
+          originX: 0,
+          originY: 0,
+          frameWidth: 300,
+          frameHeight: 280,
+          frameCount: 2,
+          timePerFrame: 0.1,
+          scale: 0.5,
+          flip: false,
+          loop: true
+        }
+      },
+      hit: {
+        image: AM.getAsset('./img/frog.png'),
+        dimension: {
+          originX: 0,
+          originY: 280,
+          frameWidth: 300,
+          frameHeight: 280,
+          frameCount: 2,
+          timePerFrame: 0.1,
+          scale: 0.5,
+          flip: false,
+          loop: true
+        }
+      }
+    }
+  }
+
+  sprite.manta = {
+    default: {
+      default: {
+        image: AM.getAsset('./img/manta.png'),
+        dimension: {
+          originX: 0,
+          originY: 0,
+          frameWidth: 670,
+          frameHeight: 450,
+          frameCount: 8,
+          timePerFrame: 0.1,
+          scale: 0.5,
+          flip: false,
+          loop: true
+        }
+      },
+      hit: {
+        image: AM.getAsset('./img/manta.png'),
+        dimension: {
+          originX: 0,
+          originY: 450,
+          frameWidth: 670,
+          frameHeight: 450,
+          frameCount: 8,
+          timePerFrame: 0.1,
+          scale: 0.5,
+          flip: false,
+          loop: true
+        }
+      }
+    } 
+  }
+
+  sprite.octopus = {
+    default: {
+      default: {
+        image: AM.getAsset('./img/octopus.png'),
+        dimension: {
+          originX: 0,
+          originY: 0,
+          frameWidth: 2500,
+          frameHeight: 1941,
+          frameCount: 6,
+          timePerFrame: 0.15,
+          scale: 0.3,
+          flip: false,
+          loop: true
+        }
+      },
+      hit: {
+        image: AM.getAsset('./img/octopus.png'),
+        dimension: {
+          originX: 0,
+          originY: 1941,
+          frameWidth: 2500,
+          frameHeight: 1941,
+          frameCount: 6,
+          timePerFrame: 0.15,
+          scale: 0.3,
+          flip: false,
+          loop: true
+        }
+      }
+    } 
+  }
+
+  sprite.seahorse = {
+    default: {
+      default: {
+        image: AM.getAsset('./img/seahorse.png'),
+        dimension: {
+          originX: 0,
+          originY: 0,
+          frameWidth: 230,
+          frameHeight: 420,
+          frameCount: 6,
+          timePerFrame: 0.1,
+          scale: 0.5,
+          flip: false,
+          loop: true
+        }
+      },
+      hit: {
+        image: AM.getAsset('./img/seahorse.png'),
+        dimension: {
+          originX: 0,
+          originY: 420,
+          frameWidth: 230,
+          frameHeight: 420,
+          frameCount: 6,
+          timePerFrame: 0.1,
+          scale: 0.5,
+          flip: false,
+          loop: true
+        }
+      }
+    } 
+  }
+
+  sprite.turtle = {
+    default: {
+      default: {
+        image: AM.getAsset('./img/turtle.png'),
+        dimension: {
+          originX: 0,
+          originY: 0,
+          frameWidth: 250,
+          frameHeight: 200,
+          frameCount: 2,
+          timePerFrame: 0.1,
+          scale: 0.5,
+          flip: false,
+          loop: true
+        }
+      },
+      hit: {
+        image: AM.getAsset('./img/turtle.png'),
+        dimension: {
+          originX: 0,
+          originY: 200,
+          frameWidth: 250,
+          frameHeight: 200,
+          frameCount: 2,
+          timePerFrame: 0.1,
+          scale: 0.5,
+          flip: false,
+          loop: true
+        }
+      }
+    } 
+  }
+
 
   // Power up sprites
   sprite.rainbowBall = {

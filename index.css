@@ -11,6 +11,12 @@ body {
     /* pointer-events: none; */
 }
 
+.overlay img {
+    display: block;
+    width: 50%;
+    margin: auto;
+}
+
 .highlight {
     background-color: aliceblue;
 }
@@ -137,7 +143,7 @@ h2 {
 
 /* Modifies the position of the intro message */
 #intro-message {
-    top: 180px;
+    top: 40px;
 }
 
 #normal-message, #control-message {

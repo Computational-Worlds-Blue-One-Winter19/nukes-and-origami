@@ -203,8 +203,8 @@ function hideControlMessage() {
  * setting the focus to the canvas
  * @param {NukesAndOrigami} game The game that will be started
  */
-function startGame(game) {
-  game.initializeSceneManager();
+function startGame(game, sceneName) {
+  game.initializeSceneManager(sceneName);
   playAudio(1);
   //   // playLoop(game.sounds.gameLoop);
   // let loop = new SeamlessLoop();
@@ -323,6 +323,13 @@ function resetLeaderBoard() {
   }
 }
 
+function resetLevelCollection() {
+  const node = document.getElementById('collection');
+  while (node.hasChildNodes()) {
+    node.removeChild(node.lastChild);
+  }
+}
+
 function highlightUserScore(userRank) {
   console.log(`${JSON.stringify(userRank)}`);
   const table = document.getElementById('leaderboard-table');
@@ -408,7 +415,6 @@ function initLeaderboard() {
   );
 }
 
-
 /**
  * Attaches an on click listener to the submit name button
  * @param {NukesAndOrgami} game The game that will be started after the user clicks submit
@@ -441,6 +447,38 @@ function initSubmitNameButton(game) {
   );
 }
 
+function loadLevelsOntoCollection(levels, game, modalInstance) {
+  // Get the collection
+  const collection = document.getElementById('collection');
+  // Just in case remove any child nodes
+  resetLevelCollection();
+
+  for (let index = 0; index < levels.length; index += 1) {
+    // Get the name of the level (key) and its value
+    const levelName = Object.keys(levels[index])[0];
+    const levelValue = levels[index][levelName];
+
+    // <a href="#!" class="collection-item">Level One</a>
+    // const mydiv = document.getElementById('myDiv');
+    const aTag = document.createElement('a');
+    aTag.setAttribute('href', '#!'); // null attribute
+    aTag.innerHTML = levelName;
+    aTag.className = 'collection-item';
+    addEvent(
+      aTag,
+      'click',
+      () => {
+        startGame(game, levelValue);
+        modalInstance.close();
+        console.log(`Clicked ${levelValue}`);
+      },
+    );
+    collection.appendChild(aTag);
+
+    console.log(`The name and value are ${levelName} ${levelValue}`);
+  }
+}
+
 function initStartGameButton(game) {
   addEvent(
     document.getElementById('start-button'),
@@ -449,9 +487,9 @@ function initStartGameButton(game) {
       // Check if we have the user's name saved
       if (!Cookies.get('name')) {
         const modalElem = document.getElementById('modalName');
-        const instance = M.Modal.getInstance(modalElem);
+        const instanceName = M.Modal.getInstance(modalElem);
         // Open the modal
-        instance.open();
+        instanceName.open();
 
         // Autofocus the input field
         const textInput = document.getElementById('user_name');
@@ -460,7 +498,36 @@ function initStartGameButton(game) {
         textInput.focus();
       } else {
         // Returning user and we already have a named saved onto the cookie
-        startGame(game);
+
+        // Get all the levels saved onto the cookie
+        const data = Cookies.get();
+        const levels = [];
+        for (const key in data) {
+          if (key.includes('Level') || key.includes('Water')) {
+            // Key is related to a level
+            console.log('Found level data');
+
+            levels.push({ [key]: data[key] });
+          }
+          const datum = data[key];
+          console.log(`${JSON.stringify(datum)}`);
+        }
+
+        // If levels is empty no levels found saved in the cookie
+        console.log(`${JSON.stringify(levels)}`);
+        if (levels.length > 1) { // No need to show the modal if the only loadable level is #1
+          // Init the level modal
+          const modalLevel = document.getElementById('modalLevel');
+          const instanceLevel = M.Modal.getInstance(modalLevel);
+
+          // Load the levels onto the modal
+          loadLevelsOntoCollection(levels, game, instanceLevel);
+
+          instanceLevel.open();
+        } else {
+          // No level data found in the cookies start at level one
+          startGame(game, 'levelOne');
+        }
       }
     },
   );
