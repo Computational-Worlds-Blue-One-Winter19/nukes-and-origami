@@ -3739,7 +3739,7 @@ function loadTemplates() {
         choreography: [
           {
             id: 'checkpoint',
-            prettyName: 'Water one',
+            prettyName: 'Level Water one',
             sceneName: 'waterOne'
           },
           {
@@ -3772,6 +3772,8 @@ function loadTemplates() {
             id: 'hideMessage',
           },
         ],
+      },
+      {
         numOfEnemies: 8,
         ships: [ship.turtle, ship.dolphinRight, ship.dolphinRight, ship.dolphinRight, ship.dolphinLeft, ship.dolphinLeft, ship.dolphinLeft, ship.turtle],
         paths: [path.strafeRight, path.sawtoothRight, path.sawtoothRight, path.sawtoothRight, path.sawtoothLeft, path.sawtoothLeft, path.sawtoothLeft, path.strafeLeft],
@@ -3847,6 +3849,44 @@ function loadTemplates() {
   scene.waterTwo = {
     waves: [
       {
+          choreography: [
+            {
+              id: 'checkpoint',
+              prettyName: 'Level Water Two',
+              sceneName: 'waterTwo',
+            },
+            {
+              id: 'accelerateToWarpspeed',
+            },
+            {
+              id: 'loadBackground',
+              bg: background.white,
+            },
+            {
+              id: 'wait',
+              duration: 0.25,
+            },
+            {
+              id: 'showMessage',
+              text: ['GET READY', 'WATER TWO START'],
+            },
+            {
+              id: 'wait',
+              duration: 3,
+            },
+            {
+              id: 'loadBackground',
+              bg: background.water,
+            },
+            {
+              id: 'decelerateFromWarpSpeed',
+            },
+            {
+              id: 'hideMessage',
+            },
+          ],
+        },
+        {
         numOfEnemies: 14,
         // ships: new Array(10).fill(ship.beta),
         ships: [ship.beta, ship.beta, ship.beta, ship.beta, ship.beta, ship.beta, ship.beta, ship.beta, ship.beta, ship.beta,
@@ -3964,6 +4004,42 @@ function loadTemplates() {
     waves: [
       {
         choreography: [
+
+              {
+                id: 'checkpoint',
+                prettyName: 'Level Water Three',
+                sceneName: 'waterThree'
+              },
+              {
+                id: 'accelerateToWarpspeed',
+              },
+              {
+                id: 'loadBackground',
+                bg: background.white,
+              },
+              {
+                id: 'wait',
+                duration: 0.25,
+              },
+              {
+                id: 'showMessage',
+                text: ['GET READY', 'WATER 3 START'],
+              },
+              {
+                id: 'wait',
+                duration: 3,
+              },
+              {
+                id: 'loadBackground',
+                bg: background.water,
+              },
+              {
+                id: 'decelerateFromWarpSpeed',
+              },
+              {
+                id: 'hideMessage',
+              },
+
           {
             id: 'showMessage',
             text: ['I hope you have a good powerup and', 'I hope you know how to use it.'],

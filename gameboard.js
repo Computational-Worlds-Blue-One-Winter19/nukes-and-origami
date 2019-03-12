@@ -415,7 +415,6 @@ function initLeaderboard() {
   );
 }
 
-
 /**
  * Attaches an on click listener to the submit name button
  * @param {NukesAndOrgami} game The game that will be started after the user clicks submit
@@ -504,7 +503,7 @@ function initStartGameButton(game) {
         const data = Cookies.get();
         const levels = [];
         for (const key in data) {
-          if (key.includes('Level')) {
+          if (key.includes('Level') || key.includes('Water')) {
             // Key is related to a level
             console.log('Found level data');
 
