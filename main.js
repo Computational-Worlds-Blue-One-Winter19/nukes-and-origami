@@ -23,11 +23,13 @@ AM.queueDownload('./img/pigeon.png');
 AM.queueDownload('./img/swallow.png');
 AM.queueDownload('./img/beta.png');
 AM.queueDownload('./img/crab.png');
-AM.queueDownload('./img/dolphin.png');
+AM.queueDownload('./img/dolphinRight.png');
+AM.queueDownload('./img/dolphinLeft.png');
 AM.queueDownload('./img/eel.png');
 AM.queueDownload('./img/fish.png');
 AM.queueDownload('./img/frog.png');
 AM.queueDownload('./img/manta.png');
+AM.queueDownload('./img/octopus.png');
 AM.queueDownload('./img/seahorse.png');
 AM.queueDownload('./img/turtle.png');
 AM.queueDownload('./img/mini-crane-sheet.png');
@@ -42,6 +44,7 @@ AM.queueDownload('./img/shield.png');
 AM.queueDownload('./img/rapid-bullet.png');
 AM.queueDownload('./img/paper_ball.png');
 AM.queueDownload('./img/clouds.png');
+AM.queueDownload('./img/water-overlay.png');
 AM.queueDownload('./img/7_shoot_sheet.png');
 AM.queueDownload('./img/glass_ball.png');
 AM.queueDownload('./img/laser_red.png');
@@ -105,6 +108,9 @@ class NukesAndOrigami extends GameEngine {
   initializeSceneManager(startScene) {
     // load completed levels
     let levelOrder = [
+      scene.waterOne,
+      scene.waterTwo,
+      scene.waterThree,
       scene.levelOne,
       scene.levelTwo,
       scene.levelThree,
@@ -126,6 +132,11 @@ class NukesAndOrigami extends GameEngine {
 
     this.sceneManager.scenes = levelOrder;
 
+  }
+
+  startWaterLevel() {
+    // this.sceneManager.scenes.push(scene.waterTwo);
+    this.sceneManager.scenes.push(scene.waterThree);
   }
 
   // Override
@@ -423,7 +434,7 @@ AM.downloadAll(() => {
   // game.spawnEnemies();
 
   canvas.focus();
-  game.sceneManager.loadBackground(background.beach, 1);
+  game.sceneManager.loadBackground(background.water, 1);
 });
 
 class SceneManager {
