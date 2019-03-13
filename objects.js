@@ -142,8 +142,9 @@ function loadTemplates() {
   /** This tracks an enemy. */
   projectile.modifiedChainGun = {
     radius: 3,
-    hitValue: 30,
+    hitValue: 1,
     rotate: true,
+    count: 0,
     // image: AM.getAsset('./img/bullet.png'),
     // scale: .04,
     sprite: sprite.laser.bigOrange,
@@ -153,19 +154,22 @@ function loadTemplates() {
     },
 
     update() {
-      const hitList = this.game.getEnemiesInRange(this.current, this.local.range);
+      if(this.payload.count < 50) {
+        const hitList = this.game.getEnemiesInRange(this.current, this.local.range);
+        
 
-      // sorted list; closest enemy at index 0
-      if (hitList.length > 0) {
-        const {
-          x,
-          y,
-        } = hitList[0].ship.current;
+        // sorted list; closest enemy at index 0
+        if (hitList.length > 0) {
+          const {
+            x,
+            y,
+          } = hitList[0].ship.current;
 
-        // set target angle
-        const deltaX = x - this.current.x;
-        const deltaY = y - this.current.y;
-        this.current.angle = Math.atan2(deltaY, deltaX);
+          // set target angle
+          const deltaX = x - this.current.x;
+          const deltaY = y - this.current.y;
+          this.current.angle = Math.atan2(deltaY, deltaX);
+        }
       }
 
       // update r
@@ -174,9 +178,7 @@ function loadTemplates() {
     },
 
     onHit() {
-      // this.local.count += 1;
-      // this.current.velocity.radial *= 1.4;
-      // stay alive
+      this.payload.count++;
     },
   };
 
@@ -252,6 +254,7 @@ function loadTemplates() {
     // image: AM.getAsset('./img/bullet.png'),
     // scale: .04,
     sprite: sprite.laser.bigOrange,
+    count: 0,
 
     local: {
       count: 0,
@@ -2869,7 +2872,7 @@ function loadTemplates() {
           {
             config: {
               health: 1,
-              dropItems: [new Nuke(100)]
+              dropItems: [new ChainGun(100)]
             },
             weapon: ring.fourFixedSpeedCircle
           },

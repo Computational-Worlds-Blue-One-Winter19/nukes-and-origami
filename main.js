@@ -175,7 +175,6 @@ class NukesAndOrigami extends GameEngine {
   getEnemiesInRange(point, range) {
     const maxRangeSquared = Math.pow(range, 2) || Infinity;
     const result = new Array();
-
     for (const e of this.entities) {
       if (e instanceof Ship && !e.isPlayer && !e.snapLine) {
         const distance = Math.pow(point.x - e.current.x, 2) + Math.pow(point.y - e.current.y, 2);
