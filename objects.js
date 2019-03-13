@@ -182,7 +182,7 @@ function loadTemplates() {
 
   projectile.nuke = {
     radius: 3,
-    hitValue: 3,
+    hitValue: 1,
     rotate: true,
     image: AM.getAsset('./img/rainbow_ball.png'),
     scale: 0.1,
@@ -2868,19 +2868,21 @@ function loadTemplates() {
         shipManifestOverride: [
           {
             config: {
-              dropItems: [new InvertedControls(100)]
+              health: 1,
+              dropItems: [new Nuke(100)]
             },
             weapon: ring.fourFixedSpeedCircle
           },
           {
             config: {
-              dropItems: [new RapidFire(100)]
+              dropItems: [new Nuke(100)]
             },
             weapon: ring.slowLaserTargetPlayer
           },
           {
             config: {
-              dropItems: [new MultiGun(100)]
+              health: 300,
+              dropItems: [new Nuke(100)]
             },
             weapon: ring.fourFixedSpeedCircle
           }
