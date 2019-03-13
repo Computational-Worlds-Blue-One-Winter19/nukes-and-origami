@@ -297,7 +297,6 @@ class Ship extends Entity {
       if (e instanceof Projectile && e.playerShot && (this.isCollided(e) || this.slaveCollision(e))) {
         e.onHit(this); // notify projectile
         this.health -= e.config.hitValue;
-        console.log(this.health);
         //manifest.config.sprite.hit
         //this.sprite.currentFrame
         //this.hitSprite.currentFrame = this.sprite.currentFrame + 1;
