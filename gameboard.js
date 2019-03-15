@@ -458,8 +458,9 @@ function initStartGameButton(game) {
 
           instanceLevel.open();
         } else {
-          // No level data found in the cookies start at level one
-          startGame(game, 'levelOne');
+          // No level data found in the cookies start at the first spot in
+          // the level order
+          startGame(game);
         }
       }
     },
