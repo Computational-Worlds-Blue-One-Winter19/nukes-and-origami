@@ -139,6 +139,30 @@ function loadTemplates() {
     },
   };
 
+/** Prototype for sine wave */
+projectile.pulseFixedAngle = {
+  radius: 3,
+  scale: 1.0,
+  colorFill: 'red',
+
+  init() {
+    this.current.angle = toRadians(90);
+  },
+  
+  local: {
+    baseRadius: 10,
+    time: 0,
+    amp: .5 * Math.PI, // this is really the frequency
+  },
+
+  update() {
+    this.local.time += this.current.elapsedTime;
+    this.current.r = this.current.velocity.radial * this.current.elapsedTime;
+
+    this.config.radius = this.local.baseRadius * Math.abs(Math.sin(this.local.amp * this.local.time));
+  },
+};
+
   /** Prototype for sine wave */
   projectile.sine = {
     radius: 3,
@@ -4433,6 +4457,40 @@ function loadTemplates() {
     },
   };
 
+  ring.pulseRingTest = {
+    payload: {
+      type: projectile.pulseFixedAngle,
+      velocity: {
+        radial: 200,
+        angular: 0,
+      },
+      acceleration: {
+        radial: 0,
+        angular: 0,
+      },
+    },
+    rotation: {
+      // angle: 10,
+      // frequency: 1,
+      // speed: .1,
+    },
+    firing: {
+      // pattern: pattern.simple,
+      radius: 50,
+      angle: 90,
+      count: 10,
+      loadTime: 0,
+      cooldownTime: 0.2,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: false,
+      pulse: {
+        duration: 0.5,
+        delay: 1.5,
+      },
+    },
+  };
+
   ship.jaredTestDove = {
     config: {
       health: 1,
@@ -4449,7 +4507,7 @@ function loadTemplates() {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
     },
-    weapon: ring.lineTest,
+    weapon: ring.pulseRingTest,
   };
 
   ship.jaredTestCrane = {
