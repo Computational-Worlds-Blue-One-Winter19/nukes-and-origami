@@ -526,7 +526,7 @@ function initStartGameButton(game) {
           instanceLevel.open();
         } else {
           // No level data found in the cookies start at level one
-          startGame(game, 'levelOne');
+          startGame(game, 'waterFour');
         }
       }
     },
