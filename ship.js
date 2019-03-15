@@ -162,6 +162,10 @@ class Ship extends Entity {
     this.timeSinceHit = 0;
     this.health = manifest.config.health;
     this.dropItems = manifest.config.dropItems;
+    this.offset = {
+      x: manifest.config.xOffset || 0,
+      y: manifest.config.yOffset || 0,
+    }
 
     // A slave is the "slave" to another ship. The other ship is the master
     // and any hits the slave takes will be inflicted on the master.
@@ -171,6 +175,11 @@ class Ship extends Entity {
       this.slaves = [];
       for (let i = 0; i < manifest.config.slave.length; i++) {
         this.slaves[i] = Object.assign({}, manifest.config.slave[i]);
+        
+        //adjust xDifference and yDifference with offset
+        this.slaves[i].config.xDifference += this.offset.x;
+        this.slaves[i].config.yDifference += this.offset.y;
+
         this.slaves[i].current = {
           x: this.current.x + this.slaves[i].config.xDifference,
           y: this.current.y + this.slaves[i].config.yDifference,
@@ -222,12 +231,12 @@ class Ship extends Entity {
   }
 
   draw() {
-    // if (this.health > 0) { // alive
-    this.sprite.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
-    // }
-    // if (this.health <= 0) { // dead, draw my explosion
-    //   this.deathAnimation.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
-    // }
+    let offset = this.offset;
+
+    let x = this.current.x + offset.x;
+    let y = this.current.y + offset.y;
+    
+    this.sprite.drawFrame(this.game.clockTick, this.ctx, x, y);
     this.weapon.draw();
     super.draw();
   }

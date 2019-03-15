@@ -2017,6 +2017,7 @@ function loadTemplates() {
       hitValue: 100,
       radius: 100,
       sprite: sprite.octopus.default,
+      yOffset: 140,
       slave: [
         { //TOP LEFT
           config: {
