@@ -108,12 +108,12 @@ class NukesAndOrigami extends GameEngine {
   initializeSceneManager(startScene) {
     // load completed levels
     const levelOrder = [
-      scene.waterIntro,
-      scene.waterOne,
-      scene.waterTwo,
-      scene.waterThree,
-      scene.levelOne,
-      scene.levelTwo,
+      // scene.waterIntro,
+      // scene.waterOne,
+      // scene.waterTwo,
+      // scene.waterThree,
+      // scene.levelOne,
+      // scene.levelTwo,
       scene.levelThree,
       scene.oneWaveTest,
       scene.waveBank,
@@ -507,6 +507,22 @@ class SceneManager {
   //
   // For right now just load the waves.
   loadScene(scene) {
+    // Check if the scene has any associated audio
+    // if (scene.audio) {
+    // console.log(`${JSON.stringify(scene.audio)}`);
+    if (!introAudio.source_loop[1]._playing) {
+      bossAudio.stop = true;
+      stopAudio(bossAudio, 1);
+      stopAudio(bossAudio, 2);
+
+      introAudio.stop = false;
+      // playAudio(bossAudio, 1);
+
+      playAudio(introAudio, 1);
+    }
+    // playAudio(introAudio, 1);
+    // }
+
     this.currentScene = scene;
     this.waves = scene.waves;
 
@@ -695,6 +711,13 @@ class SceneManager {
           }
         } else {
           if (currentChor.type === 'warning') {
+            // Start the boss audio
+            introAudio.stop = true;
+            stopAudio(introAudio, 1);
+
+
+            bossAudio.stop = false;
+            playAudio(bossAudio, 1);
             showMessage(currentChor.text[0], currentChor.text[1], 1);
           } else {
             showMessage(currentChor.text[0], currentChor.text[1]);
@@ -790,6 +813,9 @@ class SceneManager {
         // Create a cookie for this level (the user unlocked this point to start
         // from in the future)
         Cookies.set(currentChor.prettyName, currentChor.sceneName);
+        break;
+
+      default:
         break;
     }
   }
