@@ -123,8 +123,9 @@ h2 {
     align-items: center;
 }
 
-.title h2 {
+.inventory-container h2 {
     margin-top: 0px;
+    margin-bottom: 0px;
 }
 
 /* Add a blue border to the first weapon in the players inventory class */

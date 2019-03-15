@@ -107,7 +107,7 @@ class NukesAndOrigami extends GameEngine {
   */
   initializeSceneManager(startScene) {
     // load completed levels
-    let levelOrder = [
+    const levelOrder = [
       scene.waterIntro,
       scene.waterOne,
       scene.waterTwo,
@@ -126,13 +126,12 @@ class NukesAndOrigami extends GameEngine {
     if (startScene) {
       console.log(scene[startScene]);
       while (levelOrder[0] != scene[startScene]) {
-        console.log(levelOrder[0])
+        console.log(levelOrder[0]);
         levelOrder.shift();
       }
     }
 
     this.sceneManager.scenes = levelOrder;
-
   }
 
   startWaterLevel() {
@@ -230,9 +229,13 @@ class NukesAndOrigami extends GameEngine {
   // notification of player destruction.
   onPlayerHit(player) {
     if (player.invincTime === 0 && !player.rolling) {
-      this.lives -= 1;
-      removeLifeFromBoard();
-      player.invincTime += this.clockTick;
+      // Let's check to see if we can enable god mode for prof marriott
+      const name = Cookies.get('name');
+      if (name.toLowerCase() !== 'chris' && name.toLowerCase() !== 'algorithm0r') {
+        this.lives -= 1;
+        removeLifeFromBoard();
+        player.invincTime += this.clockTick;
+      }
     }
     if (this.lives === 0) { // game over
       this.gameOver();
@@ -555,8 +558,8 @@ class SceneManager {
       // Was the location overriden?
       if (wave.initialXPoints) {
         ship.current.x = wave.initialXPoints[i];
-      } else if (ship.initialDirection === 'north' ||
-        ship.initialDirection === 'south') {
+      } else if (ship.initialDirection === 'north'
+        || ship.initialDirection === 'south') {
         ship.current.x = horizontalLocationCounter;
         horizontalLocationCounter += horizontalSpacing;
       }
@@ -564,8 +567,8 @@ class SceneManager {
 
       if (wave.initialYPoints) {
         ship.current.y = wave.initialYPoints[i];
-      } else if (ship.initialDirection === 'west' ||
-        ship.initialDirection === 'east') {
+      } else if (ship.initialDirection === 'west'
+        || ship.initialDirection === 'east') {
         ship.current.y = verticalLocationCounter;
         verticalLocationCounter += verticalSpacing;
       }
@@ -697,8 +700,10 @@ class SceneManager {
             showMessage(currentChor.text[0], currentChor.text[1]);
           }
 
-          // Post the score after the user has finished the game
-          if (currentChor.type === 'gameOver') {
+          // Post the score after the user has finished the game only if god mode isn't enabled
+          const name = Cookies.get('name');
+          const isgodModEnabled = name.toLowerCase() === 'chris' || name.toLowerCase() === 'algorithm0r';
+          if (currentChor.type === 'gameOver' && !isgodModEnabled) {
             const playerName = Cookies.get('name');
             const playerScore = this.game.score;
             if (playerName) {
@@ -786,7 +791,6 @@ class SceneManager {
         // from in the future)
         Cookies.set(currentChor.prettyName, currentChor.sceneName);
         break;
-
     }
   }
 
@@ -794,9 +798,9 @@ class SceneManager {
     // load last saved checkpoint state
     if (this.entitiesInWave) {
       // remove all enemies on screen.
-      this.entitiesInWave.forEach(function(element) {
+      this.entitiesInWave.forEach((element) => {
         element.removeFromWorld = true;
-      })
+      });
     }
     this.scenes = this.checkPointSceneState;
     this.waves = this.checkPointWaveState;
@@ -806,7 +810,6 @@ class SceneManager {
     for (let i = 0; i < this.game.lives; i++) {
       addLife();
     }
-
   }
 
   handleEnemyWaveCompletion() {

@@ -332,26 +332,26 @@ class InvertedControls extends PowerUp {
 
 // From the collection of implemented powerups, retrieves and return a random one
 function getRandomPowerUp(enemyDropItems) {
-  const POWERUPS = enemyDropItems || [new InvertedControls(100), new Shield(100), new ExtraLife(100), new RapidFire(100)];
+  const POWERUPS = enemyDropItems || [new InvertedControls(60), new Shield(100), new ExtraLife(40), new RapidFire(30)];
 
   // If enemy drop items are not specified we can continue adding random powerUps
   if (!enemyDropItems) {
     // No need to drop more missiles if the player already has one loaded, easy to modify if we decide to drop them
     // down the road
     if (!containsType('hommingMissile')) {
-      POWERUPS.push(new HomingMissile(100));
+      POWERUPS.push(new HomingMissile(70));
     }
 
     if (!containsType('chainGun')) {
-      POWERUPS.push(new ChainGun(100));
+      POWERUPS.push(new ChainGun(30));
     }
 
     if (!containsType('nuke')) {
-      POWERUPS.push(new Nuke(100));
+      POWERUPS.push(new Nuke(30));
     }
 
     if (ring.multiGun.firing.count < 5) {
-      POWERUPS.push(new MultiGun(100));
+      POWERUPS.push(new MultiGun(60));
     }
   }
 
@@ -361,7 +361,7 @@ function getRandomPowerUp(enemyDropItems) {
 function getPowerUp(type) {
   switch (type) {
     case 'nuke':
-      return new Nuke(100);
+      return new Nuke(30);
     case 'rapidFire':
       return new RapidFire(100);
   }
