@@ -21,6 +21,17 @@ AM.queueDownload('./img/hummer.png');
 AM.queueDownload('./img/owl.png');
 AM.queueDownload('./img/pigeon.png');
 AM.queueDownload('./img/swallow.png');
+AM.queueDownload('./img/beta.png');
+AM.queueDownload('./img/crab.png');
+AM.queueDownload('./img/dolphinRight.png');
+AM.queueDownload('./img/dolphinLeft.png');
+AM.queueDownload('./img/eel.png');
+AM.queueDownload('./img/fish.png');
+AM.queueDownload('./img/frog.png');
+AM.queueDownload('./img/manta.png');
+AM.queueDownload('./img/octopus.png');
+AM.queueDownload('./img/seahorse.png');
+AM.queueDownload('./img/turtle.png');
 AM.queueDownload('./img/mini-crane-sheet.png');
 AM.queueDownload('./img/plane-small.png');
 AM.queueDownload('./img/purple-plane-small.png');
@@ -33,6 +44,7 @@ AM.queueDownload('./img/shield.png');
 AM.queueDownload('./img/rapid-bullet.png');
 AM.queueDownload('./img/paper_ball.png');
 AM.queueDownload('./img/clouds.png');
+AM.queueDownload('./img/water-overlay.png');
 AM.queueDownload('./img/7_shoot_sheet.png');
 AM.queueDownload('./img/glass_ball.png');
 AM.queueDownload('./img/laser_red.png');
@@ -46,6 +58,9 @@ AM.queueDownload('./img/verticalscrollingbeach.png');
 AM.queueDownload('./img/verticalscrollingcemetary.png');
 AM.queueDownload('./img/verticalscrollingtrees.png');
 AM.queueDownload('./img/verticalscrollingdesert.png');
+AM.queueDownload('./img/verticalscrollingfallcity.png');
+AM.queueDownload('./img/verticalscrollingvegascity.png');
+
 AM.queueDownload('./img/seamless_pattern.png');
 AM.queueDownload('./img/missile.png');
 AM.queueDownload('./img/gunup.png');
@@ -61,7 +76,7 @@ AM.queueDownload('./img/rapid-bullet-horizontal.png');
 class NukesAndOrigami extends GameEngine {
   constructor() {
     super();
-    this.lives = 15;
+    this.lives = 3;
     this.hits = 0;
     this.score = 0;
 
@@ -78,23 +93,51 @@ class NukesAndOrigami extends GameEngine {
         // references of these instances to stop or pause music
         instances: [],
         volume: 0.09,
-      }
-    }
+      },
+    };
 
     this.sceneManager = new SceneManager(this);
   }
 
-  initializeSceneManager() {
+  /**
+    Loads all stages into scenemanager.
+
+    @param startScene an optional scene name to start from, if provided the game
+                      will start from the specified scene
+  */
+  initializeSceneManager(startScene) {
     // load completed levels
-    this.sceneManager.scenes.push(scene.levelOne);
-    this.sceneManager.scenes.push(scene.levelTwo);
-    this.sceneManager.scenes.push(scene.levelThree);
-    this.sceneManager.scenes.push(scene.oneWaveTest);
-    this.sceneManager.scenes.push(scene.waveBank);
-    this.sceneManager.scenes.push(scene.easyPaper);
-    this.sceneManager.scenes.push(scene.bossTest);
-    this.sceneManager.scenes.push(scene.gamma);
-    this.sceneManager.scenes.push(scene.endingScene);
+    const levelOrder = [
+      scene.levelOne,
+      scene.levelTwo,
+      scene.levelThree,
+      scene.waterIntro,
+      scene.waterOne,
+      scene.waterTwo,
+      scene.waterThree,
+      scene.oneWaveTest,
+      scene.waveBank,
+      scene.easyPaper,
+      scene.bossTest,
+      scene.gamma,
+      scene.endingScene,
+    ];
+
+    if (startScene) {
+      console.log(scene[startScene]);
+      while (levelOrder[0] != scene[startScene]) {
+        console.log(levelOrder[0]);
+        levelOrder.shift();
+      }
+    }
+
+    this.sceneManager.scenes = levelOrder;
+  }
+
+  startWaterLevel() {
+    // this.sceneManager.scenes.push(scene.waterTwo);
+    // this.sceneManager.scenes.push(scene.waterThree);
+    this.sceneManager.scenes.push(scene.invertedDemo);
   }
 
   // Override
@@ -107,11 +150,11 @@ class NukesAndOrigami extends GameEngine {
     }
   }
 
-  //Override
+  // Override
   draw() {
     super.draw();
     if (this.player) {
-      this.player.draw(); //Player over everything
+      this.player.draw(); // Player over everything
     }
   }
 
@@ -126,9 +169,8 @@ class NukesAndOrigami extends GameEngine {
       hitValue,
     } = enemy;
     this.increaseScoreBy(hitValue);
-
     // Generate a powerUp
-    const powerUp = getPowerUp(enemy.powerup)|| getRandomPowerUp(this.player.weapon);
+    const powerUp = getPowerUp(enemy.powerup) || getRandomPowerUp(enemy.dropItems);
     if (powerUp && powerUp.shouldDrop()) {
       this.addEntity(new Projectile(this, {
         origin: {
@@ -158,7 +200,6 @@ class NukesAndOrigami extends GameEngine {
   getEnemiesInRange(point, range) {
     const maxRangeSquared = Math.pow(range, 2) || Infinity;
     const result = new Array();
-
     for (const e of this.entities) {
       if (e instanceof Ship && !e.isPlayer && !e.snapLine) {
         const distance = Math.pow(point.x - e.current.x, 2) + Math.pow(point.y - e.current.y, 2);
@@ -187,12 +228,16 @@ class NukesAndOrigami extends GameEngine {
   // notification of player destruction.
   onPlayerHit(player) {
     if (player.invincTime === 0 && !player.rolling) {
-      this.lives -= 1;
-      removeLifeFromBoard();
-      player.invincTime += this.clockTick;
+      // Let's check to see if we can enable god mode for prof marriott
+      const name = Cookies.get('name');
+      if (name.toLowerCase() !== 'chris' && name.toLowerCase() !== 'algorithm0r') {
+        this.lives -= 1;
+        removeLifeFromBoard();
+        player.invincTime += this.clockTick;
+      }
     }
     if (this.lives === 0) { // game over
-      this.gameOver()
+      this.gameOver();
     }
   }
 
@@ -382,17 +427,17 @@ AM.downloadAll(() => {
   game.spawnPlayer();
 
   // view test stage
-  //game.testScene();
-  //game.sceneManager.scenes.push(scene.gamma);
+  // game.testScene();
+  // game.sceneManager.scenes.push(scene.jaredTestScene);
 
   // run completed levels
   initIntroMessage(game);
 
   // run first prototype level
-  //game.spawnEnemies();
+  // game.spawnEnemies();
 
   canvas.focus();
-  game.sceneManager.loadBackground(background.beach, 1);
+  game.sceneManager.loadBackground(background.paper, 1);
 });
 
 class SceneManager {
@@ -415,6 +460,15 @@ class SceneManager {
     this.wave = null;
     this.waves = null;
     this.entitiesInWave = [];
+
+    // for checkpoints
+    this.waveCounter = 0;
+    this.sceneCounter = 0;
+    this.checkPointWaveState = null;
+    this.checkPointWaveCounter = 0;
+    this.checkPointSceneState = null;
+    this.checkPointSceneCounter = 0;
+    this.checkPointChoreographyState = null;
 
     // Used for keeping track of animation sequences (e.g. going to warp speed)
     this.cutsceneStack = [];
@@ -452,6 +506,25 @@ class SceneManager {
   //
   // For right now just load the waves.
   loadScene(scene) {
+    // Check if the scene has any associated audio
+    // if (scene.audio) {
+    // console.log(`${JSON.stringify(scene.audio)}`);
+    if (!introAudio.source_loop[1]._playing) {
+      if (bossAudio.source_loop[1]._playing || bossAudio.source_loop[2]._playing) {
+        bossAudio.stop = true;
+        stopAudio(bossAudio, 1);
+        stopAudio(bossAudio, 2);
+      }
+
+
+      introAudio.stop = false;
+      // playAudio(bossAudio, 1);
+
+      playAudio(introAudio, 1);
+    }
+    // playAudio(introAudio, 1);
+    // }
+
     this.currentScene = scene;
     this.waves = scene.waves;
 
@@ -461,7 +534,7 @@ class SceneManager {
         this.game.player.removeFromWorld = true;
       }
 
-      this.game.player = new Plane(this.game, ship.player);
+      this.game.player = new Plane(this.game, scene.player);
       this.game.addEntity(this.game.player);
     }
   }
@@ -489,59 +562,12 @@ class SceneManager {
     for (let i = 0; i < wave.numOfEnemies; i++) {
       // Make shallow copies to not modify the objects.js defaults
       // If path was overridden, put that in the manifestCopy
-      const manifestCopy = JSON.parse(JSON.stringify(wave.ships[i]));
-      manifestCopy.path = wave.paths ? JSON.parse(JSON.stringify(wave.paths[i])) : 0;
-      Object.assign(manifestCopy.config.sprite, wave.ships[i].config.sprite);
-
+      const manifestCopy = _.cloneDeep(wave.ships[i]);
+      manifestCopy.path = wave.paths ? _.cloneDeep(wave.paths[i]) : 0;
       if (wave.shipManifestOverride) {
-        // do a recursive merge
-        if (wave.shipManifestOverride[i].config) {
-          Object.assign(manifestCopy.config, wave.shipManifestOverride[i].config);
-          if (wave.shipManifestOverride[i].config.sprite) {
-            Object.assign(manifestCopy.config.sprite, wave.shipManifestOverride[i].config.sprite);
-          } else {
-            Object.assign(manifestCopy.config.sprite, wave.ships[i].config.sprite);
-          }
-        }
-        if (wave.shipManifestOverride[i].weapon) {
-          if (wave.shipManifestOverride[i].weapon.firing) {
-            if (!manifestCopy.weapon.firing) {
-              manifestCopy.weapon.firing = {};
-            }
-            Object.assign(manifestCopy.weapon.firing, wave.shipManifestOverride[i].weapon.firing);
-          }
-          if (wave.shipManifestOverride[i].weapon.rotation) {
-            if (!manifestCopy.weapon.rotation) {
-              manifestCopy.weapon.rotation = {};
-            }
-            Object.assign(manifestCopy.weapon.rotation, wave.shipManifestOverride[i].weapon.rotation);
-          }
-          if (wave.shipManifestOverride[i].weapon.payload) {
-            if (!manifestCopy.weapon.payload) {
-              manifestCopy.weapon.payload = {};
-            }
-            Object.assign(manifestCopy.weapon.payload, wave.shipManifestOverride[i].weapon.payload);
-          }
-        }
-
-
-      if (!Array.isArray(wave.ships[i].weapon)) {
-        // sprites/images don't copy over when you parse a stringified JSON object,
-        // directly link them here.
-        if (wave.ships[i].weapon.payload && wave.ships[i].weapon.payload.type.sprite) {
-          manifestCopy.weapon.payload.type.sprite = wave.ships[i].weapon.payload.type.sprite;
-        }
-        if (wave.ships[i].weapon.payload && wave.ships[i].weapon.payload.type.image) {
-          manifestCopy.weapon.payload.type.image = wave.ships[i].weapon.payload.type.image;
-        }
-      } else {
-        // weapon is an array, copy over everything
-        manifestCopy.weapon = new Array(wave.ships[i].weapon.length);
-        for (let j = 0; j < wave.ships[i].weapon.length; j++) {
-          manifestCopy.weapon[j] = Object.assign({}, wave.ships[i].weapon[j]);
-        }
+        // use lodash
+        _.merge(manifestCopy, wave.shipManifestOverride[i]);
       }
-    }
 
       // The ship constructor **should** copy data; try without Object.assign() here
       // let ship = new Ship(this.game, Object.assign({}, manifestCopy));
@@ -550,8 +576,8 @@ class SceneManager {
       // Was the location overriden?
       if (wave.initialXPoints) {
         ship.current.x = wave.initialXPoints[i];
-      } else if (ship.initialDirection === 'north' ||
-        ship.initialDirection === 'south') {
+      } else if (ship.initialDirection === 'north'
+        || ship.initialDirection === 'south') {
         ship.current.x = horizontalLocationCounter;
         horizontalLocationCounter += horizontalSpacing;
       }
@@ -559,8 +585,8 @@ class SceneManager {
 
       if (wave.initialYPoints) {
         ship.current.y = wave.initialYPoints[i];
-      } else if (ship.initialDirection === 'west' ||
-        ship.initialDirection === 'east') {
+      } else if (ship.initialDirection === 'west'
+        || ship.initialDirection === 'east') {
         ship.current.y = verticalLocationCounter;
         verticalLocationCounter += verticalSpacing;
       }
@@ -579,7 +605,8 @@ class SceneManager {
     this.wave = wave;
     // Set up cutscene stack for this wave.
     if (wave.choreography) {
-      this.choreography = wave.choreography;
+      this.choreography = _.clone(wave.choreography);
+      this.loopChoreography = _.clone(wave.choreography);
     } else {
       // No choreography specified? default is to just load enemies.
       this.loadEnemies(wave);
@@ -612,6 +639,7 @@ class SceneManager {
       // Hang here if we have no more scenes
       if (!(this.scenes.length === 0)) {
         this.loadScene(this.scenes.shift());
+        this.sceneCounter++;
       }
     } else {
       // No wave? load the next one and initialize them
@@ -623,6 +651,7 @@ class SceneManager {
             this.currentScene = 0;
           } else {
             this.loadWave(this.waves.shift());
+            this.waveCounter++;
             this.waveTimer = 0;
           }
         }
@@ -684,10 +713,34 @@ class SceneManager {
           }
         } else {
           if (currentChor.type === 'warning') {
+            console.log('Stoping audio');
+            introAudio.stop = true;
+            stopAudio(introAudio, 1);
+            stopAudio(introAudio, 2);
+
+
+            if (!bossAudio.source_loop[1]._playing && !bossAudio.source_loop[2]._playing) {
+              bossAudio.stop = false;
+              console.log('Playing boss audio');
+              playAudio(bossAudio, 1);
+            }
+
             showMessage(currentChor.text[0], currentChor.text[1], 1);
           } else {
             showMessage(currentChor.text[0], currentChor.text[1]);
           }
+
+          // Post the score after the user has finished the game only if god mode isn't enabled
+          const name = Cookies.get('name');
+          const isgodModEnabled = name.toLowerCase() === 'chris' || name.toLowerCase() === 'algorithm0r';
+          if (currentChor.type === 'gameOver' && !isgodModEnabled) {
+            const playerName = Cookies.get('name');
+            const playerScore = this.game.score;
+            if (playerName) {
+              saveLeaderBoardScore(playerName, playerScore);
+            }
+          }
+
           // If duration isn't specified, just move on
           if (!currentChor.duration) {
             this.choreography.shift();
@@ -702,6 +755,7 @@ class SceneManager {
       case 'wait':
         if (currentChor.init) {
           if (this.waveTimer >= currentChor.duration) {
+            this.waveTimer = 0;
             this.choreography.shift();
           }
           // Also check if the enemies are dead
@@ -742,12 +796,52 @@ class SceneManager {
         }
         this.choreography.shift();
         break;
+
       case 'swapSlaveRing':
-        if(this.entitiesInWave[currentChor.enemyIndex].slaves)  {
+        if (this.entitiesInWave[currentChor.enemyIndex].slaves) {
           this.entitiesInWave[currentChor.enemyIndex].initializeSlaveWeapon(currentChor.slaveIndex, currentChor.ring);
         }
         this.choreography.shift();
         break;
+
+      case 'resetChoreography':
+        this.choreography.shift();
+        this.waveTimer = 0;
+        this.choreography = _.cloneDeep(this.loopChoreography).slice(currentChor.index,
+          this.loopChoreography.length);
+        break;
+
+      case 'checkpoint':
+        // save the current states of waves the scene
+        this.checkPointWaveState = _.cloneDeep(this.waves);
+        this.checkPointSceneState = _.cloneDeep(this.scenes);
+        this.checkPointChoreographyState = _.cloneDeep(this.choreography);
+        this.choreography.shift();
+        // Create a cookie for this level (the user unlocked this point to start
+        // from in the future)
+        Cookies.set(currentChor.prettyName, currentChor.sceneName);
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  loadCheckpoint() {
+    // load last saved checkpoint state
+    if (this.entitiesInWave) {
+      // remove all enemies on screen.
+      this.entitiesInWave.forEach((element) => {
+        element.removeFromWorld = true;
+      });
+    }
+    this.scenes = this.checkPointSceneState;
+    this.waves = this.checkPointWaveState;
+    this.choreography = scene.restartFromCheckpoint.waves[0].choreography.concat(this.checkPointChoreographyState);
+    this.waveTimer = 0;
+    this.game.lives = 3;
+    for (let i = 0; i < this.game.lives; i++) {
+      addLife();
     }
   }
 

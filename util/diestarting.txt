@@ -1,0 +1,16 @@
+DDDDDDDDDDDDD        IIIIIIIIII  EEEEEEEEEEEEEEEEEEEEEE
+D::::::::::::DDD     I::::::::I  E::::::::::::::::::::E
+D:::::::::::::::DD   I::::::::I  E::::::::::::::::::::E
+DDD:::::DDDDD:::::D  II::::::II  EE::::::EEEEEEEEE::::E
+  D:::::D    D:::::D   I::::I      E:::::E       EEEEEE
+  D:::::D     D:::::D  I::::I      E:::::E
+  D:::::D     D:::::D  I::::I      E::::::EEEEEEEEEE
+  D:::::D     D:::::D  I::::I      E:::::::::::::::E
+  D:::::D     D:::::D  I::::I      E:::::::::::::::E
+  D:::::D     D:::::D  I::::I      E::::::EEEEEEEEEE
+  D:::::D     D:::::D  I::::I      E:::::E
+  D:::::D    D:::::D   I::::I      E:::::E       EEEEEE
+DDD:::::DDDDD:::::D  II::::::II  EE::::::EEEEEEEE:::::E
+D:::::::::::::::DD   I::::::::I  E::::::::::::::::::::E
+D::::::::::::DDD     I::::::::I  E::::::::::::::::::::E
+DDDDDDDDDDDDD        IIIIIIIIII  EEEEEEEEEEEEEEEEEEEEEE
