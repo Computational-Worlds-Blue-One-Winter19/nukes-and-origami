@@ -477,6 +477,36 @@ function loadSpriteSheets() {
           loop: true
         }
       }
+    },
+    boss: {
+      default: {
+        image: AM.getAsset('./img/crab.png'),
+        dimension: {
+          originX: 0,
+          originY: 0,
+          frameWidth: 320,
+          frameHeight: 230,
+          frameCount: 2,
+          timePerFrame: 0.1,
+          scale: 1.5,
+          flip: false,
+          loop: true
+        }
+      },
+      hit: {
+        image: AM.getAsset('./img/crab.png'),
+        dimension: {
+          originX: 0,
+          originY: 230,
+          frameWidth: 320,
+          frameHeight: 230,
+          frameCount: 2,
+          timePerFrame: 0.1,
+          scale: 1.5,
+          flip: false,
+          loop: true
+        }
+      }
     }
   }
 

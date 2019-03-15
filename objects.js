@@ -1871,96 +1871,6 @@ function loadTemplates() {
       health: 5,
       hitValue: 5,
       radius: 70,
-      sprite: sprite.pigeon.default,
-    },
-    weapon: ring.singleTargetPlayer,
-  }
-
-  ship.crab = {
-    config: {
-      health: 5,
-      hitValue: 5,
-      radius: 70,
-      sprite: sprite.pigeon.default,
-    },
-    weapon: ring.singleTargetPlayer,
-  }
-
-  ship.dolphin = {
-    config: {
-      health: 5,
-      hitValue: 5,
-      radius: 70,
-      sprite: sprite.pigeon.default,
-    },
-    weapon: ring.singleTargetPlayer,
-  }
-
-  ship.eel = {
-    config: {
-      health: 5,
-      hitValue: 5,
-      radius: 70,
-      sprite: sprite.pigeon.default,
-    },
-    weapon: ring.singleTargetPlayer,
-  }
-
-  ship.fish = {
-    config: {
-      health: 5,
-      hitValue: 5,
-      radius: 70,
-      sprite: sprite.pigeon.default,
-    },
-    weapon: ring.singleTargetPlayer,
-  }
-
-  ship.frog = {
-    config: {
-      health: 5,
-      hitValue: 5,
-      radius: 70,
-      sprite: sprite.pigeon.default,
-    },
-    weapon: ring.singleTargetPlayer,
-  }
-
-  ship.manta = {
-    config: {
-      health: 5,
-      hitValue: 5,
-      radius: 70,
-      sprite: sprite.pigeon.default,
-    },
-    weapon: ring.singleTargetPlayer,
-  }
-
-  ship.seahorse = {
-    config: {
-      health: 5,
-      hitValue: 5,
-      radius: 70,
-      sprite: sprite.pigeon.default,
-    },
-    weapon: ring.singleTargetPlayer,
-  }
-
-  ship.turtle = {
-    config: {
-      health: 5,
-      hitValue: 5,
-      radius: 70,
-      sprite: sprite.pigeon.default,
-    },
-    weapon: ring.singleTargetPlayer,
-  }
-
-  ship.beta = {
-    config: {
-      health: 5,
-      hitValue: 5,
-      radius: 70,
       sprite: sprite.beta.default,
     },
     weapon: ring.singleTargetPlayer,
@@ -1975,6 +1885,8 @@ function loadTemplates() {
     },
     weapon: ring.singleTargetPlayer,
   }
+
+
 
   ship.dolphinRight = {
     config: {
@@ -4353,6 +4265,8 @@ function loadTemplates() {
   }
 
 
+
+
   /** *** ALL PLAYER THINGS **** */
   projectile.player1 = {
     radius: 8,
@@ -4758,6 +4672,41 @@ function loadTemplates() {
       viewTurret: false,
     },
   };
+
+  ship.crabBoss = {
+    config: {
+      health: 100,
+      hitValue: 300,
+      radius: 150,
+      sprite: sprite.crab.boss,
+      slave: [{
+        config: {
+          health: 15,
+          hitValue: 50,
+          radius: 30,
+          xDifference: -180, // Difference in X value from master
+          yDifference: 110, // Difference in Y value from master
+        },
+        weapon: ring.gammaFour,
+        powerup: 'nuke',
+      },
+      {
+        config: {
+          health: 15,
+          hitValue: 50,
+          radius: 30,
+          xDifference: 180,
+          yDifference: 110,
+        },
+        weapon: ring.gammaFour,
+        powerup: 'rapidFire',
+      },
+      ],
+    },
+    weapon: ring.gammaFive
+  }
+
+
 
   ship.gammaCrane = {
     config: {
@@ -6141,4 +6090,102 @@ function loadTemplates() {
 
 
   /** end of jared level */
+
+  scene.waterFour = { //Crab mini boss
+    waves: [
+      {
+        choreography: [
+          {
+            id: 'showMessage',
+            text: ['THE KING CRAB COMETH.', 'AND HE IS NOT PLEASED.']
+          },
+          {
+            id: 'wait',
+            duration: 3,
+          },
+          {
+            id: 'hideMessage',
+          },
+        ]
+      },
+      {
+        choreography: [
+          {
+            id: 'spawnEnemies',
+          },
+          {
+            id: 'wait',
+            duration: 10
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.spiralAlpha2,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 0,
+            ring: ring.spreadBeta1,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 1,
+            ring: ring.spreadBeta1,
+          },
+          {
+            id: 'wait',
+            duration: 5, //hard, so it lasts longer
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.spreadBeta4,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 0,
+            ring: ring.spreadBeta2,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 1,
+            ring: ring.spreadBeta2,
+          },
+          {
+            id: 'wait',
+            duration: 7,
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.gammaFive
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 0,
+            ring: ring.gammaFour,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 1,
+            ring: ring.gammaFour,
+          },
+          {
+            id: 'resetChoreography',
+            index: 1,
+          }
+        ],
+        numOfEnemies: 1,
+        ships: [ship.crabBoss],
+        paths: [path.doNothing],
+        waitUntilEnemiesGone: true,
+      }
+    ]
+  }
 } // end of objects.js
