@@ -163,6 +163,34 @@ projectile.pulseFixedAngle = {
   },
 };
 
+/** Prototype for sine wave */
+projectile.bulletFadeIn = {
+  radius: 1,
+  scale: 1.0,
+  colorFill: 'red',
+
+  init() {
+    //this.current.angle = toRadians(90);
+  },
+  
+  local: {
+    baseRadius: 10,
+    maxRadius: 3,
+    time: 0,
+    amp: 1 * Math.PI, // this is really the frequency
+  },
+
+  update() {
+    this.local.time += this.current.elapsedTime;
+    this.current.r = this.current.velocity.radial * this.current.elapsedTime;
+
+    if (this.config.radius < this.local.maxRadius) {
+      this.local.deltaRadius = Math.abs(Math.sin(this.local.amp * this.local.time));
+      this.config.radius = this.local.baseRadius * this.local.deltaRadius;
+    }
+  },
+};
+
   /** Prototype for sine wave */
   projectile.sine = {
     radius: 3,
@@ -4424,9 +4452,9 @@ projectile.pulseFixedAngle = {
    **                                                                                       * */
   ring.lineTest = {
     payload: {
-      type: projectile.pulse,
+      type: projectile.bulletFadeIn,
       velocity: {
-        radial: 200,
+        radial: 400,
         angular: 0,
       },
       acceleration: {
@@ -4459,7 +4487,7 @@ projectile.pulseFixedAngle = {
 
   ring.pulseRingTest = {
     payload: {
-      type: projectile.pulseFixedAngle,
+      type: projectile.bulletFadeIn,
       velocity: {
         radial: 200,
         angular: 0,
@@ -4507,7 +4535,7 @@ projectile.pulseFixedAngle = {
       weaponsOnEntrance: false,
       weaponsAdvantage: 0,
     },
-    weapon: ring.pulseRingTest,
+    weapon: ring.lineTest,
   };
 
   ship.jaredTestCrane = {
