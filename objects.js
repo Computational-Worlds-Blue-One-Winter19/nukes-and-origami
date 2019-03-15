@@ -4459,9 +4459,9 @@ projectile.pulseFixedAngle = {
 
   ring.pulseRingTest = {
     payload: {
-      type: projectile.pulseFixedAngle,
+      type: projectile.pulse,
       velocity: {
-        radial: 200,
+        radial: 300,
         angular: 0,
       },
       acceleration: {
@@ -4470,30 +4470,26 @@ projectile.pulseFixedAngle = {
       },
     },
     rotation: {
-      // angle: 10,
-      // frequency: 1,
+      angle: 15,
+      frequency: 2,
       // speed: .1,
     },
     firing: {
       // pattern: pattern.simple,
       radius: 50,
       angle: 90,
-      count: 10,
+      count: 12,
       loadTime: 0,
-      cooldownTime: 0.2,
+      cooldownTime: 0.45,
       rapidReload: true,
-      targetPlayer: false,
+      targetPlayer: true,
       viewTurret: false,
-      pulse: {
-        duration: 0.5,
-        delay: 1.5,
-      },
     },
   };
 
   ship.jaredTestDove = {
     config: {
-      health: 1,
+      health: 15,
       hitValue: 5,
       radius: 60,
       sprite: sprite.dove.default,
