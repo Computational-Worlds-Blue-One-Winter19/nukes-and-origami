@@ -1950,10 +1950,96 @@ function loadTemplates() {
 
   ship.octopusBoss = {
     config: {
-      health: 3,
+      health: 500,
       hitValue: 100,
       radius: 100,
       sprite: sprite.octopus.default,
+      slave: [
+        { //TOP LEFT
+          config: {
+            health: 25,
+            hitValue: 50,
+            radius: 30,
+            xDifference: -300, // Difference in X value from master
+            yDifference: -150, // Difference in Y value from master
+          },
+          weapon: ring.singleTargetPlayer,
+          powerup: 'nuke',
+        },
+        { //TOP RIGHT
+          config: {
+            health: 25,
+            hitValue: 50,
+            radius: 30,
+            xDifference: 280,
+            yDifference: -140,
+          },
+          weapon: ring.singleTargetPlayer,
+          powerup: 'rapidFire',
+        },
+        { //2ND FROM TOP, RIGHT
+          config: {
+            health: 25,
+            hitValue: 50,
+            radius: 30,
+            xDifference: 290,
+            yDifference: -30
+          },
+          weapon: ring.singleTargetPlayer,
+        },
+        { //2ND FROM TOP, LEFT
+          config: {
+            health: 25,
+            hitValue: 50,
+            radius: 30,
+            xDifference: -290,
+            yDifference: -25
+          },
+          weapon: ring.singleTargetPlayer,
+        },
+        { //3RD FROM TOP, RIGHT
+          config: {
+            health: 25,
+            hitValue: 50,
+            radius: 30,
+            xDifference: 325,
+            yDifference: 90
+          },
+          weapon: ring.singleTargetPlayer,
+        },
+        { //3RD FROM TOP, LEFT
+          config: {
+            health: 25,
+            hitValue: 50,
+            radius: 30,
+            xDifference: -275,
+            yDifference: 130
+          },
+          weapon: ring.singleTargetPlayer,
+        },
+        { //BOTTOM RIGHT
+          config: {
+            health: 25,
+            hitValue: 50,
+            radius: 30,
+            xDifference: 140,
+            yDifference: 250
+          },
+          weapon: ring.singleTargetPlayer,
+          powerup: 'shield'
+        },
+        { //BOTTOM LEFT
+          config: {
+            health: 25,
+            hitValue: 50,
+            radius: 30,
+            xDifference: -80,
+            yDifference: 230
+          },
+          weapon: ring.singleTargetPlayer,
+          powerup: 'heart'
+        },
+      ],
     },
     weapon: ring.singleTargetPlayer
   }
@@ -6317,7 +6403,7 @@ function loadTemplates() {
             weapon: ring.spiralAlpha4
           },
           {
-            config: {
+            config: {//
               waitOffScreen: 2,
               dropItems: [new ExtraLife(100)]
             },
@@ -6337,6 +6423,46 @@ function loadTemplates() {
           },
         ]       
       },
+    ]
+  }
+
+  scene.waterFinalBoss = {
+    waves: [
+      {
+        choreography: [
+          {
+            id: 'checkpoint',
+            prettyName: 'Water Boss',
+            sceneName: 'waterFinalBoss'
+          },
+          {
+            id: 'showMessage',
+            type: 'warning',
+            text: ['WARNING', 'A MASS OF TENTACLES APPROACHES'],
+          },
+          {
+            id: 'wait',
+            duration: 1
+          },
+          {
+            id: 'hideMessage'
+          },
+          {
+            id: 'spawnEnemies',
+          }
+        ],
+        numOfEnemies: 1,
+        ships: [ship.octopusBoss],
+        paths: path.doNothing,
+        waitUntilEnemiesGone: true,
+        shipManifestOverride: [
+          {
+            config: {
+              snapLine: 300
+            }
+          }
+        ]
+      }
     ]
   }
 } // end of objects.js

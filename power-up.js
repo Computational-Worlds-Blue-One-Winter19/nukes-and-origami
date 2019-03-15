@@ -366,6 +366,10 @@ function getPowerUp(type) {
       return new RapidFire(100);
     case 'multiGun':
       return new MultiGun(100);
+    case 'shield':
+      return new Shield(100);
+    case 'heart':
+      return new ExtraLife(100);
   }
 }
 
