@@ -120,6 +120,26 @@ function loadTemplates() {
   };
 
   /** Prototype for sine wave */
+  projectile.pulse = {
+    radius: 3,
+    scale: 1.0,
+    colorFill: 'red',
+
+    local: {
+      baseRadius: 15,
+      time: 0,
+      amp: .5 * Math.PI, // this is really the frequency
+    },
+
+    update() {
+      this.local.time += this.current.elapsedTime;
+      this.current.r = this.current.velocity.radial * this.current.elapsedTime;
+
+      this.config.radius = this.local.baseRadius * Math.abs(Math.sin(this.local.amp * this.local.time));
+    },
+  };
+
+  /** Prototype for sine wave */
   projectile.sine = {
     radius: 3,
     scale: 1.0,
@@ -4380,9 +4400,9 @@ function loadTemplates() {
    **                                                                                       * */
   ring.lineTest = {
     payload: {
-      type: projectile.microBullet,
+      type: projectile.pulse,
       velocity: {
-        radial: 450,
+        radial: 200,
         angular: 0,
       },
       acceleration: {
@@ -4399,13 +4419,13 @@ function loadTemplates() {
       // pattern: pattern.simple,
       radius: 32,
       angle: 90,
-      width: 100,
-      count: 6,
+      width: 50,
+      count: 2,
       loadTime: 0,
-      cooldownTime: 0.02,
+      cooldownTime: 0.2,
       rapidReload: true,
       targetPlayer: false,
-      viewTurret: true,
+      viewTurret: false,
       pulse: {
         duration: 0.5,
         delay: 1.5,
