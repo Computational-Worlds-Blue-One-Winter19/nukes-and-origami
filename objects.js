@@ -6096,8 +6096,13 @@ function loadTemplates() {
       {
         choreography: [
           {
+            id: 'checkpoint',
+            prettyName: 'Water Four',
+            sceneName: 'waterFour'
+          },
+          {
             id: 'showMessage',
-            text: ['THE KING CRAB COMETH.', 'AND HE IS NOT PLEASED.']
+            text: ['THE KING CRAB COMETH.', 'HE IS NOT PLEASED.']
           },
           {
             id: 'wait',
@@ -6136,7 +6141,7 @@ function loadTemplates() {
           },
           {
             id: 'wait',
-            duration: 5, //hard, so it lasts longer
+            duration: 5, //hard, so it lasts less time
           },
           {
             id: 'swapRing',
