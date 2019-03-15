@@ -181,8 +181,16 @@ class GameEngine {
    */
   gameOver() {
     // The Pause Flag handles the same function in stopping the game so we'll repurpose it here
-    this.isPaused = true;
-    showMessage('Game Over', 'Better Luck Next Time!');
+    // this.isPaused = true;
+    // showMessage('Game Over', 'Better Luck Next Time!');
+
+    // temporary
+    if (this.sceneManager) {
+      // auto load last check point
+      this.sceneManager.loadCheckpoint();
+    }
+
+
   }
 }
 

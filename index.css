@@ -11,12 +11,22 @@ body {
     /* pointer-events: none; */
 }
 
+.overlay img {
+    display: block;
+    width: 50%;
+    margin: auto;
+}
+
+.highlight {
+    background-color: aliceblue;
+}
+
 #gameWorld {
     border: 0px;
 }
 
 h1 {
-    font-size: 4em;
+    font-size: 3em;
     font-family: 'VT323', monospace;
     margin: 0px 0px 15px;
 }
@@ -62,8 +72,29 @@ h2 {
     top: 740px;
 }
 
-.lives h2 {
+.lives h2, .score h2 {
     margin: 0px;
+}
+
+/* Modal/Leaderboard CSS */
+
+.high-score {
+    position: sticky;
+    top: 0;
+    background-color: rgb(250, 250, 250);
+    width: 100%;
+}
+
+#modalLeaderboard .modal-content {
+    /* Need to remove the top padding otherwise the score will be seen above the title
+       when the user scrolls
+    */
+    padding: 0 24px;
+}
+
+/* Modal ask for name */
+.input-field span {
+    font-size: 1em !important;
 }
 
 /* Iventory CSS Styles */
@@ -112,7 +143,7 @@ h2 {
 
 /* Modifies the position of the intro message */
 #intro-message {
-    top: 180px;
+    top: 40px;
 }
 
 #normal-message, #control-message {
@@ -233,12 +264,15 @@ center > h4 {
     height: 40px;
     width: 40px;
     text-align: center;
+    box-sizing: content-box;
+    margin-top:  1.37333rem;
   }
   
   #countdown-number {
     color: black;
     display: inline-block;
     line-height: 40px;
+    box-sizing: content-box;
   }
   
   .timer {
@@ -250,6 +284,7 @@ center > h4 {
     width: 40px;
     height: 40px;
     transform: rotateY(-180deg) rotateZ(-90deg);
+    box-sizing: content-box;
   }
   
   #circle {
@@ -260,6 +295,7 @@ center > h4 {
     stroke: black;
     fill: none;
     animation: countdown 20s linear infinite forwards;
+    box-sizing: content-box;
   }
 
   @keyframes countdown {

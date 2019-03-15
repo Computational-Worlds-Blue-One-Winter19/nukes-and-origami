@@ -5,9 +5,15 @@
     <title>Game Project Shell</title>
     <link rel="stylesheet" href="./index.css">
     <link rel="stylesheet" href="./button.css">
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link rel="stylesheet" href="./materialize.min.css">
     <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
     <script src="./xdomain.min.js"></script>
+    <script type="text/javascript" src="./audio.js"></script>
+    <script src="./js.cookie.js"></script>
     <script type="text/javascript" src="./lodash.js"></script>
     <script type="text/javascript" src="./SeamlessLoop.js"></script>
     <script type="text/javascript" src="./howler.js"></script>
@@ -31,6 +37,75 @@
             <div id="lives-icon-container">
             </div>
         </div>
+        <!-- Choose level modal -->
+        <div id="modalLevel" class="modal">
+            <div class="modal-content">
+              <h4>Choose a start level</h4>
+              <div class="collection" id="collection">
+              </div>
+            </div>
+            <!-- <div class="modal-footer">
+              <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+            </div> -->
+          </div>
+        <!-- Get name modal -->
+        <div id="modalName" class="modal">
+            <div class="modal-content">
+                <h4>But first! What's your name?</h4>
+                <div class="input-field">
+                    <input placeholder="Name" id="user_name" type="text" class="validate" required="">
+                    <span class="helper-text" data-error="Field can't be empty" data-success=""></span>
+                    <!-- <label for="user_name">Name</label> -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="waves-effect waves-orange btn-flat" type="submit" name="action" id="submit">Submit</button>
+            </div>
+        </div>
+        <!-- Leaderboard -->
+        <div class="leaderboard">
+            <a class="blue-grey darken-3 waves-effect waves-light btn" data-target="modal1" id="openLeaderboard"><i class="material-icons left">score</i>Leaderboard</a>
+        </div>
+        <!-- Modal Structure -->
+        <div id="modalLeaderboard" class="modal modal-fixed-footer">
+            <div class="modal-content">
+                <h4 class="high-score">High Scores</h4>
+                <table class="table-leaderboard" id="leaderboard-table">
+                        <thead>
+                            <tr>
+                                <th>Position</th>
+                                <th>Name</th>
+                                <th>Score</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="leaderboard-body">
+                        </tbody>
+                </table>
+                <!-- <table class="table-player-score">
+                        <thead>
+                            <tr>
+                                <th>Position</th>
+                                <th>Name</th>
+                                <th>Score</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td>100</td>
+                                <td>Alvin</td>
+                                <td>500000000</td>
+                            </tr>
+                        </tbody>
+                </table> -->
+            </div>
+            <div class="modal-footer">
+                <a class="waves-effect waves-orange btn-flat" id="checkScore">Check My Score</a>
+                <a href="#!" class="modal-close waves-effect waves-orange btn-flat" id="closeLeaderboard">Close</a>
+            </div>
+        </div>
+        <!-- Score -->
         <div class="score">
             <h2>Score: </h2>
             <h2 id="user-score">0</h2>
@@ -114,7 +189,7 @@
             <div id="weapon">
             </div>
         </div>
-        
+
         <div class="overlay" id="message-overlay">
             <p id="message-line1"></p>
             <p id="message-line2"></p>
@@ -126,19 +201,32 @@
             <p>Controls Normalized!</p>
         </div>
         <div class="overlay" id="intro-message">
-            <p>Nukes and Origami</p>
+            <div class="image-container">
+                <img src="./img/logo.png">
+            </div>
             <!-- Example on how to make use of the blinking class -->
             <!-- <p class="blinking">Nukes and Origami</p> -->
+
             <div class="section one">
-                <div id="button">
-                   Start Game
-                   <div class="ring one"></div>
-                   <div class="ring two"></div>
-                   <div class="ring three"></div>
-                   <div class="ring four"></div>
+                <div class= "intro-button "id="start-button">
+                    Start Game
+                    <div class="ring one"></div>
+                    <div class="ring two"></div>
+                    <div class="ring three"></div>
+                    <div class="ring four"></div>
                 </div>
-             </div>
+                <!-- <div class="intro-button" id="load-button">
+                    Load Game
+                    <div class="ring one"></div>
+                    <div class="ring two"></div>
+                    <div class="ring three"></div>
+                    <div class="ring four"></div>
+                </div> -->
+            </div>
         </div>
     </div>
+
+    <!--JavaScript at end of body for optimized loading-->
+    <script type="text/javascript" src="./materialize.min.js"></script>
 </body>
 </html>

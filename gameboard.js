@@ -6,7 +6,7 @@ function crossfadedLoop(enteringInstance, leavingInstance, soundLevel) {
   const volume = soundLevel;
   const crossfadeDuration = 1000;
 
-   // Get the sound duration in ms from the Howler engine
+  // Get the sound duration in ms from the Howler engine
   const soundDuration = Math.floor(enteringInstance._duration * 1000);
 
 
@@ -34,25 +34,22 @@ function createHowlerInstance(urls, onload) {
     volume: 0,
     onload,
   });
-};
+}
 
 function playLoop(soundObject) {
-
   // Create "slave" instance. This instance is meant
   // to be played after the first one is done.
-  soundObject.instances.push(createHowlerInstance(['./audio/Game_Loop_v.1.ogg']))
+  soundObject.instances.push(createHowlerInstance(['./audio/Game_Loop_v.1.ogg']));
 
-    // Create "master" instance. The onload function passed to
+  // Create "master" instance. The onload function passed to
   // the singleton creator will coordinate the crossfaded loop
   soundObject.instances.push(createHowlerInstance(['./audio/Game_Loop_v.1.ogg'], () => {
-
     crossfadedLoop(soundObject.instances[1], soundObject.instances[0], soundObject.volume);
   }));
-
 }
 
 function pauseLoop(soundObject) {
-  for(let i = 0; i < soundObject.instances.length; i++) {
+  for (let i = 0; i < soundObject.instances.length; i++) {
     soundObject.instances[i].pause();
   }
 }
@@ -201,172 +198,15 @@ function hideControlMessage() {
   message.style.display = 'none';
 }
 
-//--------------
-    // Audio Object
-    //--------------
-    var audio = {
-      buffer: {},
-      compatibility: {},
-      files: [
-          'https://forestmist.org/share/web-audio-api-demo/audio/beat.wav',
-          // '/audio/Game_Loop_v.1.ogg',
-          // 'beat.wav'
-      ],
-      proceed: true,
-      source_loop: {},
-      source_once: {}
-  };
-
-  //-----------------
-  // Audio Functions
-  //-----------------
-  audio.findSync = function(n) {
-      var first = 0,
-          current = 0,
-          offset = 0;
-
-      // Find the audio source with the earliest startTime to sync all others to
-      for (var i in audio.source_loop) {
-          current = audio.source_loop[i]._startTime;
-          if (current > 0) {
-              if (current < first || first === 0) {
-                  first = current;
-              }
-          }
-      }
-
-      if (audio.context.currentTime > first) {
-          offset = (audio.context.currentTime - first) % audio.buffer[n].duration;
-      }
-
-      return offset;
-  };
-
-  audio.play = function(n) {
-      if (audio.source_loop[n]._playing) {
-          audio.stop(n);
-      } else {
-          audio.source_loop[n] = audio.context.createBufferSource();
-          audio.source_loop[n].buffer = audio.buffer[n];
-          audio.source_loop[n].loop = true;
-          audio.source_loop[n].connect(audio.context.destination);
-
-          var offset = audio.findSync(n);
-          audio.source_loop[n]._startTime = audio.context.currentTime;
-
-          if (audio.compatibility.start === 'noteOn') {
-              /*
-              The depreciated noteOn() function does not support offsets.
-              Compensate by using noteGrainOn() with an offset to play once and then schedule a noteOn() call to loop after that.
-              */
-              audio.source_once[n] = audio.context.createBufferSource();
-              audio.source_once[n].buffer = audio.buffer[n];
-              audio.source_once[n].connect(audio.context.destination);
-              audio.source_once[n].noteGrainOn(0, offset, audio.buffer[n].duration - offset); // currentTime, offset, duration
-              /*
-              Note about the third parameter of noteGrainOn().
-              If your sound is 10 seconds long, your offset 5 and duration 5 then you'll get what you expect.
-              If your sound is 10 seconds long, your offset 5 and duration 10 then the sound will play from the start instead of the offset.
-              */
-
-              // Now queue up our looping sound to start immediatly after the source_once audio plays.
-              audio.source_loop[n][audio.compatibility.start](audio.context.currentTime + (audio.buffer[n].duration - offset));
-          } else {
-              audio.source_loop[n][audio.compatibility.start](0, offset);
-          }
-
-          audio.source_loop[n]._playing = true;
-      }
-  };
-
-  audio.stop = function(n) {
-      if (audio.source_loop[n]._playing) {
-          audio.source_loop[n][audio.compatibility.stop](0);
-          audio.source_loop[n]._playing = false;
-          audio.source_loop[n]._startTime = 0;
-          if (audio.compatibility.start === 'noteOn') {
-              audio.source_once[n][audio.compatibility.stop](0);
-          }
-      }
-  };
-
-  //-----------------------------
-  // Check Web Audio API Support
-  //-----------------------------
-  try {
-      // More info at http://caniuse.com/#feat=audio-api
-      window.AudioContext = window.AudioContext || window.webkitAudioContext;
-      audio.context = new window.AudioContext();
-  } catch(e) {
-      audio.proceed = false;
-      alert('Web Audio API not supported in this browser.');
-  }
-
-  if (audio.proceed) {
-      //---------------
-      // Compatibility
-      //---------------
-      (function() {
-          var start = 'start',
-              stop = 'stop',
-              buffer = audio.context.createBufferSource();
-
-          if (typeof buffer.start !== 'function') {
-              start = 'noteOn';
-          }
-          audio.compatibility.start = start;
-
-          if (typeof buffer.stop !== 'function') {
-              stop = 'noteOff';
-          }
-          audio.compatibility.stop = stop;
-      })();
-
-      //-------------------------------
-      // Setup Audio Files and Buttons
-      //-------------------------------
-      for (var a in audio.files) {
-          (function() {
-              var i = parseInt(a) + 1;
-              var req = new XMLHttpRequest();
-              req.open('GET', audio.files[i - 1], true); // array starts with 0 hence the -1
-              // req.withCredentials = true;
-              req.responseType = 'arraybuffer';
-              console.log("Making the requests");
-              req.onload = function() {
-                  audio.context.decodeAudioData(
-                      req.response,
-                      function(buffer) {
-                          audio.buffer[i] = buffer;
-                          audio.source_loop[i] = {};
-                          audio.source_loop[i]._playing = false
-                          console.log("Got a response");
-                          // var button = document.getElementById('button-loop-' + i);
-                          // button.addEventListener('click', function(e) {
-                          //     e.preventDefault();
-                          //     audio.play(this.value);
-                          // });
-                      },
-                      function() {
-                          console.log('Error decoding audio "' + audio.files[i - 1] + '".');
-                      }
-                  );
-              };
-              req.send();
-          })();
-      }
-  }
-
 /**
  * Starts the game by spawning enemies, initializing the scoreboard lives and
  * setting the focus to the canvas
  * @param {NukesAndOrigami} game The game that will be started
  */
-function startGame(game) {
-  //game.initializeSceneManager();
-  game.startWaterLevel();
-  //audio.play(1);
-//   // playLoop(game.sounds.gameLoop);
+function startGame(game, sceneName) {
+  game.initializeSceneManager(sceneName);
+  playAudio(1);
+  //   // playLoop(game.sounds.gameLoop);
   // let loop = new SeamlessLoop();
   // loop.addUri("audio/Game_Loop_v.1.ogg", 9590, 'sound1');
   // loop._volume = 0.09;
@@ -378,28 +218,6 @@ function startGame(game) {
   //     loop.start('sound' + n);
   // }
 
-  var mainLoop = new Howl({
-    src: ['./audio/Game_Loop_v.1.ogg'],
-    sprite: {
-      'one': [0, 10000],
-    },
-    loop: true,
-    volume: 0.3,
-  });
-
-  var intro = new Howl({
-    src: ['./audio/Intro_Redone.ogg'],
-    sprite: {
-      'one': [0, 7000]
-    },
-    loop: false,
-    volume: 0.3,
-    onend: function () {
-      mainLoop.play('one');
-    }
-  })
-
-  intro.play('one');
 
   // Initilize the game board
   initializeScoreBoardLives(game.lives);
@@ -414,19 +232,323 @@ function addEvent(element, evnt, funct) {
   return element.addEventListener(evnt, funct, false);
 }
 
+/**
+ * Given a playerScore object creates a table row that is appended
+ * to the leaderboard table
+ *
+ * The HTML row resembles the following
+ * <tr>
+ *   <td>1</td>      // Rank
+ *   <td>Alvin</td>  // Player Name
+ *   <td>5000</td>   // Score
+ * </tr>
+ * @param {Object} playerScore
+ */
+function appendTableRow(playerScore) {
+  const {
+    name,
+    rank,
+    score,
+  } = playerScore;
+
+  // Get a reference to the table
+  const tableRef = document.getElementById('leaderboard-body');
+
+  // Insert a row at the end of the table
+  const newRow = tableRef.insertRow(-1);
+
+  // Insert a cell in the row at index 0 (Position/Rank)
+  const rankCell = newRow.insertCell(0);
+
+  // Append a text node to the cell
+  const rankText = document.createTextNode(rank);
+  rankCell.appendChild(rankText);
+
+  // Insert a cell in the row at index 1 (Name)
+  const nameCell = newRow.insertCell(1);
+
+  // Append a text node to the cell
+  const nameText = document.createTextNode(name);
+  nameCell.appendChild(nameText);
+
+  // Insert a cell in the row at index 2 (Score)
+  const scoreCell = newRow.insertCell(2);
+
+  // Append a text node to the cell
+  const scoreText = document.createTextNode(score);
+  scoreCell.appendChild(scoreText);
+}
+
+
+async function saveLeaderBoardScore(name, score) {
+  const requestData = {
+    name,
+    score,
+  };
+
+  await fetch('https://us-central1-nukes-and-origami.cloudfunctions.net/postScore', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(requestData),
+  })
+    .then(response => response.json())
+    .then(json => console.log(`Response ${JSON.stringify(json)}`))
+    .catch(e => console.log(`Error Posting Score: ${e}`));
+}
 
 /**
- * Completes the initializes of the intro messge
+ * Makes an asycn fetch call using the given URl
+ * @param {String} url
+ */
+async function fetchAsync(url) {
+  console.log('Inisde the fetch');
+  const response = await fetch(url);
+  // const data
+  return response.json();
+}
+
+function getUserName() {
+  Cookies.set('name', 'value');
+}
+
+function resetLeaderBoard() {
+  // const new_tbody = document.createElement('tbody');
+  // populate_with_new_rows(new_tbody);
+  // const old_tbody = document.getElementById('leaderboard-body');
+  const node = document.getElementById('leaderboard-body');
+  while (node.hasChildNodes()) {
+    node.removeChild(node.lastChild);
+  }
+}
+
+function resetLevelCollection() {
+  const node = document.getElementById('collection');
+  while (node.hasChildNodes()) {
+    node.removeChild(node.lastChild);
+  }
+}
+
+function highlightUserScore(userRank) {
+  console.log(`${JSON.stringify(userRank)}`);
+  const table = document.getElementById('leaderboard-table');
+  for (let i = 0, row; row = table.rows[i]; i++) {
+    // iterate through rows
+    // rows would be accessed using the "row" variable assigned in the for loop
+    for (let j = 0, col; col = row.cells[j]; j++) {
+      if (col.cellIndex === 0 && parseInt(col.innerHTML) === userRank.rank) {
+        console.log('Found the cell');
+        row.className = 'highlight';
+        row.scrollIntoView({ behavior: 'smooth' });
+        return;
+      }
+      console.log(`The col is ${col.innerText}`);
+      // iterate through columns
+      // columns would be accessed using the "col" variable assigned in the for loop
+    }
+  }
+  // Get all the rows in the table
+}
+
+/**
+ * Using the given data object parses each player score and the userRank
+ * in order to load the data onto the leaderboard table
+ * @param {Object} data
+ */
+function loadLeaderboard(data) {
+  console.log(`${JSON.stringify(data)}`);
+  const {
+    leaderboard, userRank,
+  } = data;
+
+  // Attach listener to the checkScore button that uses the userRank data
+  addEvent(
+    document.getElementById('checkScore'),
+    'click',
+    () => { highlightUserScore(userRank); },
+  );
+
+  addEvent(
+    document.getElementById('closeLeaderboard'),
+    'click',
+    () => { resetLeaderBoard(); },
+  );
+
+  for (let index = 0; index < leaderboard.length; index += 1) {
+    const playerScore = leaderboard[index];
+
+    appendTableRow(playerScore);
+    // appendTableRow(playerScore);
+    // appendTableRow(playerScore);
+  }
+
+  // Get an instance of the modalName
+  const modalElem = document.getElementById('modalLeaderboard');
+  const instance = M.Modal.getInstance(modalElem);
+  instance.open();
+}
+
+function getAndLoadLeaderboard(userName) {
+  fetchAsync(`https://us-central1-nukes-and-origami.cloudfunctions.net/getScores?name=${userName}`).then((data) => {
+    loadLeaderboard(data);
+  });
+}
+
+/**
+ * Initializes the leaderboard, modal, and the checkScore button
+ */
+function initLeaderboard() {
+  // Initialize the modal
+  const elems = document.querySelectorAll('.modal');
+  const instances = M.Modal.init(elems, {});
+
+  // Get the users name from the cookie, we don't need to check if its undefined since the url can
+  // handle it just fine
+  const userName = Cookies.get('name');
+  console.log(`The name retrieved is ${userName}`);
+
+  addEvent(
+    document.getElementById('openLeaderboard'),
+    'click',
+    () => { getAndLoadLeaderboard(userName); },
+  );
+}
+
+/**
+ * Attaches an on click listener to the submit name button
+ * @param {NukesAndOrgami} game The game that will be started after the user clicks submit
+ */
+function initSubmitNameButton(game) {
+  addEvent(
+    document.getElementById('submit'),
+    'click',
+    () => {
+      // Handle the submit button being clicked
+
+      // Get an instance of the modalName
+      const modalElem = document.getElementById('modalName');
+      const instance = M.Modal.getInstance(modalElem);
+
+      // Get the name entered by the user
+      const textInput = document.getElementById('user_name');
+      const userName = textInput.value;
+      if (userName) {
+        // Text is not empty save it onto the cookie
+        // Save the value onto a cookie
+        Cookies.set('name', userName);
+
+        // Close the modal
+        instance.close();
+
+        startGame(game);
+      }
+    },
+  );
+}
+
+function loadLevelsOntoCollection(levels, game, modalInstance) {
+  // Get the collection
+  const collection = document.getElementById('collection');
+  // Just in case remove any child nodes
+  resetLevelCollection();
+
+  for (let index = 0; index < levels.length; index += 1) {
+    // Get the name of the level (key) and its value
+    const levelName = Object.keys(levels[index])[0];
+    const levelValue = levels[index][levelName];
+
+    // <a href="#!" class="collection-item">Level One</a>
+    // const mydiv = document.getElementById('myDiv');
+    const aTag = document.createElement('a');
+    aTag.setAttribute('href', '#!'); // null attribute
+    aTag.innerHTML = levelName;
+    aTag.className = 'collection-item';
+    addEvent(
+      aTag,
+      'click',
+      () => {
+        startGame(game, levelValue);
+        modalInstance.close();
+        console.log(`Clicked ${levelValue}`);
+      },
+    );
+    collection.appendChild(aTag);
+
+    console.log(`The name and value are ${levelName} ${levelValue}`);
+  }
+}
+
+function initStartGameButton(game) {
+  addEvent(
+    document.getElementById('start-button'),
+    'click',
+    () => {
+      // Check if we have the user's name saved
+      if (!Cookies.get('name')) {
+        const modalElem = document.getElementById('modalName');
+        const instanceName = M.Modal.getInstance(modalElem);
+        // Open the modal
+        instanceName.open();
+
+        // Autofocus the input field
+        const textInput = document.getElementById('user_name');
+
+        // Auto focus the text input field
+        textInput.focus();
+      } else {
+        // Returning user and we already have a named saved onto the cookie
+
+        // Get all the levels saved onto the cookie
+        const data = Cookies.get();
+        const levels = [];
+        for (const key in data) {
+          if (key.includes('Level') || key.includes('Water')) {
+            // Key is related to a level
+            console.log('Found level data');
+
+            levels.push({ [key]: data[key] });
+          }
+          const datum = data[key];
+          console.log(`${JSON.stringify(datum)}`);
+        }
+
+        // If levels is empty no levels found saved in the cookie
+        console.log(`${JSON.stringify(levels)}`);
+        if (levels.length > 1) { // No need to show the modal if the only loadable level is #1
+          // Init the level modal
+          const modalLevel = document.getElementById('modalLevel');
+          const instanceLevel = M.Modal.getInstance(modalLevel);
+
+          // Load the levels onto the modal
+          loadLevelsOntoCollection(levels, game, instanceLevel);
+
+          instanceLevel.open();
+        } else {
+          // No level data found in the cookies start at level one
+          startGame(game, 'levelOne');
+        }
+      }
+    },
+  );
+}
+
+
+/**
+ * Initializes of the intro messge
  * @param {NukesAndOrigami} game The game that will be started after the user clicks on the
  * start button
  */
 function initIntroMessage(game) {
   showStaticMessage('intro-message');
-  addEvent(
-    document.getElementById('button'),
-    'click',
-    () => { startGame(game); },
-  );
+  // Add an event click listener for the submit name button
+  initSubmitNameButton(game);
+
+  // Add an event click listener for the start game button
+  initStartGameButton(game);
+
+  // While we are initing the intro message we'll also init the leaderboard
+  initLeaderboard();
 }
 
 // Inventory related functions

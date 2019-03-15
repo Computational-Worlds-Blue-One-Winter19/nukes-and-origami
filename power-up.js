@@ -140,10 +140,20 @@ class RapidFire extends PowerUp {
           //   // send a callback to run this function if loadHomingMissle() is successful
           //   addPowerUp('./img/rapid-bullet.png', 'rapidFire');
           // });
-          const ring = entity.weapon.slot[0].ring;
-          if (ring.config.cooldownTime > 0.05) {
-            ring.config.cooldownTime -= 0.1;
-            addItem('./img/fire-rate.png', 'rapidFire', 'powerUp');
+          if (entity.weapon.hasRegularGun) {
+            const { ring } = entity.weapon.slot[0];
+            if (ring.config.cooldownTime > 0.05) {
+              ring.config.cooldownTime -= 0.1;
+              addItem('./img/fire-rate.png', 'rapidFire', 'powerUp');
+            }
+          } else if (entity.weapon.primaryRingManifest.firing.cooldownTime > 0.05) {
+            const { ring } = entity.weapon.slot[0];
+            if (ring.config.cooldownTime > 0.05) {
+              ring.config.cooldownTime -= 0.04;
+              // Decreasing the cooldown of the original weapon too
+              entity.weapon.originalManifest.firing.cooldownTime -= 0.04;
+              addItem('./img/fire-rate.png', 'rapidFire', 'powerUp');
+            }
           }
         },
       },
@@ -219,14 +229,13 @@ class ChainGun extends PowerUp {
             addItem('./img/chaingun.png', 'chainGun', 'weapon');
             // entity.weapon.hasChainGun = true;
             entity.weapon.inventory.push(() => {
-
               // Pushing the function that will be used to activate the powerUp by the player
               entity.weapon.loadHomingMissile(ring.chainGun, () => {
               // send a callback to run this function if loadHomingMissle() is successful
                 removeItem('chainGun', 'weapon');
 
-              // Start the timer
-              startTimer(20, entity.weapon.removeHomingMissile, entity.weapon);
+                // Start the timer
+                startTimer(20, entity.weapon.removeHomingMissile, entity.weapon);
               });
             });
           }
@@ -252,11 +261,11 @@ class Nuke extends PowerUp {
         },
         speed: 60,
         powerUp(entity) {
-          if (!containsType('nuke'))  {
+          if (!containsType('nuke')) {
             addItem('./img/rainbow_ball.png', 'nuke', 'weapon');
             entity.weapon.inventory.push(() => {
               // Pushing the function that will be used to activate the powerUp by the player
-              entity.weapon.loadNuke( () => {
+              entity.weapon.loadNuke(() => {
               // send a callback to run this function if loadHomingMissle() is successful
                 removeItem('nuke', 'weapon');
 
@@ -265,8 +274,8 @@ class Nuke extends PowerUp {
               });
             });
           }
-        }
-      }
+        },
+      },
     };
   }
 }
@@ -323,34 +332,34 @@ class InvertedControls extends PowerUp {
 
 // From the collection of implemented powerups, retrieves and return a random one
 function getRandomPowerUp(enemyDropItems) {
-    const POWERUPS  = enemyDropItems || [new InvertedControls(100), new Shield(100), new ExtraLife(100), new RapidFire(100)];
-  
-    // If enemy drop items are not specified we can continue adding random powerUps
-    if (!enemyDropItems) {
-      // No need to drop more missiles if the player already has one loaded, easy to modify if we decide to drop them
-      // down the road
-      if (!containsType('hommingMissile')) {
-        POWERUPS.push(new HomingMissile(100));
-      }
-    
-      if (!containsType('chainGun')) {
-        POWERUPS.push(new ChainGun(100));
-      }
-    
-      if (!containsType('nuke'))  {
-        POWERUPS.push(new Nuke(100));
-      }
-    
-      if (ring.multiGun.firing.count < 5)  {
-        POWERUPS.push(new MultiGun(100));
-      } 
+  const POWERUPS = enemyDropItems || [new InvertedControls(100), new Shield(100), new ExtraLife(100), new RapidFire(100)];
+
+  // If enemy drop items are not specified we can continue adding random powerUps
+  if (!enemyDropItems) {
+    // No need to drop more missiles if the player already has one loaded, easy to modify if we decide to drop them
+    // down the road
+    if (!containsType('hommingMissile')) {
+      POWERUPS.push(new HomingMissile(100));
     }
+
+    if (!containsType('chainGun')) {
+      POWERUPS.push(new ChainGun(100));
+    }
+
+    if (!containsType('nuke')) {
+      POWERUPS.push(new Nuke(100));
+    }
+
+    if (ring.multiGun.firing.count < 5) {
+      POWERUPS.push(new MultiGun(100));
+    }
+  }
 
   return POWERUPS[Math.floor(Math.random() * POWERUPS.length)];
 }
 
-function getPowerUp(type)  {
-  switch(type)  {
+function getPowerUp(type) {
+  switch (type) {
     case 'nuke':
       return new Nuke(100);
     case 'rapidFire':
@@ -359,7 +368,6 @@ function getPowerUp(type)  {
       return new MultiGun(100);
   }
 }
-
 
 
 // $('.btn2').click(() => audio2[soundNb++ % audio2.length].play());
