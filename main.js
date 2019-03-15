@@ -511,9 +511,12 @@ class SceneManager {
     // if (scene.audio) {
     // console.log(`${JSON.stringify(scene.audio)}`);
     if (!introAudio.source_loop[1]._playing) {
-      bossAudio.stop = true;
-      stopAudio(bossAudio, 1);
-      stopAudio(bossAudio, 2);
+      if (bossAudio.source_loop[1]._playing || bossAudio.source_loop[2]._playing) {
+        bossAudio.stop = true;
+        stopAudio(bossAudio, 1);
+        stopAudio(bossAudio, 2);
+      }
+
 
       introAudio.stop = false;
       // playAudio(bossAudio, 1);
@@ -711,13 +714,18 @@ class SceneManager {
           }
         } else {
           if (currentChor.type === 'warning') {
-            // Start the boss audio
+            console.log('Stoping audio');
             introAudio.stop = true;
             stopAudio(introAudio, 1);
+            stopAudio(introAudio, 2);
 
 
-            bossAudio.stop = false;
-            playAudio(bossAudio, 1);
+            if (!bossAudio.source_loop[1]._playing && !bossAudio.source_loop[2]._playing) {
+              bossAudio.stop = false;
+              console.log('Playing boss audio');
+              playAudio(bossAudio, 1);
+            }
+
             showMessage(currentChor.text[0], currentChor.text[1], 1);
           } else {
             showMessage(currentChor.text[0], currentChor.text[1]);

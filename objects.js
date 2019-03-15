@@ -5265,7 +5265,7 @@ function loadTemplates() {
       },
 
 
-    ]
+    ],
   };
 
   scene.levelTwo = {
@@ -5628,123 +5628,123 @@ function loadTemplates() {
         ],
         waitUntilEnemiesGone: true,
       },
-      {
-        numOfEnemies: 6,
-        ships: new Array(6).fill(ship.gooseHoming),
-        paths: new Array(6).fill(path.downSlow),
-        initialXPoints: [ // omit to evenly space enemies.
-          100, 300, 600, 120, 700, 550,
-        ],
-        shipManifestOverride: [{
-          config: {
-            waitOffScreen: 5,
-          },
-        },
-        {
-          config: {
-            waitOffScreen: 9,
-          },
-        },
-        {
-          config: {
-            waitOffScreen: 11,
-          },
-        },
-        {
-          config: {
-            waitOffScreen: 13,
-          },
-        },
-        {
-          config: {
-            waitOffScreen: 17,
-          },
-        },
-        {
-          config: {
-            waitOffScreen: 20,
-          },
-        },
-        ],
-        waitUntilEnemiesGone: true,
-      },
-      {
-        numOfEnemies: 3,
-        ships: new Array(3).fill(ship.gammaDoveTwo),
-        paths: new Array(3).fill(path.straightDown),
-        initialXPoints: [ // omit to evenly space enemies.
-          600, 400, 700,
-        ],
-        shipManifestOverride: [{
-          config: {
-            waitOffScreen: 0,
-          },
-        },
-        {
-          config: {
-            waitOffScreen: 2,
-          },
-        },
-        {
-          config: {
-            waitOffScreen: 3,
-          },
-        },
-        ],
-        waitUntilEnemiesGone: true,
-      },
-      {
-        numOfEnemies: 3,
-        ships: new Array(3).fill(ship.gammaDoveTwo),
-        paths: new Array(3).fill(path.straightDown),
-        initialXPoints: [ // omit to evenly space enemies.
-          600, 400, 700,
-        ],
-        shipManifestOverride: [{
-          config: {
-            waitOffScreen: 0,
-          },
-          weapon: ring.gammaThree,
-        },
-        {
-          config: {
-            waitOffScreen: 2,
-          },
-        },
-        {
-          config: {
-            waitOffScreen: 3,
-          },
-        },
-        ],
-        waitUntilEnemiesGone: true,
-      },
-      {
-        numOfEnemies: 3,
-        ships: new Array(3).fill(ship.gammaDoveTwo),
-        paths: new Array(3).fill(path.straightDown),
-        initialXPoints: [ // omit to evenly space enemies.
-          600, 400, 700,
-        ],
-        shipManifestOverride: [{
-          config: {
-            waitOffScreen: 0,
-          },
-          weapon: ring.gammaThree,
-        },
-        {
-          config: {
-            waitOffScreen: 2,
-          },
-        },
-        {
-          config: {
-            waitOffScreen: 3,
-          },
-        },
-        ],
-        waitUntilEnemiesGone: true,
-      },
+      // {
+      //   numOfEnemies: 6,
+      //   ships: new Array(6).fill(ship.gooseHoming),
+      //   paths: new Array(6).fill(path.downSlow),
+      //   initialXPoints: [ // omit to evenly space enemies.
+      //     100, 300, 600, 120, 700, 550,
+      //   ],
+      //   shipManifestOverride: [{
+      //     config: {
+      //       waitOffScreen: 5,
+      //     },
+      //   },
+      //   {
+      //     config: {
+      //       waitOffScreen: 9,
+      //     },
+      //   },
+      //   {
+      //     config: {
+      //       waitOffScreen: 11,
+      //     },
+      //   },
+      //   {
+      //     config: {
+      //       waitOffScreen: 13,
+      //     },
+      //   },
+      //   {
+      //     config: {
+      //       waitOffScreen: 17,
+      //     },
+      //   },
+      //   {
+      //     config: {
+      //       waitOffScreen: 20,
+      //     },
+      //   },
+      //   ],
+      //   waitUntilEnemiesGone: true,
+      // },
+      // {
+      //   numOfEnemies: 3,
+      //   ships: new Array(3).fill(ship.gammaDoveTwo),
+      //   paths: new Array(3).fill(path.straightDown),
+      //   initialXPoints: [ // omit to evenly space enemies.
+      //     600, 400, 700,
+      //   ],
+      //   shipManifestOverride: [{
+      //     config: {
+      //       waitOffScreen: 0,
+      //     },
+      //   },
+      //   {
+      //     config: {
+      //       waitOffScreen: 2,
+      //     },
+      //   },
+      //   {
+      //     config: {
+      //       waitOffScreen: 3,
+      //     },
+      //   },
+      //   ],
+      //   waitUntilEnemiesGone: true,
+      // },
+      // {
+      //   numOfEnemies: 3,
+      //   ships: new Array(3).fill(ship.gammaDoveTwo),
+      //   paths: new Array(3).fill(path.straightDown),
+      //   initialXPoints: [ // omit to evenly space enemies.
+      //     600, 400, 700,
+      //   ],
+      //   shipManifestOverride: [{
+      //     config: {
+      //       waitOffScreen: 0,
+      //     },
+      //     weapon: ring.gammaThree,
+      //   },
+      //   {
+      //     config: {
+      //       waitOffScreen: 2,
+      //     },
+      //   },
+      //   {
+      //     config: {
+      //       waitOffScreen: 3,
+      //     },
+      //   },
+      //   ],
+      //   waitUntilEnemiesGone: true,
+      // },
+      // {
+      //   numOfEnemies: 3,
+      //   ships: new Array(3).fill(ship.gammaDoveTwo),
+      //   paths: new Array(3).fill(path.straightDown),
+      //   initialXPoints: [ // omit to evenly space enemies.
+      //     600, 400, 700,
+      //   ],
+      //   shipManifestOverride: [{
+      //     config: {
+      //       waitOffScreen: 0,
+      //     },
+      //     weapon: ring.gammaThree,
+      //   },
+      //   {
+      //     config: {
+      //       waitOffScreen: 2,
+      //     },
+      //   },
+      //   {
+      //     config: {
+      //       waitOffScreen: 3,
+      //     },
+      //   },
+      //   ],
+      //   waitUntilEnemiesGone: true,
+      // },
       {
         choreography: [{
           id: 'accelerateToWarpspeed',

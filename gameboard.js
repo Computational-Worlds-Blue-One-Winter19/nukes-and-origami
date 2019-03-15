@@ -151,6 +151,7 @@ function hideControlMessage() {
 function startGame(game, sceneName) {
   game.initializeSceneManager(sceneName);
 
+
   // Initilize the game board
   initializeScoreBoardLives(game.lives);
 

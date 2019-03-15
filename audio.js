@@ -5,12 +5,14 @@ const introAudio = {
   buffer: {},
   compatibility: {},
   files: [
-    // './audio/Intro_Redone.wav',
+
+    // 'https://forestmist.org/share/web-audio-api-demo/audio/beat.wav',
+    './audio/Intro_Redone.mp3',
     'https://storage.googleapis.com/nukes-and-origami/static/Game_Loop_v.15.wav',
   ],
   loop: [
+    false,
     true,
-    // true,
   ],
   stop: false,
   proceed: true,
@@ -37,6 +39,28 @@ const bossAudio = {
   source_loop: {},
   source_once: {},
 };
+
+function generateAudioObject(introFile, loopFile) {
+  return {
+    buffer: {},
+    compatibility: {},
+    files: [
+
+      // 'https://forestmist.org/share/web-audio-api-demo/audio/beat.wav',
+      introFile,
+      loopFile,
+    // 'beat.wav'
+    ],
+    loop: [
+      false,
+      true,
+    ],
+    stop: false,
+    proceed: true,
+    source_loop: {},
+    source_once: {},
+  };
+}
 
 //-----------------
 // Audio Functions
@@ -171,6 +195,7 @@ function download(audio) {
       stop = 'noteOff';
     }
     audio.compatibility.stop = stop;
+    // }());
 
     //-------------------------------
     // Setup Audio Files and Buttons
@@ -190,6 +215,12 @@ function download(audio) {
             audio.buffer[i] = buffer;
             audio.source_loop[i] = {};
             audio.source_loop[i]._playing = false;
+            console.log('Got a response');
+            // var button = document.getElementById('button-loop-' + i);
+            // button.addEventListener('click', function(e) {
+            //     e.preventDefault();
+            //     audio.play(this.value);
+            // });
           },
           () => {
             console.log(`Error decoding audio "${audio.files[i - 1]}".`);
@@ -197,12 +228,14 @@ function download(audio) {
         );
       };
       req.send();
+      // }());
     }
   }
 }
 
 download(introAudio);
 download(bossAudio);
+
 
 // ---- START HOWLER Sound related function
 
