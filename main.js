@@ -136,7 +136,8 @@ class NukesAndOrigami extends GameEngine {
 
   startWaterLevel() {
     // this.sceneManager.scenes.push(scene.waterTwo);
-    this.sceneManager.scenes.push(scene.waterThree);
+    // this.sceneManager.scenes.push(scene.waterThree);
+    this.sceneManager.scenes.push(scene.invertedDemo);
   }
 
   // Override
@@ -168,7 +169,6 @@ class NukesAndOrigami extends GameEngine {
       hitValue,
     } = enemy;
     this.increaseScoreBy(hitValue);
-
     // Generate a powerUp
     const powerUp = getPowerUp(enemy.powerup) || getRandomPowerUp(enemy.dropItems);
     if (powerUp && powerUp.shouldDrop()) {
@@ -200,7 +200,6 @@ class NukesAndOrigami extends GameEngine {
   getEnemiesInRange(point, range) {
     const maxRangeSquared = Math.pow(range, 2) || Infinity;
     const result = new Array();
-
     for (const e of this.entities) {
       if (e instanceof Ship && !e.isPlayer && !e.snapLine) {
         const distance = Math.pow(point.x - e.current.x, 2) + Math.pow(point.y - e.current.y, 2);
@@ -438,7 +437,7 @@ AM.downloadAll(() => {
   // game.spawnEnemies();
 
   canvas.focus();
-  game.sceneManager.loadBackground(background.water, 1);
+  game.sceneManager.loadBackground(background.paper, 1);
 });
 
 class SceneManager {

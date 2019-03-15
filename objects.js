@@ -142,8 +142,9 @@ function loadTemplates() {
   /** This tracks an enemy. */
   projectile.modifiedChainGun = {
     radius: 3,
-    hitValue: 30,
+    hitValue: 1,
     rotate: true,
+    count: 0,
     // image: AM.getAsset('./img/bullet.png'),
     // scale: .04,
     sprite: sprite.laser.bigOrange,
@@ -153,19 +154,22 @@ function loadTemplates() {
     },
 
     update() {
-      const hitList = this.game.getEnemiesInRange(this.current, this.local.range);
+      if(this.payload.count < 50) {
+        const hitList = this.game.getEnemiesInRange(this.current, this.local.range);
+        
 
-      // sorted list; closest enemy at index 0
-      if (hitList.length > 0) {
-        const {
-          x,
-          y,
-        } = hitList[0].ship.current;
+        // sorted list; closest enemy at index 0
+        if (hitList.length > 0) {
+          const {
+            x,
+            y,
+          } = hitList[0].ship.current;
 
-        // set target angle
-        const deltaX = x - this.current.x;
-        const deltaY = y - this.current.y;
-        this.current.angle = Math.atan2(deltaY, deltaX);
+          // set target angle
+          const deltaX = x - this.current.x;
+          const deltaY = y - this.current.y;
+          this.current.angle = Math.atan2(deltaY, deltaX);
+        }
       }
 
       // update r
@@ -174,15 +178,13 @@ function loadTemplates() {
     },
 
     onHit() {
-      // this.local.count += 1;
-      // this.current.velocity.radial *= 1.4;
-      // stay alive
+      this.payload.count++;
     },
   };
 
   projectile.nuke = {
     radius: 3,
-    hitValue: 3,
+    hitValue: 1,
     rotate: true,
     image: AM.getAsset('./img/rainbow_ball.png'),
     scale: 0.1,
@@ -251,6 +253,7 @@ function loadTemplates() {
     // image: AM.getAsset('./img/bullet.png'),
     // scale: .04,
     sprite: sprite.laser.bigOrange,
+    count: 0,
 
     local: {
       count: 0,
@@ -3002,6 +3005,102 @@ function loadTemplates() {
     },
     ],
   };
+
+  scene.multiGunDemo = {
+    waves: [
+      {
+        numOfEnemies: 7,
+        ships: [ship.hummer, ship.owl, ship.hummer, ship.owl, ship.pigeon, ship.bird, ship.pigeon],
+        paths: [path.strafeRight, path.strafeRight, path.strafeRight, path.strafeRight, path.strafeLeft, path.strafeLeft, path.strafeLeft],
+        initialYPoints: [100, 200, 300, 400, 150, 250, 350],
+        shipManifestOverride: [
+          {
+            config: {
+              initialDirection: 'east',
+              snapLine: 100,
+              dropItems: [new MultiGun(100)]
+            },
+          },
+          {
+            config: {
+              initialDirection: 'east',
+              snapLine: 100,
+              dropItems: [new MultiGun(100)]
+            },
+          },
+          {
+            config: {
+              initialDirection: 'east',
+              snapLine: 100,
+              dropItems: [new MultiGun(100)]
+            },
+          },
+          {
+            config: {
+              initialDirection: 'east',
+              snapLine: 100,
+              dropItems: [new MultiGun(100)]
+            },
+          },
+          {
+            config: {
+              initialDirection: 'west',
+              snapLine: 924,
+              dropItems: [new RapidFire(100)]
+            },
+          },
+          {
+            config: {
+              initialDirection: 'west',
+              snapLine: 924,
+              dropItems: [new RapidFire(100)]
+            },
+          },
+          {
+            config: {
+              initialDirection: 'west',
+              snapLine: 924,
+              dropItems: [new MultiGun(100)]
+            },
+          },
+        ],
+        waitUntilEnemiesGone: true,
+      }
+    ]
+  }
+
+  scene.invertedDemo = {
+    waves: [
+      {
+        numOfEnemies: 3,
+        ships: [ship.crane, ship.bird, ship.crane],
+        paths: [path.doNothing, path.doNothing, path.doNothing],
+        shipManifestOverride: [
+          {
+            config: {
+              health: 1,
+              dropItems: [new ChainGun(100)]
+            },
+            weapon: ring.fourFixedSpeedCircle
+          },
+          {
+            config: {
+              dropItems: [new Nuke(100)]
+            },
+            weapon: ring.slowLaserTargetPlayer
+          },
+          {
+            config: {
+              health: 300,
+              dropItems: [new Nuke(100)]
+            },
+            weapon: ring.fourFixedSpeedCircle
+          }
+        ]
+      }
+    ]
+  }
+
 
   // scene.bossTest = {
   //   waves: [{
