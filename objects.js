@@ -87,7 +87,7 @@ function loadTemplates() {
   /** This tracks an enemy. */
   projectile.homingOnEnemy = {
     radius: 3,
-    hitValue: 3,
+    hitValue: 10,
     rotate: true,
     // image: AM.getAsset('./img/bullet.png'),
     // scale: .04,
@@ -435,6 +435,35 @@ function loadTemplates() {
     delay: 2,
   };
 
+
+  pattern.leftBolt = {
+    sequence: [
+      [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    ],
+    delay: 1.5,
+  }
+
+  pattern.rightBolt = {
+    sequence: [
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ],
+    delay: 1.5,
+  }
+
   /** *** RING: FIRING PATTERNS **** */
   ring.patternTest = {
     payload: {
@@ -452,6 +481,40 @@ function loadTemplates() {
       viewTurret: true,
     },
   };
+
+  ring.boltL = {
+    payload: {
+      type: projectile.glassBall,
+      speed: 300,
+    },
+    firing: {
+      pattern: pattern.leftBolt,
+      radius: 20,
+      angle: 80,
+      spread: 20,
+      loadTime: 0.2,
+      cooldownTime: 0.05,
+      targetPlayer: false,
+      viewTurret: true,
+    }
+  }
+
+  ring.boltR = {
+    payload: {
+      type: projectile.glassBall,
+      speed: 300,
+    },
+    firing: {
+      pattern: pattern.rightBolt,
+      radius: 20,
+      angle: 100,
+      spread: 20,
+      loadTime: 0.2,
+      cooldownTime: 0.05,
+      targetPlayer: false,
+      viewTurret: true,
+    }
+  }
 
   ring.patternTestCircleBullet = {
     payload: {
@@ -1950,98 +2013,101 @@ function loadTemplates() {
 
   ship.octopusBoss = {
     config: {
-      health: 500,
+      health: 350,
       hitValue: 100,
       radius: 100,
       sprite: sprite.octopus.default,
       slave: [
         { //TOP LEFT
           config: {
-            health: 25,
+            health: 20,
             hitValue: 50,
             radius: 30,
             xDifference: -300, // Difference in X value from master
             yDifference: -150, // Difference in Y value from master
           },
-          weapon: ring.singleTargetPlayer,
+          weapon: ring.boltL,
           powerup: 'nuke',
         },
         { //TOP RIGHT
           config: {
-            health: 25,
+            health: 20,
             hitValue: 50,
             radius: 30,
             xDifference: 280,
             yDifference: -140,
           },
-          weapon: ring.singleTargetPlayer,
-          powerup: 'rapidFire',
+          weapon: ring.boltR,
+          powerup: 'chainGun',
         },
         { //2ND FROM TOP, RIGHT
           config: {
-            health: 25,
+            health: 20,
             hitValue: 50,
             radius: 30,
             xDifference: 290,
             yDifference: -30
           },
-          weapon: ring.singleTargetPlayer,
+          weapon: ring.boltR,
+          powerup: 'homing'
         },
         { //2ND FROM TOP, LEFT
           config: {
-            health: 25,
+            health: 20,
             hitValue: 50,
             radius: 30,
             xDifference: -290,
             yDifference: -25
           },
-          weapon: ring.singleTargetPlayer,
+          weapon: ring.boltL,
+          powerup: 'homing',
         },
         { //3RD FROM TOP, RIGHT
           config: {
-            health: 25,
+            health: 20,
             hitValue: 50,
             radius: 30,
             xDifference: 325,
             yDifference: 90
           },
-          weapon: ring.singleTargetPlayer,
+          weapon: ring.boltR,
+          powerup: 'multiGun'
         },
         { //3RD FROM TOP, LEFT
           config: {
-            health: 25,
+            health: 20,
             hitValue: 50,
             radius: 30,
             xDifference: -275,
             yDifference: 130
           },
-          weapon: ring.singleTargetPlayer,
+          weapon: ring.boltL,
         },
         { //BOTTOM RIGHT
           config: {
-            health: 25,
+            health: 20,
             hitValue: 50,
             radius: 30,
             xDifference: 140,
             yDifference: 250
           },
-          weapon: ring.singleTargetPlayer,
+          weapon: ring.jaredTest3,
           powerup: 'shield'
         },
         { //BOTTOM LEFT
           config: {
-            health: 25,
+            health: 20,
             hitValue: 50,
             radius: 30,
             xDifference: -80,
             yDifference: 230
           },
-          weapon: ring.singleTargetPlayer,
+          weapon: ring.jaredTest3,
           powerup: 'heart'
         },
       ],
     },
-    weapon: ring.singleTargetPlayer
+    weapon: ring.patternTest
   }
 
   ship.seahorse = {
@@ -4709,6 +4775,7 @@ function loadTemplates() {
     delay: 1.5, // seconds between rounds
   };
 
+
   ring.gammaFour = {
     payload: {
       type: projectile.glassBall,
@@ -6447,10 +6514,135 @@ function loadTemplates() {
           {
             id: 'hideMessage'
           },
+        ],
+      },
+      {
+        choreography: [
           {
             id: 'spawnEnemies',
+          },
+          {
+            id: 'wait',
+            duration: 5,
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.doubleStraightDownPulse,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 0,
+            ring: ring.spreadBeta1
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 1,
+            ring: ring.spreadBeta1
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 2,
+            ring: ring.spreadBeta1
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 3,
+            ring: ring.spreadBeta1
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 4,
+            ring: ring.spreadBeta1
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 5,
+            ring: ring.spreadBeta1
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 6,
+            ring: ring.spreadBeta1
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 7,
+            ring: ring.spreadBeta1
+          },
+          {
+            id: 'wait',
+            duration: 1
+          },
+          //Reset back to default rings, then loop with resetChoreography
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.patternTest,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 0,
+            ring: ring.boltL
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 1,
+            ring: ring.boltR
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 2,
+            ring: ring.boltR
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 3,
+            ring: ring.boltL
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 4,
+            ring: ring.boltR
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 5,
+            ring: ring.boltL
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 6,
+            ring: ring.jaredTest3
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 7,
+            ring: ring.jaredTest3
+          },
+          {
+            id: 'resetChoreography',
+            index: 1,
           }
         ],
+        /*  SLAVES = 
+        TOP LEFT, TOP RIGHT, 2ND TOP RIGHT, 2ND TOP LEFT, 3RD TOP RIGHT, 3RD TOP LEFT, BOTTOM RIGHT, BOTTOM LEFT  */
         numOfEnemies: 1,
         ships: [ship.octopusBoss],
         paths: path.doNothing,
