@@ -808,9 +808,12 @@ class Weapon {
         var r = new Ring(owner, manifest);
       }
 
+      // set offset if any
+      let offset = owner.offset || {x: 0, y: 0};
+
       this.slot.push({
         ring: r,
-        offset: { x: 0, y: 0 },
+        offset,
       });
     }
 
