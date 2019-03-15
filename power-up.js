@@ -332,7 +332,7 @@ class InvertedControls extends PowerUp {
 
 // From the collection of implemented powerups, retrieves and return a random one
 function getRandomPowerUp(enemyDropItems) {
-  const POWERUPS = enemyDropItems || [new InvertedControls(60), new Shield(100), new ExtraLife(40), new RapidFire(10)];
+  const POWERUPS = enemyDropItems || [new InvertedControls(60), new Shield(70), new ExtraLife(40), new RapidFire(5)];
 
   // If enemy drop items are not specified we can continue adding random powerUps
   if (!enemyDropItems) {
@@ -351,7 +351,7 @@ function getRandomPowerUp(enemyDropItems) {
     }
 
     if (ring.multiGun.firing.count < 5) {
-      POWERUPS.push(new MultiGun(10));
+      POWERUPS.push(new MultiGun(5));
     }
   }
 
