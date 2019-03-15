@@ -752,7 +752,7 @@ function loadTemplates() {
         delay: 0.5,
       },
     },
-  }
+  };
 
   ring.spreadBeta2 = {
     payload: {
@@ -1244,22 +1244,22 @@ function loadTemplates() {
 
   pattern.die = {
     sequence: [
-      [1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-      [1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-      [1,1,1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,1,0,0,1,1,0,0,0,0,0,0,1,1,0,0,1,1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,1],
-      [0,0,1,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,1,1,1,1,1,1],
-      [0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,1],
-      [0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1],
-      [0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-      [0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-      [0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0],
-      [0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,1],
-      [0,0,1,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,1,1,1,1,1,1],
-      [1,1,1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,1,0,0,1,1,0,0,0,0,0,0,1,1,0,0,1,1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,1],
-      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-      [1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-      [1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+      [1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1],
+      [0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+      [0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1],
+      [0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+      [0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+      [0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+      [0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
+      [0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1],
+      [0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+      [1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     ],
     delay: 2,
   };
@@ -1290,7 +1290,7 @@ function loadTemplates() {
       sprite: sprite.dove.default,
     },
     weapon: ring.dieTestRing,
-  }
+  };
 
   /**
    *  Uni Bullet Hell patterns
@@ -1874,7 +1874,7 @@ function loadTemplates() {
       sprite: sprite.pigeon.default,
     },
     weapon: ring.singleTargetPlayer,
-  }
+  };
 
   ship.crab = {
     config: {
@@ -1884,7 +1884,7 @@ function loadTemplates() {
       sprite: sprite.pigeon.default,
     },
     weapon: ring.singleTargetPlayer,
-  }
+  };
 
   ship.dolphin = {
     config: {
@@ -1894,7 +1894,7 @@ function loadTemplates() {
       sprite: sprite.pigeon.default,
     },
     weapon: ring.singleTargetPlayer,
-  }
+  };
 
   ship.eel = {
     config: {
@@ -1904,7 +1904,7 @@ function loadTemplates() {
       sprite: sprite.pigeon.default,
     },
     weapon: ring.singleTargetPlayer,
-  }
+  };
 
   ship.fish = {
     config: {
@@ -1914,7 +1914,7 @@ function loadTemplates() {
       sprite: sprite.pigeon.default,
     },
     weapon: ring.singleTargetPlayer,
-  }
+  };
 
   ship.frog = {
     config: {
@@ -1924,7 +1924,7 @@ function loadTemplates() {
       sprite: sprite.pigeon.default,
     },
     weapon: ring.singleTargetPlayer,
-  }
+  };
 
   ship.manta = {
     config: {
@@ -1934,7 +1934,7 @@ function loadTemplates() {
       sprite: sprite.pigeon.default,
     },
     weapon: ring.singleTargetPlayer,
-  }
+  };
 
   ship.seahorse = {
     config: {
@@ -1944,7 +1944,7 @@ function loadTemplates() {
       sprite: sprite.pigeon.default,
     },
     weapon: ring.singleTargetPlayer,
-  }
+  };
 
   ship.turtle = {
     config: {
@@ -1954,7 +1954,7 @@ function loadTemplates() {
       sprite: sprite.pigeon.default,
     },
     weapon: ring.singleTargetPlayer,
-  }
+  };
 
   ship.beta = {
     config: {
@@ -1964,7 +1964,7 @@ function loadTemplates() {
       sprite: sprite.beta.default,
     },
     weapon: ring.singleTargetPlayer,
-  }
+  };
 
   ship.crab = {
     config: {
@@ -1974,7 +1974,7 @@ function loadTemplates() {
       sprite: sprite.crab.default,
     },
     weapon: ring.singleTargetPlayer,
-  }
+  };
 
   ship.dolphinRight = {
     config: {
@@ -1984,7 +1984,7 @@ function loadTemplates() {
       sprite: sprite.dolphinRight.default,
     },
     weapon: ring.singleTargetPlayer,
-  }
+  };
 
   ship.dolphinLeft = {
     config: {
@@ -1994,7 +1994,7 @@ function loadTemplates() {
       sprite: sprite.dolphinLeft.default,
     },
     weapon: ring.singleTargetPlayer,
-  }
+  };
 
   ship.eel = {
     config: {
@@ -2004,7 +2004,7 @@ function loadTemplates() {
       sprite: sprite.eel.default,
     },
     weapon: ring.singleTargetPlayer,
-  }
+  };
 
   ship.fish = {
     config: {
@@ -2014,7 +2014,7 @@ function loadTemplates() {
       sprite: sprite.fish.default,
     },
     weapon: ring.singleTargetPlayer,
-  }
+  };
 
   ship.frog = {
     config: {
@@ -2024,7 +2024,7 @@ function loadTemplates() {
       sprite: sprite.frog.default,
     },
     weapon: ring.singleTargetPlayer,
-  }
+  };
 
   ship.manta = {
     config: {
@@ -2034,7 +2034,7 @@ function loadTemplates() {
       sprite: sprite.manta.default,
     },
     weapon: ring.singleTargetPlayer,
-  }
+  };
 
   ship.octopusBoss = {
     config: {
@@ -2043,8 +2043,8 @@ function loadTemplates() {
       radius: 100,
       sprite: sprite.octopus.default,
     },
-    weapon: ring.singleTargetPlayer
-  }
+    weapon: ring.singleTargetPlayer,
+  };
 
   ship.seahorse = {
     config: {
@@ -2054,7 +2054,7 @@ function loadTemplates() {
       sprite: sprite.seahorse.default,
     },
     weapon: ring.singleTargetPlayer,
-  }
+  };
 
   ship.turtle = {
     config: {
@@ -2064,7 +2064,7 @@ function loadTemplates() {
       sprite: sprite.turtle.default,
     },
     weapon: ring.singleTargetPlayer,
-  }
+  };
 
   // ship.eagleSlave = {
   //   config: {
@@ -2297,8 +2297,8 @@ function loadTemplates() {
         verticalPixels: 1536,
         parallaxMult: 1,
       },
-    ]
-  }
+    ],
+  };
 
   background.beach = {
     layers: [{
@@ -2344,45 +2344,45 @@ function loadTemplates() {
 
   background.cemetary = {
     layers: [{
-        layer: AM.getAsset('./img/verticalscrollingcemetary.png'),
-        offset: -1766,
-        verticalPixels: 1766,
-      },
-      {
-        layer: AM.getAsset('./img/verticalscrollingcemetary.png'),
-        offset: -1766 * 2,
-        verticalPixels: 1766,
-      },
+      layer: AM.getAsset('./img/verticalscrollingcemetary.png'),
+      offset: -1766,
+      verticalPixels: 1766,
+    },
+    {
+      layer: AM.getAsset('./img/verticalscrollingcemetary.png'),
+      offset: -1766 * 2,
+      verticalPixels: 1766,
+    },
     ],
   };
 
   background.vegas = {
     layers: [{
-        layer: AM.getAsset('./img/verticalscrollingvegascity.png'),
-        offset: -1766,
-        verticalPixels: 1766,
-      },
-      {
-        layer: AM.getAsset('./img/verticalscrollingvegascity.png'),
-        offset: -1766 * 2,
-        verticalPixels: 1766,
-      },
+      layer: AM.getAsset('./img/verticalscrollingvegascity.png'),
+      offset: -1766,
+      verticalPixels: 1766,
+    },
+    {
+      layer: AM.getAsset('./img/verticalscrollingvegascity.png'),
+      offset: -1766 * 2,
+      verticalPixels: 1766,
+    },
     ],
-  }
+  };
 
   background.fallCity = {
     layers: [{
-        layer: AM.getAsset('./img/verticalscrollingfallcity.png'),
-        offset: -1507,
-        verticalPixels: 1507,
-      },
-      {
-        layer: AM.getAsset('./img/verticalscrollingfallcity.png'),
-        offset: -1507 * 2,
-        verticalPixels: 1507,
-      },
+      layer: AM.getAsset('./img/verticalscrollingfallcity.png'),
+      offset: -1507,
+      verticalPixels: 1507,
+    },
+    {
+      layer: AM.getAsset('./img/verticalscrollingfallcity.png'),
+      offset: -1507 * 2,
+      verticalPixels: 1507,
+    },
     ],
-  }
+  };
 
   background.pattern = {
     layers: [{
@@ -2568,7 +2568,7 @@ function loadTemplates() {
     [335, 200, 0.25],
     [25, 200, 0.25],
     [335, 200, 0.25],
-  ]
+  ];
 
   // sawtooth pattern back and forth starting left
   path.sawtoothLeftStop = [
@@ -2640,7 +2640,7 @@ function loadTemplates() {
     [205, 200, 0.25],
     [155, 200, 0.25],
     [205, 200, 0.25],
-  ]
+  ];
 
   path.rightUTurn = [
     [0, 200, 4],
@@ -2900,18 +2900,18 @@ function loadTemplates() {
         },
         {
           id: 'showMessage',
-          text: ['You suck...', 'Try again!']
+          text: ['You suck...', 'Try again!'],
         },
         {
           id: 'wait',
           duration: 3,
         },
         {
-          id: 'hideMessage'
+          id: 'hideMessage',
         },
-      ]
-    }]
-  }
+      ],
+    }],
+  };
 
   scene.oneWaveTest = {
     waves: [{
@@ -3810,27 +3810,27 @@ function loadTemplates() {
   scene.waterIntro = {
     waves: [{
       choreography: [{
-          id: 'showMessage',
-          text: ['Everyone loves water levels', '...right?'],
-        },
-        {
-          id: 'wait',
-          duration: 3
-        },
-        {
-          id: 'showMessage',
-          text: ['Well you\'re in for a treat.', 'This level is much harder than the other :)'],
-        },
-        {
-          id: 'wait',
-          duration: 3
-        },
-        {
-          id: 'hideMessage'
-        }
-      ]
-    }]
-  }
+        id: 'showMessage',
+        text: ['Everyone loves water levels', '...right?'],
+      },
+      {
+        id: 'wait',
+        duration: 3,
+      },
+      {
+        id: 'showMessage',
+        text: ['Well you\'re in for a treat.', 'This level is much harder than the other :)'],
+      },
+      {
+        id: 'wait',
+        duration: 3,
+      },
+      {
+        id: 'hideMessage',
+      },
+      ],
+    }],
+  };
 
   scene.waterOne = {
     waves: [
@@ -3839,7 +3839,7 @@ function loadTemplates() {
           {
             id: 'checkpoint',
             prettyName: 'Level Water one',
-            sceneName: 'waterOne'
+            sceneName: 'waterOne',
           },
           {
             id: 'accelerateToWarpspeed',
@@ -3881,7 +3881,7 @@ function loadTemplates() {
         waitUntilEnemiesGone: true,
         shipManifestOverride: [
           {
-            weapon: ring.fourFixedSpeedCircle
+            weapon: ring.fourFixedSpeedCircle,
           },
           {
             config: {
@@ -3890,7 +3890,7 @@ function loadTemplates() {
               waitOffScreen: 3,
               snapLineSpeed: 400,
             },
-            weapon: ring.spreadBeta2
+            weapon: ring.spreadBeta2,
           },
           {
             config: {
@@ -3899,7 +3899,7 @@ function loadTemplates() {
               waitOffScreen: 3,
               snapLineSpeed: 200,
             },
-            weapon: ring.spreadBeta2
+            weapon: ring.spreadBeta2,
           },
           {
             config: {
@@ -3908,7 +3908,7 @@ function loadTemplates() {
               waitOffScreen: 3,
               snapLineSpeed: 400,
             },
-            weapon: ring.spreadBeta2
+            weapon: ring.spreadBeta2,
           },
           {
             config: {
@@ -3917,7 +3917,7 @@ function loadTemplates() {
               waitOffScreen: 3,
               snapLineSpeed: 200,
             },
-            weapon: ring.spreadBeta2
+            weapon: ring.spreadBeta2,
           },
           {
             config: {
@@ -3926,7 +3926,7 @@ function loadTemplates() {
               waitOffScreen: 3,
               snapLineSpeed: 400,
             },
-            weapon: ring.spreadBeta2
+            weapon: ring.spreadBeta2,
           },
           {
             config: {
@@ -3935,65 +3935,65 @@ function loadTemplates() {
               waitOffScreen: 3,
               snapLineSpeed: 200,
             },
-            weapon: ring.spreadBeta2
+            weapon: ring.spreadBeta2,
           },
           {
             weapon: ring.fourFixedSpeedCircle,
-          }
-        ]
+          },
+        ],
       },
-    ]
-  }
+    ],
+  };
 
   scene.waterTwo = {
     waves: [
       {
-          choreography: [
-            {
-              id: 'checkpoint',
-              prettyName: 'Level Water Two',
-              sceneName: 'waterTwo',
-            },
-            {
-              id: 'accelerateToWarpspeed',
-            },
-            {
-              id: 'loadBackground',
-              bg: background.white,
-            },
-            {
-              id: 'wait',
-              duration: 0.25,
-            },
-            {
-              id: 'showMessage',
-              text: ['GET READY', 'WATER TWO START'],
-            },
-            {
-              id: 'wait',
-              duration: 3,
-            },
-            {
-              id: 'loadBackground',
-              bg: background.water,
-            },
-            {
-              id: 'decelerateFromWarpSpeed',
-            },
-            {
-              id: 'hideMessage',
-            },
-          ],
-        },
-        {
+        choreography: [
+          {
+            id: 'checkpoint',
+            prettyName: 'Level Water Two',
+            sceneName: 'waterTwo',
+          },
+          {
+            id: 'accelerateToWarpspeed',
+          },
+          {
+            id: 'loadBackground',
+            bg: background.white,
+          },
+          {
+            id: 'wait',
+            duration: 0.25,
+          },
+          {
+            id: 'showMessage',
+            text: ['GET READY', 'WATER TWO START'],
+          },
+          {
+            id: 'wait',
+            duration: 3,
+          },
+          {
+            id: 'loadBackground',
+            bg: background.water,
+          },
+          {
+            id: 'decelerateFromWarpSpeed',
+          },
+          {
+            id: 'hideMessage',
+          },
+        ],
+      },
+      {
         numOfEnemies: 14,
         // ships: new Array(10).fill(ship.beta),
         ships: [ship.beta, ship.beta, ship.beta, ship.beta, ship.beta, ship.beta, ship.beta, ship.beta, ship.beta, ship.beta,
-                ship.seahorse, ship.seahorse, ship.seahorse, ship.seahorse],
+          ship.seahorse, ship.seahorse, ship.seahorse, ship.seahorse],
         // paths: new Array(10).fill(path.straightDown),
         paths: [path.straightDown, path.straightDown, path.straightDown, path.straightDown, path.straightDown, path.straightDown, path.straightDown, path.straightDown, path.straightDown, path.straightDown,
-                path.strafeLeft, path.strafeLeft, path.strafeRight, path.strafeRight],
-        initialXPoints: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1124, 1124, -100,-100],
+          path.strafeLeft, path.strafeLeft, path.strafeRight, path.strafeRight],
+        initialXPoints: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1124, 1124, -100, -100],
         initialYPoints: [-307, -116, -387, -233, -400, -600, -450, -187, -93, -250, 200, 500, 100, 400],
         waitUntilEnemiesGone: true,
         shipManifestOverride: [
@@ -4001,68 +4001,68 @@ function loadTemplates() {
             config: {
               snapLineSpeed: 400,
             },
-            weapon: ring.trackingTest1
+            weapon: ring.trackingTest1,
           },
           {
             config: {
-              snapLineSpeed: 100
+              snapLineSpeed: 100,
             },
-            weapon: ring.trackingTest1
+            weapon: ring.trackingTest1,
           },
           {
             config: {
-              snapLineSpeed: 300
+              snapLineSpeed: 300,
             },
-            weapon: ring.trackingTest1
+            weapon: ring.trackingTest1,
           },
           {
             config: {
-              snapLineSpeed: 600
+              snapLineSpeed: 600,
             },
-            weapon: ring.trackingTest1
+            weapon: ring.trackingTest1,
           },
           {
             config: {
-              snapLineSpeed: 200
+              snapLineSpeed: 200,
             },
-            weapon: ring.trackingTest1
+            weapon: ring.trackingTest1,
           },
           {
             config: {
-              snapLineSpeed: 250
+              snapLineSpeed: 250,
             },
-            weapon: ring.trackingTest1
+            weapon: ring.trackingTest1,
           },
           {
             config: {
-              snapLineSpeed: 477
+              snapLineSpeed: 477,
             },
-            weapon: ring.trackingTest1
+            weapon: ring.trackingTest1,
           },
           {
             config: {
-              snapLineSpeed: 400
+              snapLineSpeed: 400,
             },
-            weapon: ring.trackingTest1
+            weapon: ring.trackingTest1,
           },
           {
             config: {
-              snapLineSpeed: 251
+              snapLineSpeed: 251,
             },
-            weapon: ring.trackingTest1
+            weapon: ring.trackingTest1,
           },
           {
             config: {
-              snapLineSpeed: 794
+              snapLineSpeed: 794,
             },
-            weapon: ring.trackingTest1
+            weapon: ring.trackingTest1,
           },
           {
             config: {
               snapLineSpeed: 200,
               initialDirection: 'west',
               waitOffScreen: 3,
-              snapLine: 924
+              snapLine: 924,
             },
             weapon: ring.spreadBeta2,
           },
@@ -4071,7 +4071,7 @@ function loadTemplates() {
               snapLineSpeed: 200,
               initialDirection: 'west',
               waitOffScreen: 5,
-              snapLine: 924
+              snapLine: 924,
             },
             weapon: ring.jaredTest3,
           },
@@ -4080,7 +4080,7 @@ function loadTemplates() {
               snapLineSpeed: 200,
               initialDirection: 'east',
               waitOffScreen: 3,
-              snapLine: 100
+              snapLine: 100,
             },
             weapon: ring.spreadBeta2,
           },
@@ -4089,55 +4089,55 @@ function loadTemplates() {
               snapLineSpeed: 200,
               initialDirection: 'east',
               waitOffScreen: 5,
-              snapLine: 100
+              snapLine: 100,
             },
             weapon: ring.jaredTest3,
           },
 
         ],
       },
-    ]
-  }
+    ],
+  };
 
   scene.waterThree = {
     waves: [
       {
         choreography: [
 
-              {
-                id: 'checkpoint',
-                prettyName: 'Level Water Three',
-                sceneName: 'waterThree'
-              },
-              {
-                id: 'accelerateToWarpspeed',
-              },
-              {
-                id: 'loadBackground',
-                bg: background.white,
-              },
-              {
-                id: 'wait',
-                duration: 0.25,
-              },
-              {
-                id: 'showMessage',
-                text: ['GET READY', 'WATER 3 START'],
-              },
-              {
-                id: 'wait',
-                duration: 3,
-              },
-              {
-                id: 'loadBackground',
-                bg: background.water,
-              },
-              {
-                id: 'decelerateFromWarpSpeed',
-              },
-              {
-                id: 'hideMessage',
-              },
+          {
+            id: 'checkpoint',
+            prettyName: 'Level Water Three',
+            sceneName: 'waterThree',
+          },
+          {
+            id: 'accelerateToWarpspeed',
+          },
+          {
+            id: 'loadBackground',
+            bg: background.white,
+          },
+          {
+            id: 'wait',
+            duration: 0.25,
+          },
+          {
+            id: 'showMessage',
+            text: ['GET READY', 'WATER 3 START'],
+          },
+          {
+            id: 'wait',
+            duration: 3,
+          },
+          {
+            id: 'loadBackground',
+            bg: background.water,
+          },
+          {
+            id: 'decelerateFromWarpSpeed',
+          },
+          {
+            id: 'hideMessage',
+          },
 
           {
             id: 'showMessage',
@@ -4148,19 +4148,19 @@ function loadTemplates() {
             duration: 3,
           },
           {
-            id: 'hideMessage'
+            id: 'hideMessage',
           },
           {
-            id: 'spawnEnemies'
-          }
+            id: 'spawnEnemies',
+          },
         ],
         numOfEnemies: 20,
         ships: new Array(20).fill(ship.crab),
         paths: [path.straightDown, path.straightDown, path.strafeRight, path.strafeRight, path.strafeRight, path.strafeRight, path.strafeRight, path.strafeRight, path.strafeRight, path.strafeRight,
-                path.straightDown, path.straightDown, path.strafeLeft, path.strafeLeft, path.strafeLeft, path.strafeLeft, path.strafeLeft, path.strafeLeft, path.strafeLeft, path.strafeLeft],
+          path.straightDown, path.straightDown, path.strafeLeft, path.strafeLeft, path.strafeLeft, path.strafeLeft, path.strafeLeft, path.strafeLeft, path.strafeLeft, path.strafeLeft],
         // initialYPoints: new Array(20).fill(Math.floor(Math.random() * (600 - 100)) + 100),
         initialXPoints: [Math.floor(Math.random() * (1000 - 100)) + 100, Math.floor(Math.random() * (1000 - 100)) + 100, -100, -100, -100, -100, -100, -100, -100, -100,
-                        Math.floor(Math.random() * (1000 - 100)) + 100, Math.floor(Math.random() * (1000 - 100)) + 100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100],
+          Math.floor(Math.random() * (1000 - 100)) + 100, Math.floor(Math.random() * (1000 - 100)) + 100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100],
         initialYPoints: [-50, -50, Math.floor(Math.random() * (600 - 100)) + 100, Math.floor(Math.random() * (600 - 100)) + 100, Math.floor(Math.random() * (600 - 100)) + 100,
           Math.floor(Math.random() * (600 - 100)) + 100, Math.floor(Math.random() * (600 - 100)) + 100, Math.floor(Math.random() * (600 - 100)) + 100, Math.floor(Math.random() * (600 - 100)) + 100, Math.floor(Math.random() * (600 - 100)) + 100,
           -50, -50, Math.floor(Math.random() * (600 - 100)) + 100, Math.floor(Math.random() * (600 - 100)) + 100, Math.floor(Math.random() * (600 - 100)) + 100,
@@ -4171,7 +4171,7 @@ function loadTemplates() {
             config: {
               snapLineSpeed: 200,
               // initialDirection: 'east',
-              waitOffScreen: 6.2
+              waitOffScreen: 6.2,
               // snapLine: 100
             },
             weapon: ring.jaredTest3,
@@ -4180,7 +4180,7 @@ function loadTemplates() {
             config: {
               snapLineSpeed: 200,
               // initialDirection: 'east',
-              waitOffScreen: 6.7
+              waitOffScreen: 6.7,
               // snapLine: 100
             },
             weapon: ring.jaredTest3,
@@ -4190,7 +4190,7 @@ function loadTemplates() {
               snapLineSpeed: 200,
               initialDirection: 'east',
               waitOffScreen: Math.random() * 3,
-              snapLine: 100
+              snapLine: 100,
             },
             weapon: ring.spreadBeta1Circle,
           },
@@ -4199,7 +4199,7 @@ function loadTemplates() {
               snapLineSpeed: 200,
               initialDirection: 'east',
               waitOffScreen: Math.random() * 3,
-              snapLine: 100
+              snapLine: 100,
             },
             weapon: ring.spreadBeta1Circle,
           },
@@ -4208,7 +4208,7 @@ function loadTemplates() {
               snapLineSpeed: 200,
               initialDirection: 'east',
               waitOffScreen: Math.random() * 3,
-              snapLine: 100
+              snapLine: 100,
             },
             weapon: ring.spreadBeta1Circle,
           },
@@ -4217,7 +4217,7 @@ function loadTemplates() {
               snapLineSpeed: 200,
               initialDirection: 'east',
               waitOffScreen: Math.random() * 3,
-              snapLine: 100
+              snapLine: 100,
             },
             weapon: ring.spreadBeta1Circle,
           },
@@ -4226,7 +4226,7 @@ function loadTemplates() {
               snapLineSpeed: 200,
               initialDirection: 'east',
               waitOffScreen: Math.random() * 3,
-              snapLine: 100
+              snapLine: 100,
             },
             weapon: ring.spreadBeta1Circle,
           },
@@ -4235,7 +4235,7 @@ function loadTemplates() {
               snapLineSpeed: 200,
               initialDirection: 'east',
               waitOffScreen: Math.random() * 3,
-              snapLine: 100
+              snapLine: 100,
             },
             weapon: ring.spreadBeta1Circle,
           },
@@ -4244,7 +4244,7 @@ function loadTemplates() {
               snapLineSpeed: 200,
               initialDirection: 'east',
               waitOffScreen: Math.random() * 3,
-              snapLine: 100
+              snapLine: 100,
             },
             weapon: ring.spreadBeta1Circle,
           },
@@ -4253,7 +4253,7 @@ function loadTemplates() {
               snapLineSpeed: 200,
               initialDirection: 'east',
               waitOffScreen: Math.random() * 3,
-              snapLine: 100
+              snapLine: 100,
             },
             weapon: ring.spreadBeta1Circle,
           },
@@ -4261,7 +4261,7 @@ function loadTemplates() {
             config: {
               snapLineSpeed: 200,
               // initialDirection: 'west',
-              waitOffScreen: 7
+              waitOffScreen: 7,
               // snapLine: 924
             },
             weapon: ring.jaredTest3,
@@ -4270,7 +4270,7 @@ function loadTemplates() {
             config: {
               snapLineSpeed: 200,
               // initialDirection: 'west',
-              waitOffScreen: 7.5
+              waitOffScreen: 7.5,
               // snapLine: 924
             },
             weapon: ring.jaredTest3,
@@ -4280,7 +4280,7 @@ function loadTemplates() {
               snapLineSpeed: 200,
               initialDirection: 'west',
               waitOffScreen: Math.random() * 3,
-              snapLine: 924
+              snapLine: 924,
             },
             weapon: ring.spreadBeta1Circle,
           },
@@ -4289,7 +4289,7 @@ function loadTemplates() {
               snapLineSpeed: 200,
               initialDirection: 'west',
               waitOffScreen: Math.random() * 3,
-              snapLine: 924
+              snapLine: 924,
             },
             weapon: ring.spreadBeta1Circle,
           },
@@ -4298,7 +4298,7 @@ function loadTemplates() {
               snapLineSpeed: 200,
               initialDirection: 'west',
               waitOffScreen: Math.random() * 3,
-              snapLine: 924
+              snapLine: 924,
             },
             weapon: ring.spreadBeta1Circle,
           },
@@ -4307,7 +4307,7 @@ function loadTemplates() {
               snapLineSpeed: 200,
               initialDirection: 'west',
               waitOffScreen: Math.random() * 3,
-              snapLine: 924
+              snapLine: 924,
             },
             weapon: ring.spreadBeta1Circle,
           },
@@ -4316,7 +4316,7 @@ function loadTemplates() {
               snapLineSpeed: 200,
               initialDirection: 'west',
               waitOffScreen: Math.random() * 3,
-              snapLine: 924
+              snapLine: 924,
             },
             weapon: ring.spreadBeta1Circle,
           },
@@ -4325,7 +4325,7 @@ function loadTemplates() {
               snapLineSpeed: 200,
               initialDirection: 'west',
               waitOffScreen: Math.random() * 3,
-              snapLine: 924
+              snapLine: 924,
             },
             weapon: ring.spreadBeta1Circle,
           },
@@ -4334,7 +4334,7 @@ function loadTemplates() {
               snapLineSpeed: 200,
               initialDirection: 'west',
               waitOffScreen: Math.random() * 3,
-              snapLine: 924
+              snapLine: 924,
             },
             weapon: ring.spreadBeta1Circle,
           },
@@ -4343,14 +4343,14 @@ function loadTemplates() {
               snapLineSpeed: 200,
               initialDirection: 'west',
               waitOffScreen: Math.random() * 3,
-              snapLine: 924
+              snapLine: 924,
             },
             weapon: ring.spreadBeta1Circle,
           },
-        ]
-      }
-    ]
-  }
+        ],
+      },
+    ],
+  };
 
 
   /** *** ALL PLAYER THINGS **** */
@@ -5059,41 +5059,41 @@ function loadTemplates() {
           path.doNothing,
         ],
         shipManifestOverride: [{
-            config: {
-              initialDirection: 'west',
-              snapLine: 924,
-            },
-            weapon: ring.dieTestRing
+          config: {
+            initialDirection: 'west',
+            snapLine: 924,
           },
-          {
-            config: {
-              initialDirection: 'east',
-              snapLine: 100,
-            },
-            weapon: ring.dieTestRing
+          weapon: ring.dieTestRing,
+        },
+        {
+          config: {
+            initialDirection: 'east',
+            snapLine: 100,
           },
-          {
-            config: {
-              initialDirection: 'west',
-              snapLine: 824,
-            },
-            weapon: ring.dieTestRing
+          weapon: ring.dieTestRing,
+        },
+        {
+          config: {
+            initialDirection: 'west',
+            snapLine: 824,
           },
-          {
-            config: {
-              initialDirection: 'east',
-              snapLine: 200,
-            },
-            weapon: ring.dieTestRing
+          weapon: ring.dieTestRing,
+        },
+        {
+          config: {
+            initialDirection: 'east',
+            snapLine: 200,
           },
+          weapon: ring.dieTestRing,
+        },
         ],
         waitUntilEnemiesGone: true,
         initialYPoints: [
           100, 100, 300, 300,
-        ]
+        ],
       },
-    ]
-  }
+    ],
+  };
 
   scene.levelOne = {
     waves: [
@@ -5102,7 +5102,7 @@ function loadTemplates() {
           {
             id: 'checkpoint',
             prettyName: 'Level One',
-            sceneName: 'levelOne'
+            sceneName: 'levelOne',
           },
           {
             id: 'accelerateToWarpspeed',
@@ -5367,7 +5367,7 @@ function loadTemplates() {
           {
             id: 'checkpoint',
             prettyName: 'Level Two',
-            sceneName: 'levelTwo'
+            sceneName: 'levelTwo',
           },
           {
             id: 'accelerateToWarpspeed',
@@ -5552,90 +5552,90 @@ function loadTemplates() {
       {
         choreography: [{
           id: 'accelerateToWarpspeed',
-          },
-          {
-            id: 'wait',
-            duration: 0.25,
-          },
-          {
-            id: 'showMessage',
-            text: ['MINI BOSS 2', 'APPROACHING'],
-          },
-          {
-            id: 'wait',
-            duration: 3,
-          },
-          {
-            id: 'decelerateFromWarpSpeed',
-          },
-          {
-            id: 'hideMessage',
-          }],
         },
         {
-          choreography: [
-            {
-              id: 'spawnEnemies'
-            },
-            {
-              id: 'wait',
-              duration: 15,
-            },
-            {
-              id: 'swapRing',
-              enemyIndex: 0,
-              ring: ring.slowLaserTargetPlayer,
-            },
-            {
-              id: 'wait',
-              duration: 7,
-            },
-            {
-              id: 'swapRing',
-              enemyIndex: 0,
-              ring: ring.laserGapRight,
-            },
-            {
-              id: 'wait',
-              duration: 7,
-            },
-            {
-              id: 'swapRing',
-              enemyIndex: 0,
-              ring: ring.slowLaserTargetPlayer,
-            },
-            {
-              id: 'wait',
-              duration: 7,
-            },
-            {
-              id: 'swapRing',
-              enemyIndex: 0,
-              ring: ring.laserGapLeft,
-            },
-            {
-              id: 'wait',
-              duration: 7,
-            },
-            {
-              id: 'resetChoreography',
-              index: 2,
-            }
-          ],
-          numOfEnemies: 1,
-          ships: [ship.owl],
-          paths: [
-            path.doNothing,
-          ],
-          shipManifestOverride: [{
-            config: {
-              health: 150,
-              snapLineSpeed: 50,
-              hitValue: 2000,
-              snapLine: 300,
-            },
-          }],
-          waitUntilEnemiesGone: true,
+          id: 'wait',
+          duration: 0.25,
+        },
+        {
+          id: 'showMessage',
+          text: ['MINI BOSS 2', 'APPROACHING'],
+        },
+        {
+          id: 'wait',
+          duration: 3,
+        },
+        {
+          id: 'decelerateFromWarpSpeed',
+        },
+        {
+          id: 'hideMessage',
+        }],
+      },
+      {
+        choreography: [
+          {
+            id: 'spawnEnemies',
+          },
+          {
+            id: 'wait',
+            duration: 15,
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.slowLaserTargetPlayer,
+          },
+          {
+            id: 'wait',
+            duration: 7,
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.laserGapRight,
+          },
+          {
+            id: 'wait',
+            duration: 7,
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.slowLaserTargetPlayer,
+          },
+          {
+            id: 'wait',
+            duration: 7,
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.laserGapLeft,
+          },
+          {
+            id: 'wait',
+            duration: 7,
+          },
+          {
+            id: 'resetChoreography',
+            index: 2,
+          },
+        ],
+        numOfEnemies: 1,
+        ships: [ship.owl],
+        paths: [
+          path.doNothing,
+        ],
+        shipManifestOverride: [{
+          config: {
+            health: 150,
+            snapLineSpeed: 50,
+            hitValue: 2000,
+            snapLine: 300,
+          },
+        }],
+        waitUntilEnemiesGone: true,
       },
     ],
   };
@@ -5644,40 +5644,40 @@ function loadTemplates() {
     waves: [
       {
         choreography: [
-        {
-          id: 'checkpoint',
-          prettyName: 'Level Three',
-          sceneName: 'levelThree'
-        },
-        {
-          id: 'accelerateToWarpspeed',
-        },
-        {
-          id: 'loadBackground',
-          bg: background.white,
-        },
-        {
-          id: 'wait',
-          duration: 0.25,
-        },
-        {
-          id: 'showMessage',
-          text: ['FINAL LEVEL', 'GOOD LUCK'],
-        },
-        {
-          id: 'wait',
-          duration: 3,
-        },
-        {
-          id: 'loadBackground',
-          bg: background.paper,
-        },
-        {
-          id: 'decelerateFromWarpSpeed',
-        },
-        {
-          id: 'hideMessage',
-        },
+          {
+            id: 'checkpoint',
+            prettyName: 'Level Three',
+            sceneName: 'levelThree',
+          },
+          {
+            id: 'accelerateToWarpspeed',
+          },
+          {
+            id: 'loadBackground',
+            bg: background.white,
+          },
+          {
+            id: 'wait',
+            duration: 0.25,
+          },
+          {
+            id: 'showMessage',
+            text: ['FINAL LEVEL', 'GOOD LUCK'],
+          },
+          {
+            id: 'wait',
+            duration: 3,
+          },
+          {
+            id: 'loadBackground',
+            bg: background.paper,
+          },
+          {
+            id: 'decelerateFromWarpSpeed',
+          },
+          {
+            id: 'hideMessage',
+          },
         ],
       },
       {
@@ -5720,123 +5720,123 @@ function loadTemplates() {
         ],
         waitUntilEnemiesGone: true,
       },
-      {
-        numOfEnemies: 6,
-        ships: new Array(6).fill(ship.gooseHoming),
-        paths: new Array(6).fill(path.downSlow),
-        initialXPoints: [ // omit to evenly space enemies.
-          100, 300, 600, 120, 700, 550,
-        ],
-        shipManifestOverride: [{
-          config: {
-            waitOffScreen: 5,
-          },
-        },
-        {
-          config: {
-            waitOffScreen: 9,
-          },
-        },
-        {
-          config: {
-            waitOffScreen: 11,
-          },
-        },
-        {
-          config: {
-            waitOffScreen: 13,
-          },
-        },
-        {
-          config: {
-            waitOffScreen: 17,
-          },
-        },
-        {
-          config: {
-            waitOffScreen: 20,
-          },
-        },
-        ],
-        waitUntilEnemiesGone: true,
-      },
-      {
-        numOfEnemies: 3,
-        ships: new Array(3).fill(ship.gammaDoveTwo),
-        paths: new Array(3).fill(path.straightDown),
-        initialXPoints: [ // omit to evenly space enemies.
-          600, 400, 700,
-        ],
-        shipManifestOverride: [{
-          config: {
-            waitOffScreen: 0,
-          },
-        },
-        {
-          config: {
-            waitOffScreen: 2,
-          },
-        },
-        {
-          config: {
-            waitOffScreen: 3,
-          },
-        },
-        ],
-        waitUntilEnemiesGone: true,
-      },
-      {
-        numOfEnemies: 3,
-        ships: new Array(3).fill(ship.gammaDoveTwo),
-        paths: new Array(3).fill(path.straightDown),
-        initialXPoints: [ // omit to evenly space enemies.
-          600, 400, 700,
-        ],
-        shipManifestOverride: [{
-          config: {
-            waitOffScreen: 0,
-          },
-          weapon: ring.gammaThree,
-        },
-        {
-          config: {
-            waitOffScreen: 2,
-          },
-        },
-        {
-          config: {
-            waitOffScreen: 3,
-          },
-        },
-        ],
-        waitUntilEnemiesGone: true,
-      },
-      {
-        numOfEnemies: 3,
-        ships: new Array(3).fill(ship.gammaDoveTwo),
-        paths: new Array(3).fill(path.straightDown),
-        initialXPoints: [ // omit to evenly space enemies.
-          600, 400, 700,
-        ],
-        shipManifestOverride: [{
-          config: {
-            waitOffScreen: 0,
-          },
-          weapon: ring.gammaThree,
-        },
-        {
-          config: {
-            waitOffScreen: 2,
-          },
-        },
-        {
-          config: {
-            waitOffScreen: 3,
-          },
-        },
-        ],
-        waitUntilEnemiesGone: true,
-      },
+      // {
+      //   numOfEnemies: 6,
+      //   ships: new Array(6).fill(ship.gooseHoming),
+      //   paths: new Array(6).fill(path.downSlow),
+      //   initialXPoints: [ // omit to evenly space enemies.
+      //     100, 300, 600, 120, 700, 550,
+      //   ],
+      //   shipManifestOverride: [{
+      //     config: {
+      //       waitOffScreen: 5,
+      //     },
+      //   },
+      //   {
+      //     config: {
+      //       waitOffScreen: 9,
+      //     },
+      //   },
+      //   {
+      //     config: {
+      //       waitOffScreen: 11,
+      //     },
+      //   },
+      //   {
+      //     config: {
+      //       waitOffScreen: 13,
+      //     },
+      //   },
+      //   {
+      //     config: {
+      //       waitOffScreen: 17,
+      //     },
+      //   },
+      //   {
+      //     config: {
+      //       waitOffScreen: 20,
+      //     },
+      //   },
+      //   ],
+      //   waitUntilEnemiesGone: true,
+      // },
+      // {
+      //   numOfEnemies: 3,
+      //   ships: new Array(3).fill(ship.gammaDoveTwo),
+      //   paths: new Array(3).fill(path.straightDown),
+      //   initialXPoints: [ // omit to evenly space enemies.
+      //     600, 400, 700,
+      //   ],
+      //   shipManifestOverride: [{
+      //     config: {
+      //       waitOffScreen: 0,
+      //     },
+      //   },
+      //   {
+      //     config: {
+      //       waitOffScreen: 2,
+      //     },
+      //   },
+      //   {
+      //     config: {
+      //       waitOffScreen: 3,
+      //     },
+      //   },
+      //   ],
+      //   waitUntilEnemiesGone: true,
+      // },
+      // {
+      //   numOfEnemies: 3,
+      //   ships: new Array(3).fill(ship.gammaDoveTwo),
+      //   paths: new Array(3).fill(path.straightDown),
+      //   initialXPoints: [ // omit to evenly space enemies.
+      //     600, 400, 700,
+      //   ],
+      //   shipManifestOverride: [{
+      //     config: {
+      //       waitOffScreen: 0,
+      //     },
+      //     weapon: ring.gammaThree,
+      //   },
+      //   {
+      //     config: {
+      //       waitOffScreen: 2,
+      //     },
+      //   },
+      //   {
+      //     config: {
+      //       waitOffScreen: 3,
+      //     },
+      //   },
+      //   ],
+      //   waitUntilEnemiesGone: true,
+      // },
+      // {
+      //   numOfEnemies: 3,
+      //   ships: new Array(3).fill(ship.gammaDoveTwo),
+      //   paths: new Array(3).fill(path.straightDown),
+      //   initialXPoints: [ // omit to evenly space enemies.
+      //     600, 400, 700,
+      //   ],
+      //   shipManifestOverride: [{
+      //     config: {
+      //       waitOffScreen: 0,
+      //     },
+      //     weapon: ring.gammaThree,
+      //   },
+      //   {
+      //     config: {
+      //       waitOffScreen: 2,
+      //     },
+      //   },
+      //   {
+      //     config: {
+      //       waitOffScreen: 3,
+      //     },
+      //   },
+      //   ],
+      //   waitUntilEnemiesGone: true,
+      // },
       {
         choreography: [{
           id: 'accelerateToWarpspeed',
