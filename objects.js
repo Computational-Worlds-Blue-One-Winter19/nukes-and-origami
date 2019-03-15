@@ -4679,6 +4679,7 @@ function loadTemplates() {
       hitValue: 300,
       radius: 150,
       sprite: sprite.crab.boss,
+      dropItems: [new MultiGun(100)],
       slave: [{
         config: {
           health: 15,
@@ -4686,6 +4687,7 @@ function loadTemplates() {
           radius: 30,
           xDifference: -180, // Difference in X value from master
           yDifference: 110, // Difference in Y value from master
+          // dropItems: [new Nuke(100)]
         },
         weapon: ring.gammaFour,
         powerup: 'nuke',
@@ -4697,6 +4699,7 @@ function loadTemplates() {
           radius: 30,
           xDifference: 180,
           yDifference: 110,
+          // dropItems: [new RapidFire(100)]
         },
         weapon: ring.gammaFour,
         powerup: 'rapidFire',
@@ -6191,6 +6194,149 @@ function loadTemplates() {
         paths: [path.doNothing],
         waitUntilEnemiesGone: true,
       }
+    ]
+  }
+
+  scene.waterFive = {
+    waves: [
+      {
+        choreography: [
+          {
+            id: 'checkpoint',
+            prettyName: 'Water Five',
+            sceneName: 'waterFive'
+          },
+          {
+            id: 'spawnEnemies',
+          }
+        ],
+        numOfEnemies: 15,
+        ships: [ship.seahorse, ship.seahorse, ship.seahorse, ship.seahorse,
+                ship.dolphinRight, ship.dolphinRight, ship.dolphinRight, ship.dolphinRight,
+                ship.frog, ship.frog, ship.frog, ship.frog, ship.frog, ship.frog, ship.frog],
+        paths: [path.strafeLeft, path.strafeLeft, path.strafeLeft, path.strafeLeft,
+                path.strafeRight, path.strafeRight, path.strafeRight, path.strafeRight,
+                path.straightDown, path.straightDown, path.doNothing, path.doNothing, path.doNothing, path.straightDown, path.straightDown],
+        initialYPoints: [100, 300, 500, 700, 50, 250, 450, 650,
+                        -80, -80, -80, -80, -80, -80, -80],
+        initialXPoints: [1100, 1100, 1100, 1100, -100, -100, -100, -100,
+                        146-46, 292-46, 438-46, 584-46, 730-46, 876-46, 1022-46],
+                        //please dont ask about the "-46", im just really lazy. Thanks - Nathan
+        waitUntilEnemiesGone: true,
+        shipManifestOverride: [
+          {
+            config: {
+              snapLineSpeed: 200,
+              initialDirection: 'west',
+              waitOffScreen: 5,
+              snapLine: 924,
+            }
+          },
+          {
+            config: {
+              snapLineSpeed: 200,
+              initialDirection: 'west',
+              waitOffScreen: 4,
+              snapLine: 924,
+            }
+          },
+          {
+            config: {
+              snapLineSpeed: 200,
+              initialDirection: 'west',
+              waitOffScreen: 3,
+              snapLine: 924,
+            }
+          },
+          {
+            config: {
+              snapLineSpeed: 200,
+              initialDirection: 'west',
+              waitOffScreen: 2,
+              snapLine: 924,
+            }
+          },
+          {
+            config: {
+              snapLineSpeed: 200,
+              initialDirection: 'east',
+              waitOffScreen: 5,
+              snapLine: 100,
+            }
+          },
+          {
+            config: {
+              snapLineSpeed: 200,
+              initialDirection: 'east',
+              waitOffScreen: 6,
+              snapLine: 100,
+            }
+          },
+          {
+            config: {
+              snapLineSpeed: 200,
+              initialDirection: 'east',
+              waitOffScreen: 7,
+              snapLine: 100,
+            }
+          },
+          {
+            config: {
+              snapLineSpeed: 200,
+              initialDirection: 'east',
+              waitOffScreen: 8,
+              snapLine: 100,
+            }
+          },
+          {
+            config: {
+              waitOffScreen: 1,
+            },
+            weapon: ring.spreadBeta3
+          },
+          {
+            config: {
+              waitOffScreen: 1.5,
+            },
+            weapon: ring.spreadBeta3
+          },
+          {
+            config: {
+              waitOffScreen: 2,
+              dropItems: [new ExtraLife(100)]
+            },
+            weapon: ring.linearTest,
+          },
+          {
+            config: {
+              health: 10,
+              waitOffScreen: 2.5,
+              snapLine: 150,
+              dropItems: [new Nuke(100)]
+            },
+            weapon: ring.spiralAlpha4
+          },
+          {
+            config: {
+              waitOffScreen: 2,
+              dropItems: [new ExtraLife(100)]
+            },
+            weapon: ring.linearTest,
+          },
+          {
+            config: {
+              waitOffScreen: 1.5,
+            },
+            weapon: ring.spreadBeta3,
+          },
+          {
+            config: {
+              waitOffScreen: 1,
+            },
+            weapon: ring.spreadBeta3,
+          },
+        ]       
+      },
     ]
   }
 } // end of objects.js

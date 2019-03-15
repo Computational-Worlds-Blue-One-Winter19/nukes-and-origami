@@ -108,7 +108,7 @@ class NukesAndOrigami extends GameEngine {
   initializeSceneManager(startScene) {
     // load completed levels
     let levelOrder = [
-      scene.waterFour,
+      scene.waterFive,
       // scene.waterIntro,
       // scene.waterOne,
       // scene.waterTwo,
