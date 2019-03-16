@@ -2015,7 +2015,7 @@ function loadTemplates() {
     config: {
       health: 350,
       hitValue: 100,
-      radius: 100,
+      radius: 250,
       sprite: sprite.octopus.default,
       yOffset: 140,
       slave: [
@@ -6524,7 +6524,7 @@ function loadTemplates() {
           },
           {
             id: 'wait',
-            duration: 5,
+            duration: 10,
           },
           {
             id: 'swapRing',
@@ -6581,7 +6581,64 @@ function loadTemplates() {
           },
           {
             id: 'wait',
-            duration: 1
+            duration: 1.5
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.spiralAlpha2,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 0,
+            ring: ring.uniFiveWay
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 1,
+            ring: ring.uniFiveWay
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 2,
+            ring: ring.uniFiveWay
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 3,
+            ring: ring.uniFiveWay
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 4,
+            ring: ring.uniFiveWay
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 5,
+            ring: ring.uniFiveWay
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 6,
+            ring: ring.uniFiveWay
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 7,
+            ring: ring.uniFiveWay
+          },
+          {
+            id: 'wait',
+            duration: 5,
           },
           //Reset back to default rings, then loop with resetChoreography
           {
@@ -6638,6 +6695,10 @@ function loadTemplates() {
             ring: ring.jaredTest3
           },
           {
+            id: 'wait',
+            duration: 10,
+          },
+          {
             id: 'resetChoreography',
             index: 1,
           }
@@ -6651,7 +6712,7 @@ function loadTemplates() {
         shipManifestOverride: [
           {
             config: {
-              snapLine: 300
+              snapLine: 50
             }
           }
         ]

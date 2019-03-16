@@ -715,11 +715,11 @@ function loadSpriteSheets() {
         dimension: {
           originX: 0,
           originY: 0,
-          frameWidth: 2500,
-          frameHeight: 1941,
+          frameWidth: 500,
+          frameHeight: 388,
           frameCount: 6,
           timePerFrame: 0.15,
-          scale: 0.3,
+          scale: 1.5,
           flip: false,
           loop: true
         }
@@ -728,12 +728,12 @@ function loadSpriteSheets() {
         image: AM.getAsset('./img/octopus.png'),
         dimension: {
           originX: 0,
-          originY: 1941,
-          frameWidth: 2500,
-          frameHeight: 1941,
+          originY: 389,
+          frameWidth: 500,
+          frameHeight: 388,
           frameCount: 6,
           timePerFrame: 0.15,
-          scale: 0.3,
+          scale: 1.5,
           flip: false,
           loop: true
         }
