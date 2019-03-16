@@ -431,10 +431,10 @@ AM.downloadAll(() => {
 
   // view test stage
   // game.testScene();
-  // game.sceneManager.scenes.push(scene.jaredTestScene);
+  game.sceneManager.scenes.push(scene.jaredTestScene);
 
   // run completed levels
-  initIntroMessage(game);
+  //initIntroMessage(game);
 
   // run first prototype level
   // game.spawnEnemies();
