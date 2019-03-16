@@ -1393,6 +1393,25 @@ function loadTemplates() {
     delay: 2,
   };
 
+  pattern.oPattern = {
+    sequence: [
+      [0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0],
+      [0,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1,0],
+      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+      [1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,1],
+      [1,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,1],
+      [1,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,1],
+      [1,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,1],
+      [1,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,1],
+      [1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,1],
+      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+      [0,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1,0],
+      [0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0],
+    ],
+    delay: 2,
+  };
+
+
 
   ring.wordPatternRing = {
     payload: {
@@ -1401,7 +1420,7 @@ function loadTemplates() {
     },
     firing: {
       pattern: pattern.for,
-      width: 400,
+      width: 200,
       radius: 50,
       angle: 90,
       spread: 22,
@@ -1411,6 +1430,24 @@ function loadTemplates() {
       viewTurret: false,
     },
   };
+
+  ring.oRing = {
+    payload: {
+      type: projectile.microBullet,
+      speed: 300,
+    },
+    firing: {
+      pattern: pattern.oPattern,
+      width: 100,
+      radius: 50,
+      angle: 90,
+      spread: 22,
+      loadTime: 0,
+      cooldownTime: 0.015,
+      targetPlayer: false,
+      viewTurret: false,
+    },
+  }
 
   ring.thanksRing = {
     payload: {
