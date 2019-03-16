@@ -687,10 +687,14 @@ class SceneManager {
       return;
     }
 
-    const currentChor = this.choreography[0];
+    this.currentChor = this.choreography[0];
+
+    // console.log(this.choreography);
+    // console.log(' and current chor ');
+    // console.log(this.currentChor);
 
     // Handle all possible choreography cases here. This will get long.
-    switch (currentChor.id) {
+    switch (this.currentChor.id) {
       case 'accelerateToWarpspeed':
         this.game.backgroundSpeed += this.game.accelerationAmount * this.game.clockTick;
         if (this.game.backgroundSpeed >= this.game.warpBackgroundSpeed) {
@@ -709,13 +713,13 @@ class SceneManager {
 
       case 'showMessage':
         // Initialize the message, then count down from duration if specified
-        if (currentChor.init) {
-          if (this.waveTimer > currentChor.duration) {
+        if (this.currentChor.init) {
+          if (this.waveTimer > this.currentChor.duration) {
             hideMessage('message-overlay');
             this.choreography.shift();
           }
         } else {
-          if (currentChor.type === 'warning') {
+          if (this.currentChor.type === 'warning') {
             console.log('Stoping audio');
             introAudio.stop = true;
             stopAudio(introAudio, 1);
@@ -728,15 +732,15 @@ class SceneManager {
               playAudio(bossAudio, 1);
             }
 
-            showMessage(currentChor.text[0], currentChor.text[1], 1);
+            showMessage(this.currentChor.text[0], this.currentChor.text[1], 1);
           } else {
-            showMessage(currentChor.text[0], currentChor.text[1]);
+            showMessage(this.currentChor.text[0], this.currentChor.text[1]);
           }
 
           // Post the score after the user has finished the game only if god mode isn't enabled
           const name = Cookies.get('name');
           const isgodModEnabled = name.toLowerCase() === 'chris' || name.toLowerCase() === 'algorithm0r';
-          if (currentChor.type === 'gameOver' && !isgodModEnabled) {
+          if (this.currentChor.type === 'gameOver' && !isgodModEnabled) {
             const playerName = Cookies.get('name');
             const playerScore = this.game.score;
             if (playerName) {
@@ -745,19 +749,19 @@ class SceneManager {
           }
 
           // If duration isn't specified, just move on
-          if (!currentChor.duration) {
+          if (!this.currentChor.duration) {
             this.choreography.shift();
           } else {
             // Else start countdown
             this.waveTimer = 0;
-            currentChor.init = true;
+            this.currentChor.init = true;
           }
         }
         break;
 
       case 'wait':
-        if (currentChor.init) {
-          if (this.waveTimer >= currentChor.duration) {
+        if (this.currentChor.init) {
+          if (this.waveTimer >= this.currentChor.duration) {
             this.waveTimer = 0;
             this.choreography.shift();
           }
@@ -768,7 +772,7 @@ class SceneManager {
           }
         } else {
           this.waveTimer = 0;
-          currentChor.init = true;
+          this.currentChor.init = true;
         }
         break;
 
@@ -779,30 +783,30 @@ class SceneManager {
 
       case 'spawnEnemies':
         // only spawn enemies once
-        if (!currentChor.init) {
+        if (!this.currentChor.init) {
           this.loadEnemies(this.wave);
           this.enemiesInWave = true;
-          currentChor.init = true;
+          this.currentChor.init = true;
         }
         this.choreography.shift();
         break;
 
       case 'loadBackground':
-        this.loadBackground(currentChor.bg);
+        this.loadBackground(this.currentChor.bg);
         this.choreography.shift();
         break;
 
       case 'swapRing':
         // If it exists,
-        if (this.entitiesInWave[currentChor.enemyIndex]) {
-          this.entitiesInWave[currentChor.enemyIndex].initializeWeapon(currentChor.ring);
+        if (this.entitiesInWave[this.currentChor.enemyIndex]) {
+          this.entitiesInWave[this.currentChor.enemyIndex].initializeWeapon(this.currentChor.ring);
         }
         this.choreography.shift();
         break;
 
       case 'swapSlaveRing':
-        if (this.entitiesInWave[currentChor.enemyIndex].slaves) {
-          this.entitiesInWave[currentChor.enemyIndex].initializeSlaveWeapon(currentChor.slaveIndex, currentChor.ring);
+        if (this.entitiesInWave[this.currentChor.enemyIndex].slaves) {
+          this.entitiesInWave[this.currentChor.enemyIndex].initializeSlaveWeapon(this.currentChor.slaveIndex, this.currentChor.ring);
         }
         this.choreography.shift();
         break;
@@ -810,7 +814,7 @@ class SceneManager {
       case 'resetChoreography':
         this.choreography.shift();
         this.waveTimer = 0;
-        this.choreography = _.cloneDeep(this.loopChoreography).slice(currentChor.index,
+        this.choreography = _.cloneDeep(this.loopChoreography).slice(this.currentChor.index,
           this.loopChoreography.length);
         break;
 
@@ -819,10 +823,11 @@ class SceneManager {
         this.checkPointWaveState = _.cloneDeep(this.waves);
         this.checkPointSceneState = _.cloneDeep(this.scenes);
         this.checkPointChoreographyState = _.cloneDeep(this.choreography);
+        this.checkPointScore = this.game.score;
         this.choreography.shift();
         // Create a cookie for this level (the user unlocked this point to start
         // from in the future)
-        Cookies.set(currentChor.prettyName, currentChor.sceneName);
+        Cookies.set(this.currentChor.prettyName, this.currentChor.sceneName);
         break;
 
       default:
@@ -837,10 +842,17 @@ class SceneManager {
       this.entitiesInWave.forEach((element) => {
         element.removeFromWorld = true;
       });
+      this.game.entities.forEach((element) => {
+        if (element instanceof Projectile) {
+          element.removeFromWorld = true;
+        }
+      })
     }
+    updateScoreBoard(this.checkPointScore);
     this.scenes = this.checkPointSceneState;
     this.waves = this.checkPointWaveState;
-    this.choreography = scene.restartFromCheckpoint.waves[0].choreography.concat(this.checkPointChoreographyState);
+    this.choreography = this.checkPointChoreographyState;
+    this.choreography.unshift(...scene.restartFromCheckpoint.waves[0].choreography);
     this.waveTimer = 0;
     this.game.lives = 3;
     for (let i = 0; i < this.game.lives; i++) {
