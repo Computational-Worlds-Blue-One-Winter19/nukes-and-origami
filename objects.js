@@ -1334,7 +1334,7 @@ function loadTemplates() {
   ring.wordPatternRing = {
     payload: {
       type: projectile.microBullet,
-      speed: 350,
+      speed: 300,
     },
     firing: {
       pattern: pattern.for,
@@ -1352,7 +1352,7 @@ function loadTemplates() {
   ring.thanksRing = {
     payload: {
       type: projectile.microBullet,
-      speed: 350,
+      speed: 300,
     },
     firing: {
       pattern: pattern.thanks,
@@ -1370,7 +1370,7 @@ function loadTemplates() {
   ring.forRing = {
     payload: {
       type: projectile.microBullet,
-      speed: 350,
+      speed: 300,
     },
     firing: {
       pattern: pattern.for,
@@ -1388,7 +1388,7 @@ function loadTemplates() {
   ring.playingRing = {
     payload: {
       type: projectile.microBullet,
-      speed: 350,
+      speed: 300,
     },
     firing: {
       pattern: pattern.playing,
@@ -5163,15 +5163,48 @@ function loadTemplates() {
   };
   /** end of jared level */
 
-  scene.mikeTestScene = {
+  scene.thanksForPlayingScene = {
     waves: [
+      {
+        choreography: [
+          {
+            id: 'accelerateToWarpspeed',
+          },
+          {
+            id: 'loadBackground',
+            bg: background.white,
+          },
+          {
+            id: 'wait',
+            duration: 0.25,
+          },
+          {
+            id: 'showMessage',
+            text: ['And now a message from the devs...', '(please wait to kill these enemies!)'],
+          },
+          {
+            id: 'wait',
+            duration: 5,
+          },
+          {
+            id: 'loadBackground',
+            bg: background.paper,
+          },
+          {
+            id: 'decelerateFromWarpSpeed',
+          },
+          {
+            id: 'hideMessage',
+          },
+        ],
+      },
       {
         numOfEnemies: 3,
         ships: [
           // ship.goose,
           ship.swallow,
-          ship.crane,
-          ship.bat,
+          ship.swallow,
+          ship.swallow,
         ],
         initialXPoints: [
           200, 500, 700,
@@ -5193,6 +5226,7 @@ function loadTemplates() {
           config: {
             initialDirection: 'south',
             snapLine: 100,
+            waitOffScreen: 2,
           },
           weapon: ring.forRing,
         },
@@ -5200,6 +5234,7 @@ function loadTemplates() {
           config: {
             initialDirection: 'south',
             snapLine: 100,
+            waitOffScreen: 1,
           },
           weapon: ring.playingRing,
         },
