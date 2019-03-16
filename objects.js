@@ -1337,7 +1337,7 @@ pattern.playing = {
   ring.wordPatternRing = {
     payload: {
       type: projectile.microBullet,
-      speed: 350,
+      speed: 300,
     },
     firing: {
       pattern: pattern.for,
@@ -1355,7 +1355,7 @@ pattern.playing = {
   ring.thanksRing = {
     payload: {
       type: projectile.microBullet,
-      speed: 350,
+      speed: 300,
     },
     firing: {
       pattern: pattern.thanks,
@@ -1373,7 +1373,7 @@ pattern.playing = {
   ring.forRing = {
     payload: {
       type: projectile.microBullet,
-      speed: 350,
+      speed: 300,
     },
     firing: {
       pattern: pattern.for,
@@ -1391,7 +1391,7 @@ pattern.playing = {
   ring.playingRing = {
     payload: {
       type: projectile.microBullet,
-      speed: 350,
+      speed: 300,
     },
     firing: {
       pattern: pattern.playing,
@@ -5166,15 +5166,48 @@ pattern.playing = {
   };
   /** end of jared level */
 
-  scene.mikeTestScene = {
+  scene.thanksForPlayingScene = {
     waves: [
+      {
+        choreography: [
+          {
+            id: 'accelerateToWarpspeed',
+          },
+          {
+            id: 'loadBackground',
+            bg: background.white,
+          },
+          {
+            id: 'wait',
+            duration: 0.25,
+          },
+          {
+            id: 'showMessage',
+            text: ['And now a message from the devs...', '(please wait to kill these enemies!)'],
+          },
+          {
+            id: 'wait',
+            duration: 5,
+          },
+          {
+            id: 'loadBackground',
+            bg: background.paper,
+          },
+          {
+            id: 'decelerateFromWarpSpeed',
+          },
+          {
+            id: 'hideMessage',
+          },
+        ],
+      },
       {
         numOfEnemies: 3,
         ships: [
           // ship.goose,
           ship.swallow,
-          ship.crane,
-          ship.bat,
+          ship.swallow,
+          ship.swallow,
         ],
         initialXPoints: [
           200, 500, 700
@@ -5196,6 +5229,7 @@ pattern.playing = {
           config: {
             initialDirection: 'south',
             snapLine: 100,
+            waitOffScreen: 2,
           },
           weapon: ring.forRing,
         },
@@ -5203,6 +5237,7 @@ pattern.playing = {
           config: {
             initialDirection: 'south',
             snapLine: 100,
+            waitOffScreen: 1,
           },
           weapon: ring.playingRing,
         },
