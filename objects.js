@@ -2363,7 +2363,7 @@ projectile.bulletFadeIn = {
           config: {
             health: 40,
             hitValue: 50,
-            radius: 60, 
+            radius: 60,
             xDifference: -200,
             yDifference: 100,
           },
@@ -2374,7 +2374,7 @@ projectile.bulletFadeIn = {
           config: {
             health: 40,
             hitValue: 50,
-            radius: 60, 
+            radius: 60,
             xDifference: 200,
             yDifference: 100,
           },
@@ -5638,11 +5638,11 @@ projectile.bulletFadeIn = {
         //   },
         //   weapon: ring.wordPatternRing,
         // },
-        // ],
-        // waitUntilEnemiesGone: true,
+        ],
+        waitUntilEnemiesGone: true,
         // initialYPoints: [
         //   100, 100, 300, 300,
-        ],
+        // ],
       },
       {
         choreography: [{
