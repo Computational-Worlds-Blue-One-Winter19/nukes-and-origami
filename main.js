@@ -690,12 +690,12 @@ class SceneManager {
 
     this.currentChor = this.choreography[0];
 
-    console.log('--------------');
-    console.log(this.choreography);
-    console.log(' and current chor ');
-    console.log(this.currentChor);
-    console.log(' and current wave ');
-    console.log(this.wave);
+    // console.log('--------------');
+    // console.log(this.choreography);
+    // console.log(' and current chor ');
+    // console.log(this.currentChor);
+    // console.log(' and current wave ');
+    // console.log(this.wave);
 
     // Handle all possible choreography cases here. This will get long.
     switch (this.currentChor.id) {

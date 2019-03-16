@@ -4194,12 +4194,13 @@ projectile.bulletFadeIn = {
   };
 
   scene.waterOne = {
+    player: ship.jaredTestPlane,
     waves: [
       {
         choreography: [
           {
             id: 'checkpoint',
-            prettyName: 'Level Water one',
+            prettyName: 'Water one',
             sceneName: 'waterOne',
           },
           {
@@ -4312,7 +4313,7 @@ projectile.bulletFadeIn = {
         choreography: [
           {
             id: 'checkpoint',
-            prettyName: 'Level Water Two',
+            prettyName: 'Water Two',
             sceneName: 'waterTwo',
           },
           {
@@ -4467,7 +4468,7 @@ projectile.bulletFadeIn = {
 
           {
             id: 'checkpoint',
-            prettyName: 'Level Water Three',
+            prettyName: 'Water Three',
             sceneName: 'waterThree',
           },
           {
