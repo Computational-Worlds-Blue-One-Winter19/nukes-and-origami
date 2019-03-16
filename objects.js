@@ -2258,7 +2258,7 @@ projectile.bulletFadeIn = {
 
   ship.eel = {
     config: {
-      health: 5,
+      health: 60,
       hitValue: 5,
       radius: 15,
       sprite: sprite.eel.default,
