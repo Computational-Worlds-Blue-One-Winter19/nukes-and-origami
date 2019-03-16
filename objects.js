@@ -148,7 +148,7 @@ projectile.pulseFixedAngle = {
   init() {
     this.current.angle = toRadians(90);
   },
-  
+
   local: {
     baseRadius: 10,
     time: 0,
@@ -172,7 +172,7 @@ projectile.bulletFadeIn = {
   init() {
     //this.current.angle = toRadians(90);
   },
-  
+
   local: {
     baseRadius: 6,
     maxRadius: 5,
@@ -5658,6 +5658,7 @@ projectile.bulletFadeIn = {
             initialDirection: 'west',
             snapLine: 100,
           },
+          // weapon: ring.lineTest,
           weapon: {
             payload: {
               type: projectile.whiteCircleBullet,
