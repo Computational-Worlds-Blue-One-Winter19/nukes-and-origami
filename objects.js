@@ -6963,14 +6963,14 @@ function loadTemplates() {
               snapLine: 20,
             },
           }),
-          ...Array(26).from({length:26}, (v, i) => (
-            {config: {
+          ...Array.from({ length: 26 }, (v, i) => (
+            {
+              config: {
                 waitOffScreen: 16 + (i * 0.1),
                 snapLine: 20,
-            }}
-            )
-          ),
-
+              },
+            }
+          )),
           // {
           //   config: {
           //     waitOffScreen: 16,
