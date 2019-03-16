@@ -1,5 +1,5 @@
 # nukes-and-origami
-An origami-themed vertical-scrolling shoot 'em up in your browser.
+An origami-themed vertical-scrolling shoot 'em up in your browser. [Click here to play!](https://computational-worlds-blue-one-winter19.github.io/nukes-and-origami/)
 ## How to set up your development environment:
 1. Install [NodeJS](https://nodejs.org/en/download/) (or get npm however you want) and [VS Code](https://code.visualstudio.com/) or another text editor/IDE with an ESLint plugin.
 2. Clone this repository.
