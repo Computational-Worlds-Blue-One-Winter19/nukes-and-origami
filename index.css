@@ -42,6 +42,11 @@ h2 {
     font-size: 1.2em;
 }
 
+.scoreBoard h1 {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
 .lives, .score {
     display: flex;
     flex-direction: row;
@@ -116,6 +121,11 @@ h2 {
 .title {
     display: flex;
     align-items: center;
+}
+
+.inventory-container h2 {
+    margin-top: 0px;
+    margin-bottom: 0px;
 }
 
 /* Add a blue border to the first weapon in the players inventory class */

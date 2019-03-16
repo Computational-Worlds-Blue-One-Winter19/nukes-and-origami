@@ -1,23 +1,71 @@
 //--------------
 // Audio Object
 //--------------
-const audio = {
+const introAudio = {
   buffer: {},
   compatibility: {},
   files: [
+
     // 'https://forestmist.org/share/web-audio-api-demo/audio/beat.wav',
+    './audio/Intro_Redone.mp3',
     'https://storage.googleapis.com/nukes-and-origami/static/Game_Loop_v.15.wav',
-    // 'beat.wav'
   ],
+  loop: [
+    false,
+    true,
+  ],
+  stop: false,
   proceed: true,
   source_loop: {},
   source_once: {},
 };
 
+const bossAudio = {
+  buffer: {},
+  compatibility: {},
+  files: [
+
+    // 'https://forestmist.org/share/web-audio-api-demo/audio/beat.wav',
+    './audio/Boss_Intro_Redone.mp3',
+    './audio/Boss_loop_Redone.mp3',
+    // 'beat.wav'
+  ],
+  loop: [
+    false,
+    true,
+  ],
+  stop: false,
+  proceed: true,
+  source_loop: {},
+  source_once: {},
+};
+
+function generateAudioObject(introFile, loopFile) {
+  return {
+    buffer: {},
+    compatibility: {},
+    files: [
+
+      // 'https://forestmist.org/share/web-audio-api-demo/audio/beat.wav',
+      introFile,
+      loopFile,
+    // 'beat.wav'
+    ],
+    loop: [
+      false,
+      true,
+    ],
+    stop: false,
+    proceed: true,
+    source_loop: {},
+    source_once: {},
+  };
+}
+
 //-----------------
 // Audio Functions
 //-----------------
-function findSync(n) {
+function findSync(audio, n) {
   let first = 0;
   let current = 0;
   let offset = 0;
@@ -48,7 +96,7 @@ function findSync(n) {
   return offset;
 }
 
-function stopAudio(n) {
+function stopAudio(audio, n) {
   if (audio.source_loop[n]._playing) {
     audio.source_loop[n][audio.compatibility.stop](0);
     audio.source_loop[n]._playing = false;
@@ -59,20 +107,32 @@ function stopAudio(n) {
   }
 }
 
-function playAudio(n) {
+function playAudio(audio, n) {
   if (audio.source_loop[n]._playing) {
-    stopAudio(n);
+    stopAudio(audio, n);
   } else {
     audio.source_loop[n] = audio.context.createBufferSource();
     audio.source_loop[n].buffer = audio.buffer[n];
-    audio.source_loop[n].loop = true;
+    audio.source_loop[n].loop = audio.loop[n - 1];
     // Gain Nodes allow us to control the volume
     const gainNode = audio.context.createGain();
     gainNode.gain.value = 0.07; // setting it to 10%
     gainNode.connect(audio.context.destination);
     audio.source_loop[n].connect(gainNode);
 
-    const offset = findSync(n);
+    if (_.keys(audio.source_loop).length > 1) {
+      console.log('Adding the on end callback');
+      audio.source_loop[n].onended = () => {
+        if (!audio.stop) {
+          playAudio(audio, 2);
+        }
+      };
+    } else {
+      console.log('Length less than one');
+    }
+
+
+    const offset = findSync(audio, n);
     audio.source_loop[n]._startTime = audio.context.currentTime;
 
     if (audio.compatibility.start === 'noteOn') {
@@ -107,66 +167,128 @@ function playAudio(n) {
 //-----------------------------
 // Check Web Audio API Support
 //-----------------------------
-try {
-  // More info at http://caniuse.com/#feat=audio-api
-  window.AudioContext = window.AudioContext || window.webkitAudioContext;
-  audio.context = new window.AudioContext();
-} catch (e) {
-  audio.proceed = false;
-  alert('Web Audio API not supported in this browser.');
-}
-
-if (audio.proceed) {
-  //---------------
-  // Compatibility
-  //---------------
-  // (function () {
-  let start = 'start';
-  let stop = 'stop';
-  const buffer = audio.context.createBufferSource();
-
-  if (typeof buffer.start !== 'function') {
-    start = 'noteOn';
+function download(audio) {
+  try {
+    // More info at http://caniuse.com/#feat=audio-api
+    window.AudioContext = window.AudioContext || window.webkitAudioContext;
+    audio.context = new window.AudioContext();
+  } catch (e) {
+    audio.proceed = false;
+    alert('Web Audio API not supported in this browser.');
   }
-  audio.compatibility.start = start;
 
-  if (typeof buffer.stop !== 'function') {
-    stop = 'noteOff';
-  }
-  audio.compatibility.stop = stop;
-  // }());
-
-  //-------------------------------
-  // Setup Audio Files and Buttons
-  //-------------------------------
-  for (const a in audio.files) {
+  if (audio.proceed) {
+    //---------------
+    // Compatibility
+    //---------------
     // (function () {
-    const i = parseInt(a) + 1;
-    const req = new XMLHttpRequest();
-    req.open('GET', audio.files[i - 1], true); // array starts with 0 hence the -1
-    // req.withCredentials = true;
-    req.responseType = 'arraybuffer';
-    console.log('Making the requests');
-    req.onload = () => {
-      audio.context.decodeAudioData(
-        req.response,
-        (buffer) => {
-          audio.buffer[i] = buffer;
-          audio.source_loop[i] = {};
-          audio.source_loop[i]._playing = false;
-          console.log('Got a response');
-          // var button = document.getElementById('button-loop-' + i);
-          // button.addEventListener('click', function(e) {
-          //     e.preventDefault();
-          //     audio.play(this.value);
-          // });
-        },
-        () => {
-          console.log(`Error decoding audio "${audio.files[i - 1]}".`);
-        },
-      );
-    };
-    req.send();
+    let start = 'start';
+    let stop = 'stop';
+    const buffer = audio.context.createBufferSource();
+
+    if (typeof buffer.start !== 'function') {
+      start = 'noteOn';
+    }
+    audio.compatibility.start = start;
+
+    if (typeof buffer.stop !== 'function') {
+      stop = 'noteOff';
+    }
+    audio.compatibility.stop = stop;
     // }());
+
+    //-------------------------------
+    // Setup Audio Files and Buttons
+    //-------------------------------
+    for (const a in audio.files) {
+      // (function () {
+      const i = parseInt(a) + 1;
+      const req = new XMLHttpRequest();
+      req.open('GET', audio.files[i - 1], true); // array starts with 0 hence the -1
+      // req.withCredentials = true;
+      req.responseType = 'arraybuffer';
+      console.log('Making the requests');
+      req.onload = () => {
+        audio.context.decodeAudioData(
+          req.response,
+          (buffer) => {
+            audio.buffer[i] = buffer;
+            audio.source_loop[i] = {};
+            audio.source_loop[i]._playing = false;
+            console.log('Got a response');
+            // var button = document.getElementById('button-loop-' + i);
+            // button.addEventListener('click', function(e) {
+            //     e.preventDefault();
+            //     audio.play(this.value);
+            // });
+          },
+          () => {
+            console.log(`Error decoding audio "${audio.files[i - 1]}".`);
+          },
+        );
+      };
+      req.send();
+      // }());
+    }
   }
 }
+
+download(introAudio);
+download(bossAudio);
+
+
+// ---- START HOWLER Sound related function
+
+function crossfadedLoop(enteringInstance, leavingInstance, soundLevel) {
+  const volume = soundLevel;
+  const crossfadeDuration = 1000;
+
+  // Get the sound duration in ms from the Howler engine
+  const soundDuration = Math.floor(enteringInstance._duration * 1000);
+
+
+  // Fade in entering instance
+  const audio = enteringInstance.pos(10).play();
+  enteringInstance.fade(0, volume, crossfadeDuration);
+
+  // Wait for the audio end to fade out entering instance
+  // white fading in leaving instance
+  setTimeout(() => {
+    enteringInstance.fade(volume, 0, crossfadeDuration);
+    crossfadedLoop(leavingInstance, enteringInstance);
+  }, soundDuration - crossfadeDuration);
+}
+
+/**
+ * Helper to build similar instances
+ * @param {String} urls The source path for the audio files
+ * @param {Function} onload Call back method for then the sound is loaded
+ */
+function createHowlerInstance(urls, onload) {
+  return new Howl({
+    src: urls,
+    loop: false,
+    volume: 0,
+    onload,
+  });
+}
+
+function playLoop(soundObject) {
+  // Create "slave" instance. This instance is meant
+  // to be played after the first one is done.
+  soundObject.instances.push(createHowlerInstance(['./audio/Game_Loop_v.1.ogg']));
+
+  // Create "master" instance. The onload function passed to
+  // the singleton creator will coordinate the crossfaded loop
+  soundObject.instances.push(createHowlerInstance(['./audio/Game_Loop_v.1.ogg'], () => {
+    crossfadedLoop(soundObject.instances[1], soundObject.instances[0], soundObject.volume);
+  }));
+}
+
+function pauseLoop(soundObject) {
+  for (let i = 0; i < soundObject.instances.length; i++) {
+    soundObject.instances[i].pause();
+  }
+}
+
+// ---- END Sound related function

@@ -107,6 +107,7 @@ class NukesAndOrigami extends GameEngine {
   */
   initializeSceneManager(startScene) {
     // load completed levels
+<<<<<<< HEAD
     let levelOrder = [
       scene.waterFinalBoss,
       // scene.waterIntro,
@@ -122,16 +123,35 @@ class NukesAndOrigami extends GameEngine {
       // scene.bossTest,
       // scene.gamma,
       // scene.endingScene,
+=======
+    const levelOrder = [
+      scene.levelOne,
+      scene.levelTwo,
+      scene.levelThree,
+      scene.waterIntro,
+      scene.waterOne,
+      scene.waterTwo,
+      scene.waterThree,
+      scene.oneWaveTest,
+      scene.waveBank,
+      scene.easyPaper,
+      scene.bossTest,
+      scene.gamma,
+      scene.endingScene,
+>>>>>>> bleeding
     ];
 
     if (startScene) {
       while (levelOrder[0] != scene[startScene]) {
+<<<<<<< HEAD
+=======
+        console.log(levelOrder[0]);
+>>>>>>> bleeding
         levelOrder.shift();
       }
     }
 
     this.sceneManager.scenes = levelOrder;
-
   }
 
   startWaterLevel() {
@@ -228,9 +248,13 @@ class NukesAndOrigami extends GameEngine {
   // notification of player destruction.
   onPlayerHit(player) {
     if (player.invincTime === 0 && !player.rolling) {
-      this.lives -= 1;
-      removeLifeFromBoard();
-      player.invincTime += this.clockTick;
+      // Let's check to see if we can enable god mode for prof marriott
+      const name = Cookies.get('name');
+      if (name.toLowerCase() !== 'chris' && name.toLowerCase() !== 'algorithm0r') {
+        this.lives -= 1;
+        removeLifeFromBoard();
+        player.invincTime += this.clockTick;
+      }
     }
     if (this.lives === 0) { // game over
       this.gameOver();
@@ -502,6 +526,25 @@ class SceneManager {
   //
   // For right now just load the waves.
   loadScene(scene) {
+    // Check if the scene has any associated audio
+    // if (scene.audio) {
+    // console.log(`${JSON.stringify(scene.audio)}`);
+    if (!introAudio.source_loop[1]._playing) {
+      if (bossAudio.source_loop[1]._playing || bossAudio.source_loop[2]._playing) {
+        bossAudio.stop = true;
+        stopAudio(bossAudio, 1);
+        stopAudio(bossAudio, 2);
+      }
+
+
+      introAudio.stop = false;
+      // playAudio(bossAudio, 1);
+
+      playAudio(introAudio, 1);
+    }
+    // playAudio(introAudio, 1);
+    // }
+
     this.currentScene = scene;
     this.waves = scene.waves;
 
@@ -553,8 +596,8 @@ class SceneManager {
       // Was the location overriden?
       if (wave.initialXPoints) {
         ship.current.x = wave.initialXPoints[i];
-      } else if (ship.initialDirection === 'north' ||
-        ship.initialDirection === 'south') {
+      } else if (ship.initialDirection === 'north'
+        || ship.initialDirection === 'south') {
         ship.current.x = horizontalLocationCounter;
         horizontalLocationCounter += horizontalSpacing;
       }
@@ -562,8 +605,8 @@ class SceneManager {
 
       if (wave.initialYPoints) {
         ship.current.y = wave.initialYPoints[i];
-      } else if (ship.initialDirection === 'west' ||
-        ship.initialDirection === 'east') {
+      } else if (ship.initialDirection === 'west'
+        || ship.initialDirection === 'east') {
         ship.current.y = verticalLocationCounter;
         verticalLocationCounter += verticalSpacing;
       }
@@ -690,13 +733,27 @@ class SceneManager {
           }
         } else {
           if (currentChor.type === 'warning') {
+            console.log('Stoping audio');
+            introAudio.stop = true;
+            stopAudio(introAudio, 1);
+            stopAudio(introAudio, 2);
+
+
+            if (!bossAudio.source_loop[1]._playing && !bossAudio.source_loop[2]._playing) {
+              bossAudio.stop = false;
+              console.log('Playing boss audio');
+              playAudio(bossAudio, 1);
+            }
+
             showMessage(currentChor.text[0], currentChor.text[1], 1);
           } else {
             showMessage(currentChor.text[0], currentChor.text[1]);
           }
 
-          // Post the score after the user has finished the game
-          if (currentChor.type === 'gameOver') {
+          // Post the score after the user has finished the game only if god mode isn't enabled
+          const name = Cookies.get('name');
+          const isgodModEnabled = name.toLowerCase() === 'chris' || name.toLowerCase() === 'algorithm0r';
+          if (currentChor.type === 'gameOver' && !isgodModEnabled) {
             const playerName = Cookies.get('name');
             const playerScore = this.game.score;
             if (playerName) {
@@ -785,6 +842,8 @@ class SceneManager {
         Cookies.set(currentChor.prettyName, currentChor.sceneName);
         break;
 
+      default:
+        break;
     }
   }
 
@@ -792,9 +851,9 @@ class SceneManager {
     // load last saved checkpoint state
     if (this.entitiesInWave) {
       // remove all enemies on screen.
-      this.entitiesInWave.forEach(function(element) {
+      this.entitiesInWave.forEach((element) => {
         element.removeFromWorld = true;
-      })
+      });
     }
     this.scenes = this.checkPointSceneState;
     this.waves = this.checkPointWaveState;
@@ -804,7 +863,6 @@ class SceneManager {
     for (let i = 0; i < this.game.lives; i++) {
       addLife();
     }
-
   }
 
   handleEnemyWaveCompletion() {

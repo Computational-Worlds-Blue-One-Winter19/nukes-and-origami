@@ -717,7 +717,7 @@ class Plane extends Ship {
           this.game.onPlayerHit(this);
 
           // Call the weapon.onHit method to remove turrets if needed
-          if (!this.weapon.hasRegularGun) {
+          if (!this.weapon.hasRegularGun && !this.blinking) {
             this.weapon.onHit();
           }
         }
