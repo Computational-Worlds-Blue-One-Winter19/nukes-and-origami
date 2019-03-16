@@ -678,6 +678,7 @@ class SceneManager {
     if (this.choreography.length == 0) {
       // Are there enemies we are waiting for?
       if (this.enemiesInWave) {
+        console.log('handling enemy leaving')
         this.handleEnemyWaveCompletion();
         return;
       }
@@ -689,9 +690,12 @@ class SceneManager {
 
     this.currentChor = this.choreography[0];
 
-    // console.log(this.choreography);
-    // console.log(' and current chor ');
-    // console.log(this.currentChor);
+    console.log('--------------');
+    console.log(this.choreography);
+    console.log(' and current chor ');
+    console.log(this.currentChor);
+    console.log(' and current wave ');
+    console.log(this.wave);
 
     // Handle all possible choreography cases here. This will get long.
     switch (this.currentChor.id) {
@@ -821,6 +825,7 @@ class SceneManager {
       case 'checkpoint':
         // save the current states of waves the scene
         this.checkPointWaveState = _.cloneDeep(this.waves);
+        this.checkPointWaveState.unshift(this.wave);
         this.checkPointSceneState = _.cloneDeep(this.scenes);
         this.checkPointChoreographyState = _.cloneDeep(this.choreography);
         this.checkPointScore = this.game.score;
@@ -851,8 +856,8 @@ class SceneManager {
     updateScoreBoard(this.checkPointScore);
     this.scenes = this.checkPointSceneState;
     this.waves = this.checkPointWaveState;
-    this.choreography = this.checkPointChoreographyState;
-    this.choreography.unshift(...scene.restartFromCheckpoint.waves[0].choreography);
+    this.waves.unshift(scene.restartFromCheckpoint.waves[0])
+    // this.choreography = this.checkPointChoreographyState;
     this.waveTimer = 0;
     this.game.lives = 3;
     for (let i = 0; i < this.game.lives; i++) {

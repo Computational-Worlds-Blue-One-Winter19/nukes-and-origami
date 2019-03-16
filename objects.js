@@ -5742,162 +5742,162 @@ function loadTemplates() {
           },
         ],
       },
-      {
-        numOfEnemies: 4,
-        ships: new Array(4).fill(ship.pigeon),
-        paths: new Array(4).fill(path.downSlow),
-        shipManifestOverride: [{
-          config: {
-            initialDirection: 'west',
-            snapLine: 100,
-          },
-          weapon: ring.gammaFour,
-        },
-        {
-          config: {
-            initialDirection: 'west',
-            snapLine: 374,
-            waitOffScreen: 1,
-          },
-          weapon: ring.gammaFour,
-        },
-        {
-          config: {
-            initialDirection: 'west',
-            snapLine: 648,
-            waitOffScreen: 2,
-          },
-          weapon: ring.gammaFour,
-        },
-        {
-          config: {
-            initialDirection: 'west',
-            snapLine: 922,
-            waitOffScreen: 3,
-          },
-          weapon: ring.gammaFour,
-        },
-        ],
-        waitUntilEnemiesGone: true,
-        initialYPoints: [
-          50, 50, 50, 50,
-        ],
-      },
-      {
-        numOfEnemies: 7,
-        ships: new Array(7).fill(ship.bat),
-        paths: [
-          path.strafeRight,
-          path.strafeLeft,
-          path.strafeRight,
-          path.strafeLeft,
-          path.strafeRight,
-          path.strafeLeft,
-          path.strafeRight,
-        ],
-        shipManifestOverride: [{
-          config: {
-            initialDirection: 'east',
-            snapLine: 100,
-          },
-          weapon: {
-            payload: {
-              type: projectile.sine,
-            },
-          },
-        },
-        {
-          config: {
-            initialDirection: 'west',
-            snapLine: 924,
-          },
-          weapon: {
-            payload: {
-              type: projectile.sine,
-            },
-          },
-        },
-        {
-          config: {
-            initialDirection: 'east',
-            snapLine: 100,
-          },
-          weapon: {
-            payload: {
-              type: projectile.sine,
-            },
-          },
-        },
-        {
-          config: {
-            initialDirection: 'west',
-            snapLine: 924,
-          },
-          weapon: {
-            payload: {
-              type: projectile.sine,
-            },
-          },
-        },
-        {
-          config: {
-            initialDirection: 'east',
-            snapLine: 100,
-          },
-          weapon: {
-            payload: {
-              type: projectile.sine,
-            },
-          },
-        },
-        {
-          config: {
-            initialDirection: 'west',
-            snapLine: 924,
-          },
-          weapon: {
-            payload: {
-              type: projectile.sine,
-            },
-          },
-        },
-        {
-          config: {
-            initialDirection: 'east',
-            snapLine: 100,
-          },
-          weapon: {
-            payload: {
-              type: projectile.sine,
-            },
-          },
-        },
-        ],
-        waitUntilEnemiesGone: true,
-      },
-      {
-        choreography: [{
-          id: 'accelerateToWarpspeed',
-        },
-        {
-          id: 'wait',
-          duration: 0.25,
-        },
-        {
-          id: 'showMessage',
-          text: ['MINI BOSS 2', 'APPROACHING'],
-        },
-        {
-          id: 'wait',
-          duration: 3,
-        },
-        {
-          id: 'decelerateFromWarpSpeed',
-        },
-        {
-          id: 'hideMessage',
-        }],
-      },
+      // {
+      //   numOfEnemies: 4,
+      //   ships: new Array(4).fill(ship.pigeon),
+      //   paths: new Array(4).fill(path.downSlow),
+      //   shipManifestOverride: [{
+      //     config: {
+      //       initialDirection: 'west',
+      //       snapLine: 100,
+      //     },
+      //     weapon: ring.gammaFour,
+      //   },
+      //   {
+      //     config: {
+      //       initialDirection: 'west',
+      //       snapLine: 374,
+      //       waitOffScreen: 1,
+      //     },
+      //     weapon: ring.gammaFour,
+      //   },
+      //   {
+      //     config: {
+      //       initialDirection: 'west',
+      //       snapLine: 648,
+      //       waitOffScreen: 2,
+      //     },
+      //     weapon: ring.gammaFour,
+      //   },
+      //   {
+      //     config: {
+      //       initialDirection: 'west',
+      //       snapLine: 922,
+      //       waitOffScreen: 3,
+      //     },
+      //     weapon: ring.gammaFour,
+      //   },
+      //   ],
+      //   waitUntilEnemiesGone: true,
+      //   initialYPoints: [
+      //     50, 50, 50, 50,
+      //   ],
+      // },
+      // {
+      //   numOfEnemies: 7,
+      //   ships: new Array(7).fill(ship.bat),
+      //   paths: [
+      //     path.strafeRight,
+      //     path.strafeLeft,
+      //     path.strafeRight,
+      //     path.strafeLeft,
+      //     path.strafeRight,
+      //     path.strafeLeft,
+      //     path.strafeRight,
+      //   ],
+      //   shipManifestOverride: [{
+      //     config: {
+      //       initialDirection: 'east',
+      //       snapLine: 100,
+      //     },
+      //     weapon: {
+      //       payload: {
+      //         type: projectile.sine,
+      //       },
+      //     },
+      //   },
+      //   {
+      //     config: {
+      //       initialDirection: 'west',
+      //       snapLine: 924,
+      //     },
+      //     weapon: {
+      //       payload: {
+      //         type: projectile.sine,
+      //       },
+      //     },
+      //   },
+      //   {
+      //     config: {
+      //       initialDirection: 'east',
+      //       snapLine: 100,
+      //     },
+      //     weapon: {
+      //       payload: {
+      //         type: projectile.sine,
+      //       },
+      //     },
+      //   },
+      //   {
+      //     config: {
+      //       initialDirection: 'west',
+      //       snapLine: 924,
+      //     },
+      //     weapon: {
+      //       payload: {
+      //         type: projectile.sine,
+      //       },
+      //     },
+      //   },
+      //   {
+      //     config: {
+      //       initialDirection: 'east',
+      //       snapLine: 100,
+      //     },
+      //     weapon: {
+      //       payload: {
+      //         type: projectile.sine,
+      //       },
+      //     },
+      //   },
+      //   {
+      //     config: {
+      //       initialDirection: 'west',
+      //       snapLine: 924,
+      //     },
+      //     weapon: {
+      //       payload: {
+      //         type: projectile.sine,
+      //       },
+      //     },
+      //   },
+      //   {
+      //     config: {
+      //       initialDirection: 'east',
+      //       snapLine: 100,
+      //     },
+      //     weapon: {
+      //       payload: {
+      //         type: projectile.sine,
+      //       },
+      //     },
+      //   },
+      //   ],
+      //   waitUntilEnemiesGone: true,
+      // },
+      // {
+      //   choreography: [{
+      //     id: 'accelerateToWarpspeed',
+      //   },
+      //   {
+      //     id: 'wait',
+      //     duration: 0.25,
+      //   },
+      //   {
+      //     id: 'showMessage',
+      //     text: ['MINI BOSS 2', 'APPROACHING'],
+      //   },
+      //   {
+      //     id: 'wait',
+      //     duration: 3,
+      //   },
+      //   {
+      //     id: 'decelerateFromWarpSpeed',
+      //   },
+      //   {
+      //     id: 'hideMessage',
+      //   }],
+      // },
       {
         choreography: [
           {
