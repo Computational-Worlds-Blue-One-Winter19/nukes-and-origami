@@ -6418,43 +6418,6 @@ function loadTemplates() {
         }],
         waitUntilEnemiesGone: true,
       },
-      {
-        choreography: [{
-          id: 'accelerateToWarpspeed',
-        },
-        {
-          id: 'wait',
-          duration: 0.25,
-        },
-        {
-          id: 'loadBackground',
-          bg: background.beach,
-        },
-        {
-          id: 'decelerateFromWarpSpeed',
-        },
-        {
-          id: 'showMessage',
-          type: 'gameOver',
-          text: ['YOU WIN!', 'THANKS FOR PLAYING, YOU\'RE SCORE HAS BEEN SAVED ON THE LEADERBOARD'],
-        },
-        {
-          id: 'wait',
-          duration: 7,
-        },
-        {
-          id: 'showMessage',
-          text: ['STICK AROUND FOR', 'BONUS LEVELS'],
-        },
-        {
-          id: 'wait',
-          duration: 7,
-        },
-        {
-          id: 'hideMessage',
-        },
-        ],
-      },
     ],
   };
 
@@ -6930,6 +6893,43 @@ function loadTemplates() {
           },
         ],
       },
+      {
+        choreography: [{
+          id: 'accelerateToWarpspeed',
+        },
+        {
+          id: 'wait',
+          duration: 0.25,
+        },
+        {
+          id: 'loadBackground',
+          bg: background.beach,
+        },
+        {
+          id: 'decelerateFromWarpSpeed',
+        },
+        {
+          id: 'showMessage',
+          type: 'gameOver',
+          text: ['YOU WIN!', 'THANKS FOR PLAYING, YOUR SCORE HAS BEEN SAVED ON THE LEADERBOARD'],
+        },
+        {
+          id: 'wait',
+          duration: 7,
+        },
+        {
+          id: 'showMessage',
+          text: ['STICK AROUND FOR', 'BONUS LEVELS'],
+        },
+        {
+          id: 'wait',
+          duration: 7,
+        },
+        {
+          id: 'hideMessage',
+        },
+        ],
+      },
     ],
   };
 
@@ -6977,7 +6977,7 @@ function loadTemplates() {
           600, 640, 680, 720, 760, 800, 840, 880, 920, 960, 1000, //11
 
           500, //end of tunnel turtle
-          
+
           200, 440, 600, 840], // ending turtles
         waitUntilEnemiesGone: true,
         // shipManifestOverride: new Array(40).push(new Array(20).fill({}), new Array(20).fill({config: {waitOffScreen: 4, snapLine: 100}})),
