@@ -854,6 +854,7 @@ class SceneManager {
       })
     }
     updateScoreBoard(this.checkPointScore);
+    this.game.score = this.checkPointScore;
     this.scenes = this.checkPointSceneState;
     this.waves = this.checkPointWaveState;
     this.waves.unshift(scene.restartFromCheckpoint.waves[0])
