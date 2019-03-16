@@ -107,9 +107,8 @@ class NukesAndOrigami extends GameEngine {
   */
   initializeSceneManager(startScene) {
     // load completed levels
-<<<<<<< HEAD
     let levelOrder = [
-      scene.waterFinalBoss,
+      scene.waterSix,
       // scene.waterIntro,
       // scene.waterOne,
       // scene.waterTwo,
@@ -123,30 +122,11 @@ class NukesAndOrigami extends GameEngine {
       // scene.bossTest,
       // scene.gamma,
       // scene.endingScene,
-=======
-    const levelOrder = [
-      scene.levelOne,
-      scene.levelTwo,
-      scene.levelThree,
-      scene.waterIntro,
-      scene.waterOne,
-      scene.waterTwo,
-      scene.waterThree,
-      scene.oneWaveTest,
-      scene.waveBank,
-      scene.easyPaper,
-      scene.bossTest,
-      scene.gamma,
-      scene.endingScene,
->>>>>>> bleeding
     ];
 
     if (startScene) {
       while (levelOrder[0] != scene[startScene]) {
-<<<<<<< HEAD
-=======
         console.log(levelOrder[0]);
->>>>>>> bleeding
         levelOrder.shift();
       }
     }

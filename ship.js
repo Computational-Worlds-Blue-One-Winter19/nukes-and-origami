@@ -300,6 +300,14 @@ class Ship extends Entity {
       this.game.onPlayerHit(this.game.player);
     }
 
+    if(this.slaves) {
+      for(let i = 0; i < this.slaves.length; i++) {
+        if(this.slaveCollided(this.slaves[i], this.game.player))  {
+          this.game.onPlayerHit(this.game.player);
+        }
+      }
+    }
+
     // Check for hit from player bullets
     for (const e of this.game.entities) {
       if (e instanceof Projectile && e.playerShot && (this.isCollided(e) || this.slaveCollision(e))) {

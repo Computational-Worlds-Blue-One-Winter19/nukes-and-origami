@@ -2058,99 +2058,6 @@ pattern.playing = {
       health: 5,
       hitValue: 5,
       radius: 70,
-<<<<<<< HEAD
-=======
-      sprite: sprite.pigeon.default,
-    },
-    weapon: ring.singleTargetPlayer,
-  };
-
-  ship.crab = {
-    config: {
-      health: 5,
-      hitValue: 5,
-      radius: 70,
-      sprite: sprite.pigeon.default,
-    },
-    weapon: ring.singleTargetPlayer,
-  };
-
-  ship.dolphin = {
-    config: {
-      health: 5,
-      hitValue: 5,
-      radius: 70,
-      sprite: sprite.pigeon.default,
-    },
-    weapon: ring.singleTargetPlayer,
-  };
-
-  ship.eel = {
-    config: {
-      health: 5,
-      hitValue: 5,
-      radius: 70,
-      sprite: sprite.pigeon.default,
-    },
-    weapon: ring.singleTargetPlayer,
-  };
-
-  ship.fish = {
-    config: {
-      health: 5,
-      hitValue: 5,
-      radius: 70,
-      sprite: sprite.pigeon.default,
-    },
-    weapon: ring.singleTargetPlayer,
-  };
-
-  ship.frog = {
-    config: {
-      health: 5,
-      hitValue: 5,
-      radius: 70,
-      sprite: sprite.pigeon.default,
-    },
-    weapon: ring.singleTargetPlayer,
-  };
-
-  ship.manta = {
-    config: {
-      health: 5,
-      hitValue: 5,
-      radius: 70,
-      sprite: sprite.pigeon.default,
-    },
-    weapon: ring.singleTargetPlayer,
-  };
-
-  ship.seahorse = {
-    config: {
-      health: 5,
-      hitValue: 5,
-      radius: 70,
-      sprite: sprite.pigeon.default,
-    },
-    weapon: ring.singleTargetPlayer,
-  };
-
-  ship.turtle = {
-    config: {
-      health: 5,
-      hitValue: 5,
-      radius: 70,
-      sprite: sprite.pigeon.default,
-    },
-    weapon: ring.singleTargetPlayer,
-  };
-
-  ship.beta = {
-    config: {
-      health: 5,
-      hitValue: 5,
-      radius: 70,
->>>>>>> bleeding
       sprite: sprite.beta.default,
     },
     weapon: ring.singleTargetPlayer,
@@ -2192,10 +2099,75 @@ pattern.playing = {
     config: {
       health: 5,
       hitValue: 5,
-      radius: 70,
+      radius: 15,
       sprite: sprite.eel.default,
+      slave: [
+        {
+          config: {
+            health: 6, //ONE more health than the actual entity.
+            //Why? So the slaves don't actually die, which would
+            //spawn a power up and another death animation
+            hitValue: 0,
+            radius: 15, 
+            yDifference: -90,
+            xDifference: 0,
+          },
+          weapon: {},
+        },
+        {
+          config: {
+            health: 6,
+            hitValue: 0,
+            radius: 15, 
+            yDifference: -60,
+            xDifference: 0,
+          },
+          weapon: {},
+        },
+        {
+          config: {
+            health: 6,
+            hitValue: 0,
+            radius: 15, 
+            yDifference: -30,
+            xDifference: 0,
+          },
+          weapon: {},
+        },
+        {
+          config: {
+            health: 6,
+            hitValue: 0,
+            radius: 15, 
+            yDifference: 30,
+            xDifference: 0,
+          },
+          weapon: {},
+        },
+        {
+          config: {
+            health: 6,
+            hitValue: 0,
+            radius: 15, 
+            yDifference: 60,
+            xDifference: 0,
+          },
+          weapon: {},
+        },
+        {
+          config: {
+            health: 6,
+            hitValue: 0,
+            radius: 15, 
+            yDifference: 90,
+            xDifference: 0,
+          },
+          weapon: {},
+        },
+      ]
     },
-    weapon: ring.singleTargetPlayer,
+    weapon: {},
+    // weapon: {}
   };
 
   ship.fish = {
@@ -2325,13 +2297,8 @@ pattern.playing = {
         },
       ],
     },
-<<<<<<< HEAD
     weapon: ring.patternTest
   }
-=======
-    weapon: ring.singleTargetPlayer,
-  };
->>>>>>> bleeding
 
   ship.seahorse = {
     config: {
@@ -6935,6 +6902,89 @@ pattern.playing = {
           }
         ]
       }
+    ]
+  }
+
+  scene.waterSix = {
+    waves: [
+      {
+        choreography: [
+          {
+            id: 'checkpoint',
+            prettyName: 'Water Six',
+            sceneName: 'waterSix'
+          },
+          {
+            id: 'spawnEnemies',
+          }
+        ],
+        numOfEnemies: 186,
+        ships: [...Array(182).fill(ship.eel), ...Array(4).fill(ship.turtle)],
+        paths: new Array(186).fill(path.straightDown),
+        initialXPoints: [0, 40, 80, 120, 160, 200, 240, 280, 320, 360, 400, 440, 480, 520, 560, 600, 640, 680, 720, 760, //batch 1 = 20
+                          1020, 980, 940, 900, 860, 820, 780, 740, 700, 660, 620, 580, 540, 500, 460, 420, 380, 340, 300, 260, //batch 2 = 20
+                          0, 40, 80, 120, 160, 200, 240, 280, 320, 360, 400, 440, 480, 740, 780, 820, 860, 900, 940, 980, 1020, //batch 3 = 21
+                          0, 40, 80, 120, 240, 280, 320, 360, 400, 440, 480, 520, 560, 600, 640, 680, 720, 760, 800, 840, 880, 920, 960, 1000, //batch 4 = 24
+                          0, 40, 80, 120, 160, 200, 240, 280, 320, 360, 400, 440, 480, 520, 560, 600, 640, 680, 720, 760, 880, 920, 960, 1000, //batch 5 = 24
+                          60, 100, 140, 180, 220, 260, 300, 340, 380, 420, 460, 500, 540, 580, 620, 660, 700, 740, 780, 820, 860, 900, 940, 980, 1020,  //batch 6 = 25
+                          0, 40, 80, 120, 160, 240, 280, 320, 360, 400, 480, 520, 560, 640, 680, 720, 760, 800, 880, 920, 960, 1000, //batch 7 = 22
+                          0, 40, 80, 120, 160, 200, 240, 280, 320, 360, 400, 440, 480, 520, 560, 600, 640, 680, 720, 760, 800, 840, 880, 920, 960, 1000, // batch 8 = 26
+                          200, 440, 600, 840], //ending turtles
+        waitUntilEnemiesGone: true,
+        // shipManifestOverride: new Array(40).push(new Array(20).fill({}), new Array(20).fill({config: {waitOffScreen: 4, snapLine: 100}})),
+        shipManifestOverride: [
+          ...Array(20).fill({}),
+          ...Array(20).fill({
+            config: {
+              waitOffScreen: 2,
+              snapLine: 20,
+            }
+          }),
+          ...Array(21).fill({
+            config: {
+              waitOffScreen: 4,
+              snapLine: 20
+            }
+          }),
+          ...Array(24).fill({
+            config: {
+              waitOffScreen: 6,
+              snapLine: 20
+            }
+          }),
+          ...Array(24).fill({
+            config: {
+              waitOffScreen: 8,
+              snapLine: 20
+            }
+          }),
+          ...Array(25).fill({
+            config: {
+              waitOffScreen: 11,
+              snapLine: 20
+            }
+          }),
+          ...Array(22).fill({
+            config: {
+              waitOffScreen: 14,
+              snapLine: 20,
+            }
+          }),
+          ...Array(26).fill({
+            config: {
+              waitOffScreen: 16,
+              snapLine: 20,
+            }
+          }),
+          //turtles:
+          ...Array(4).fill({
+            config: {
+              waitOffScreen: 14.5,
+              snapLine: 20,
+            }
+          })
+        ],
+      }, 
     ]
   }
 } // end of objects.js

@@ -458,14 +458,8 @@ function initStartGameButton(game) {
 
           instanceLevel.open();
         } else {
-<<<<<<< HEAD
           // No level data found in the cookies start at level one
-          startGame(game, 'waterFinalBoss');
-=======
-          // No level data found in the cookies start at the first spot in
-          // the level order
-          startGame(game);
->>>>>>> bleeding
+          startGame(game, 'waterSix');
         }
       }
     },

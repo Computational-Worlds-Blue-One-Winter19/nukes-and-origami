@@ -366,7 +366,6 @@ function getPowerUp(type) {
     case 'rapidFire':
       return new RapidFire(10);
     case 'multiGun':
-<<<<<<< HEAD
       return new MultiGun(100);
     case 'shield':
       return new Shield(100);
@@ -378,9 +377,6 @@ function getPowerUp(type) {
       return new HomingMissile(100);
     case 'chainGun':
       return new ChainGun(100);
-=======
-      return new MultiGun(10);
->>>>>>> bleeding
   }
 }
 
