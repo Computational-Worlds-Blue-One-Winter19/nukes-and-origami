@@ -7250,7 +7250,7 @@ function loadTemplates() {
           },
           {
             id: 'wait',
-            duration: 1,
+            duration: 3,
           },
           {
             id: 'hideMessage',
