@@ -235,7 +235,7 @@ class ChainGun extends PowerUp {
                 removeItem('chainGun', 'weapon');
 
                 // Start the timer
-                startTimer(20, entity.weapon.removeHomingMissile, entity.weapon);
+                startTimer(5, entity.weapon.removeHomingMissile, entity.weapon);
               });
             });
           }
