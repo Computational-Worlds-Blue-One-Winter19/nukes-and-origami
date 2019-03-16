@@ -300,9 +300,9 @@ class Ship extends Entity {
       this.game.onPlayerHit(this.game.player);
     }
 
-    if(this.slaves) {
-      for(let i = 0; i < this.slaves.length; i++) {
-        if(this.slaveCollided(this.slaves[i], this.game.player))  {
+    if (this.slaves) {
+      for (let i = 0; i < this.slaves.length; i++) {
+        if (this.slaveCollided(this.slaves[i], this.game.player)) {
           this.game.onPlayerHit(this.game.player);
         }
       }
@@ -726,7 +726,7 @@ class Plane extends Ship {
           this.game.onPlayerHit(this);
 
           // Call the weapon.onHit method to remove turrets if needed
-          if (!this.weapon.hasRegularGun && !this.blinking) {
+          if (!this.weapon.hasRegularGun && !this.blinking && !this.rolling) {
             this.weapon.onHit();
           }
         }
