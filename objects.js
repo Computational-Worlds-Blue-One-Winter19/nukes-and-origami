@@ -4592,10 +4592,9 @@ projectile.bulletFadeIn = {
           {
             id: 'hideMessage',
           },
-          {
-            id: 'spawnEnemies',
-          },
         ],
+      },
+      {
         numOfEnemies: 20,
         ships: new Array(20).fill(ship.crab),
         paths: [path.straightDown, path.straightDown, path.strafeRight, path.strafeRight, path.strafeRight, path.strafeRight, path.strafeRight, path.strafeRight, path.strafeRight, path.strafeRight,
@@ -6817,10 +6816,9 @@ projectile.bulletFadeIn = {
             id: 'loadBackground',
             bg: background.water,
           },
-          {
-            id: 'spawnEnemies',
-          },
         ],
+      },
+      {
         numOfEnemies: 15,
         ships: [ship.seahorse, ship.seahorse, ship.seahorse, ship.seahorse,
           ship.dolphinRight, ship.dolphinRight, ship.dolphinRight, ship.dolphinRight,
@@ -7194,10 +7192,10 @@ projectile.bulletFadeIn = {
             id: 'loadBackground',
             bg: background.water,
           },
-          {
-            id: 'spawnEnemies',
-          },
+
         ],
+      },
+      {
         numOfEnemies: 377,
         ships: [...Array(372).fill(ship.eel), ...Array(5).fill(ship.turtle)],
         paths: [...Array(372).fill(path.straightDown), path.doNothing, ...Array(4).fill(path.straightDown)],
@@ -7538,10 +7536,9 @@ projectile.bulletFadeIn = {
             id: 'loadBackground',
             bg: background.water,
           },
-          {
-            id: 'spawnEnemies',
-          }
         ],
+      },
+      {
         numOfEnemies: 7,
         ships: new Array(7).fill(ship.fish),
         paths: [path.cornerRight, path.cornerRight, path.straightDown, path.doNothing, path.straightDown, path.cornerLeft, path.cornerLeft],
