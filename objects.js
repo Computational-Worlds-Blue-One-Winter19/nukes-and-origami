@@ -6911,9 +6911,9 @@ function loadTemplates() {
             id: 'spawnEnemies',
           },
         ],
-        numOfEnemies: 186,
-        ships: [...Array(182).fill(ship.eel), ...Array(4).fill(ship.turtle)],
-        paths: new Array(186).fill(path.straightDown),
+        numOfEnemies: 377,
+        ships: [...Array(372).fill(ship.eel), ...Array(5).fill(ship.turtle)],
+        paths: [...Array(372).fill(path.straightDown), path.doNothing, ...Array(4).fill(path.straightDown)],
         initialXPoints: [0, 40, 80, 120, 160, 200, 240, 280, 320, 360, 400, 440, 480, 520, 560, 600, 640, 680, 720, 760, // batch 1 = 20
           1020, 980, 940, 900, 860, 820, 780, 740, 700, 660, 620, 580, 540, 500, 460, 420, 380, 340, 300, 260, // batch 2 = 20
           0, 40, 80, 120, 160, 200, 240, 280, 320, 360, 400, 440, 480, 740, 780, 820, 860, 900, 940, 980, 1020, // batch 3 = 21
@@ -6921,7 +6921,28 @@ function loadTemplates() {
           0, 40, 80, 120, 160, 200, 240, 280, 320, 360, 400, 440, 480, 520, 560, 600, 640, 680, 720, 760, 880, 920, 960, 1000, // batch 5 = 24
           60, 100, 140, 180, 220, 260, 300, 340, 380, 420, 460, 500, 540, 580, 620, 660, 700, 740, 780, 820, 860, 900, 940, 980, 1020, // batch 6 = 25
           0, 40, 80, 120, 160, 240, 280, 320, 360, 400, 480, 520, 560, 640, 680, 720, 760, 800, 880, 920, 960, 1000, // batch 7 = 22
-          0, 40, 80, 120, 160, 200, 240, 280, 320, 360, 400, 440, 480, 520, 560, 600, 640, 680, 720, 760, 800, 840, 880, 920, 960, 1000, // batch 8 = 26
+          0, 40, 80, 120, 160, 200, 240, 280, 320, 360, 400, 440, 480, 520, 560, 600, 640, 680, 720, 760, 800, 840, 880, // batch 8 = 23
+          0, 40, 80, 120, 160, 200, 240, 280, 320, 360, 400, 440, 480, 520, 560, 600, 640, 680, 720, 760, 800, 840, 880, //batch 9 = 23
+          200, 240, 280, 320, 360, 400, 440, 480, 520, 560, 600, 640, 680, 720, 760, 800, 840, 880, 920, 960, 1000, //batch 10 = 21
+          0, 40, 80, 120, 160, 200, 240, 280, 320, // batch 11 = 9
+          200, 240, 280, 320, 360, 400, 440, 480, 520, 560, 600, 640, 680, 720, //batch 12 = 14
+          320, 720, //ending tunnel start = 2
+          0, 40, 80, 120, 160, 200, 240, 260, 300, 340, // 10
+          700, 740, 780, 820, 860, 900, 940, 980, 1020, // 9
+          0, 40, 80, 120, 160, 200, 240, 280, 320, 360, //10
+          680, 720, 760, 800, 840, 880, 920, 960, 1000, //9
+
+          20, 60, 100, 140, 180, 220, 260, 300, 340, 380, //10
+          660, 700, 740, 780, 820, 860, 900, 940, 980, 1020, //10
+          0, 40, 80, 120, 160, 200, 240, 280, 320, 360, 400, //11
+          640, 680, 720, 760, 800, 840, 880, 920, 960, 1000, //10
+          20, 60, 100, 140, 180, 220, 260, 300, 340, 380, 420, //11
+          620, 660, 700, 740, 780, 820, 860, 900, 940, 980, 1020, //11
+          0, 40, 80, 120, 160, 200, 240, 280, 320, 360, 400, 440, //12
+          600, 640, 680, 720, 760, 800, 840, 880, 920, 960, 1000, //11
+
+          500, //end of tunnel turtle
+          
           200, 440, 600, 840], // ending turtles
         waitUntilEnemiesGone: true,
         // shipManifestOverride: new Array(40).push(new Array(20).fill({}), new Array(20).fill({config: {waitOffScreen: 4, snapLine: 100}})),
@@ -6935,203 +6956,165 @@ function loadTemplates() {
           }),
           ...Array(21).fill({
             config: {
-              waitOffScreen: 4,
+              waitOffScreen: 3.5,
               snapLine: 20,
             },
           }),
           ...Array(24).fill({
             config: {
-              waitOffScreen: 6,
+              waitOffScreen: 5,
               snapLine: 20,
             },
           }),
           ...Array(24).fill({
             config: {
-              waitOffScreen: 8,
+              waitOffScreen: 6.5,
               snapLine: 20,
             },
           }),
           ...Array(25).fill({
             config: {
-              waitOffScreen: 11,
+              waitOffScreen: 9.5,
               snapLine: 20,
             },
           }),
           ...Array(22).fill({
             config: {
-              waitOffScreen: 14,
+              waitOffScreen: 12.5,
               snapLine: 20,
             },
           }),
-          ...Array.from({ length: 26 }, (v, i) => (
+          ...Array.from({ length: 23 }, (v, i) => (
             {
               config: {
-                waitOffScreen: 16 + (i * 0.1),
+                waitOffScreen: 14.5 + (i * 0.1),
                 snapLine: 20,
               },
             }
           )),
-          // {
-          //   config: {
-          //     waitOffScreen: 16,
-          //     snapLine: 20,
-          //   },
-          // },
-          // {
-          //   config: {
-          //     waitOffScreen: 16.1,
-          //     snapLine: 20,
-          //   },
-          // },
-          // {
-          //   config: {
-          //     waitOffScreen: 16.2,
-          //     snapLine: 20,
-          //   },
-          // },
-          // {
-          //   config: {
-          //     waitOffScreen: 16.3,
-          //     snapLine: 20,
-          //   },
-          // },
-          // {
-          //   config: {
-          //     waitOffScreen: 16.4,
-          //     snapLine: 20,
-          //   },
-          // },
-          // {
-          //   config: {
-          //     waitOffScreen: 16.5,
-          //     snapLine: 20,
-          //   },
-          // },
-          // {
-          //   config: {
-          //     waitOffScreen: 16.6,
-          //     snapLine: 20,
-          //   },
-          // },
-          // {
-          //   config: {
-          //     waitOffScreen: 16.7,
-          //     snapLine: 20,
-          //   },
-          // },
-          // {
-          //   config: {
-          //     waitOffScreen: 16.8,
-          //     snapLine: 20,
-          //   },
-          // },
-          // {
-          //   config: {
-          //     waitOffScreen: 16.9,
-          //     snapLine: 20,
-          //   },
-          // },
-          // {
-          //   config: {
-          //     waitOffScreen: 17.1,
-          //     snapLine: 20,
-          //   },
-          // },
-          // {
-          //   config: {
-          //     waitOffScreen: 17.2,
-          //     snapLine: 20,
-          //   },
-          // },
-          // {
-          //   config: {
-          //     waitOffScreen: 17.3,
-          //     snapLine: 20,
-          //   },
-          // },
-          // {
-          //   config: {
-          //     waitOffScreen: 17.4,
-          //     snapLine: 20,
-          //   },
-          // },
-          // {
-          //   config: {
-          //     waitOffScreen: 17.5,
-          //     snapLine: 20,
-          //   },
-          // },
-          // {
-          //   config: {
-          //     waitOffScreen: 17.6,
-          //     snapLine: 20,
-          //   },
-          // },
-          // {
-          //   config: {
-          //     waitOffScreen: 17.8,
-          //     snapLine: 20,
-          //   },
-          // },
-          // {
-          //   config: {
-          //     waitOffScreen: 17.9,
-          //     snapLine: 20,
-          //   },
-          // },
-          // {
-          //   config: {
-          //     waitOffScreen: 18,
-          //     snapLine: 20,
-          //   },
-          // },
-          // {
-          //   config: {
-          //     waitOffScreen: 17,
-          //     snapLine: 20,
-          //   },
-          // },
-          // {
-          //   config: {
-          //     waitOffScreen: 17,
-          //     snapLine: 20,
-          //   },
-          // },
-          // {
-          //   config: {
-          //     waitOffScreen: 17,
-          //     snapLine: 20,
-          //   },
-          // },
-          // {
-          //   config: {
-          //     waitOffScreen: 17,
-          //     snapLine: 20,
-          //   },
-          // },
-          // {
-          //   config: {
-          //     waitOffScreen: 17,
-          //     snapLine: 20,
-          //   },
-          // },
-          // {
-          //   config: {
-          //     waitOffScreen: 17,
-          //     snapLine: 20,
-          //   },
-          // },
-          // {
-          //   config: {
-          //     waitOffScreen: 17,
-          //     snapLine: 20,
-          //   },
-          // },
+          ...Array.from({ length: 23 }, (v, i) => (
+            {
+              config: {
+                waitOffScreen: 19.1 - (i * 0.1),
+                snapLine: 20,
+              },
+            }
+          )),
+          ...Array.from({ length: 21 }, (v, i) => (
+            {
+              config: {
+                waitOffScreen: 20.5 - (i * 0.1),
+                snapLine: 20,
+              },
+            }
+          )),
+          ...Array.from({ length: 9 }, (v, i) => (
+            {
+              config: {
+                waitOffScreen: 21.5 + (i * 0.1),
+                snapLine: 20,
+              },
+            }
+          )),
+          ...Array.from({ length: 14 }, (v, i) => (
+            {
+              config: {
+                waitOffScreen: 20.5 + (i * 0.1),
+                snapLine: 20,
+              },
+            }
+          )),
+          ...Array(2).fill({
+            config: {
+              waitOffScreen: 22.6,
+              snapLine: 20,
+            },
+          }),
+          ...Array(10).fill({
+            config: {
+              waitOffScreen: 23.2,
+              snapLine: 20,
+            },
+          }),
+          ...Array(9).fill({
+            config: {
+              waitOffScreen: 23.2,
+              snapLine: 20,
+            },
+          }),
+          ...Array(10).fill({
+            config: {
+              waitOffScreen: 23.8,
+              snapLine: 20,
+            },
+          }),
+          ...Array(9).fill({
+            config: {
+              waitOffScreen: 23.8,
+              snapLine: 20,
+            },
+          }),
+          ...Array(10).fill({
+            config: {
+              waitOffScreen: 24.4,
+              snapLine: 20,
+            },
+          }),
+          ...Array(10).fill({
+            config: {
+              waitOffScreen: 24.4,
+              snapLine: 20,
+            },
+          }),
+          ...Array(11).fill({
+            config: {
+              waitOffScreen: 25,
+              snapLine: 20,
+            },
+          }),
+          ...Array(10).fill({
+            config: {
+              waitOffScreen: 25,
+              snapLine: 20,
+            },
+          }),
+          ...Array(11).fill({
+            config: {
+              waitOffScreen: 25.6,
+              snapLine: 20,
+            },
+          }),
+          ...Array(11).fill({
+            config: {
+              waitOffScreen: 25.6,
+              snapLine: 20,
+            },
+          }),
+          ...Array(12).fill({
+            config: {
+              waitOffScreen: 26.2,
+              snapLine: 20,
+            },
+          }),
+          ...Array(11).fill({
+            config: {
+              waitOffScreen: 26.2,
+              snapLine: 20,
+            },
+          }),
           // turtles:
+          {
+            config: {
+              health: 25,
+              waitOffScreen: 26.5
+            },
+            weapon: ring.uniSpiralFourWay,
+          },
           ...Array(4).fill({
             config: {
-              waitOffScreen: 14.5,
+              waitOffScreen: 13,
               snapLine: 20,
+              dropItems: [new MultiGun(100)],
             },
           }),
         ],
