@@ -6961,6 +6961,10 @@ projectile.bulletFadeIn = {
             sceneName: 'waterFinalBoss',
           },
           {
+            id: 'loadBackground',
+            bg: background.water,
+          },
+          {
             id: 'showMessage',
             type: 'warning',
             text: ['WARNING', 'A MASS OF TENTACLES APPROACHES'],
