@@ -3898,6 +3898,7 @@ function loadTemplates() {
             hitValue: 2000,
             snapLine: 250,
             radius: 200,
+            dropItems: [new Nuke(100)],
           },
           weapon: {
             rotation: {
@@ -5455,6 +5456,43 @@ function loadTemplates() {
         //   100, 100, 300, 300,
         ],
       },
+      {
+        choreography: [{
+          id: 'accelerateToWarpspeed',
+        },
+        {
+          id: 'wait',
+          duration: 0.25,
+        },
+        {
+          id: 'loadBackground',
+          bg: background.beach,
+        },
+        {
+          id: 'decelerateFromWarpSpeed',
+        },
+        {
+          id: 'showMessage',
+          type: 'gameOver',
+          text: ['YOU WIN!', 'THANKS FOR PLAYING, YOUR SCORE HAS BEEN SAVED ON THE LEADERBOARD'],
+        },
+        {
+          id: 'wait',
+          duration: 7,
+        },
+        {
+          id: 'showMessage',
+          text: ['STICK AROUND FOR', 'BONUS LEVELS'],
+        },
+        {
+          id: 'wait',
+          duration: 7,
+        },
+        {
+          id: 'hideMessage',
+        },
+        ],
+      },
     ],
   };
 
@@ -5713,6 +5751,7 @@ function loadTemplates() {
             hitValue: 2000,
             snapLine: 250,
             radius: 200,
+            dropItems: [new Nuke(100)],
           },
           weapon: ring.gap1,
         }],
@@ -5992,10 +6031,11 @@ function loadTemplates() {
         ],
         shipManifestOverride: [{
           config: {
-            health: 150,
+            health: 100,
             snapLineSpeed: 50,
             hitValue: 2000,
             snapLine: 300,
+            dropItems: [new MultiGun(100)],
           },
         }],
         waitUntilEnemiesGone: true,
@@ -6936,43 +6976,6 @@ function loadTemplates() {
               snapLine: 50,
             },
           },
-        ],
-      },
-      {
-        choreography: [{
-          id: 'accelerateToWarpspeed',
-        },
-        {
-          id: 'wait',
-          duration: 0.25,
-        },
-        {
-          id: 'loadBackground',
-          bg: background.beach,
-        },
-        {
-          id: 'decelerateFromWarpSpeed',
-        },
-        {
-          id: 'showMessage',
-          type: 'gameOver',
-          text: ['YOU WIN!', 'THANKS FOR PLAYING, YOUR SCORE HAS BEEN SAVED ON THE LEADERBOARD'],
-        },
-        {
-          id: 'wait',
-          duration: 7,
-        },
-        {
-          id: 'showMessage',
-          text: ['STICK AROUND FOR', 'BONUS LEVELS'],
-        },
-        {
-          id: 'wait',
-          duration: 7,
-        },
-        {
-          id: 'hideMessage',
-        },
         ],
       },
     ],
