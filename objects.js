@@ -63,7 +63,7 @@ function loadTemplates() {
 
     local: {
       isHoming: true,
-      limit: 50, // minimum distance to stop tracking
+      limit: 100, // minimum distance to stop tracking
     },
 
 
@@ -1492,7 +1492,7 @@ projectile.bulletFadeIn = {
       speed: 300,
     },
     firing: {
-      pattern: pattern.for,
+      pattern: pattern.die,
       width: 200,
       radius: 50,
       angle: 90,
@@ -4868,7 +4868,7 @@ projectile.bulletFadeIn = {
       targetPlayer: false,
       viewTurret: false,
       pulse: {
-        duration: 0.5,
+        duration: 0.3,
         delay: 1.5,
       },
     },
@@ -5920,7 +5920,7 @@ projectile.bulletFadeIn = {
             weapon: ring.fourFixedSpeedCircle,
           },
           {
-            weapon: ring.fourFixedSpeedCircle,
+            weapon: ring.wordPatternRing,
           },
           {
             weapon: ring.fourFixedSpeedCircle,
@@ -6283,16 +6283,19 @@ projectile.bulletFadeIn = {
           config: {
             waitOffScreen: 0,
           },
+          weapon: ring.gammaThree,
         },
         {
           config: {
             waitOffScreen: 2,
           },
+          weapon: ring.lineTest,
         },
         {
           config: {
             waitOffScreen: 3,
           },
+          weapon: ring.lineTest,
         },
         ],
         waitUntilEnemiesGone: true,
@@ -6314,11 +6317,13 @@ projectile.bulletFadeIn = {
           config: {
             waitOffScreen: 2,
           },
+          weapon: ring.lineTest
         },
         {
           config: {
             waitOffScreen: 3,
           },
+          weapon: ring.lineTest
         },
         ],
         waitUntilEnemiesGone: true,
@@ -6334,17 +6339,19 @@ projectile.bulletFadeIn = {
           config: {
             waitOffScreen: 0,
           },
-          weapon: ring.gammaThree,
+          weapon: ring.lineTest,
         },
         {
           config: {
             waitOffScreen: 2,
           },
+          weapon: ring.lineTest,
         },
         {
           config: {
             waitOffScreen: 3,
           },
+          weapon: ring.gammaThree,
         },
         ],
         waitUntilEnemiesGone: true,
