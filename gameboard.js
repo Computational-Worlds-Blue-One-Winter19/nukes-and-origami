@@ -338,7 +338,7 @@ function initLeaderboard() {
 
   // Get the users name from the cookie, we don't need to check if its undefined since the url can
   // handle it just fine
-  const userName = Cookies.get('name');
+  const userName = Cookies.get('name') || '';
   console.log(`The name retrieved is ${userName}`);
 
   addEvent(

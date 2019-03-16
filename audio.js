@@ -7,7 +7,7 @@ const introAudio = {
   files: [
 
     // 'https://forestmist.org/share/web-audio-api-demo/audio/beat.wav',
-    './audio/Intro_Redone.mp3',
+    'https://storage.googleapis.com/nukes-and-origami/static/Intro_Redone.mp3',
     'https://storage.googleapis.com/nukes-and-origami/static/Game_Loop_v.15.wav',
   ],
   loop: [
@@ -26,8 +26,8 @@ const bossAudio = {
   files: [
 
     // 'https://forestmist.org/share/web-audio-api-demo/audio/beat.wav',
-    './audio/Boss_Intro_Redone.mp3',
-    './audio/Boss_loop_Redone.mp3',
+    'https://storage.googleapis.com/nukes-and-origami/static/Boss_Intro_Redone.mp3',
+    'https://storage.googleapis.com/nukes-and-origami/static/Boss_loop_Redone.mp3',
     // 'beat.wav'
   ],
   loop: [
@@ -276,11 +276,11 @@ function createHowlerInstance(urls, onload) {
 function playLoop(soundObject) {
   // Create "slave" instance. This instance is meant
   // to be played after the first one is done.
-  soundObject.instances.push(createHowlerInstance(['./audio/Game_Loop_v.1.ogg']));
+  soundObject.instances.push(createHowlerInstance(['https://storage.googleapis.com/nukes-and-origami/static/Game_Loop_v.1.ogg']));
 
   // Create "master" instance. The onload function passed to
   // the singleton creator will coordinate the crossfaded loop
-  soundObject.instances.push(createHowlerInstance(['./audio/Game_Loop_v.1.ogg'], () => {
+  soundObject.instances.push(createHowlerInstance(['https://storage.googleapis.com/nukes-and-origami/static/Game_Loop_v.1.ogg'], () => {
     crossfadedLoop(soundObject.instances[1], soundObject.instances[0], soundObject.volume);
   }));
 }
