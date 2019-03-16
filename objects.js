@@ -2265,7 +2265,7 @@ projectile.bulletFadeIn = {
       slave: [
         {
           config: {
-            health: 6, // ONE more health than the actual entity.
+            health: 61, // ONE more health than the actual entity.
             // Why? So the slaves don't actually die, which would
             // spawn a power up and another death animation
             hitValue: 0,
@@ -2277,7 +2277,7 @@ projectile.bulletFadeIn = {
         },
         {
           config: {
-            health: 6,
+            health: 61,
             hitValue: 0,
             radius: 15,
             yDifference: -60,
@@ -2287,7 +2287,7 @@ projectile.bulletFadeIn = {
         },
         {
           config: {
-            health: 6,
+            health: 61,
             hitValue: 0,
             radius: 15,
             yDifference: -30,
@@ -2297,7 +2297,7 @@ projectile.bulletFadeIn = {
         },
         {
           config: {
-            health: 6,
+            health: 61,
             hitValue: 0,
             radius: 15,
             yDifference: 30,
@@ -2307,7 +2307,7 @@ projectile.bulletFadeIn = {
         },
         {
           config: {
-            health: 6,
+            health: 61,
             hitValue: 0,
             radius: 15,
             yDifference: 60,
@@ -2317,7 +2317,7 @@ projectile.bulletFadeIn = {
         },
         {
           config: {
-            health: 6,
+            health: 61,
             hitValue: 0,
             radius: 15,
             yDifference: 90,
