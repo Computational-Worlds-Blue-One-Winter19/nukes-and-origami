@@ -775,7 +775,7 @@ class Weapon {
     this.hasNuke = false;
 
     this.fireSound = new Howl({
-      src: ['audio/laserShot.mp3'],
+      src: ['https://storage.googleapis.com/nukes-and-origami/static/laserShot.mp3'],
       volume: 0.1,
     });
 
