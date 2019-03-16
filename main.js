@@ -117,6 +117,8 @@ class NukesAndOrigami extends GameEngine {
       scene.waterTwo,
       scene.waterThree,
       scene.waterFour,
+      scene.waterFivePointFive,
+      scene.waterManta,
       scene.waterFive,
       scene.waterSix,
       scene.waterFinalBoss,
