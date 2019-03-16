@@ -212,6 +212,27 @@ projectile.bulletFadeIn = {
     },
   };
 
+  console.log(sprite.fish.bullet);
+
+  projectile.sineFish = {
+    radius: 3,
+    sprite: sprite.fish.bullet,
+    // rotate: true,
+
+    local: {
+      time: 0,
+      amp: 3 * 2 * Math.PI,
+    },
+
+    update() {
+      this.local.time += this.current.elapsedTime;
+      this.current.r = this.current.velocity.radial * this.current.elapsedTime;
+
+      const deltaAngle = Math.cos(this.local.amp * this.local.time);
+      this.current.angle = this.config.baseAngle + deltaAngle;
+    },
+  }
+
   /** This tracks an enemy. */
   projectile.modifiedChainGun = {
     radius: 3,
@@ -1180,6 +1201,40 @@ projectile.bulletFadeIn = {
     },
   };
 
+  ring.fishSine = {
+    payload: {
+      type: projectile.sineFish,
+      velocity: {
+        radial: 300,
+        angular: 0,
+      },
+      acceleration: {
+        radial: 0,
+        angular: 0,
+      },
+    },
+    rotation: {
+      angle: 0,
+      frequency: 0,
+    },
+    firing: {
+      radius: 80,
+      angle: 90,
+      spread: 20,
+      count: 4,
+      loadTime: 0.05,
+      cooldownTime: 0.1,
+      rapidReload: true,
+      targetPlayer: false,
+      targetLeadShot: false,
+      viewTurret: true,
+      pulse: {
+        duration: 1,
+        delay: 3,
+      },
+    },
+  }
+
   ring.jaredTest3 = {
     payload: {
       type: projectile.sine,
@@ -1516,8 +1571,8 @@ projectile.bulletFadeIn = {
       angle: 90,
       spread: 22,
       loadTime: 0,
-      cooldownTime: 0.015,
-      targetPlayer: false,
+      cooldownTime: 0.01,
+      targetPlayer: true,
       viewTurret: false,
     },
   }
@@ -2300,8 +2355,33 @@ projectile.bulletFadeIn = {
     config: {
       health: 5,
       hitValue: 5,
-      radius: 70,
+      radius: 110,
       sprite: sprite.manta.default,
+      yOffset: -100,
+      slave: [
+        {
+          config: {
+            health: 40,
+            hitValue: 50,
+            radius: 60, 
+            xDifference: -200,
+            yDifference: 100,
+          },
+          weapon: ring.singleTargetPlayer,
+          powerup: 'rapidFire',
+        },
+        {
+          config: {
+            health: 40,
+            hitValue: 50,
+            radius: 60, 
+            xDifference: 200,
+            yDifference: 100,
+          },
+          weapon: ring.singleTargetPlayer,
+          powerup: 'multiGun',
+        }
+      ]
     },
     weapon: ring.singleTargetPlayer,
   };
@@ -7324,4 +7404,160 @@ projectile.bulletFadeIn = {
       },
     ],
   };
+
+  scene.waterManta = {
+    waves: [
+      {
+        choreography: [
+          {
+            id: 'checkpoint',
+            prettyName: 'Water Manta',
+            sceneName: 'waterManta',
+          },
+          {
+            id: 'loadBackground',
+            bg: background.water,
+          },
+          {
+            id: 'showMessage',
+            text: ['MANTA', 'INCOMING'],
+          },
+          {
+            id: 'wait',
+            duration: 3,
+          },
+          {
+            id: 'hideMessage',
+          },
+        ],
+      },
+      {
+        choreography: [
+          {
+            id: 'spawnEnemies'
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.oRing,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 0,
+            ring: ring.jaredTest1,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 1,
+            ring: ring.jaredTest1,
+          },
+          {
+            id: 'wait',
+            duration : 7,
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.uniFiveWay,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 0,
+            ring: ring.trackingTest1,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 1,
+            ring: ring.trackingTest1,
+          },
+          {
+            id: 'wait',
+            duration: 7,
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.patternTest,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 0,
+            ring: ring.oRing,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 1,
+            ring: ring.oRing,
+          },
+          {
+            id: 'wait',
+            duration: 7
+          },
+          {
+            id: 'resetChoreography',
+            index: 1,
+          },
+        ],
+        numOfEnemies: 1,
+        ships: [ship.manta],
+        paths: [path.doNothing],
+        shipManifestOverride: [
+          {
+            config: {
+              snapLine: 200,
+              health: 200,
+              dropItems: [new ChainGun(100)],
+            },
+          }
+        ],
+        waitUntilEnemiesGone: true,
+      }
+    ]
+  }
+
+  scene.waterFivePointFive = {
+    waves: [
+      {
+        choreography: [
+          {
+            id: 'checkpoint',
+            prettyName: 'Water 5.5',
+            sceneName: 'water55',
+          },
+          {
+            id: 'loadBackground',
+            bg: background.water,
+          },
+          {
+            id: 'spawnEnemies',
+          }
+        ],
+        numOfEnemies: 7,
+        ships: new Array(7).fill(ship.fish),
+        paths: [path.cornerRight, path.cornerRight, path.straightDown, path.doNothing, path.straightDown, path.cornerLeft, path.cornerLeft],
+        shipManifestOverride: [
+          ...Array(3).fill({
+            weapon: ring.fishSine,
+          }),
+          {
+            config: {
+              snapLine: 100,
+              waitOffScreen: 1,
+            },
+            weapon: ring.fishSine,
+          },
+          ...Array(3).fill({
+            weapon: ring.fishSine,
+          }),
+        ],
+        waitUntilEnemiesGone: true,
+      },
+    ]
+  }
 } // end of objects.js

@@ -639,6 +639,22 @@ function loadSpriteSheets() {
           loop: true
         }
       }
+    },
+    bullet: {
+      default: {
+        image: AM.getAsset('./img/fish.png'),
+        dimension: {
+          originX: 0,
+          originY: 0,
+          frameWidth: 200,
+          frameHeight: 210,
+          frameCount: 2,
+          timePerFrame: 0.1,
+          scale: 0.1,
+          flip: false,
+          loop: true
+        },
+      }
     }
   }
 
@@ -686,7 +702,7 @@ function loadSpriteSheets() {
           frameHeight: 450,
           frameCount: 8,
           timePerFrame: 0.1,
-          scale: 0.5,
+          scale: 1,
           flip: false,
           loop: true
         }
@@ -700,7 +716,7 @@ function loadSpriteSheets() {
           frameHeight: 450,
           frameCount: 8,
           timePerFrame: 0.1,
-          scale: 0.5,
+          scale: 1,
           flip: false,
           loop: true
         }

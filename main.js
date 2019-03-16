@@ -88,7 +88,7 @@ class NukesAndOrigami extends GameEngine {
 
     this.sounds = {
       gameLoop: {
-        path: './audio/Game_Loop_v.1.ogg',
+        path: 'https://storage.googleapis.com/nukes-and-origami/static/Game_Loop_v.1.ogg',
         // Two instances of a howler are needed to loop sounds, so we'll need
         // references of these instances to stop or pause music
         instances: [],
@@ -108,6 +108,7 @@ class NukesAndOrigami extends GameEngine {
   initializeSceneManager(startScene) {
     // load completed levels
     const levelOrder = [
+      //scene.waterManta
       scene.levelOne,
       scene.levelTwo,
       scene.levelThree,
@@ -116,6 +117,8 @@ class NukesAndOrigami extends GameEngine {
       scene.waterTwo,
       scene.waterThree,
       scene.waterFour,
+      scene.waterFivePointFive,
+      scene.waterManta,
       scene.waterFive,
       scene.waterSix,
       scene.waterFinalBoss,
@@ -232,7 +235,7 @@ class NukesAndOrigami extends GameEngine {
   onPlayerHit(player) {
     if (player.invincTime === 0 && !player.rolling) {
       // Let's check to see if we can enable god mode for prof marriott
-      const name = Cookies.get('name');
+      const name = Cookies.get('name') || '';
       if (name.toLowerCase() !== 'chris' && name.toLowerCase() !== 'algorithm0r') {
         this.lives -= 1;
         removeLifeFromBoard();
@@ -742,7 +745,7 @@ class SceneManager {
           }
 
           // Post the score after the user has finished the game only if god mode isn't enabled
-          const name = Cookies.get('name');
+          const name = Cookies.get('name') || '';
           const isgodModEnabled = name.toLowerCase() === 'chris' || name.toLowerCase() === 'algorithm0r';
           if (this.currentChor.type === 'gameOver' && !isgodModEnabled) {
             const playerName = Cookies.get('name');
