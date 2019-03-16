@@ -174,14 +174,15 @@ projectile.bulletFadeIn = {
   },
   
   local: {
-    baseRadius: 10,
-    maxRadius: 3,
+    baseRadius: 6,
+    maxRadius: 5,
     time: 0,
-    amp: 1 * Math.PI, // this is really the frequency
+    amp: 2.5 * Math.PI, // this is really the frequency
   },
 
   update() {
     this.local.time += this.current.elapsedTime;
+    this.current.velocity.radial += this.current.acceleration.radial * this.current.elapsedTime;
     this.current.r = this.current.velocity.radial * this.current.elapsedTime;
 
     if (this.config.radius < this.local.maxRadius) {
@@ -4454,11 +4455,11 @@ projectile.bulletFadeIn = {
     payload: {
       type: projectile.bulletFadeIn,
       velocity: {
-        radial: 400,
+        radial: 500,
         angular: 0,
       },
       acceleration: {
-        radial: 0,
+        radial: 800,
         angular: 0,
       },
     },
@@ -4469,15 +4470,15 @@ projectile.bulletFadeIn = {
     },
     firing: {
       // pattern: pattern.simple,
-      radius: 50,
+      radius: 32,
       angle: 90,
-      width: 50,
+      width: 75,
       count: 4,
       loadTime: 0,
-      cooldownTime: 0.2,
+      cooldownTime: 0.05,
       rapidReload: true,
-      targetPlayer: true,
-      viewTurret: true,
+      targetPlayer: false,
+      viewTurret: false,
       pulse: {
         duration: 0.5,
         delay: 1.5,
