@@ -1443,8 +1443,8 @@ function loadTemplates() {
       angle: 90,
       spread: 22,
       loadTime: 0,
-      cooldownTime: 0.015,
-      targetPlayer: false,
+      cooldownTime: 0.01,
+      targetPlayer: true,
       viewTurret: false,
     },
   }
@@ -7265,7 +7265,7 @@ function loadTemplates() {
           {
             id: 'swapRing',
             enemyIndex: 0,
-            ring: ring.linearTest,
+            ring: ring.oRing,
           },
           {
             id: 'swapSlaveRing',
@@ -7301,6 +7301,31 @@ function loadTemplates() {
             ring: ring.trackingTest1,
           },
           {
+            id: 'wait',
+            duration: 7,
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.patternTest,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 0,
+            ring: ring.oRing,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 1,
+            ring: ring.oRing,
+          },
+          {
+            id: 'wait',
+            duration: 7
+          },
+          {
             id: 'resetChoreography',
             index: 1,
           },
@@ -7313,8 +7338,8 @@ function loadTemplates() {
             config: {
               snapLine: 200,
               health: 200,
+              dropItems: [new ChainGun(100)],
             },
-            weapon: ring.spreadBeta1,
           }
         ],
         waitUntilEnemiesGone: true,
