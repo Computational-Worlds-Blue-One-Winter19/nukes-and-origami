@@ -6434,6 +6434,10 @@ function loadTemplates() {
             sceneName: 'waterFour',
           },
           {
+            id: 'loadBackground',
+            bg: background.water,
+          },
+          {
             id: 'showMessage',
             text: ['THE KING CRAB COMETH.', 'HE IS NOT PLEASED.'],
           },
@@ -6535,6 +6539,10 @@ function loadTemplates() {
             id: 'checkpoint',
             prettyName: 'Water Five',
             sceneName: 'waterFive',
+          },
+          {
+            id: 'loadBackground',
+            bg: background.water,
           },
           {
             id: 'spawnEnemies',
@@ -6941,6 +6949,10 @@ function loadTemplates() {
             id: 'checkpoint',
             prettyName: 'Water Six',
             sceneName: 'waterSix',
+          },
+          {
+            id: 'loadBackground',
+            bg: background.water,
           },
           {
             id: 'spawnEnemies',

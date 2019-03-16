@@ -362,9 +362,9 @@ function getPowerUp(type) {
   // used for slaves, please don't delete me I know I'm dirty
   switch (type) {
     case 'nuke':
-      return new Nuke(30);
+      return new Nuke(100);
     case 'rapidFire':
-      return new RapidFire(10);
+      return new RapidFire(100);
     case 'multiGun':
       return new MultiGun(100);
     case 'shield':
