@@ -2203,7 +2203,7 @@ function loadTemplates() {
             yDifference: 100,
           },
           weapon: ring.singleTargetPlayer,
-          powerup: 'nuke',
+          powerup: 'rapidFire',
         },
         {
           config: {
@@ -2214,7 +2214,7 @@ function loadTemplates() {
             yDifference: 100,
           },
           weapon: ring.singleTargetPlayer,
-          powerup: 'nuke',
+          powerup: 'multiGun',
         }
       ]
     },
@@ -7223,22 +7223,54 @@ function loadTemplates() {
       {
         choreography: [
           {
+            id: 'spawnEnemies'
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.linearTest,
+          },
+          {
             id: 'swapSlaveRing',
             enemyIndex: 0,
             slaveIndex: 0,
-            ring: ring.jaredTest3,
+            ring: ring.jaredTest1,
           },
           {
             id: 'swapSlaveRing',
             enemyIndex: 0,
             slaveIndex: 1,
-            ring: ring.jaredTest3,
+            ring: ring.jaredTest1,
+          },
+          {
+            id: 'wait',
+            duration : 7,
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.uniFiveWay,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 0,
+            ring: ring.trackingTest1,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 1,
+            ring: ring.trackingTest1,
+          },
+          {
+            id: 'resetChoreography',
+            index: 1,
           },
         ],
         numOfEnemies: 1,
         ships: [ship.manta],
         paths: [path.doNothing],
-        waitUntilEnemiesGone: true,
         shipManifestOverride: [
           {
             config: {
@@ -7247,7 +7279,8 @@ function loadTemplates() {
             },
             weapon: ring.spreadBeta1,
           }
-        ]
+        ],
+        waitUntilEnemiesGone: true,
       }
     ]
   }
