@@ -6963,12 +6963,170 @@ function loadTemplates() {
               snapLine: 20,
             },
           }),
-          ...Array(26).fill({
-            config: {
-              waitOffScreen: 16,
-              snapLine: 20,
-            },
-          }),
+          ...Array(26).from({length:26}, (v, i) => (
+            {config: {
+                waitOffScreen: 16 + (i * 0.1),
+                snapLine: 20,
+            }}
+            )
+          ),
+
+          // {
+          //   config: {
+          //     waitOffScreen: 16,
+          //     snapLine: 20,
+          //   },
+          // },
+          // {
+          //   config: {
+          //     waitOffScreen: 16.1,
+          //     snapLine: 20,
+          //   },
+          // },
+          // {
+          //   config: {
+          //     waitOffScreen: 16.2,
+          //     snapLine: 20,
+          //   },
+          // },
+          // {
+          //   config: {
+          //     waitOffScreen: 16.3,
+          //     snapLine: 20,
+          //   },
+          // },
+          // {
+          //   config: {
+          //     waitOffScreen: 16.4,
+          //     snapLine: 20,
+          //   },
+          // },
+          // {
+          //   config: {
+          //     waitOffScreen: 16.5,
+          //     snapLine: 20,
+          //   },
+          // },
+          // {
+          //   config: {
+          //     waitOffScreen: 16.6,
+          //     snapLine: 20,
+          //   },
+          // },
+          // {
+          //   config: {
+          //     waitOffScreen: 16.7,
+          //     snapLine: 20,
+          //   },
+          // },
+          // {
+          //   config: {
+          //     waitOffScreen: 16.8,
+          //     snapLine: 20,
+          //   },
+          // },
+          // {
+          //   config: {
+          //     waitOffScreen: 16.9,
+          //     snapLine: 20,
+          //   },
+          // },
+          // {
+          //   config: {
+          //     waitOffScreen: 17.1,
+          //     snapLine: 20,
+          //   },
+          // },
+          // {
+          //   config: {
+          //     waitOffScreen: 17.2,
+          //     snapLine: 20,
+          //   },
+          // },
+          // {
+          //   config: {
+          //     waitOffScreen: 17.3,
+          //     snapLine: 20,
+          //   },
+          // },
+          // {
+          //   config: {
+          //     waitOffScreen: 17.4,
+          //     snapLine: 20,
+          //   },
+          // },
+          // {
+          //   config: {
+          //     waitOffScreen: 17.5,
+          //     snapLine: 20,
+          //   },
+          // },
+          // {
+          //   config: {
+          //     waitOffScreen: 17.6,
+          //     snapLine: 20,
+          //   },
+          // },
+          // {
+          //   config: {
+          //     waitOffScreen: 17.8,
+          //     snapLine: 20,
+          //   },
+          // },
+          // {
+          //   config: {
+          //     waitOffScreen: 17.9,
+          //     snapLine: 20,
+          //   },
+          // },
+          // {
+          //   config: {
+          //     waitOffScreen: 18,
+          //     snapLine: 20,
+          //   },
+          // },
+          // {
+          //   config: {
+          //     waitOffScreen: 17,
+          //     snapLine: 20,
+          //   },
+          // },
+          // {
+          //   config: {
+          //     waitOffScreen: 17,
+          //     snapLine: 20,
+          //   },
+          // },
+          // {
+          //   config: {
+          //     waitOffScreen: 17,
+          //     snapLine: 20,
+          //   },
+          // },
+          // {
+          //   config: {
+          //     waitOffScreen: 17,
+          //     snapLine: 20,
+          //   },
+          // },
+          // {
+          //   config: {
+          //     waitOffScreen: 17,
+          //     snapLine: 20,
+          //   },
+          // },
+          // {
+          //   config: {
+          //     waitOffScreen: 17,
+          //     snapLine: 20,
+          //   },
+          // },
+          // {
+          //   config: {
+          //     waitOffScreen: 17,
+          //     snapLine: 20,
+          //   },
+          // },
           // turtles:
           ...Array(4).fill({
             config: {
