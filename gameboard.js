@@ -554,7 +554,7 @@ function startTimer(time, callBack, weapon) {
   circleElement.style.display = 'block';
 
   // Get the element that will show the numbers
-  const countdownNumberElement = document.getElementById('countdown-number');
+  const countdownNumberElement = document.getElementById('countdown-number-regular');
   let countdown = time;
 
   countdownNumberElement.textContent = countdown;
@@ -620,7 +620,7 @@ function startRollTimer(time) {
 
 function stopTimer(timer) {
   const circleElement = document.getElementById('circle');
-  const countdownNumberElement = document.getElementById('countdown-number');
+  const countdownNumberElement = document.getElementById('countdown-number-regular');
 
   circleElement.style.display = 'none';
   countdownNumberElement.textContent = '';

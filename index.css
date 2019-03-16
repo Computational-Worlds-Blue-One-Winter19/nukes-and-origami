@@ -275,7 +275,7 @@ center > h4 {
     width: 40px;
     text-align: center;
     box-sizing: content-box;
-    margin-top:  1.37333rem;
+    margin-top:  0.57333rem;
   }
 
   .countdownRoll {
@@ -287,7 +287,7 @@ center > h4 {
     margin-top: 0.57333rem;
   }
   
-  #countdown-number {
+  #countdown-number, #countdown-number-regular {
     color: black;
     display: inline-block;
     line-height: 40px;
