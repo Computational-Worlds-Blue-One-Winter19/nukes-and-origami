@@ -458,8 +458,7 @@ function initStartGameButton(game) {
 
           instanceLevel.open();
         } else {
-          // No level data found in the cookies start at the first spot in
-          // the level order
+          // No level data found in the cookies start at level one
           startGame(game);
         }
       }
@@ -551,6 +550,7 @@ function removeItem(type, container) {
 function startTimer(time, callBack, weapon) {
   // Get the svg element
   const circleElement = document.getElementById('circle');
+  circleElement.style.animationDuration = `${time}s`;
   circleElement.style.display = 'block';
 
   // Get the element that will show the numbers
@@ -572,6 +572,50 @@ function startTimer(time, callBack, weapon) {
 
     countdownNumberElement.textContent = countdown;
   }, 1000);
+}
+
+function stopRollTimer(timer) {
+  console.log('Stoping roll timer');
+  const circleElement = document.getElementById('circle-roll');
+  circleElement.className += 'paused';
+  const countdownNumberElement = document.getElementById('countdown-number');
+
+  circleElement.style.display = 'none';
+  countdownNumberElement.textContent = '0';
+  // Stop the intercal from running
+  clearInterval(timer);
+}
+
+function startRollTimer(time) {
+  console.log('Starting roll timer');
+  // Get the svg element
+  const circleElement = document.getElementById('circle-roll');
+  circleElement.style.animationDuration = `${time}s`;
+  circleElement.style.display = 'block';
+  circleElement.classList.remove('paused');
+
+  // Get the element that will show the numbers
+  const countdownNumberElement = document.getElementById('countdown-number');
+  let countdown = time;
+
+  countdownNumberElement.textContent = countdown;
+
+  let timer = null;
+
+  // When we active the callBack we'll need to remove the time as well
+  const finished = (timer) => {
+    stopRollTimer(timer);
+    // callBack(weapon);
+  };
+  // Sets the number being shown in the timer
+  timer = setInterval(() => {
+    countdown -= 0.5;
+    if (countdown <= 0) {
+      stopRollTimer(timer);
+    }
+    { console.log(`Countdown is ${countdown}`); }
+    countdownNumberElement.textContent = countdown;
+  }, 500);
 }
 
 function stopTimer(timer) {

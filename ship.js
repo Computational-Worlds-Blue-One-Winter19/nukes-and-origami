@@ -162,6 +162,10 @@ class Ship extends Entity {
     this.timeSinceHit = 0;
     this.health = manifest.config.health;
     this.dropItems = manifest.config.dropItems;
+    this.offset = {
+      x: manifest.config.xOffset || 0,
+      y: manifest.config.yOffset || 0,
+    };
 
     // A slave is the "slave" to another ship. The other ship is the master
     // and any hits the slave takes will be inflicted on the master.
@@ -171,6 +175,11 @@ class Ship extends Entity {
       this.slaves = [];
       for (let i = 0; i < manifest.config.slave.length; i++) {
         this.slaves[i] = Object.assign({}, manifest.config.slave[i]);
+
+        // adjust xDifference and yDifference with offset
+        this.slaves[i].config.xDifference += this.offset.x;
+        this.slaves[i].config.yDifference += this.offset.y;
+
         this.slaves[i].current = {
           x: this.current.x + this.slaves[i].config.xDifference,
           y: this.current.y + this.slaves[i].config.yDifference,
@@ -222,12 +231,12 @@ class Ship extends Entity {
   }
 
   draw() {
-    // if (this.health > 0) { // alive
-    this.sprite.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
-    // }
-    // if (this.health <= 0) { // dead, draw my explosion
-    //   this.deathAnimation.drawFrame(this.game.clockTick, this.ctx, this.current.x, this.current.y);
-    // }
+    const { offset } = this;
+
+    const x = this.current.x + offset.x;
+    const y = this.current.y + offset.y;
+
+    this.sprite.drawFrame(this.game.clockTick, this.ctx, x, y);
     this.weapon.draw();
     super.draw();
   }
@@ -291,11 +300,20 @@ class Ship extends Entity {
       this.game.onPlayerHit(this.game.player);
     }
 
+    if(this.slaves) {
+      for(let i = 0; i < this.slaves.length; i++) {
+        if(this.slaveCollided(this.slaves[i], this.game.player))  {
+          this.game.onPlayerHit(this.game.player);
+        }
+      }
+    }
+
     // Check for hit from player bullets
     for (const e of this.game.entities) {
       if (e instanceof Projectile && e.playerShot && (this.isCollided(e) || this.slaveCollision(e))) {
         e.onHit(this); // notify projectile
         this.health -= e.config.hitValue;
+        console.log(this.health);
         // manifest.config.sprite.hit
         // this.sprite.currentFrame
         // this.hitSprite.currentFrame = this.sprite.currentFrame + 1;
@@ -575,6 +593,7 @@ class Plane extends Ship {
           this.rolling = true;
           this.performManeuver();
           this.canRoll = false;
+          startRollTimer(this.rollCooldown);
         } else if (this.current.x - ((this.sprite.width * this.sprite.scale) / 2) > 0) {
           this.current.x -= this.speed * this.game.clockTick;
           this.sprite = this.left;
@@ -587,6 +606,7 @@ class Plane extends Ship {
       || (!this.controls.hasInvertedControls && rightKeyCheck)) {
         if (this.game.keysDown.KeyC && this.canRoll) {
           this.rollDirection = 'right';
+          startRollTimer(this.rollCooldown);
           this.rolling = true;
           this.performManeuver();
           this.canRoll = false;
@@ -798,9 +818,12 @@ class Weapon {
         var r = new Ring(owner, manifest);
       }
 
+      // set offset if any
+      const offset = owner.offset || { x: 0, y: 0 };
+
       this.slot.push({
         ring: r,
-        offset: { x: 0, y: 0 },
+        offset,
       });
     }
 

@@ -113,21 +113,24 @@ class NukesAndOrigami extends GameEngine {
       scene.levelThree,
       scene.thanksForPlayingScene,
       scene.waterIntro,
-      scene.waterOne,
-      scene.waterTwo,
-      scene.waterThree,
       scene.oneWaveTest,
       scene.waveBank,
       scene.easyPaper,
       scene.bossTest,
       scene.gamma,
+      scene.waterIntro,
+      scene.waterOne,
+      scene.waterTwo,
+      scene.waterThree,
+      scene.waterFour, 
+      scene.waterFive,
+      scene.waterSix,
+      scene.waterFinalBoss,
       scene.endingScene,
     ];
 
     if (startScene) {
-      console.log(scene[startScene]);
       while (levelOrder[0] != scene[startScene]) {
-        console.log(levelOrder[0]);
         levelOrder.shift();
       }
     }

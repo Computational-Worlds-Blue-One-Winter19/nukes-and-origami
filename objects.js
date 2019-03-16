@@ -87,7 +87,7 @@ function loadTemplates() {
   /** This tracks an enemy. */
   projectile.homingOnEnemy = {
     radius: 3,
-    hitValue: 3,
+    hitValue: 10,
     rotate: true,
     // image: AM.getAsset('./img/bullet.png'),
     // scale: .04,
@@ -435,6 +435,35 @@ function loadTemplates() {
     delay: 2,
   };
 
+
+  pattern.leftBolt = {
+    sequence: [
+      [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    ],
+    delay: 1.5,
+  };
+
+  pattern.rightBolt = {
+    sequence: [
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ],
+    delay: 1.5,
+  };
+
   /** *** RING: FIRING PATTERNS **** */
   ring.patternTest = {
     payload: {
@@ -446,6 +475,40 @@ function loadTemplates() {
       radius: 20,
       angle: 90,
       spread: 35,
+      loadTime: 0.2,
+      cooldownTime: 0.05,
+      targetPlayer: false,
+      viewTurret: true,
+    },
+  };
+
+  ring.boltL = {
+    payload: {
+      type: projectile.glassBall,
+      speed: 300,
+    },
+    firing: {
+      pattern: pattern.leftBolt,
+      radius: 20,
+      angle: 80,
+      spread: 20,
+      loadTime: 0.2,
+      cooldownTime: 0.05,
+      targetPlayer: false,
+      viewTurret: true,
+    },
+  };
+
+  ring.boltR = {
+    payload: {
+      type: projectile.glassBall,
+      speed: 300,
+    },
+    firing: {
+      pattern: pattern.rightBolt,
+      radius: 20,
+      angle: 100,
+      spread: 20,
       loadTime: 0.2,
       cooldownTime: 0.05,
       targetPlayer: false,
@@ -1992,96 +2055,6 @@ function loadTemplates() {
       health: 5,
       hitValue: 5,
       radius: 70,
-      sprite: sprite.pigeon.default,
-    },
-    weapon: ring.singleTargetPlayer,
-  };
-
-  ship.crab = {
-    config: {
-      health: 5,
-      hitValue: 5,
-      radius: 70,
-      sprite: sprite.pigeon.default,
-    },
-    weapon: ring.singleTargetPlayer,
-  };
-
-  ship.dolphin = {
-    config: {
-      health: 5,
-      hitValue: 5,
-      radius: 70,
-      sprite: sprite.pigeon.default,
-    },
-    weapon: ring.singleTargetPlayer,
-  };
-
-  ship.eel = {
-    config: {
-      health: 5,
-      hitValue: 5,
-      radius: 70,
-      sprite: sprite.pigeon.default,
-    },
-    weapon: ring.singleTargetPlayer,
-  };
-
-  ship.fish = {
-    config: {
-      health: 5,
-      hitValue: 5,
-      radius: 70,
-      sprite: sprite.pigeon.default,
-    },
-    weapon: ring.singleTargetPlayer,
-  };
-
-  ship.frog = {
-    config: {
-      health: 5,
-      hitValue: 5,
-      radius: 70,
-      sprite: sprite.pigeon.default,
-    },
-    weapon: ring.singleTargetPlayer,
-  };
-
-  ship.manta = {
-    config: {
-      health: 5,
-      hitValue: 5,
-      radius: 70,
-      sprite: sprite.pigeon.default,
-    },
-    weapon: ring.singleTargetPlayer,
-  };
-
-  ship.seahorse = {
-    config: {
-      health: 5,
-      hitValue: 5,
-      radius: 70,
-      sprite: sprite.pigeon.default,
-    },
-    weapon: ring.singleTargetPlayer,
-  };
-
-  ship.turtle = {
-    config: {
-      health: 5,
-      hitValue: 5,
-      radius: 70,
-      sprite: sprite.pigeon.default,
-    },
-    weapon: ring.singleTargetPlayer,
-  };
-
-  ship.beta = {
-    config: {
-      health: 5,
-      hitValue: 5,
-      radius: 70,
       sprite: sprite.beta.default,
     },
     weapon: ring.singleTargetPlayer,
@@ -2096,6 +2069,7 @@ function loadTemplates() {
     },
     weapon: ring.singleTargetPlayer,
   };
+
 
   ship.dolphinRight = {
     config: {
@@ -2121,10 +2095,75 @@ function loadTemplates() {
     config: {
       health: 5,
       hitValue: 5,
-      radius: 70,
+      radius: 15,
       sprite: sprite.eel.default,
+      slave: [
+        {
+          config: {
+            health: 6, // ONE more health than the actual entity.
+            // Why? So the slaves don't actually die, which would
+            // spawn a power up and another death animation
+            hitValue: 0,
+            radius: 15,
+            yDifference: -90,
+            xDifference: 0,
+          },
+          weapon: {},
+        },
+        {
+          config: {
+            health: 6,
+            hitValue: 0,
+            radius: 15,
+            yDifference: -60,
+            xDifference: 0,
+          },
+          weapon: {},
+        },
+        {
+          config: {
+            health: 6,
+            hitValue: 0,
+            radius: 15,
+            yDifference: -30,
+            xDifference: 0,
+          },
+          weapon: {},
+        },
+        {
+          config: {
+            health: 6,
+            hitValue: 0,
+            radius: 15,
+            yDifference: 30,
+            xDifference: 0,
+          },
+          weapon: {},
+        },
+        {
+          config: {
+            health: 6,
+            hitValue: 0,
+            radius: 15,
+            yDifference: 60,
+            xDifference: 0,
+          },
+          weapon: {},
+        },
+        {
+          config: {
+            health: 6,
+            hitValue: 0,
+            radius: 15,
+            yDifference: 90,
+            xDifference: 0,
+          },
+          weapon: {},
+        },
+      ],
     },
-    weapon: ring.singleTargetPlayer,
+    weapon: {},
+    // weapon: {}
   };
 
   ship.fish = {
@@ -2159,12 +2198,102 @@ function loadTemplates() {
 
   ship.octopusBoss = {
     config: {
-      health: 3,
+      health: 350,
       hitValue: 100,
-      radius: 100,
+      radius: 250,
       sprite: sprite.octopus.default,
+      yOffset: 140,
+      slave: [
+        { // TOP LEFT
+          config: {
+            health: 20,
+            hitValue: 50,
+            radius: 30,
+            xDifference: -300, // Difference in X value from master
+            yDifference: -150, // Difference in Y value from master
+          },
+          weapon: ring.boltL,
+          powerup: 'nuke',
+        },
+        { // TOP RIGHT
+          config: {
+            health: 20,
+            hitValue: 50,
+            radius: 30,
+            xDifference: 280,
+            yDifference: -140,
+          },
+          weapon: ring.boltR,
+          powerup: 'chainGun',
+        },
+        { // 2ND FROM TOP, RIGHT
+          config: {
+            health: 20,
+            hitValue: 50,
+            radius: 30,
+            xDifference: 290,
+            yDifference: -30,
+          },
+          weapon: ring.boltR,
+          powerup: 'homing',
+        },
+        { // 2ND FROM TOP, LEFT
+          config: {
+            health: 20,
+            hitValue: 50,
+            radius: 30,
+            xDifference: -290,
+            yDifference: -25,
+          },
+          weapon: ring.boltL,
+          powerup: 'homing',
+        },
+        { // 3RD FROM TOP, RIGHT
+          config: {
+            health: 20,
+            hitValue: 50,
+            radius: 30,
+            xDifference: 325,
+            yDifference: 90,
+          },
+          weapon: ring.boltR,
+          powerup: 'multiGun',
+        },
+        { // 3RD FROM TOP, LEFT
+          config: {
+            health: 20,
+            hitValue: 50,
+            radius: 30,
+            xDifference: -275,
+            yDifference: 130,
+          },
+          weapon: ring.boltL,
+        },
+        { // BOTTOM RIGHT
+          config: {
+            health: 20,
+            hitValue: 50,
+            radius: 30,
+            xDifference: 140,
+            yDifference: 250,
+          },
+          weapon: ring.jaredTest3,
+          powerup: 'shield',
+        },
+        { // BOTTOM LEFT
+          config: {
+            health: 20,
+            hitValue: 50,
+            radius: 30,
+            xDifference: -80,
+            yDifference: 230,
+          },
+          weapon: ring.jaredTest3,
+          powerup: 'heart',
+        },
+      ],
     },
-    weapon: ring.singleTargetPlayer,
+    weapon: ring.patternTest,
   };
 
   ship.seahorse = {
@@ -4830,6 +4959,7 @@ function loadTemplates() {
     delay: 1.5, // seconds between rounds
   };
 
+
   ring.gammaFour = {
     payload: {
       type: projectile.glassBall,
@@ -4879,6 +5009,43 @@ function loadTemplates() {
       viewTurret: false,
     },
   };
+
+  ship.crabBoss = {
+    config: {
+      health: 100,
+      hitValue: 300,
+      radius: 150,
+      sprite: sprite.crab.boss,
+      dropItems: [new MultiGun(100)],
+      slave: [{
+        config: {
+          health: 15,
+          hitValue: 50,
+          radius: 30,
+          xDifference: -180, // Difference in X value from master
+          yDifference: 110, // Difference in Y value from master
+          // dropItems: [new Nuke(100)]
+        },
+        weapon: ring.gammaFour,
+        powerup: 'nuke',
+      },
+      {
+        config: {
+          health: 15,
+          hitValue: 50,
+          radius: 30,
+          xDifference: 180,
+          yDifference: 110,
+          // dropItems: [new RapidFire(100)]
+        },
+        weapon: ring.gammaFour,
+        powerup: 'rapidFire',
+      },
+      ],
+    },
+    weapon: ring.gammaFive,
+  };
+
 
   ship.gammaCrane = {
     config: {
@@ -6293,4 +6460,700 @@ function loadTemplates() {
 
 
   /** end of jared level */
+
+  scene.waterFour = { // Crab mini boss
+    waves: [
+      {
+        choreography: [
+          {
+            id: 'checkpoint',
+            prettyName: 'Water Four',
+            sceneName: 'waterFour',
+          },
+          {
+            id: 'showMessage',
+            text: ['THE KING CRAB COMETH.', 'HE IS NOT PLEASED.'],
+          },
+          {
+            id: 'wait',
+            duration: 3,
+          },
+          {
+            id: 'hideMessage',
+          },
+        ],
+      },
+      {
+        choreography: [
+          {
+            id: 'spawnEnemies',
+          },
+          {
+            id: 'wait',
+            duration: 10,
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.spiralAlpha2,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 0,
+            ring: ring.spreadBeta1,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 1,
+            ring: ring.spreadBeta1,
+          },
+          {
+            id: 'wait',
+            duration: 5, // hard, so it lasts less time
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.spreadBeta4,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 0,
+            ring: ring.spreadBeta2,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 1,
+            ring: ring.spreadBeta2,
+          },
+          {
+            id: 'wait',
+            duration: 7,
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.gammaFive,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 0,
+            ring: ring.gammaFour,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 1,
+            ring: ring.gammaFour,
+          },
+          {
+            id: 'resetChoreography',
+            index: 1,
+          },
+        ],
+        numOfEnemies: 1,
+        ships: [ship.crabBoss],
+        paths: [path.doNothing],
+        waitUntilEnemiesGone: true,
+      },
+    ],
+  };
+
+  scene.waterFive = {
+    waves: [
+      {
+        choreography: [
+          {
+            id: 'checkpoint',
+            prettyName: 'Water Five',
+            sceneName: 'waterFive',
+          },
+          {
+            id: 'spawnEnemies',
+          },
+        ],
+        numOfEnemies: 15,
+        ships: [ship.seahorse, ship.seahorse, ship.seahorse, ship.seahorse,
+          ship.dolphinRight, ship.dolphinRight, ship.dolphinRight, ship.dolphinRight,
+          ship.frog, ship.frog, ship.frog, ship.frog, ship.frog, ship.frog, ship.frog],
+        paths: [path.strafeLeft, path.strafeLeft, path.strafeLeft, path.strafeLeft,
+          path.strafeRight, path.strafeRight, path.strafeRight, path.strafeRight,
+          path.straightDown, path.straightDown, path.doNothing, path.doNothing, path.doNothing, path.straightDown, path.straightDown],
+        initialYPoints: [100, 300, 500, 700, 50, 250, 450, 650,
+          -80, -80, -80, -80, -80, -80, -80],
+        initialXPoints: [1100, 1100, 1100, 1100, -100, -100, -100, -100,
+          146 - 46, 292 - 46, 438 - 46, 584 - 46, 730 - 46, 876 - 46, 1022 - 46],
+        // please dont ask about the "-46", im just really lazy. Thanks - Nathan
+        waitUntilEnemiesGone: true,
+        shipManifestOverride: [
+          {
+            config: {
+              snapLineSpeed: 200,
+              initialDirection: 'west',
+              waitOffScreen: 5,
+              snapLine: 924,
+            },
+          },
+          {
+            config: {
+              snapLineSpeed: 200,
+              initialDirection: 'west',
+              waitOffScreen: 4,
+              snapLine: 924,
+            },
+          },
+          {
+            config: {
+              snapLineSpeed: 200,
+              initialDirection: 'west',
+              waitOffScreen: 3,
+              snapLine: 924,
+            },
+          },
+          {
+            config: {
+              snapLineSpeed: 200,
+              initialDirection: 'west',
+              waitOffScreen: 2,
+              snapLine: 924,
+            },
+          },
+          {
+            config: {
+              snapLineSpeed: 200,
+              initialDirection: 'east',
+              waitOffScreen: 5,
+              snapLine: 100,
+            },
+          },
+          {
+            config: {
+              snapLineSpeed: 200,
+              initialDirection: 'east',
+              waitOffScreen: 6,
+              snapLine: 100,
+            },
+          },
+          {
+            config: {
+              snapLineSpeed: 200,
+              initialDirection: 'east',
+              waitOffScreen: 7,
+              snapLine: 100,
+            },
+          },
+          {
+            config: {
+              snapLineSpeed: 200,
+              initialDirection: 'east',
+              waitOffScreen: 8,
+              snapLine: 100,
+            },
+          },
+          {
+            config: {
+              waitOffScreen: 1,
+            },
+            weapon: ring.spreadBeta3,
+          },
+          {
+            config: {
+              waitOffScreen: 1.5,
+            },
+            weapon: ring.spreadBeta3,
+          },
+          {
+            config: {
+              waitOffScreen: 2,
+              dropItems: [new ExtraLife(100)],
+            },
+            weapon: ring.linearTest,
+          },
+          {
+            config: {
+              health: 10,
+              waitOffScreen: 2.5,
+              snapLine: 150,
+              dropItems: [new Nuke(100)],
+            },
+            weapon: ring.spiralAlpha4,
+          },
+          {
+            config: {//
+              waitOffScreen: 2,
+              dropItems: [new ExtraLife(100)],
+            },
+            weapon: ring.linearTest,
+          },
+          {
+            config: {
+              waitOffScreen: 1.5,
+            },
+            weapon: ring.spreadBeta3,
+          },
+          {
+            config: {
+              waitOffScreen: 1,
+            },
+            weapon: ring.spreadBeta3,
+          },
+        ],
+      },
+    ],
+  };
+
+  scene.waterFinalBoss = {
+    waves: [
+      {
+        choreography: [
+          {
+            id: 'checkpoint',
+            prettyName: 'Water Boss',
+            sceneName: 'waterFinalBoss',
+          },
+          {
+            id: 'showMessage',
+            type: 'warning',
+            text: ['WARNING', 'A MASS OF TENTACLES APPROACHES'],
+          },
+          {
+            id: 'wait',
+            duration: 1,
+          },
+          {
+            id: 'hideMessage',
+          },
+        ],
+      },
+      {
+        choreography: [
+          {
+            id: 'spawnEnemies',
+          },
+          {
+            id: 'wait',
+            duration: 10,
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.doubleStraightDownPulse,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 0,
+            ring: ring.spreadBeta1,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 1,
+            ring: ring.spreadBeta1,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 2,
+            ring: ring.spreadBeta1,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 3,
+            ring: ring.spreadBeta1,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 4,
+            ring: ring.spreadBeta1,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 5,
+            ring: ring.spreadBeta1,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 6,
+            ring: ring.spreadBeta1,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 7,
+            ring: ring.spreadBeta1,
+          },
+          {
+            id: 'wait',
+            duration: 1.5,
+          },
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.spiralAlpha2,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 0,
+            ring: ring.uniFiveWay,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 1,
+            ring: ring.uniFiveWay,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 2,
+            ring: ring.uniFiveWay,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 3,
+            ring: ring.uniFiveWay,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 4,
+            ring: ring.uniFiveWay,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 5,
+            ring: ring.uniFiveWay,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 6,
+            ring: ring.uniFiveWay,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 7,
+            ring: ring.uniFiveWay,
+          },
+          {
+            id: 'wait',
+            duration: 5,
+          },
+          // Reset back to default rings, then loop with resetChoreography
+          {
+            id: 'swapRing',
+            enemyIndex: 0,
+            ring: ring.patternTest,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 0,
+            ring: ring.boltL,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 1,
+            ring: ring.boltR,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 2,
+            ring: ring.boltR,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 3,
+            ring: ring.boltL,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 4,
+            ring: ring.boltR,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 5,
+            ring: ring.boltL,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 6,
+            ring: ring.jaredTest3,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 7,
+            ring: ring.jaredTest3,
+          },
+          {
+            id: 'wait',
+            duration: 10,
+          },
+          {
+            id: 'resetChoreography',
+            index: 1,
+          },
+        ],
+        /*  SLAVES =
+        TOP LEFT, TOP RIGHT, 2ND TOP RIGHT, 2ND TOP LEFT, 3RD TOP RIGHT, 3RD TOP LEFT, BOTTOM RIGHT, BOTTOM LEFT  */
+        numOfEnemies: 1,
+        ships: [ship.octopusBoss],
+        paths: path.doNothing,
+        waitUntilEnemiesGone: true,
+        shipManifestOverride: [
+          {
+            config: {
+              snapLine: 50,
+            },
+          },
+        ],
+      },
+    ],
+  };
+
+  scene.waterSix = {
+    waves: [
+      {
+        choreography: [
+          {
+            id: 'checkpoint',
+            prettyName: 'Water Six',
+            sceneName: 'waterSix',
+          },
+          {
+            id: 'spawnEnemies',
+          },
+        ],
+        numOfEnemies: 377,
+        ships: [...Array(372).fill(ship.eel), ...Array(5).fill(ship.turtle)],
+        paths: [...Array(372).fill(path.straightDown), path.doNothing, ...Array(4).fill(path.straightDown)],
+        initialXPoints: [0, 40, 80, 120, 160, 200, 240, 280, 320, 360, 400, 440, 480, 520, 560, 600, 640, 680, 720, 760, // batch 1 = 20
+          1020, 980, 940, 900, 860, 820, 780, 740, 700, 660, 620, 580, 540, 500, 460, 420, 380, 340, 300, 260, // batch 2 = 20
+          0, 40, 80, 120, 160, 200, 240, 280, 320, 360, 400, 440, 480, 740, 780, 820, 860, 900, 940, 980, 1020, // batch 3 = 21
+          0, 40, 80, 120, 240, 280, 320, 360, 400, 440, 480, 520, 560, 600, 640, 680, 720, 760, 800, 840, 880, 920, 960, 1000, // batch 4 = 24
+          0, 40, 80, 120, 160, 200, 240, 280, 320, 360, 400, 440, 480, 520, 560, 600, 640, 680, 720, 760, 880, 920, 960, 1000, // batch 5 = 24
+          60, 100, 140, 180, 220, 260, 300, 340, 380, 420, 460, 500, 540, 580, 620, 660, 700, 740, 780, 820, 860, 900, 940, 980, 1020, // batch 6 = 25
+          0, 40, 80, 120, 160, 240, 280, 320, 360, 400, 480, 520, 560, 640, 680, 720, 760, 800, 880, 920, 960, 1000, // batch 7 = 22
+          0, 40, 80, 120, 160, 200, 240, 280, 320, 360, 400, 440, 480, 520, 560, 600, 640, 680, 720, 760, 800, 840, 880, // batch 8 = 23
+          0, 40, 80, 120, 160, 200, 240, 280, 320, 360, 400, 440, 480, 520, 560, 600, 640, 680, 720, 760, 800, 840, 880, //batch 9 = 23
+          200, 240, 280, 320, 360, 400, 440, 480, 520, 560, 600, 640, 680, 720, 760, 800, 840, 880, 920, 960, 1000, //batch 10 = 21
+          0, 40, 80, 120, 160, 200, 240, 280, 320, // batch 11 = 9
+          200, 240, 280, 320, 360, 400, 440, 480, 520, 560, 600, 640, 680, 720, //batch 12 = 14
+          320, 720, //ending tunnel start = 2
+          0, 40, 80, 120, 160, 200, 240, 260, 300, 340, // 10
+          700, 740, 780, 820, 860, 900, 940, 980, 1020, // 9
+          0, 40, 80, 120, 160, 200, 240, 280, 320, 360, //10
+          680, 720, 760, 800, 840, 880, 920, 960, 1000, //9
+
+          20, 60, 100, 140, 180, 220, 260, 300, 340, 380, //10
+          660, 700, 740, 780, 820, 860, 900, 940, 980, 1020, //10
+          0, 40, 80, 120, 160, 200, 240, 280, 320, 360, 400, //11
+          640, 680, 720, 760, 800, 840, 880, 920, 960, 1000, //10
+          20, 60, 100, 140, 180, 220, 260, 300, 340, 380, 420, //11
+          620, 660, 700, 740, 780, 820, 860, 900, 940, 980, 1020, //11
+          0, 40, 80, 120, 160, 200, 240, 280, 320, 360, 400, 440, //12
+          600, 640, 680, 720, 760, 800, 840, 880, 920, 960, 1000, //11
+
+          500, //end of tunnel turtle
+          
+          200, 440, 600, 840], // ending turtles
+        waitUntilEnemiesGone: true,
+        // shipManifestOverride: new Array(40).push(new Array(20).fill({}), new Array(20).fill({config: {waitOffScreen: 4, snapLine: 100}})),
+        shipManifestOverride: [
+          ...Array(20).fill({}),
+          ...Array(20).fill({
+            config: {
+              waitOffScreen: 2,
+              snapLine: 20,
+            },
+          }),
+          ...Array(21).fill({
+            config: {
+              waitOffScreen: 3.5,
+              snapLine: 20,
+            },
+          }),
+          ...Array(24).fill({
+            config: {
+              waitOffScreen: 5,
+              snapLine: 20,
+            },
+          }),
+          ...Array(24).fill({
+            config: {
+              waitOffScreen: 6.5,
+              snapLine: 20,
+            },
+          }),
+          ...Array(25).fill({
+            config: {
+              waitOffScreen: 9.5,
+              snapLine: 20,
+            },
+          }),
+          ...Array(22).fill({
+            config: {
+              waitOffScreen: 12.5,
+              snapLine: 20,
+            },
+          }),
+          ...Array.from({ length: 23 }, (v, i) => (
+            {
+              config: {
+                waitOffScreen: 14.5 + (i * 0.1),
+                snapLine: 20,
+              },
+            }
+          )),
+          ...Array.from({ length: 23 }, (v, i) => (
+            {
+              config: {
+                waitOffScreen: 19.1 - (i * 0.1),
+                snapLine: 20,
+              },
+            }
+          )),
+          ...Array.from({ length: 21 }, (v, i) => (
+            {
+              config: {
+                waitOffScreen: 20.5 - (i * 0.1),
+                snapLine: 20,
+              },
+            }
+          )),
+          ...Array.from({ length: 9 }, (v, i) => (
+            {
+              config: {
+                waitOffScreen: 21.5 + (i * 0.1),
+                snapLine: 20,
+              },
+            }
+          )),
+          ...Array.from({ length: 14 }, (v, i) => (
+            {
+              config: {
+                waitOffScreen: 20.5 + (i * 0.1),
+                snapLine: 20,
+              },
+            }
+          )),
+          ...Array(2).fill({
+            config: {
+              waitOffScreen: 22.6,
+              snapLine: 20,
+            },
+          }),
+          ...Array(10).fill({
+            config: {
+              waitOffScreen: 23.2,
+              snapLine: 20,
+            },
+          }),
+          ...Array(9).fill({
+            config: {
+              waitOffScreen: 23.2,
+              snapLine: 20,
+            },
+          }),
+          ...Array(10).fill({
+            config: {
+              waitOffScreen: 23.8,
+              snapLine: 20,
+            },
+          }),
+          ...Array(9).fill({
+            config: {
+              waitOffScreen: 23.8,
+              snapLine: 20,
+            },
+          }),
+          ...Array(10).fill({
+            config: {
+              waitOffScreen: 24.4,
+              snapLine: 20,
+            },
+          }),
+          ...Array(10).fill({
+            config: {
+              waitOffScreen: 24.4,
+              snapLine: 20,
+            },
+          }),
+          ...Array(11).fill({
+            config: {
+              waitOffScreen: 25,
+              snapLine: 20,
+            },
+          }),
+          ...Array(10).fill({
+            config: {
+              waitOffScreen: 25,
+              snapLine: 20,
+            },
+          }),
+          ...Array(11).fill({
+            config: {
+              waitOffScreen: 25.6,
+              snapLine: 20,
+            },
+          }),
+          ...Array(11).fill({
+            config: {
+              waitOffScreen: 25.6,
+              snapLine: 20,
+            },
+          }),
+          ...Array(12).fill({
+            config: {
+              waitOffScreen: 26.2,
+              snapLine: 20,
+            },
+          }),
+          ...Array(11).fill({
+            config: {
+              waitOffScreen: 26.2,
+              snapLine: 20,
+            },
+          }),
+          // turtles:
+          {
+            config: {
+              health: 25,
+              waitOffScreen: 26.5
+            },
+            weapon: ring.uniSpiralFourWay,
+          },
+          ...Array(4).fill({
+            config: {
+              waitOffScreen: 13,
+              snapLine: 20,
+              dropItems: [new MultiGun(100)],
+            },
+          }),
+        ],
+      },
+    ],
+  };
 } // end of objects.js

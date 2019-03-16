@@ -156,7 +156,14 @@
                         C
                     </span>
                 </div>
-                <span class="control-description">Roll (Invincible during roll, 2.5 second cooldown)</span>
+                <span class="control-description">Roll</span>
+                <div class="countdownRoll">
+                <div id="countdown-number">0</div>
+                    <svg class="timer roll paused" id="circle-roll">
+                        <circle r="18" cx="20" cy="20"></circle>
+                    </svg>
+                </div>
+                <span class="control-description">(Invincible during roll, 2.5 second cooldown)</span>
             </div>
             <div class="key-container">
                 <div class="key special">
@@ -181,7 +188,7 @@
                 <!-- Wrapper used for the Timer -->
                 <div id="countdown">
                 <div id="countdown-number"></div>
-                    <svg class="timer" id="circle">
+                    <svg class="timer defaultTimer" id="circle">
                         <circle r="18" cx="20" cy="20"></circle>
                     </svg>
                 </div>

@@ -359,13 +359,24 @@ function getRandomPowerUp(enemyDropItems) {
 }
 
 function getPowerUp(type) {
+  // used for slaves, please don't delete me I know I'm dirty
   switch (type) {
     case 'nuke':
       return new Nuke(30);
     case 'rapidFire':
       return new RapidFire(10);
     case 'multiGun':
-      return new MultiGun(10);
+      return new MultiGun(100);
+    case 'shield':
+      return new Shield(100);
+    case 'heart':
+      return new ExtraLife(100);
+    case 'troll':
+      return new InvertedControls(100);
+    case 'homing':
+      return new HomingMissile(100);
+    case 'chainGun':
+      return new ChainGun(100);
   }
 }
 
