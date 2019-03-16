@@ -120,6 +120,79 @@ function loadTemplates() {
   };
 
   /** Prototype for sine wave */
+  projectile.pulse = {
+    radius: 3,
+    scale: 1.0,
+    colorFill: 'red',
+
+    local: {
+      baseRadius: 15,
+      time: 0,
+      amp: .5 * Math.PI, // this is really the frequency
+    },
+
+    update() {
+      this.local.time += this.current.elapsedTime;
+      this.current.r = this.current.velocity.radial * this.current.elapsedTime;
+
+      this.config.radius = this.local.baseRadius * Math.abs(Math.sin(this.local.amp * this.local.time));
+    },
+  };
+
+/** Prototype for sine wave */
+projectile.pulseFixedAngle = {
+  radius: 3,
+  scale: 1.0,
+  colorFill: 'red',
+
+  init() {
+    this.current.angle = toRadians(90);
+  },
+
+  local: {
+    baseRadius: 10,
+    time: 0,
+    amp: .5 * Math.PI, // this is really the frequency
+  },
+
+  update() {
+    this.local.time += this.current.elapsedTime;
+    this.current.r = this.current.velocity.radial * this.current.elapsedTime;
+
+    this.config.radius = this.local.baseRadius * Math.abs(Math.sin(this.local.amp * this.local.time));
+  },
+};
+
+/** Prototype for sine wave */
+projectile.bulletFadeIn = {
+  radius: 1,
+  scale: 1.0,
+  colorFill: 'red',
+
+  init() {
+    //this.current.angle = toRadians(90);
+  },
+
+  local: {
+    baseRadius: 6,
+    maxRadius: 5,
+    time: 0,
+    amp: 2.5 * Math.PI, // this is really the frequency
+  },
+
+  update() {
+    this.local.time += this.current.elapsedTime;
+    this.current.velocity.radial += this.current.acceleration.radial * this.current.elapsedTime;
+    this.current.r = this.current.velocity.radial * this.current.elapsedTime;
+
+    if (this.config.radius < this.local.maxRadius) {
+      this.local.deltaRadius = Math.abs(Math.sin(this.local.amp * this.local.time));
+      this.config.radius = this.local.baseRadius * this.local.deltaRadius;
+    }
+  },
+};
+
+  /** Prototype for sine wave */
   projectile.sine = {
     radius: 3,
     scale: 1.0,
@@ -3978,6 +4051,7 @@ function loadTemplates() {
             hitValue: 2000,
             snapLine: 250,
             radius: 200,
+            dropItems: [new Nuke(100)],
           },
           weapon: {
             rotation: {
@@ -4200,12 +4274,13 @@ function loadTemplates() {
   };
 
   scene.waterOne = {
+    player: ship.jaredTestPlane,
     waves: [
       {
         choreography: [
           {
             id: 'checkpoint',
-            prettyName: 'Level Water one',
+            prettyName: 'Water one',
             sceneName: 'waterOne',
           },
           {
@@ -4318,7 +4393,7 @@ function loadTemplates() {
         choreography: [
           {
             id: 'checkpoint',
-            prettyName: 'Level Water Two',
+            prettyName: 'Water Two',
             sceneName: 'waterTwo',
           },
           {
@@ -4473,7 +4548,7 @@ function loadTemplates() {
 
           {
             id: 'checkpoint',
-            prettyName: 'Level Water Three',
+            prettyName: 'Water Three',
             sceneName: 'waterThree',
           },
           {
@@ -4846,9 +4921,44 @@ function loadTemplates() {
    **                                                                                       * */
   ring.lineTest = {
     payload: {
-      type: projectile.microBullet,
+      type: projectile.bulletFadeIn,
       velocity: {
-        radial: 450,
+        radial: 500,
+        angular: 0,
+      },
+      acceleration: {
+        radial: 800,
+        angular: 0,
+      },
+    },
+    rotation: {
+      // angle: 10,
+      // frequency: 1,
+      // speed: .1,
+    },
+    firing: {
+      // pattern: pattern.simple,
+      radius: 32,
+      angle: 90,
+      width: 75,
+      count: 4,
+      loadTime: 0,
+      cooldownTime: 0.05,
+      rapidReload: true,
+      targetPlayer: false,
+      viewTurret: false,
+      pulse: {
+        duration: 0.5,
+        delay: 1.5,
+      },
+    },
+  };
+
+  ring.pulseRingTest = {
+    payload: {
+      type: projectile.bulletFadeIn,
+      velocity: {
+        radial: 200,
         angular: 0,
       },
       acceleration: {
@@ -4863,15 +4973,14 @@ function loadTemplates() {
     },
     firing: {
       // pattern: pattern.simple,
-      radius: 32,
+      radius: 50,
       angle: 90,
-      width: 100,
-      count: 6,
+      count: 10,
       loadTime: 0,
-      cooldownTime: 0.02,
+      cooldownTime: 0.2,
       rapidReload: true,
       targetPlayer: false,
-      viewTurret: true,
+      viewTurret: false,
       pulse: {
         duration: 0.5,
         delay: 1.5,
@@ -5535,6 +5644,43 @@ function loadTemplates() {
         //   100, 100, 300, 300,
         ],
       },
+      {
+        choreography: [{
+          id: 'accelerateToWarpspeed',
+        },
+        {
+          id: 'wait',
+          duration: 0.25,
+        },
+        {
+          id: 'loadBackground',
+          bg: background.beach,
+        },
+        {
+          id: 'decelerateFromWarpSpeed',
+        },
+        {
+          id: 'showMessage',
+          type: 'gameOver',
+          text: ['YOU WIN!', 'THANKS FOR PLAYING, YOUR SCORE HAS BEEN SAVED ON THE LEADERBOARD'],
+        },
+        {
+          id: 'wait',
+          duration: 7,
+        },
+        {
+          id: 'showMessage',
+          text: ['STICK AROUND FOR', 'BONUS LEVELS'],
+        },
+        {
+          id: 'wait',
+          duration: 7,
+        },
+        {
+          id: 'hideMessage',
+        },
+        ],
+      },
     ],
   };
 
@@ -5593,6 +5739,7 @@ function loadTemplates() {
             initialDirection: 'west',
             snapLine: 100,
           },
+          // weapon: ring.lineTest,
           weapon: {
             payload: {
               type: projectile.whiteCircleBullet,
@@ -5793,6 +5940,7 @@ function loadTemplates() {
             hitValue: 2000,
             snapLine: 250,
             radius: 200,
+            dropItems: [new Nuke(100)],
           },
           weapon: ring.gap1,
         }],
@@ -6072,10 +6220,11 @@ function loadTemplates() {
         ],
         shipManifestOverride: [{
           config: {
-            health: 150,
+            health: 100,
             snapLineSpeed: 50,
             hitValue: 2000,
             snapLine: 300,
+            dropItems: [new MultiGun(100)],
           },
         }],
         waitUntilEnemiesGone: true,
@@ -7016,43 +7165,6 @@ function loadTemplates() {
               snapLine: 50,
             },
           },
-        ],
-      },
-      {
-        choreography: [{
-          id: 'accelerateToWarpspeed',
-        },
-        {
-          id: 'wait',
-          duration: 0.25,
-        },
-        {
-          id: 'loadBackground',
-          bg: background.beach,
-        },
-        {
-          id: 'decelerateFromWarpSpeed',
-        },
-        {
-          id: 'showMessage',
-          type: 'gameOver',
-          text: ['YOU WIN!', 'THANKS FOR PLAYING, YOUR SCORE HAS BEEN SAVED ON THE LEADERBOARD'],
-        },
-        {
-          id: 'wait',
-          duration: 7,
-        },
-        {
-          id: 'showMessage',
-          text: ['STICK AROUND FOR', 'BONUS LEVELS'],
-        },
-        {
-          id: 'wait',
-          duration: 7,
-        },
-        {
-          id: 'hideMessage',
-        },
         ],
       },
     ],

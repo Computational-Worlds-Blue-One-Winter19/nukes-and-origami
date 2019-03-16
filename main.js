@@ -88,7 +88,7 @@ class NukesAndOrigami extends GameEngine {
 
     this.sounds = {
       gameLoop: {
-        path: './audio/Game_Loop_v.1.ogg',
+        path: 'https://storage.googleapis.com/nukes-and-origami/static/Game_Loop_v.1.ogg',
         // Two instances of a howler are needed to loop sounds, so we'll need
         // references of these instances to stop or pause music
         instances: [],
@@ -108,25 +108,27 @@ class NukesAndOrigami extends GameEngine {
   initializeSceneManager(startScene) {
     // load completed levels
     const levelOrder = [
-      scene.waterFivePointFive
-      // scene.levelOne,
-      // scene.levelTwo,
-      // scene.levelThree,
-      // scene.waterIntro,
-      // scene.waterOne,
-      // scene.waterTwo,
-      // scene.waterThree,
-      // scene.waterFour,
-      // scene.waterFive,
-      // scene.waterSix,
-      // scene.waterFinalBoss,
-      // scene.thanksForPlayingScene,
-      // scene.oneWaveTest,
-      // scene.waveBank,
-      // scene.easyPaper,
-      // scene.bossTest,
-      // scene.gamma,
-      // scene.endingScene,
+      //scene.waterManta
+      scene.levelOne,
+      scene.levelTwo,
+      scene.levelThree,
+      scene.waterIntro,
+      scene.waterOne,
+      scene.waterTwo,
+      scene.waterThree,
+      scene.waterFour,
+      scene.waterFivePointFive,
+      scene.waterManta,
+      scene.waterFive,
+      scene.waterSix,
+      scene.waterFinalBoss,
+      scene.thanksForPlayingScene,
+      scene.oneWaveTest,
+      scene.waveBank,
+      scene.easyPaper,
+      scene.bossTest,
+      scene.gamma,
+      scene.endingScene,
     ];
 
     if (startScene) {
@@ -233,7 +235,7 @@ class NukesAndOrigami extends GameEngine {
   onPlayerHit(player) {
     if (player.invincTime === 0 && !player.rolling) {
       // Let's check to see if we can enable god mode for prof marriott
-      const name = Cookies.get('name');
+      const name = Cookies.get('name') || '';
       if (name.toLowerCase() !== 'chris' && name.toLowerCase() !== 'algorithm0r') {
         this.lives -= 1;
         removeLifeFromBoard();
@@ -691,12 +693,12 @@ class SceneManager {
 
     this.currentChor = this.choreography[0];
 
-    console.log('--------------');
-    console.log(this.choreography);
-    console.log(' and current chor ');
-    console.log(this.currentChor);
-    console.log(' and current wave ');
-    console.log(this.wave);
+    // console.log('--------------');
+    // console.log(this.choreography);
+    // console.log(' and current chor ');
+    // console.log(this.currentChor);
+    // console.log(' and current wave ');
+    // console.log(this.wave);
 
     // Handle all possible choreography cases here. This will get long.
     switch (this.currentChor.id) {
@@ -743,7 +745,7 @@ class SceneManager {
           }
 
           // Post the score after the user has finished the game only if god mode isn't enabled
-          const name = Cookies.get('name');
+          const name = Cookies.get('name') || '';
           const isgodModEnabled = name.toLowerCase() === 'chris' || name.toLowerCase() === 'algorithm0r';
           if (this.currentChor.type === 'gameOver' && !isgodModEnabled) {
             const playerName = Cookies.get('name');
