@@ -139,6 +139,27 @@ function loadTemplates() {
     },
   };
 
+  console.log(sprite.fish.bullet);
+
+  projectile.sineFish = {
+    radius: 3,
+    sprite: sprite.fish.bullet,
+    // rotate: true,
+
+    local: {
+      time: 0,
+      amp: 3 * 2 * Math.PI,
+    },
+
+    update() {
+      this.local.time += this.current.elapsedTime;
+      this.current.r = this.current.velocity.radial * this.current.elapsedTime;
+
+      const deltaAngle = Math.cos(this.local.amp * this.local.time);
+      this.current.angle = this.config.baseAngle + deltaAngle;
+    },
+  }
+
   /** This tracks an enemy. */
   projectile.modifiedChainGun = {
     radius: 3,
@@ -1106,6 +1127,40 @@ function loadTemplates() {
       },
     },
   };
+
+  ring.fishSine = {
+    payload: {
+      type: projectile.sineFish,
+      velocity: {
+        radial: 300,
+        angular: 0,
+      },
+      acceleration: {
+        radial: 0,
+        angular: 0,
+      },
+    },
+    rotation: {
+      angle: 0,
+      frequency: 0,
+    },
+    firing: {
+      radius: 80,
+      angle: 90,
+      spread: 20,
+      count: 4,
+      loadTime: 0.05,
+      cooldownTime: 0.1,
+      rapidReload: true,
+      targetPlayer: false,
+      targetLeadShot: false,
+      viewTurret: true,
+      pulse: {
+        duration: 1,
+        delay: 3,
+      },
+    },
+  }
 
   ring.jaredTest3 = {
     payload: {
@@ -7344,6 +7399,46 @@ function loadTemplates() {
         ],
         waitUntilEnemiesGone: true,
       }
+    ]
+  }
+
+  scene.waterFivePointFive = {
+    waves: [
+      {
+        choreography: [
+          {
+            id: 'checkpoint',
+            prettyName: 'Water 5.5',
+            sceneName: 'water55',
+          },
+          {
+            id: 'loadBackground',
+            bg: background.water,
+          },
+          {
+            id: 'spawnEnemies',
+          }
+        ],
+        numOfEnemies: 7,
+        ships: new Array(7).fill(ship.fish),
+        paths: [path.cornerRight, path.cornerRight, path.straightDown, path.doNothing, path.straightDown, path.cornerLeft, path.cornerLeft],
+        shipManifestOverride: [
+          ...Array(3).fill({
+            weapon: ring.fishSine,
+          }),
+          {
+            config: {
+              snapLine: 100,
+              waitOffScreen: 1,
+            },
+            weapon: ring.fishSine,
+          },
+          ...Array(3).fill({
+            weapon: ring.fishSine,
+          }),
+        ],
+        waitUntilEnemiesGone: true,
+      },
     ]
   }
 } // end of objects.js

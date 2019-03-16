@@ -459,7 +459,7 @@ function initStartGameButton(game) {
           instanceLevel.open();
         } else {
           // No level data found in the cookies start at level one
-          startGame(game, 'waterManta');
+          startGame(game, 'water55');
         }
       }
     },
