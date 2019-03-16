@@ -165,7 +165,7 @@ class Ship extends Entity {
     this.offset = {
       x: manifest.config.xOffset || 0,
       y: manifest.config.yOffset || 0,
-    }
+    };
 
     // A slave is the "slave" to another ship. The other ship is the master
     // and any hits the slave takes will be inflicted on the master.
@@ -175,8 +175,8 @@ class Ship extends Entity {
       this.slaves = [];
       for (let i = 0; i < manifest.config.slave.length; i++) {
         this.slaves[i] = Object.assign({}, manifest.config.slave[i]);
-        
-        //adjust xDifference and yDifference with offset
+
+        // adjust xDifference and yDifference with offset
         this.slaves[i].config.xDifference += this.offset.x;
         this.slaves[i].config.yDifference += this.offset.y;
 
@@ -231,11 +231,11 @@ class Ship extends Entity {
   }
 
   draw() {
-    let offset = this.offset;
+    const { offset } = this;
 
-    let x = this.current.x + offset.x;
-    let y = this.current.y + offset.y;
-    
+    const x = this.current.x + offset.x;
+    const y = this.current.y + offset.y;
+
     this.sprite.drawFrame(this.game.clockTick, this.ctx, x, y);
     this.weapon.draw();
     super.draw();
@@ -593,6 +593,7 @@ class Plane extends Ship {
           this.rolling = true;
           this.performManeuver();
           this.canRoll = false;
+          startRollTimer(this.rollCooldown);
         } else if (this.current.x - ((this.sprite.width * this.sprite.scale) / 2) > 0) {
           this.current.x -= this.speed * this.game.clockTick;
           this.sprite = this.left;
@@ -605,6 +606,7 @@ class Plane extends Ship {
       || (!this.controls.hasInvertedControls && rightKeyCheck)) {
         if (this.game.keysDown.KeyC && this.canRoll) {
           this.rollDirection = 'right';
+          startRollTimer(this.rollCooldown);
           this.rolling = true;
           this.performManeuver();
           this.canRoll = false;
@@ -817,7 +819,7 @@ class Weapon {
       }
 
       // set offset if any
-      let offset = owner.offset || {x: 0, y: 0};
+      const offset = owner.offset || { x: 0, y: 0 };
 
       this.slot.push({
         ring: r,

@@ -277,6 +277,15 @@ center > h4 {
     box-sizing: content-box;
     margin-top:  1.37333rem;
   }
+
+  .countdownRoll {
+    position: relative; 
+    height: 40px;
+    width: 40px;
+    text-align: center;
+    box-sizing: content-box;
+    margin-top: 0.57333rem;
+  }
   
   #countdown-number {
     color: black;
@@ -284,9 +293,17 @@ center > h4 {
     line-height: 40px;
     box-sizing: content-box;
   }
+
+  /* .roll {
+      display: block;
+  } */
+
+  .defaultTimer {
+    /* At the start we don't want to show the circle for the timer */
+    /* display: none; */
+  }
   
   .timer {
-    /* At the start we don't want to show the circle for the timer */
     display: none;
     position: absolute;
     top: 0;
@@ -297,15 +314,31 @@ center > h4 {
     box-sizing: content-box;
   }
   
-  #circle {
+  #circle, #circle-roll {
     stroke-dasharray: 113px;
     stroke-dashoffset: 0px;
     stroke-linecap: round;
     stroke-width: 2px;
     stroke: black;
     fill: none;
-    animation: countdown 20s linear infinite forwards;
+    animation: countdown linear infinite forwards;
     box-sizing: content-box;
+  }
+
+  /* .rollAnimation {
+    animation: countdown 2.5s linear infinite forwards;
+  }
+
+  .rollAnimation {
+    animation: countdown 2.5s linear infinite forwards;
+  } */
+
+  .paused {
+    animation-play-state: paused;
+  }
+
+  .running {
+      animation-play-state: running;
   }
 
   @keyframes countdown {

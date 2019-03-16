@@ -359,7 +359,7 @@ function getRandomPowerUp(enemyDropItems) {
 }
 
 function getPowerUp(type) {
-  //used for slaves, please don't delete me I know I'm dirty
+  // used for slaves, please don't delete me I know I'm dirty
   switch (type) {
     case 'nuke':
       return new Nuke(30);

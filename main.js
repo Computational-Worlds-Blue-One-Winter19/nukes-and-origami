@@ -107,7 +107,7 @@ class NukesAndOrigami extends GameEngine {
   */
   initializeSceneManager(startScene) {
     // load completed levels
-    let levelOrder = [
+    const levelOrder = [
       scene.waterSix,
       // scene.waterIntro,
       // scene.waterOne,
@@ -126,7 +126,6 @@ class NukesAndOrigami extends GameEngine {
 
     if (startScene) {
       while (levelOrder[0] != scene[startScene]) {
-        console.log(levelOrder[0]);
         levelOrder.shift();
       }
     }
