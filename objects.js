@@ -2190,8 +2190,33 @@ function loadTemplates() {
     config: {
       health: 5,
       hitValue: 5,
-      radius: 70,
+      radius: 110,
       sprite: sprite.manta.default,
+      yOffset: -100,
+      slave: [
+        {
+          config: {
+            health: 40,
+            hitValue: 50,
+            radius: 60, 
+            xDifference: -200,
+            yDifference: 100,
+          },
+          weapon: ring.singleTargetPlayer,
+          powerup: 'nuke',
+        },
+        {
+          config: {
+            health: 40,
+            hitValue: 50,
+            radius: 60, 
+            xDifference: 200,
+            yDifference: 100,
+          },
+          weapon: ring.singleTargetPlayer,
+          powerup: 'nuke',
+        }
+      ]
     },
     weapon: ring.singleTargetPlayer,
   };
@@ -7168,4 +7193,62 @@ function loadTemplates() {
       },
     ],
   };
+
+  scene.waterManta = {
+    waves: [
+      {
+        choreography: [
+          {
+            id: 'checkpoint',
+            prettyName: 'Water Manta',
+            sceneName: 'waterManta',
+          },
+          {
+            id: 'loadBackground',
+            bg: background.water,
+          },
+          {
+            id: 'showMessage',
+            text: ['MANTA', 'INCOMING'],
+          },
+          {
+            id: 'wait',
+            duration: 1,
+          },
+          {
+            id: 'hideMessage',
+          },
+        ],
+      },
+      {
+        choreography: [
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 0,
+            ring: ring.jaredTest3,
+          },
+          {
+            id: 'swapSlaveRing',
+            enemyIndex: 0,
+            slaveIndex: 1,
+            ring: ring.jaredTest3,
+          },
+        ],
+        numOfEnemies: 1,
+        ships: [ship.manta],
+        paths: [path.doNothing],
+        waitUntilEnemiesGone: true,
+        shipManifestOverride: [
+          {
+            config: {
+              snapLine: 200,
+              health: 200,
+            },
+            weapon: ring.spreadBeta1,
+          }
+        ]
+      }
+    ]
+  }
 } // end of objects.js
